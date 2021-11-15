@@ -1,6 +1,11 @@
 #include <iostream>
+#include "Window.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+
+    VE::Window window;
+    VE::WorldPtr world(new VE::World);
+    window.setWorld(world);
+    window.run();
     return 0;
 }
