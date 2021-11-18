@@ -23,6 +23,8 @@ void Window::windowInitialization(int width, int height, const std::string &labe
     }
     glfwMakeContextCurrent(window_);
     glfwSetWindowUserPointer(window_, this);
+
+    windowAspectRatio_ = static_cast<float>(width) / static_cast<float>(height);
 }
 
 void Window::guiInitialization() {
@@ -58,13 +60,15 @@ void Window::run() {
     float lableUpdateTime = 0;
     float elapsedTime = 0;
     glfwSwapInterval(1);
+
+    Render render(windowAspectRatio_);
+
     while (!glfwWindowShouldClose(window_)) {
         glfwSetTime(0);
         glfwPollEvents();
 
         shownWorld_->update(dt_);
-        Render render(shownWorld_);
-        render.draw();
+        render.draw(*shownWorld_);
 
         glfwSwapBuffers(window_);
         dt_ = static_cast<float>(glfwGetTime());
@@ -78,7 +82,7 @@ void Window::run() {
     }
 }
 
-void Window::setWorld(const WorldPtr& shownWorld) {
+void Window::setWorld(const WorldPtr &shownWorld) {
     shownWorld_ = shownWorld;
 }
 

@@ -31,6 +31,8 @@ namespace VE {
         std::string label_;
         WorldPtr shownWorld_;
         float dt_ = 0;
+
+        float windowAspectRatio_ = 1.0f;
     };
 }
 

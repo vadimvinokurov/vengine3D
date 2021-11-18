@@ -10,11 +10,10 @@
 namespace VE {
     class Render {
     public:
-        explicit Render(const WorldPtr &world);
-        void draw();
+        explicit Render(float windowAspectRatio);
+        void draw(const World &world);
     private:
-
-        const WorldPtr world_;
+        const float windowAspectRatio_ = 1.0f;
     };
 }
 
