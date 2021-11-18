@@ -13,6 +13,7 @@ using namespace VE;
 Window::Window(int width, int height, const std::string &label) : label_(label) {
     windowInitialization(width, height, label);
     guiInitialization();
+
 }
 
 void Window::windowInitialization(int width, int height, const std::string &label) {
@@ -23,7 +24,7 @@ void Window::windowInitialization(int width, int height, const std::string &labe
     }
     glfwMakeContextCurrent(window_);
     glfwSetWindowUserPointer(window_, this);
-
+    setCallbackFunction();
     windowAspectRatio_ = static_cast<float>(width) / static_cast<float>(height);
 }
 
@@ -55,6 +56,14 @@ void Window::run() {
         std::cerr << "Window hasn't world to draw!" << std::endl;
         return;
     }
+    if (keyboard_ == nullptr) {
+        std::cerr << "Window hasn't keyboard to control!" << std::endl;
+        return;
+    }
+    if (mouse_ == nullptr) {
+        std::cerr << "Window hasn't mouse to control!" << std::endl;
+        return;
+    }
 
 
     float lableUpdateTime = 0;
@@ -84,6 +93,52 @@ void Window::run() {
 
 void Window::setWorld(const WorldPtr &shownWorld) {
     shownWorld_ = shownWorld;
+}
+
+void Window::setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse) {
+    keyboard_ = keyboard;
+    mouse_ = mouse;
+}
+
+void Window::mouseButtonEvent(int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        mouse_->setKeyState(button, VE_KEY_PRESSED);
+    } else if (action == GLFW_REPEAT) {
+        mouse_->setKeyState(button, VE_KEY_REPEAT);
+    } else if (action == GLFW_RELEASE) {
+        mouse_->setKeyState(button, VE_KEY_RELEASE);
+    }
+}
+
+void Window::cursorChangePositionEvent(double xpos, double ypos) {
+    mouse_->setMousePosition(VE::Vector(static_cast<float>(xpos), static_cast<float>(ypos)));
+}
+
+void Window::keyEvent(int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        keyboard_->setKeyState(key, VE_KEY_PRESSED);
+    } else if (action == GLFW_REPEAT) {
+        keyboard_->setKeyState(key, VE_KEY_REPEAT);
+    } else if (action == GLFW_RELEASE) {
+        keyboard_->setKeyState(key, VE_KEY_RELEASE);
+    }
+}
+
+void Window::setCallbackFunction() {
+    auto cursor_callback = [](GLFWwindow *glfwwindow, double xpos, double ypos) {
+        getThis(glfwwindow)->cursorChangePositionEvent(xpos, ypos);
+    };
+    glfwSetCursorPosCallback(window_, cursor_callback);
+
+    auto mouseButton_callback = [](GLFWwindow *glfwwindow, int button, int action, int mods) {
+        getThis(glfwwindow)->mouseButtonEvent(button, action, mods);
+    };
+    glfwSetMouseButtonCallback(window_, mouseButton_callback);
+
+    auto keyEventFun = [](GLFWwindow *glfwwindow, int key, int scancode, int action, int mods) {
+        getThis(glfwwindow)->keyEvent(key, scancode, action, mods);
+    };
+    glfwSetKeyCallback(window_, keyEventFun);
 }
 
 

@@ -1,0 +1,12 @@
+//
+// Created by boris on 11/19/2021.
+//
+
+#ifndef VENGINE3D_VE_KEYSTATE_HPP
+#define VENGINE3D_VE_KEYSTATE_HPP
+
+enum KeyState {
+    VE_KEY_FREE, VE_KEY_RELEASE, VE_KEY_PRESSED, VE_KEY_REPEAT
+};
+
+#endif //VENGINE3D_VE_KEYSTATE_HPP
