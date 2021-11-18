@@ -68,7 +68,7 @@ void Window::run() {
         glfwPollEvents();
 
         shownWorld_->update(dt_);
-        render.draw(*shownWorld_);
+        render.draw(shownWorld_);
 
         glfwSwapBuffers(window_);
         dt_ = static_cast<float>(glfwGetTime());

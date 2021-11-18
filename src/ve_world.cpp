@@ -4,6 +4,15 @@
 
 #include "ve_world.h"
 
-void VE::World::update(float dt) {
+using namespace VE;
 
+void VE::World::update(float dt) {
+}
+
+VE::World::World() {
+
+}
+
+const Camera &World::currentCamera() {
+    return *currentCamera_;
 }
