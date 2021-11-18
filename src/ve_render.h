@@ -5,17 +5,16 @@
 #ifndef VENGINE3D_RENDER_H
 #define VENGINE3D_RENDER_H
 
-#include "GL/gl.h"
-#include "World.h"
+#include "ve_world.h"
 
 namespace VE {
     class Render {
     public:
         explicit Render(const WorldPtr &world);
-        void operator()();
+        void draw();
     private:
 
-        const WorldPtr &world_;
+        const WorldPtr world_;
     };
 }
 

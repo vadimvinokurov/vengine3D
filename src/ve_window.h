@@ -5,7 +5,6 @@
 #ifndef VENGINE3D_WINDOW_H
 #define VENGINE3D_WINDOW_H
 
-#include <GL/gl.h>
 #include <string>
 #include <iostream>
 
@@ -14,14 +13,14 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "World.h"
+#include "ve_world.h"
 
 namespace VE {
     class Window final {
     public:
         explicit Window(int width = 1280, int height = 720, const std::string &label = "VEngine3D");
         void run();
-        void setWorld(WorldPtr shownWorld);
+        void setWorld(const WorldPtr& shownWorld);
         ~Window();
     private:
         void guiInitialization();

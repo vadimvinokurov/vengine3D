@@ -11,7 +11,7 @@ include_directories("./glfw/include")
 file(GLOB Sources_src "./src/*.cpp")
 file(GLOB Sources_subdir "./src/*/*.cpp")
 
-set (SOURCE_FILES ${Sources_src} ${Sources_subdir} src/World.cpp src/World.h src/Render.cpp src/Render.h)
+set (SOURCE_FILES ${Sources_src} ${Sources_subdir})
 
 
 

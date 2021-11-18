@@ -1,11 +1,12 @@
 #include <iostream>
-#include "Window.h"
+#include "ve_window.h"
 
 int main() {
+    VE::WorldPtr world(new VE::World);
 
     VE::Window window;
-    VE::WorldPtr world(new VE::World);
     window.setWorld(world);
     window.run();
     return 0;
 }
+
