@@ -71,15 +71,12 @@ namespace VE {
         }
 
         void lockMouse() {
+            lockPosition_ = position_;
             lock = true;
         }
 
         void unlockMouse() {
             lock = false;
-        }
-
-        void setLockPosition() {
-            lockPosition_ = position_;
         }
 
         const Vector &lockPosition() {

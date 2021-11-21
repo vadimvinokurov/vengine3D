@@ -29,7 +29,6 @@ void World::hid() {
 void World::hid_CameraControl() {
     if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
         mouse_->lockMouse();
-        mouse_->setLockPosition();
     }
     if (mouse_->isRelease(VE_MOUSE_BUTTON_3)) {
         mouse_->unlockMouse();
