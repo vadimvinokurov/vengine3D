@@ -41,19 +41,20 @@ void World::hid_CameraControl() {
 }
 
 void World::hid_PositionControl() {
+    float spead = 0.2f;
     float speadUpDown = 0;
     if (keyboard_->isRepeat(VE_KEY_W)) {
-        speadUpDown = 0.1;
+        speadUpDown = spead;
     }
     if (keyboard_->isRepeat(VE_KEY_S)) {
-        speadUpDown = -0.1;
+        speadUpDown = -spead;
     }
     float speadLeftRight = 0;
     if (keyboard_->isRepeat(VE_KEY_D)) {
-        speadLeftRight = 0.1;
+        speadLeftRight = spead;
     }
     if (keyboard_->isRepeat(VE_KEY_A)) {
-        speadLeftRight = -0.1;
+        speadLeftRight = -spead;
     }
 
     VE::Vector normalUpDown(0, 0, -1);
