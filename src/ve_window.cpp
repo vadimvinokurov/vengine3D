@@ -10,10 +10,9 @@
 
 using namespace VE;
 
-Window::Window(int width, int height, const std::string &label) : label_(label) {
+Window::Window(int width, int height, const std::string &label) : width_(width), height_(height), label_(label) {
     windowInitialization(width, height, label);
     guiInitialization();
-
 }
 
 void Window::windowInitialization(int width, int height, const std::string &label) {
@@ -51,8 +50,9 @@ Window::~Window() {
     ImGui::DestroyContext();
 }
 
+
 void Window::run() {
-    if (shownWorld_ == nullptr) {
+    if (world_ == nullptr) {
         std::cerr << "Window hasn't world to draw!" << std::endl;
         return;
     }
@@ -76,8 +76,17 @@ void Window::run() {
         glfwSetTime(0);
         glfwPollEvents();
 
-        shownWorld_->update(dt_);
-        render.draw(shownWorld_);
+        world_->update(dt_);
+        render.draw(world_);
+
+        if (mouse_->isLock()) {
+            Vector lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
+            glfwSetCursorPos(window_, lockScreenPosition.x(), lockScreenPosition.y());
+            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        } else {
+            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+
 
         glfwSwapBuffers(window_);
         dt_ = static_cast<float>(glfwGetTime());
@@ -92,7 +101,7 @@ void Window::run() {
 }
 
 void Window::setWorld(const WorldPtr &shownWorld) {
-    shownWorld_ = shownWorld;
+    world_ = shownWorld;
 }
 
 void Window::setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse) {
@@ -110,8 +119,8 @@ void Window::mouseButtonEvent(int button, int action, int mods) {
     }
 }
 
-void Window::cursorChangePositionEvent(double xpos, double ypos) {
-    mouse_->setMousePosition(VE::Vector(static_cast<float>(xpos), static_cast<float>(ypos)));
+void Window::cursorChangePositionEvent(const VE::Vector &cursorPosition) {
+    mouse_->setPosition(cursorPosition);
 }
 
 void Window::keyEvent(int key, int scancode, int action, int mods) {
@@ -126,7 +135,8 @@ void Window::keyEvent(int key, int scancode, int action, int mods) {
 
 void Window::setCallbackFunction() {
     auto cursor_callback = [](GLFWwindow *glfwwindow, double xpos, double ypos) {
-        getThis(glfwwindow)->cursorChangePositionEvent(xpos, ypos);
+        VE::Vector openGLCoordinate = getThis(glfwwindow)->screeToOpenGLCoordinate(VE::Vector(xpos, ypos));
+        getThis(glfwwindow)->cursorChangePositionEvent(openGLCoordinate);
     };
     glfwSetCursorPosCallback(window_, cursor_callback);
 
@@ -139,6 +149,19 @@ void Window::setCallbackFunction() {
         getThis(glfwwindow)->keyEvent(key, scancode, action, mods);
     };
     glfwSetKeyCallback(window_, keyEventFun);
+}
+
+Vector Window::screeToOpenGLCoordinate(const Vector &screenCoordinate) {
+    float xScale = width_ / (windowAspectRatio_ * 2);
+    float yScale = height_ / 2;
+    return Vector(screenCoordinate.x() / xScale - windowAspectRatio_, 1 - screenCoordinate.y() / yScale);
+}
+
+Vector Window::openGLToScreenCoordinate(const Vector &openGLCoordinate) {
+    float xScale = width_ / (windowAspectRatio_ * 2);
+    float yScale = height_ / 2;
+    return Vector((windowAspectRatio_ + openGLCoordinate.x()) * xScale,
+                  (1 - openGLCoordinate.y()) * yScale);
 }
 
 

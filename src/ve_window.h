@@ -33,12 +33,16 @@ namespace VE {
         void setCallbackFunction();
 
         void mouseButtonEvent(int button, int action, int mods);
-        void cursorChangePositionEvent(double xpos, double ypos);
+        void cursorChangePositionEvent(const VE::Vector &cursorPosition);
         void keyEvent(int key, int scancode, int action, int mods);
 
+        VE::Vector screeToOpenGLCoordinate(const VE::Vector &screenCoordinate);
+        VE::Vector openGLToScreenCoordinate(const VE::Vector &openGLCoordinate);
+
         GLFWwindow *window_;
+        float width_, height_;
         std::string label_;
-        WorldPtr shownWorld_;
+        WorldPtr world_;
         float dt_ = 0;
 
         float windowAspectRatio_ = 1.0f;

@@ -15,8 +15,11 @@ namespace VE {
         void setPosition(const Vector &position);
         void setRotation(const Vector &rotation);
 
-        const Vector& position();
-        const Vector& rotation();
+        void setDeltaPosition(const Vector &dPosition);
+        void setDeltaRotation(const Vector &dRotation);
+
+        const Vector &position() const;
+        const Vector &rotation() const;
         ~Camera();
     private:
         Vector position_;

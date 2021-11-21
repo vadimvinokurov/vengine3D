@@ -22,10 +22,18 @@ void VE::Camera::setRotation(const VE::Vector &rotation) {
     rotation_ = rotation;
 }
 
-const VE::Vector &VE::Camera::position() {
+const VE::Vector &VE::Camera::position() const {
     return position_;
 }
 
-const VE::Vector &VE::Camera::rotation() {
+const VE::Vector &VE::Camera::rotation() const {
     return rotation_;
+}
+
+void VE::Camera::setDeltaPosition(const VE::Vector &dPosition) {
+    position_ += dPosition;
+}
+
+void VE::Camera::setDeltaRotation(const VE::Vector &dRotation) {
+    rotation_ += dRotation;
 }
