@@ -36,7 +36,7 @@ namespace VE {
         void cursorChangePositionEvent(const VE::Vector &cursorPosition);
         void keyEvent(int key, int scancode, int action, int mods);
 
-        VE::Vector screeToOpenGLCoordinate(const VE::Vector &screenCoordinate);
+        VE::Vector screenToOpenGLCoordinate(const VE::Vector &screenCoordinate);
         VE::Vector openGLToScreenCoordinate(const VE::Vector &openGLCoordinate);
 
         GLFWwindow *window_;

@@ -135,7 +135,7 @@ void Window::keyEvent(int key, int scancode, int action, int mods) {
 
 void Window::setCallbackFunction() {
     auto cursor_callback = [](GLFWwindow *glfwwindow, double xpos, double ypos) {
-        VE::Vector openGLCoordinate = getThis(glfwwindow)->screeToOpenGLCoordinate(VE::Vector(xpos, ypos));
+        VE::Vector openGLCoordinate = getThis(glfwwindow)->screenToOpenGLCoordinate(VE::Vector(xpos, ypos));
         getThis(glfwwindow)->cursorChangePositionEvent(openGLCoordinate);
     };
     glfwSetCursorPosCallback(window_, cursor_callback);
@@ -151,7 +151,7 @@ void Window::setCallbackFunction() {
     glfwSetKeyCallback(window_, keyEventFun);
 }
 
-Vector Window::screeToOpenGLCoordinate(const Vector &screenCoordinate) {
+Vector Window::screenToOpenGLCoordinate(const Vector &screenCoordinate) {
     float xScale = width_ / (windowAspectRatio_ * 2);
     float yScale = height_ / 2;
     return Vector(screenCoordinate.x() / xScale - windowAspectRatio_, 1 - screenCoordinate.y() / yScale);
