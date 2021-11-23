@@ -10,8 +10,17 @@ namespace VE {
     class Matrix22 {
     public:
         Matrix22() {
-            setIdentity();
         };
+
+        Matrix33(float a00, float a01,
+                 float a10, float a11
+        ) {
+            a[0][0] = a00;
+            a[0][1] = a01;
+
+            a[1][0] = a10;
+            a[1][1] = a11;
+        }
 
         Matrix22(const float initValue[2][2]) {
             for (size_t i = 0; i < 2; i++) {

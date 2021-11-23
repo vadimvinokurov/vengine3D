@@ -58,25 +58,22 @@ void World::hid_PositionControl() {
 
     VE::Vector normalUpDown(0, 0, -1);
     VE::Vector normalLeftRight(1, 0, 0);
-    float alfa = currentCamera_->rotation().x() * M_PI / 180.0f;
-    float vx[3][3] = {{1, 0,          0},
-                      {0, cosf(alfa), -sinf(alfa)},
-                      {0, sinf(alfa), cosf(alfa)}};
 
-    alfa = currentCamera_->rotation().z() * M_PI / 180.0f;
-    float vz[3][3] = {{cosf(alfa), -sinf(alfa), 0},
-                      {sinf(alfa), cosf(alfa),  0},
-                      {0,          0,           1}};
+    float alfa = currentCamera_->rotation().x() * static_cast<float>(M_PI) / 180.0f;
+    VE::Matrix33 rx(1, 0, 0,
+                    0, cosf(alfa), -sinf(alfa),
+                    0, sinf(alfa), cosf(alfa));
 
-    VE::Matrix33 rx(vx);
-    VE::Matrix33 rz(vz);
+    alfa = currentCamera_->rotation().z() * static_cast<float>(M_PI) / 180.0f;
+    VE::Matrix33 rz(cosf(alfa), -sinf(alfa), 0,
+                    sinf(alfa), cosf(alfa), 0,
+                    0, 0, 1);
 
-    normalUpDown = rx * normalUpDown;
-    normalUpDown = rz * normalUpDown;
+
+    normalUpDown = rz * rx * normalUpDown;
     currentCamera_->setPosition(currentCamera_->position() + normalUpDown * speadUpDown);
 
-    normalLeftRight = rx * normalLeftRight;
-    normalLeftRight = rz * normalLeftRight;
+    normalLeftRight = rz * rx * normalLeftRight;
     currentCamera_->setPosition(currentCamera_->position() + normalLeftRight * speadLeftRight);
 }
 

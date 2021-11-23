@@ -9,8 +9,25 @@ namespace VE {
     class Matrix33 {
     public:
         Matrix33() {
-            setIdentity();
         };
+
+
+        Matrix33(float a00, float a01, float a02,
+                 float a10, float a11, float a12,
+                 float a20, float a21, float a22
+        ) {
+            a[0][0] = a00;
+            a[0][1] = a01;
+            a[0][2] = a02;
+
+            a[1][0] = a10;
+            a[1][1] = a11;
+            a[1][2] = a12;
+
+            a[2][0] = a20;
+            a[2][1] = a21;
+            a[2][2] = a22;
+        }
 
         Matrix33(const float initValue[3][3]) {
             for (size_t i = 0; i < 3; i++) {
@@ -130,7 +147,7 @@ namespace VE {
             return res;
         }
 
-        Matrix33& operator+=(float v) {
+        Matrix33 &operator+=(float v) {
             for (size_t i = 0; i < 3; i++) {
                 for (size_t j = 0; j < 3; j++) {
                     a[i][j] += v;
@@ -139,7 +156,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix33& operator-=(float v) {
+        Matrix33 &operator-=(float v) {
             for (size_t i = 0; i < 3; i++) {
                 for (size_t j = 0; j < 3; j++) {
                     a[i][j] -= v;
@@ -148,7 +165,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix33& operator*=(float v) {
+        Matrix33 &operator*=(float v) {
             for (size_t i = 0; i < 3; i++) {
                 for (size_t j = 0; j < 3; j++) {
                     a[i][j] *= v;
@@ -157,7 +174,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix33& operator/=(float v) {
+        Matrix33 &operator/=(float v) {
             for (size_t i = 0; i < 3; i++) {
                 for (size_t j = 0; j < 3; j++) {
                     a[i][j] /= v;
@@ -166,7 +183,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix33& operator+=(const Matrix33 &b) {
+        Matrix33 &operator+=(const Matrix33 &b) {
             for (size_t i = 0; i < 3; i++) {
                 for (size_t j = 0; j < 3; j++) {
                     a[i][j] += b(i, j);
@@ -175,7 +192,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix33& operator-=(const Matrix33 &b) {
+        Matrix33 &operator-=(const Matrix33 &b) {
             for (size_t i = 0; i < 3; i++) {
                 for (size_t j = 0; j < 3; j++) {
                     a[i][j] -= b(i, j);
@@ -184,7 +201,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix33& operator*=(const Matrix33 &b) {
+        Matrix33 &operator*=(const Matrix33 &b) {
             *this = *this * b;
             return *this;
         }
