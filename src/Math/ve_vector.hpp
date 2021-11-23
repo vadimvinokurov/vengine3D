@@ -185,10 +185,20 @@ namespace VE {
             z_ = 0.0f;
         };
 
+        const float *data() const {
+            return c;
+        }
+
     private:
-        float x_ = 0.0f;
-        float y_ = 0.0f;
-        float z_ = 0.0f;
+        union {
+            struct {
+                float x_ = 0.0f;
+                float y_ = 0.0f;
+                float z_ = 0.0f;
+            };
+            float c[3];
+        };
+
     };
 }
 

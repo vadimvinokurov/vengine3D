@@ -4,10 +4,12 @@
 
 #include "ve_render.h"
 #include "Math/ve_vector.hpp"
+#include "Object/ve_shape.h"
 
 #include <iostream>
 
 #include <GL/gl.h>
+#include <GL/glu.h>
 
 
 using namespace VE;
@@ -24,7 +26,7 @@ Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) 
     glLoadIdentity();
 }
 
-void drawAxis(float axisLen = 10){
+void drawAxis(float axisLen = 10) {
     glLineWidth(3);
     glBegin(GL_LINES);
     glColor3f(1, 0, 0);
@@ -38,35 +40,24 @@ void drawAxis(float axisLen = 10){
     glVertex3d(0, 0, axisLen);
     glEnd();
 }
-void drawCube() {
-    float vertices[] = {0, 0, 0,
-                        1, 0, 0,
-                        1, 1, 0,
-                        0, 1, 0,
-                        0, 0, 1,
-                        1, 0, 1,
-                        1, 1, 1,
-                        0, 1, 1};
-    unsigned int indices[6][4] = {{3, 2, 1, 0},
-                                  {4, 5, 6, 7},
-                                  {0, 1, 5, 4},
-                                  {2, 3, 7, 6},
-                                  {3, 0, 4, 7},
-                                  {1, 2, 6, 5}};
+
+void drawShape(const VE::Shape &shape) {
+
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
     glPushMatrix();
     glTranslatef(1, 1, 0);
-    glRotatef(45,1,0,0);
+    glRotatef(45, 1, 0, 0);
     glScalef(2, 2, 2);
-    for(int i = 0; i < 6; i++) {
-        glColor3f(0.50f + i/100.0, 0.50f + i/100.0, 0.50f + i/100.0);
-        glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, indices[i]);
+    for (int i = 0; i < 6; i++) {
+        glColor3f(0.50f + i / 100.0, 0.50f + i / 100.0, 0.50f + i / 100.0);
+        glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
     drawAxis(2);
     glPopMatrix();
     glDisableClientState(GL_VERTEX_ARRAY);
 };
+
 void drawFlor() {
     float floorVertices[] = {1, 1, 0,
                              -1, 1, 0,
@@ -104,7 +95,8 @@ void Render::draw(const WorldPtr &world) {
     glPushMatrix();
     moveCamera();
     drawFlor();
-    drawCube();
+    VE::Shape shape;
+    drawShape(shape);
     glPopMatrix();
 
 }

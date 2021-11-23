@@ -3,11 +3,3 @@
 //
 
 #include "ve_shape.h"
-
-VE::Shape::Shape() {
-
-}
-
-VE::Shape::~Shape() {
-
-}
