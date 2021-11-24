@@ -4,7 +4,7 @@
 
 #include "ve_render.h"
 #include "Math/ve_vector.hpp"
-#include "Object/ve_shape.h"
+#include "Object/ve_box_shape.hpp"
 
 #include <iostream>
 
@@ -95,7 +95,7 @@ void Render::draw(const WorldPtr &world) {
     glPushMatrix();
     moveCamera();
     drawFlor();
-    VE::Shape shape;
+    VE::BoxShape shape;
     drawShape(shape);
     glPopMatrix();
 
