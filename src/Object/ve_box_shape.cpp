@@ -6,8 +6,7 @@
 
 using namespace VE;
 
-BoxShape::BoxShape(VE::Vector position) : Shape(sphereShape) {
-    BoxShape(1.0f, 1.0f, 1.0f, position);
+BoxShape::BoxShape(VE::Vector position) : BoxShape(1.0f, 1.0f, 1.0f, position) {
 }
 
 BoxShape::BoxShape(float width, float height, float depth, VE::Vector position) : Shape(sphereShape) {
@@ -33,15 +32,24 @@ BoxShape::BoxShape(float width, float height, float depth, VE::Vector position) 
     Transform transform;
 
 
-
-    for(Vector &vertex: vertices_){
+    for (Vector &vertex: vertices_) {
         vertex = transform.applyTransform(vertex);
     }
 
 }
 
 Vector BoxShape::farthestVertexInDirection(const Vector &direction) const {
-    return direction;
+    float l = -INFINITY;
+
+    Vector lVertex;
+    for (const VE::Vector &vertex: vertices_) {
+        float l_tmp = vertex.dot(direction);
+        if (l_tmp > l) {
+            l = l_tmp;
+            lVertex = vertex;
+        }
+    }
+    return lVertex;
 }
 
 

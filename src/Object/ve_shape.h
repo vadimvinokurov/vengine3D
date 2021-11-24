@@ -24,7 +24,7 @@ namespace VE {
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
         ShapeType shapeType() const;
         virtual ~Shape();
-    protected:
+    //protected:
         explicit Shape(ShapeType shapeType);
 
         std::vector<VE::Vector> vertices_;

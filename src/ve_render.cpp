@@ -5,6 +5,7 @@
 #include "ve_render.h"
 #include "Math/ve_vector.h"
 #include "Object/ve_box_shape.h"
+#include "Object/ve_sphere_shape.h"
 
 #include <iostream>
 
@@ -41,21 +42,30 @@ void drawAxis(float axisLen = 10) {
     glEnd();
 }
 
+//void drawShape(const VE::Shape &shape) {
+//
+//    glEnableClientState(GL_VERTEX_ARRAY);
+//    glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
+//    glPushMatrix();
+////    glTranslatef(1, 1, 0);
+////    glRotatef(45, 1, 0, 0);
+////    glScalef(2, 2, 2);
+//    for (int i = 0; i < 6; i++) {
+//        glColor3f(0.50f + i / 100.0, 0.50f + i / 100.0, 0.50f + i / 100.0);
+//        glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
+//    }
+//    drawAxis(2);
+//    glPopMatrix();
+//    glDisableClientState(GL_VERTEX_ARRAY);
+//};
+
 void drawShape(const VE::Shape &shape) {
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
-    glPushMatrix();
-//    glTranslatef(1, 1, 0);
-//    glRotatef(45, 1, 0, 0);
-//    glScalef(2, 2, 2);
-    for (int i = 0; i < 6; i++) {
-        glColor3f(0.50f + i / 100.0, 0.50f + i / 100.0, 0.50f + i / 100.0);
-        glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
+    glBegin(GL_LINE_LOOP);
+    for (const Vector &vertex: shape.vertices_) {
+        glVertex3f(vertex.x(), vertex.y(), vertex.z());
     }
-    drawAxis(2);
-    glPopMatrix();
-    glDisableClientState(GL_VERTEX_ARRAY);
+    glEnd();
 };
 
 void drawFlor() {
@@ -95,7 +105,7 @@ void Render::draw(const WorldPtr &world) {
     glPushMatrix();
     moveCamera();
     drawFlor();
-    VE::BoxShape shape;
+    VE::SphereShape shape;
     drawShape(shape);
     glPopMatrix();
 

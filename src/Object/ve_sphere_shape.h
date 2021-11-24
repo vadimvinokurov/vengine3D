@@ -7,13 +7,17 @@
 
 #include "ve_shape.h"
 
-namespace VE{
-    class SphereShape: public Shape {
-        SphereShape( float radius = 1.0f, float center = 1.0f);
+namespace VE {
+    class SphereShape : public Shape {
+    public:
+        SphereShape(Vector center);
+        SphereShape(float radius = 1.0f, Vector center = Vector());
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
+    private:
+        float radius_ = 1.0f;
+        Vector center_;
     };
 }
-
 
 
 #endif //VENGINE3D_VE_SPHERE_SHAPE_H
