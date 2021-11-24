@@ -5,8 +5,8 @@
 #ifndef VENGINE3D_VE_SHAPE_H
 #define VENGINE3D_VE_SHAPE_H
 
-#include "Math/ve_vector.hpp"
-#include "Math/ve_transform.hpp"
+#include "Math/ve_vector.h"
+#include "Math/ve_transform.h"
 
 #include <vector>
 #include <memory>

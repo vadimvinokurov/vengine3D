@@ -7,8 +7,8 @@
 
 #include <memory>
 #include "Object/ve_camera.h"
-#include "Control/ve_keyboard.hpp"
-#include "Control/ve_mouse.hpp"
+#include "Control/ve_keyboard.h"
+#include "Control/ve_mouse.h"
 
 namespace VE {
     class World {

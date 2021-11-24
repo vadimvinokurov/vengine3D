@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_CAMERA_H
 
 #include "stdlibraries.h"
-#include "Math/ve_vector.hpp"
+#include "Math/ve_vector.h"
 
 namespace VE {
     class Camera final {

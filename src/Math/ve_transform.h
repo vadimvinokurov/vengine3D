@@ -2,10 +2,10 @@
 // Created by boris on 11/23/2021.
 //
 
-#ifndef VENGINE3D_VE_TRANSFORM_HPP
-#define VENGINE3D_VE_TRANSFORM_HPP
+#ifndef VENGINE3D_VE_TRANSFORM_H
+#define VENGINE3D_VE_TRANSFORM_H
 
-#include "ve_vector.hpp"
+#include "ve_vector.h"
 
 namespace VE {
     class Transform {
@@ -22,4 +22,4 @@ namespace VE {
 }
 
 
-#endif //VENGINE3D_VE_TRANSFORM_HPP
+#endif //VENGINE3D_VE_TRANSFORM_H

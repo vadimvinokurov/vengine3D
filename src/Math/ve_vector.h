@@ -9,7 +9,7 @@
 #include <iostream>
 #include <GL/gl.h>
 
-#include "ve_color.hpp"
+#include "ve_color.h"
 
 namespace VE {
     class Vector {

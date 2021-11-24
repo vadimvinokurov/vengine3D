@@ -2,7 +2,7 @@
 // Created by boris on 11/24/2021.
 //
 
-#include "ve_box_shape.hpp"
+#include "ve_box_shape.h"
 
 using namespace VE;
 

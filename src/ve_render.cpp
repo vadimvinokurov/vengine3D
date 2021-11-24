@@ -3,8 +3,8 @@
 //
 
 #include "ve_render.h"
-#include "Math/ve_vector.hpp"
-#include "Object/ve_box_shape.hpp"
+#include "Math/ve_vector.h"
+#include "Object/ve_box_shape.h"
 
 #include <iostream>
 

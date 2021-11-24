@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ve_window.h"
-#include "Control/ve_keyboard.hpp"
-#include "Control/ve_mouse.hpp"
+#include "Control/ve_keyboard.h"
+#include "Control/ve_mouse.h"
 
 int main() {
     VE::MousePtr mouse = std::make_shared<VE::Mouse>();
