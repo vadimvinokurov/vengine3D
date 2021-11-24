@@ -12,20 +12,34 @@
 #include <memory>
 
 namespace VE {
+    enum ShapeType {
+        sphereShape = 0, boxShape, capsuleShape
+    };
+
     class Shape {
     public:
-        Shape();
         const float *verticesGLFormatData() const;
         const void *indicesGLFormatData(unsigned int offset = 0) const;
-        virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
 
+        virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
+        ShapeType shapeType() const;
         virtual ~Shape();
     protected:
+        explicit Shape(ShapeType shapeType);
+
         std::vector<VE::Vector> vertices_;
         std::vector<unsigned int> indices_;
+        const ShapeType shapeType_;
     };
 
     using ShapePtr = std::shared_ptr<Shape>;
+
+    struct GlobalShape {
+        GlobalShape(ShapePtr s, VE::Transform t) : shapePtr(s), transform(t) {}
+
+        ShapePtr shapePtr;
+        VE::Transform transform;
+    };
 }
 
 

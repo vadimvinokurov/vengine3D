@@ -6,7 +6,7 @@
 
 using namespace VE;
 
-VE::Shape::Shape() {
+VE::Shape::Shape(ShapeType shapeType) : shapeType_(shapeType) {
 
 }
 
@@ -20,4 +20,8 @@ const void *Shape::indicesGLFormatData(unsigned int offset) const {
 
 Shape::~Shape() {
 
+}
+
+ShapeType Shape::shapeType() const {
+    return shapeType_;
 }

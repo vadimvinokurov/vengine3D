@@ -46,9 +46,9 @@ void drawShape(const VE::Shape &shape) {
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
     glPushMatrix();
-    glTranslatef(1, 1, 0);
-    glRotatef(45, 1, 0, 0);
-    glScalef(2, 2, 2);
+//    glTranslatef(1, 1, 0);
+//    glRotatef(45, 1, 0, 0);
+//    glScalef(2, 2, 2);
     for (int i = 0; i < 6; i++) {
         glColor3f(0.50f + i / 100.0, 0.50f + i / 100.0, 0.50f + i / 100.0);
         glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
