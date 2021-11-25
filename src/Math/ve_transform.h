@@ -17,10 +17,6 @@ namespace VE {
         }
 
         Vector applyTransform(const Vector &localPoint) {
-            scale = VE::Vector(2, 2, 2);
-            static float angle = 0;
-            angle += 0.01f;
-            rotation = Vector(0, 0, 1) * angle;
             setRotateMatrix();
             return rotateMatrix * scalePoint(localPoint) + position;
         }

@@ -14,6 +14,22 @@
 
 using namespace VE;
 
+
+void glTranslatef(VE::Vector position) {
+    glTranslatef(position.x(), position.y(), position.z());
+};
+
+void glRotatef(VE::Vector rotate) {
+    float angle = rotate.abs() * 180 / M_PI;
+    VE::Vector rotateVector = rotate.normolize();
+    glRotatef(angle, rotateVector.x(), rotateVector.y(), rotateVector.z());
+};
+
+void glScalef(VE::Vector scale) {
+    glScalef(scale.x(), scale.x(), scale.x());
+};
+
+
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
@@ -41,15 +57,21 @@ void drawAxis(float axisLen = 10) {
     glEnd();
 }
 
-void drawShape(const VE::Shape &shape) {
+void drawShape(const VE::Shape &shape, const VE::Transform transform) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
+
+    glPushMatrix();
+    glTranslatef(transform.position);
+    glRotatef(transform.rotation);
+    glScalef(transform.scale);
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
         glColor3f(0.50f + i / 100.0, 0.50f + i / 100.0, 0.50f + i / 100.0);
         glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
     drawAxis(2);
+    glPopMatrix();
     glDisableClientState(GL_VERTEX_ARRAY);
 };
 
@@ -87,12 +109,15 @@ void Render::draw(const WorldPtr &world) {
 
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
+    glLoadIdentity();
     moveCamera();
     drawFlor();
 
-    drawShape(shape);
-    glPopMatrix();
+    for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
+        for (VE::ShapePtr shape: rigidBody->colliders_) {
+            drawShape(*shape, rigidBody->transform_);
+        }
+    }
 
 }
 

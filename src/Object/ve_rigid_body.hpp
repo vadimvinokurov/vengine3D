@@ -7,16 +7,23 @@
 
 #include "ve_shape.h"
 #include "Math/ve_transform.h"
+#include "stdlibraries.h"
 
 namespace VE{
     class RigidBody {
     public:
         RigidBody();
+        void addCollider(const VE::ShapePtr& shapePtr);
+        void moveTo(VE::Vector dp);
+
+
+        std::vector<VE::ShapePtr> colliders_;
+        VE::Transform transform_;
 
         virtual ~RigidBody();
-    private:
-        VE::Transform transform;
     };
+
+    using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
 }
 
 

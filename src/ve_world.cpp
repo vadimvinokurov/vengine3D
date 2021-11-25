@@ -4,11 +4,21 @@
 
 #include "ve_world.h"
 #include "Math/ve_matrix33.h"
+#include "Object/ve_box_shape.h"
 
 using namespace VE;
 
 World::World() {
 
+    VE::ShapePtr shape = std::make_shared<VE::BoxShape>();
+    VE::RigidBodyPtr body1 = std::make_shared<VE::RigidBody>();
+    body1->addCollider(shape);
+    worldObjects.push_back(body1);
+
+
+    VE::RigidBodyPtr body2 = std::make_shared<VE::RigidBody>();
+    body2->addCollider(shape);
+    worldObjects.push_back(body2);
 }
 
 const Camera &World::currentCamera() {
@@ -24,6 +34,32 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 void World::hid() {
     hid_CameraControl();
     hid_PositionControl();
+    static int selectObject = 0;
+    if (keyboard_->isPressed(VE_KEY_1)) {
+        selectObject = (selectObject + 1) % 2;
+    }
+
+    if (keyboard_->isRepeat(VE_KEY_UP)) {
+        if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, 0.05));
+        } else {
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0.05, 0));
+        }
+    }
+    if (keyboard_->isRepeat(VE_KEY_DOWN)) {
+        if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, -0.05));
+        } else {
+            worldObjects[selectObject]->moveTo(VE::Vector(0, -0.05, 0));
+        }
+    }
+    if (keyboard_->isRepeat(VE_KEY_LEFT)) {
+        worldObjects[selectObject]->moveTo(VE::Vector(-0.05, 0, 0));
+    }
+    if (keyboard_->isRepeat(VE_KEY_RIGHT)) {
+        worldObjects[selectObject]->moveTo(VE::Vector(0.05, 0, 0));
+    }
+
 }
 
 void World::hid_CameraControl() {
