@@ -23,6 +23,9 @@ namespace VE {
 
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
         ShapeType shapeType() const;
+        unsigned int indecesSize() const;
+        unsigned int polygoneSize() const;
+
         virtual ~Shape();
     //protected:
         explicit Shape(ShapeType shapeType);

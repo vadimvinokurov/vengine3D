@@ -6,6 +6,8 @@
 #define VENGINE3D_RENDER_H
 
 #include "ve_world.h"
+#include "Object/ve_box_shape.h"
+#include "Object/ve_sphere_shape.h"
 
 namespace VE {
     class Render {
@@ -16,6 +18,7 @@ namespace VE {
         void moveCamera();
         const float windowAspectRatio_ = 1.0f;
         WorldPtr world_;
+        VE::BoxShape shape;
     };
 }
 

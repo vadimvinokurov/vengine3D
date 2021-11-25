@@ -25,3 +25,7 @@ Shape::~Shape() {
 ShapeType Shape::shapeType() const {
     return shapeType_;
 }
+
+unsigned int Shape::indecesSize() const {
+    return indices_.size();
+}

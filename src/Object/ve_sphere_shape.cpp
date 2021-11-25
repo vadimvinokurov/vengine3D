@@ -15,17 +15,32 @@ SphereShape::SphereShape(float radius, Vector center) : Shape(sphereShape),
                                                         radius_(radius) {
 
     int nT = 10;
-    int nF = 100;
+    int nF = 10;
 
     float dT = M_PI / nT;
     float dF = M_PI * 2 / nF;
-    for (int i = 0; i < nT; i++) {
+    for (int i = 1; i < nT; i++) {
         for (int j = 0; j < nF; j++) {
             vertices_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j),
                                    radius_ * sinf(dT * i) * sinf(dF * j),
                                    radius_ * cosf(dT * i));
+
         }
     }
+
+    for (int i = 1; i < nT - 1; i++) {
+        for (int j = 0; j < nF - 1; j++) {
+            indices_.push_back((i - 1) * nF + j);
+            indices_.push_back((i - 1) * nF + j + 1);
+            indices_.push_back(i * nF + j + 1);
+            indices_.push_back(i * nF + j);
+        }
+        indices_.push_back((i - 1) * nF + nF - 1);
+        indices_.push_back((i - 1) * nF + 0);
+        indices_.push_back(i * nF + 0);
+        indices_.push_back(i * nF + nF - 1);
+    }
+
 
 }
 
