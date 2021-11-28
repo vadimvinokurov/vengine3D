@@ -76,8 +76,9 @@ void Window::run() {
         glfwSetTime(0);
         glfwPollEvents();
 
-        world_->update(dt_);
         render.draw(world_);
+        world_->update(dt_);
+
 
         if (mouse_->isLock()) {
             Vector lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());

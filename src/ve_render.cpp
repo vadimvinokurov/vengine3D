@@ -3,14 +3,7 @@
 //
 
 #include "ve_render.h"
-#include "Math/ve_vector.h"
-
-
 #include <iostream>
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 
 using namespace VE;
 
@@ -67,7 +60,7 @@ void drawShape(const VE::Collider &shape, const VE::Transform transform) {
     glRotatef(transform.rotation);
     glScalef(transform.scale);
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
-        glColor3f(0.50f + i / 100.0, 0.50f + i / 100.0, 0.50f + i / 100.0);
+        glColor3f(shape.color().red() + i / 100.0, shape.color().grean() + i / 100.0, shape.color().blue() + i / 100.0);
         glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
     drawAxis(2);
@@ -107,9 +100,9 @@ void Render::moveCamera() {
 void Render::draw(const WorldPtr &world) {
     world_ = world;
 
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
     moveCamera();
     drawFlor();
 
@@ -118,6 +111,5 @@ void Render::draw(const WorldPtr &world) {
             drawShape(rigidBody->collider(colliderNumber), rigidBody->transform());
         }
     }
-
 }
 

@@ -27,6 +27,9 @@ namespace VE {
 
         virtual void setTransform(const Transform &transform);
 
+        void setColor(const Color& color) const;
+        Color color() const;
+
         virtual ~Collider();
     protected:
         explicit Collider(ColliderType shapeType);
@@ -36,6 +39,8 @@ namespace VE {
         Vector localCenterOfMass_;
         Vector globalCenterOfMass_;
 
+
+        mutable VE::Color color_;
         std::vector<Vector> glvertices_;
         std::vector<unsigned int> glindices_;
     };

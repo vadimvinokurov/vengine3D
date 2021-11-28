@@ -6,7 +6,8 @@
 
 using namespace VE;
 
-Collider::Collider(ColliderType shapeType) : shapeType_(shapeType) {
+Collider::Collider(ColliderType shapeType) : shapeType_(shapeType),
+                                             color_(0.5, 0.5, 0.5) {
 
 }
 
@@ -33,3 +34,12 @@ unsigned int Collider::indecesSize() const {
 void Collider::setTransform(const Transform &transform) {
     globalCenterOfMass_ = transform.apply(localCenterOfMass_);
 }
+
+void Collider::setColor(const Color &color) const {
+    color_ = color;
+}
+
+Color Collider::color() const {
+    return color_;
+}
+
