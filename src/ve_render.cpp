@@ -25,8 +25,8 @@ void glRotatef(VE::Vector rotate) {
     glRotatef(angle, rotateVector.x(), rotateVector.y(), rotateVector.z());
 };
 
-void glScalef(VE::Vector scale) {
-    glScalef(scale.x(), scale.x(), scale.x());
+void glScalef(float scale) {
+    glScalef(scale, scale, scale);
 };
 
 
@@ -114,8 +114,8 @@ void Render::draw(const WorldPtr &world) {
     drawFlor();
 
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
-        for (VE::ShapePtr shape: rigidBody->colliders_) {
-            drawShape(*shape, rigidBody->transform_);
+        for (size_t colliderNumber = 0; colliderNumber < rigidBody->collidersSize(); colliderNumber++) {
+            drawShape(rigidBody->collider(colliderNumber), rigidBody->transform());
         }
     }
 

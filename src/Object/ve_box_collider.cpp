@@ -2,7 +2,7 @@
 // Created by boris on 11/24/2021.
 //
 
-#include "ve_box_shape.h"
+#include "ve_box_collider.h"
 
 using namespace VE;
 
@@ -28,14 +28,6 @@ BoxShape::BoxShape(float width, float height, float depth, VE::Vector position) 
             3, 0, 4, 7,
             1, 2, 6, 5
     };
-
-    Transform transform;
-
-
-    for (Vector &vertex: vertices_) {
-        vertex = transform.applyTransform(vertex);
-    }
-
 }
 
 Vector BoxShape::farthestVertexInDirection(const Vector &direction) const {

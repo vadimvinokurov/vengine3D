@@ -4,20 +4,31 @@
 
 #include "ve_world.h"
 #include "Math/ve_matrix33.h"
-#include "Object/ve_box_shape.h"
+#include "Object/ve_box_collider.h"
 
 using namespace VE;
 
 World::World() {
 
-    VE::ShapePtr shape = std::make_shared<VE::BoxShape>();
-    VE::RigidBodyPtr body1 = std::make_shared<VE::RigidBody>();
+    auto shape = std::make_shared<const VE::BoxShape>();
+
+    auto body1 = std::make_shared<VE::RigidBody>();
     body1->addCollider(shape);
+    body1->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(2, 0, 0);
+        return transform;
+    }());
     worldObjects.push_back(body1);
 
-
-    VE::RigidBodyPtr body2 = std::make_shared<VE::RigidBody>();
+    auto body2 = std::make_shared<VE::RigidBody>();
     body2->addCollider(shape);
+    body2->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(4, 0, 0);
+        return transform;
+    }());
+
     worldObjects.push_back(body2);
 }
 

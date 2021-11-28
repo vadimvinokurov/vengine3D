@@ -2,7 +2,7 @@
 // Created by boris on 11/18/2021.
 //
 
-#include "ve_shape.h"
+#include "ve_collider.h"
 
 using namespace VE;
 

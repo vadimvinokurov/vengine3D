@@ -2,10 +2,10 @@
 // Created by boris on 11/24/2021.
 //
 
-#ifndef VENGINE3D_VE_SPHERE_SHAPE_H
-#define VENGINE3D_VE_SPHERE_SHAPE_H
+#ifndef VENGINE3D_VE_SPHERE_COLLIDER_H
+#define VENGINE3D_VE_SPHERE_COLLIDER_H
 
-#include "ve_shape.h"
+#include "ve_collider.h"
 
 namespace VE {
     class SphereShape : public Shape {
@@ -20,4 +20,4 @@ namespace VE {
 }
 
 
-#endif //VENGINE3D_VE_SPHERE_SHAPE_H
+#endif //VENGINE3D_VE_SPHERE_COLLIDER_H

@@ -4,18 +4,37 @@
 
 #include "ve_rigid_body.hpp"
 
-VE::RigidBody::RigidBody() {
+using namespace VE;
+
+RigidBody::RigidBody() {
 
 }
 
-VE::RigidBody::~RigidBody() {
+RigidBody::~RigidBody() {
 
 }
 
-void VE::RigidBody::addCollider(const VE::ShapePtr &shapePtr) {
-    colliders_.emplace_back(shapePtr);
+void RigidBody::addCollider(const VE::ConstShapePtr &constShapePtr) {
+
+    colliders_.emplace_back(constShapePtr);
 }
 
-void VE::RigidBody::moveTo(VE::Vector dp) {
+void RigidBody::moveTo(VE::Vector dp) {
     transform_.position += dp;
+}
+
+const VE::Transform &RigidBody::transform() const {
+    return transform_;
+}
+
+size_t RigidBody::collidersSize() {
+    return colliders_.size();
+}
+
+const Shape &RigidBody::collider(size_t n) {
+    return *colliders_[n];
+}
+
+void RigidBody::setTransform(const Transform &transform) {
+    transform_ = transform;
 }

@@ -27,7 +27,6 @@ namespace VE {
         CameraPtr currentCamera_ = std::make_shared<Camera>();
 
 
-
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;
 

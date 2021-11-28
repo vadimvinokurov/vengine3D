@@ -11,30 +11,30 @@
 namespace VE {
     class Transform {
     public:
-        Transform() : scale(1, 1, 1),
+        Transform() : scale(1.0f),
                       rotation(0, 0, 0),
                       position(0, 0, 0) {
         }
 
-        Vector applyTransform(const Vector &localPoint) {
-            setRotateMatrix();
-            return rotateMatrix * scalePoint(localPoint) + position;
+        Vector applyTransform(const Vector &localPoint) const {
+            return rotateMatrix() * (localPoint * scale) + position;
+        }
+        Vector applyInvTransform(const Vector &localPoint) const {
+            return rotateMatrix().getTranspose() * (localPoint - position) / scale;
         }
 
-        Vector scale;
+        float scale;
         Vector rotation;
         Vector position;
 
     private:
-        Matrix33 rotateMatrix;
-
-        void setRotateMatrix() {
+        Matrix33 rotateMatrix() const {
             Vector d = rotation.normolize();
             float angle = rotation.abs();
             float cosfi = cosf(angle);
             float sinfi = sinf(angle);
 
-            rotateMatrix = Matrix33(
+            return Matrix33(
                     cosfi + (1 - cosfi) * d.x() * d.x(),
                     (1 - cosfi) * d.x() * d.y() - sinfi * d.z(),
                     (1 - cosfi) * d.x() * d.z() + sinfi * d.y(),
@@ -47,10 +47,6 @@ namespace VE {
                     (1 - cosfi) * d.z() * d.y() + sinfi * d.x(),
                     cosfi + (1 - cosfi) * d.z() * d.z()
             );
-        }
-
-        Vector scalePoint(const Vector &scalablePoint) {
-            return Vector(scalablePoint.x() * scale.x(), scalablePoint.y() * scale.y(), scalablePoint.z() * scale.z());
         }
     };
 }

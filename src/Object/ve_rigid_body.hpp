@@ -5,27 +5,31 @@
 #ifndef VENGINE3D_VE_RIGID_BODY_HPP
 #define VENGINE3D_VE_RIGID_BODY_HPP
 
-#include "ve_shape.h"
+#include "ve_collider.h"
 #include "Math/ve_transform.h"
 #include "stdlibraries.h"
 
-namespace VE{
+namespace VE {
     class RigidBody {
     public:
         RigidBody();
-        void addCollider(const VE::ShapePtr& shapePtr);
-        void moveTo(VE::Vector dp);
+        void addCollider(const ConstShapePtr &constShapePtr);
+        void setTransform(const Transform &transform);
+        void moveTo(Vector dp);
 
-
-        std::vector<VE::ShapePtr> colliders_;
-        VE::Transform transform_;
-
+        size_t collidersSize();
+        const Shape &collider(size_t n);
+        const Transform &transform() const;
         virtual ~RigidBody();
+    private:
+        std::vector<ConstShapePtr> colliders_;
+        Transform transform_;
+
+
     };
 
     using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
 }
-
 
 
 #endif //VENGINE3D_VE_RIGID_BODY_HPP

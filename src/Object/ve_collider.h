@@ -2,8 +2,8 @@
 // Created by boris on 11/18/2021.
 //
 
-#ifndef VENGINE3D_VE_SHAPE_H
-#define VENGINE3D_VE_SHAPE_H
+#ifndef VENGINE3D_VE_COLLIDER_H
+#define VENGINE3D_VE_COLLIDER_H
 
 #include "Math/ve_vector.h"
 #include "Math/ve_transform.h"
@@ -24,10 +24,9 @@ namespace VE {
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
         ShapeType shapeType() const;
         unsigned int indecesSize() const;
-        unsigned int polygoneSize() const;
 
         virtual ~Shape();
-    //protected:
+    protected:
         explicit Shape(ShapeType shapeType);
 
         std::vector<VE::Vector> vertices_;
@@ -36,14 +35,8 @@ namespace VE {
     };
 
     using ShapePtr = std::shared_ptr<Shape>;
-
-    struct GlobalShape {
-        GlobalShape(ShapePtr s, VE::Transform t) : shapePtr(s), transform(t) {}
-
-        ShapePtr shapePtr;
-        VE::Transform transform;
-    };
+    using ConstShapePtr = std::shared_ptr<const Shape>;
 }
 
 
-#endif //VENGINE3D_VE_SHAPE_H
+#endif //VENGINE3D_VE_COLLIDER_H
