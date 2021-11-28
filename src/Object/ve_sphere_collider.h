@@ -8,14 +8,14 @@
 #include "ve_collider.h"
 
 namespace VE {
-    class SphereShape : public Shape {
+    class SphereCollider : public Collider {
     public:
-        SphereShape(Vector center);
-        SphereShape(float radius = 1.0f, Vector center = Vector());
+        SphereCollider(Vector center);
+        SphereCollider(float radius = 1.0f, Vector center = Vector());
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
     private:
+        void setGlvertices();
         float radius_ = 1.0f;
-        Vector center_;
     };
 }
 

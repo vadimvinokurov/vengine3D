@@ -7,6 +7,7 @@
 
 #include "ve_vector.h"
 #include "ve_matrix33.h"
+#include "stdlibraries.h"
 
 namespace VE {
     class Transform {
@@ -16,10 +17,11 @@ namespace VE {
                       position(0, 0, 0) {
         }
 
-        Vector applyTransform(const Vector &localPoint) const {
+        Vector apply(const Vector &localPoint) const {
             return rotateMatrix() * (localPoint * scale) + position;
         }
-        Vector applyInvTransform(const Vector &localPoint) const {
+
+        Vector applyInverse(const Vector &localPoint) const {
             return rotateMatrix().getTranspose() * (localPoint - position) / scale;
         }
 

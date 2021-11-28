@@ -6,26 +6,30 @@
 
 using namespace VE;
 
-VE::Shape::Shape(ShapeType shapeType) : shapeType_(shapeType) {
+Collider::Collider(ColliderType shapeType) : shapeType_(shapeType) {
 
 }
 
-const float *Shape::verticesGLFormatData() const {
-    return reinterpret_cast<const float *>(vertices_.data());
+const float *Collider::verticesGLFormatData() const {
+    return reinterpret_cast<const float *>(glvertices_.data());
 }
 
-const void *Shape::indicesGLFormatData(unsigned int offset) const {
-    return static_cast<const void *>(indices_.data() + offset);
+const void *Collider::indicesGLFormatData(unsigned int offset) const {
+    return static_cast<const void *>(glindices_.data() + offset);
 }
 
-Shape::~Shape() {
+Collider::~Collider() {
 
 }
 
-ShapeType Shape::shapeType() const {
+ColliderType Collider::shapeType() const {
     return shapeType_;
 }
 
-unsigned int Shape::indecesSize() const {
-    return indices_.size();
+unsigned int Collider::indecesSize() const {
+    return glindices_.size();
+}
+
+void Collider::setTransform(const Transform &transform) {
+    globalCenterOfMass_ = transform.apply(localCenterOfMass_);
 }

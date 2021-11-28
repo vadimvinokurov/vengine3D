@@ -18,7 +18,7 @@ namespace VE {
         void moveCamera();
         const float windowAspectRatio_ = 1.0f;
         WorldPtr world_;
-        VE::BoxShape shape;
+        VE::BoxCollider collider;
     };
 }
 

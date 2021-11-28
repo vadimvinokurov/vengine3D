@@ -57,7 +57,7 @@ void drawAxis(float axisLen = 10) {
     glEnd();
 }
 
-void drawShape(const VE::Shape &shape, const VE::Transform transform) {
+void drawShape(const VE::Collider &shape, const VE::Transform transform) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());

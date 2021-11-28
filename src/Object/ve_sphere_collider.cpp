@@ -6,14 +6,21 @@
 
 using namespace VE;
 
-SphereShape::SphereShape(Vector center) : SphereShape(1.0f, center) {
+SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center) {
 
 }
 
-SphereShape::SphereShape(float radius, Vector center) : Shape(sphereShape),
-                                                        center_(center),
-                                                        radius_(radius) {
+SphereCollider::SphereCollider(float radius, Vector center) : Collider(ColliderType::sphere),
+                                                              radius_(radius) {
+    localCenterOfMass_ = center;
+    setGlvertices();
+}
 
+Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
+    return direction * radius_ + globalCenterOfMass_;
+}
+
+void SphereCollider::setGlvertices() {
     int nT = 10;
     int nF = 10;
 
@@ -21,31 +28,24 @@ SphereShape::SphereShape(float radius, Vector center) : Shape(sphereShape),
     float dF = M_PI * 2 / nF;
     for (int i = 1; i < nT; i++) {
         for (int j = 0; j < nF; j++) {
-            vertices_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j),
-                                   radius_ * sinf(dT * i) * sinf(dF * j),
-                                   radius_ * cosf(dT * i));
+            glvertices_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j),
+                                     radius_ * sinf(dT * i) * sinf(dF * j),
+                                     radius_ * cosf(dT * i));
 
         }
     }
 
     for (int i = 1; i < nT - 1; i++) {
         for (int j = 0; j < nF - 1; j++) {
-            indices_.push_back((i - 1) * nF + j);
-            indices_.push_back((i - 1) * nF + j + 1);
-            indices_.push_back(i * nF + j + 1);
-            indices_.push_back(i * nF + j);
+            glindices_.push_back((i - 1) * nF + j);
+            glindices_.push_back((i - 1) * nF + j + 1);
+            glindices_.push_back(i * nF + j + 1);
+            glindices_.push_back(i * nF + j);
         }
-        indices_.push_back((i - 1) * nF + nF - 1);
-        indices_.push_back((i - 1) * nF + 0);
-        indices_.push_back(i * nF + 0);
-        indices_.push_back(i * nF + nF - 1);
+        glindices_.push_back((i - 1) * nF + nF - 1);
+        glindices_.push_back((i - 1) * nF + 0);
+        glindices_.push_back(i * nF + 0);
+        glindices_.push_back(i * nF + nF - 1);
     }
-
-
 }
-
-Vector SphereShape::farthestVertexInDirection(const Vector &direction) const {
-    return direction * radius_ + center_;
-}
-
 

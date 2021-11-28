@@ -12,30 +12,36 @@
 #include <memory>
 
 namespace VE {
-    enum ShapeType {
-        sphereShape = 0, boxShape, capsuleShape
+    enum class ColliderType {
+        sphere = 0, box, capsule
     };
 
-    class Shape {
+    class Collider {
     public:
         const float *verticesGLFormatData() const;
         const void *indicesGLFormatData(unsigned int offset = 0) const;
 
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
-        ShapeType shapeType() const;
+        ColliderType shapeType() const;
         unsigned int indecesSize() const;
 
-        virtual ~Shape();
-    protected:
-        explicit Shape(ShapeType shapeType);
+        virtual void setTransform(const Transform &transform);
 
-        std::vector<VE::Vector> vertices_;
-        std::vector<unsigned int> indices_;
-        const ShapeType shapeType_;
+        virtual ~Collider();
+    protected:
+        explicit Collider(ColliderType shapeType);
+
+
+        const ColliderType shapeType_;
+        Vector localCenterOfMass_;
+        Vector globalCenterOfMass_;
+
+        std::vector<Vector> glvertices_;
+        std::vector<unsigned int> glindices_;
     };
 
-    using ShapePtr = std::shared_ptr<Shape>;
-    using ConstShapePtr = std::shared_ptr<const Shape>;
+    using ColliderPtr = std::shared_ptr<Collider>;
+    using ConstColliderPtr = std::shared_ptr<const Collider>;
 }
 
 

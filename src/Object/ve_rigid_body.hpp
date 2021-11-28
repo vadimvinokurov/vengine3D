@@ -13,16 +13,16 @@ namespace VE {
     class RigidBody {
     public:
         RigidBody();
-        void addCollider(const ConstShapePtr &constShapePtr);
+        void addCollider(const ColliderPtr &constShapePtr);
         void setTransform(const Transform &transform);
         void moveTo(Vector dp);
 
         size_t collidersSize();
-        const Shape &collider(size_t n);
+        const Collider &collider(size_t n);
         const Transform &transform() const;
         virtual ~RigidBody();
     private:
-        std::vector<ConstShapePtr> colliders_;
+        std::vector<ColliderPtr> colliders_;
         Transform transform_;
 
 

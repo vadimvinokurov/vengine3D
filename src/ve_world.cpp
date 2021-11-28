@@ -10,10 +10,8 @@ using namespace VE;
 
 World::World() {
 
-    auto shape = std::make_shared<const VE::BoxShape>();
-
     auto body1 = std::make_shared<VE::RigidBody>();
-    body1->addCollider(shape);
+    body1->addCollider(std::make_shared<VE::BoxCollider>());
     body1->setTransform([]() {
         Transform transform;
         transform.position = Vector(2, 0, 0);
@@ -22,7 +20,7 @@ World::World() {
     worldObjects.push_back(body1);
 
     auto body2 = std::make_shared<VE::RigidBody>();
-    body2->addCollider(shape);
+    body2->addCollider(std::make_shared<VE::BoxCollider>());
     body2->setTransform([]() {
         Transform transform;
         transform.position = Vector(4, 0, 0);
