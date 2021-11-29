@@ -200,6 +200,10 @@ namespace VE {
         };
 
     };
+
+    inline bool sameDirection(const Vector &a, const Vector &b) {
+        return a.dot(b) > 0;
+    }
 }
 
 

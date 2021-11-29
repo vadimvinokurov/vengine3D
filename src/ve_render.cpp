@@ -61,7 +61,7 @@ void drawShape(const VE::Collider &shape, const VE::Transform transform) {
     glScalef(transform.scale);
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
         glColor3f(shape.color().red() + i / 100.0, shape.color().grean() + i / 100.0, shape.color().blue() + i / 100.0);
-        glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
+        glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
     drawAxis(2);
     glPopMatrix();
@@ -75,16 +75,7 @@ void drawFlor() {
                              1, -1, 0};
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, floorVertices);
-    for (int i = -5; i < 5; i++) {
-        for (int j = -5; j < 5; j++) {
-            glPushMatrix();
-            if ((i + j) % 2) glColor3f(0, 0.5, 0);
-            else glColor3f(1, 1, 1);
-            glTranslated(i * 2, j * 2, 0);
-            glDrawArrays(GL_POLYGON, 0, 4);
-            glPopMatrix();
-        }
-    }
+
     glDisableClientState(GL_VERTEX_ARRAY);
     drawAxis();
 }

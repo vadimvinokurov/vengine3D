@@ -6,7 +6,10 @@
 #define VENGINE3D_VE_COLLISION_COMMON_H
 
 namespace VE{
-    const float tolerance = 0.001f;
+    namespace Collision{
+        const float tolerance = 0.001f;
+    }
+
 }
 
 #endif //VENGINE3D_VE_COLLISION_COMMON_H

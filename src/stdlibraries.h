@@ -10,5 +10,9 @@
 #include <cmath>
 #include <vector>
 #include <memory>
+#include <utility>
+#include <limits>
+#include <algorithm>
+#include <cassert>
 
 #endif //VENGINE3D_STDLIBRARIES_H

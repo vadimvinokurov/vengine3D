@@ -3,6 +3,7 @@
 //
 
 #include "ve_gjk.h"
+#include "ve_epa.h"
 #include "ve_collision_common.h"
 #include "ve_support_point.h"
 
@@ -117,7 +118,9 @@ bool VE::gjk(const Collider &collider1, const Collider &collider2, VE::Vector &p
         simplex.push_back(supportPoint);
 
         if (nextSimplex(simplex, direction)) {
-            //drawSimplex(simplex);
+            penetrationVector = EPA(collider1, collider2, simplex).getResolutionVector();
+            penetrationVector.draw(Vector(1, 1, 1));
+            std::cout << "-------------" << std::endl;
             return true;
         }
     }
