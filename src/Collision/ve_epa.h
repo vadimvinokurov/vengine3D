@@ -10,7 +10,6 @@
 namespace VE {
     class EPA {
     private:
-        bool sameDirection(const Vector &a, const Vector &b);
         class UnigueEdge {
         public:
             void add(size_t a, size_t b);
@@ -50,6 +49,7 @@ namespace VE {
             std::vector<Face> faces_;
         };
 
+        bool sameDirection(const Vector &a, const Vector &b);
     public:
         EPA(const Collider &collider1, const Collider &collider2, const std::vector<Vector> &simplex);
         Vector getResolutionVector();

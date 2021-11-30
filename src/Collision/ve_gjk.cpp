@@ -26,7 +26,6 @@ bool GJK::testIntersection(Vector &penetrationVector) {
 
         if (nextSimplex()) {
             penetrationVector = EPA(collider1_, collider2_, simplex).getResolutionVector();
-            std::cout << "-------------" << std::endl;
             return true;
         }
     }
@@ -73,7 +72,6 @@ bool GJK::triangleCase() {
     VE::Vector BCA = CB * CA;
     VE::Vector CAn = BCA * CA;
     VE::Vector CBn = CB * BCA;
-
 
     if (sameDirection(CAn, CO)) {
         if (sameDirection(CA, CO)) {
@@ -124,19 +122,24 @@ bool GJK::tetrahedronCase() {
     VE::Vector BDC = DB * DC;
     VE::Vector CDA = DC * DA;
 
+    VE::Vector CA = A - C;
+    VE::Vector CB = B - C;
+    VE::Vector CO = C * -1;
+    VE::Vector ACD = CA * CB;
+
     if (sameDirection(ADB, DO)) {
         simplex = {A, B, D};
-        direction = ADB.normolize();
+        direction = ADB;
 
         return false;
     } else if (sameDirection(BDC, DO)) {
         simplex = {B, C, D};
-        direction = BDC.normolize();
+        direction = BDC;
 
         return false;
     } else if (sameDirection(CDA, DO)) {
         simplex = {C, A, D};
-        direction = CDA.normolize();
+        direction = CDA;
 
         return false;
     } else {
@@ -145,6 +148,10 @@ bool GJK::tetrahedronCase() {
 }
 
 bool GJK::sameDirection(const Vector &a, const Vector &b) {
-    return a.dot(b) >= 0.0f;
+    return a.dot(b) > 0.0f;
+}
+
+bool GJK::perpendicularVector(const Vector &a, const Vector &b) {
+    return a.dot(b) == 0.0f;
 }
 

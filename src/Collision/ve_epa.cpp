@@ -11,10 +11,10 @@ using namespace VE;
 
 
 EPA::Polytope::Polytope(const std::vector<Vector> &simplex) : vertices_(simplex),
-                                                              faces_{Face(0, 1, 2),
-                                                                     Face(1, 3, 2),
-                                                                     Face(2, 3, 0),
-                                                                     Face(0, 3, 1)} {
+                                                              faces_{Face(2, 1, 1),
+                                                                     Face(2, 3, 1),
+                                                                     Face(0, 3, 2),
+                                                                     Face(1, 3, 0)} {
     updateFaceInfo();
 }
 
@@ -25,21 +25,20 @@ void EPA::Polytope::updateFaceInfo() {
         const VE::Vector &B = vertices_[face.index[1]];
         const VE::Vector &C = vertices_[face.index[2]];
 
-
-//        VE::Vector BA = A - B;
-//        VE::Vector BC = C - B;
-//        face.normal = (BA * BC).normolize();
-//        face.distance = face.normal.dot(B);
-
         VE::Vector BA = B - A;
         VE::Vector BC = C - A;
         face.normal = (BA * BC).normolize();
-        face.distance = face.normal.dot(A);
+        face.distance = face.normal.dot(B);
 
-        if (face.distance < 0) {
-            face.normal *= -1;
-            face.distance *= -1;
-        }
+//        if (face.distance == 0.0f) {
+//            std::cout << "Assert data " << "assert(face.distance == 0.0f);" << std::endl;
+//        }
+        //assert(face.distance != 0.0f);
+
+//        if (face.distance < 0) {
+//            face.normal *= -1;
+//            face.distance *= -1;
+//        }
 
         face.actualInfo = true;
     }
@@ -97,14 +96,17 @@ void EPA::Polytope::draw(const Color &color) {
     for (int i = 0; i < faces_.size(); i++) {
         glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
         glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_INT, faces_[i].index);
+
         faces_[i].normal.draw(vertices_[faces_[i].index[0]]);
     }
 
+//    for (auto &vertex: vertices_) {
+//        vertex.drawPoint(12, Color(1, 1, 1));
+//    }
     vertices_[0].drawPoint(12, Color(1, 0, 0));
     vertices_[1].drawPoint(12, Color(0, 1, 0));
     vertices_[2].drawPoint(12, Color(0, 0, 1));
     vertices_[3].drawPoint(12, Color(1, 1, 1));
-
 
 
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -156,16 +158,16 @@ Vector EPA::getResolutionVector() {
         float supportDistance = support.dot(minimalNormal);
         if (abs(supportDistance - minimalDistance) > Collision::tolerance) {
             support.drawPoint(12);
-            computeNewFaces(support);
+            //computeNewFaces(support);
         } else {
             break;
         }
     }
+    polytope_.draw();
     return minimalNormal * (minimalDistance + Collision::tolerance);
 }
 
 void EPA::computeNewFaces(const Vector &support) {
-    polytope_.draw();
     UnigueEdge unigueEdge;
     for (size_t i = 0; i < polytope_.faceSize(); i++) {
         if (sameDirection(polytope_[i].normal, support)) {
@@ -181,6 +183,7 @@ void EPA::computeNewFaces(const Vector &support) {
     for (auto[i0, i1]: unigueEdge.edges()) {
         polytope_.addFace(Face(i0, i1, polytope_.verticesSize() - 1));
     }
+
 }
 
 bool EPA::sameDirection(const Vector &a, const Vector &b) {

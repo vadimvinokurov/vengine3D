@@ -50,25 +50,26 @@ void World::hid() {
         selectObject = (selectObject + 1) % 2;
     }
 
+    float spead = 0.05f;
     if (keyboard_->isRepeat(VE_KEY_UP)) {
         if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, 0.05));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, spead));
         } else {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0.05, 0));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, spead, 0));
         }
     }
     if (keyboard_->isRepeat(VE_KEY_DOWN)) {
         if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, -0.05));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, -spead));
         } else {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, -0.05, 0));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, -spead, 0));
         }
     }
     if (keyboard_->isRepeat(VE_KEY_LEFT)) {
-        worldObjects[selectObject]->moveTo(VE::Vector(-0.05, 0, 0));
+        worldObjects[selectObject]->moveTo(VE::Vector(-spead, 0, 0));
     }
     if (keyboard_->isRepeat(VE_KEY_RIGHT)) {
-        worldObjects[selectObject]->moveTo(VE::Vector(0.05, 0, 0));
+        worldObjects[selectObject]->moveTo(VE::Vector(spead, 0, 0));
     }
 
 }
