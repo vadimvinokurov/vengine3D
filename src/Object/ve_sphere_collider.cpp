@@ -17,7 +17,7 @@ SphereCollider::SphereCollider(float radius, Vector center) : Collider(ColliderT
 }
 
 Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
-    return direction * radius_ + globalCenterOfMass_;
+    return direction.normolize() * radius_ + globalCenterOfMass_;
 }
 
 void SphereCollider::setGlvertices() {

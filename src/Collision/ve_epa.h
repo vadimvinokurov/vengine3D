@@ -10,6 +10,7 @@
 namespace VE {
     class EPA {
     private:
+        bool sameDirection(const Vector &a, const Vector &b);
         class UnigueEdge {
         public:
             void add(size_t a, size_t b);
@@ -40,7 +41,7 @@ namespace VE {
             size_t faceSize() const;
             size_t verticesSize() const;
 
-            void draw();
+            void draw(const Color &color = Color(0.5f, 0.5f, 0.5f));
             void info(std::string s = "");
         private:
             void updateFaceInfo();

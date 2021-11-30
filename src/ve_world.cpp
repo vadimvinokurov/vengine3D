@@ -15,7 +15,7 @@ World::World() {
     body1->addCollider(std::make_shared<VE::BoxCollider>());
     body1->setTransform([]() {
         Transform transform;
-        transform.position = Vector(2, 0, 0);
+        transform.position = Vector(3, 0, 0);
 //        transform.rotation = Vector(1,1,0)*M_PI_4;
         return transform;
     }());
@@ -132,7 +132,7 @@ void VE::World::update(float dt) {
 
 void World::physics() {
     Vector gjkv;
-    if (gjk(worldObjects[0]->collider(0), worldObjects[1]->collider(0), gjkv)) {
+    if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(gjkv)) {
         worldObjects[0]->collider(0).setColor(VE::Color(0.8, 0, 0));
         worldObjects[1]->collider(0).setColor(VE::Color(0.8, 0, 0));
     } else {
