@@ -19,6 +19,7 @@ namespace VE {
     class Collider {
     public:
         const float *verticesGLFormatData() const;
+        const std::vector<Vector>& vertices() const;
         const void *indicesGLFormatData(unsigned int offset = 0) const;
 
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
@@ -31,6 +32,8 @@ namespace VE {
         Color color() const;
 
         virtual ~Collider();
+
+        Transform transform_;
     protected:
         explicit Collider(ColliderType shapeType);
 
@@ -43,6 +46,8 @@ namespace VE {
         mutable VE::Color color_;
         std::vector<Vector> glvertices_;
         std::vector<unsigned int> glindices_;
+
+
     };
 
     using ColliderPtr = std::shared_ptr<Collider>;

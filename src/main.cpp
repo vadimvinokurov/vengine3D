@@ -1,7 +1,7 @@
-#include <iostream>
 #include "ve_window.h"
-#include "Control/ve_keyboard.h"
-#include "Control/ve_mouse.h"
+#include "ve_global_parameters.h"
+
+VE::GlobalParameters globalParameters;
 
 int main() {
     VE::MousePtr mouse = std::make_shared<VE::Mouse>();

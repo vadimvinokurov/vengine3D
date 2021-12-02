@@ -32,6 +32,7 @@ unsigned int Collider::indecesSize() const {
 }
 
 void Collider::setTransform(const Transform &transform) {
+    transform_ = transform;
     globalCenterOfMass_ = transform.apply(localCenterOfMass_);
 }
 
@@ -41,5 +42,9 @@ void Collider::setColor(const Color &color) const {
 
 Color Collider::color() const {
     return color_;
+}
+
+const std::vector<Vector> &Collider::vertices() const {
+    return glvertices_;
 }
 

@@ -35,12 +35,12 @@ namespace VE {
             void addFace(const Face &face);
             void deleteFace(size_t faceNumber);
             void addVertex(const Vector &vertex);
-            size_t minimalDistanceFace() const;
+            const Face &closestFaceToOrigin() const;
 
             size_t faceSize() const;
             size_t verticesSize() const;
 
-            void draw(const Color &color = Color(0.5f, 0.5f, 0.5f));
+            void draw(VE::Vector a, const Color &color = Color(0.5f, 0.5f, 0.5f));
             void info(std::string s = "");
         private:
             void updateFaceInfo();
@@ -58,6 +58,15 @@ namespace VE {
         const Collider &collider1_;
         const Collider &collider2_;
         Polytope polytope_;
+
+
+        struct debugInfo {
+            Polytope polytope;
+            Vector support;
+            Vector minNormal;
+            std::vector<float> direction;
+        };
+        std::vector<debugInfo> polytopeStage;
     };
 }
 

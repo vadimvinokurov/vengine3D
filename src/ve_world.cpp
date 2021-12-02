@@ -6,10 +6,9 @@
 #include "Math/ve_matrix33.h"
 #include "Object/ve_box_collider.h"
 #include "Collision/ve_gjk.h"
+#include "Collision/ve_minkowski_sum.h"
 #include "imgui/imgui.h"
 #include "ve_global_parameters.h"
-
-VE::GlobalParameters globalParameters;
 
 using namespace VE;
 
@@ -55,7 +54,7 @@ void World::hid() {
     hid_CameraControl();
     hid_PositionControl();
     static int selectObject = 0;
-    if (keyboard_->isPressed(VE_KEY_1)) {
+    if (keyboard_->isPressed(VE_KEY_F1)) {
         selectObject = (selectObject + 1) % 2;
     }
 
@@ -80,6 +79,10 @@ void World::hid() {
     if (keyboard_->isRepeat(VE_KEY_RIGHT)) {
         worldObjects[selectObject]->moveTo(VE::Vector(speed, 0, 0));
     }
+    Transform t = worldObjects[selectObject]->transform();
+    t.rotation = Vector(1,1, 1)*M_PI_2;
+    worldObjects[selectObject]->setTransform(t);
+
 }
 
 void World::hid_CameraControl() {
@@ -134,7 +137,6 @@ void World::hid_PositionControl() {
 }
 
 
-
 void VE::World::update(float dt) {
     gui();
     hid();
@@ -150,19 +152,28 @@ void World::physics() {
         worldObjects[0]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
         worldObjects[1]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
     }
+    minkowskiSumPoint(worldObjects[0]->collider(0), worldObjects[1]->collider(0));
 }
 
 void World::gui() {
     ImGui::Begin("Control panel");
+    if (ImGui::Button("Reset")) resetScene();
     ImGui::SliderFloat("Camera speed", &globalParameters.cameraSpeed, 0.05f / 20, 0.05f * 4);
     ImGui::SliderInt("EPA interations", &globalParameters.epaIterations, 1, 100);
-    ImGui::SliderInt("Polytope", &globalParameters.polytopeStage, 1, 100);
+    ImGui::SliderInt("Polytope", &globalParameters.polytopeStage, 0, 100);
+    ImGui::ColorEdit4("Color", globalParameters.rotate);
+    ImGui::Text("Polytope vertex - %d:", globalParameters.pointSize);
+    //ImGui::Text("minimal epa normal - %f %f %f:", globalParameters.minEpaNormal.x(),globalParameters.minEpaNormal.y(),globalParameters.minEpaNormal.z());
 
-//    ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
-//    ImGui::Checkbox("pseudoVelosity", &globalParameters.pseudoVelosity);
-//    ImGui::SliderInt("speed", &globalParameters.fastTime, 0, 20);
-    if (ImGui::Button("Reset")) resetScene();
+    ImGui::BeginChild("Scrolling");
+    for (float v: globalParameters.direction) {
+        ImGui::Text("same direction %f", v);
+    }
+
+    ImGui::EndChild();
+
     ImGui::End();
+
 }
 
 

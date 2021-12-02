@@ -5,7 +5,7 @@
 #include "ve_epa.h"
 #include "ve_support_point.h"
 #include "stdlibraries.h"
-
+#include "ve_global_parameters.h"
 
 using namespace VE;
 
@@ -14,7 +14,7 @@ EPA::Polytope::Polytope(const std::vector<Vector> &simplex) : vertices_(simplex)
                                                               faces_{Face(0, 1, 2),
                                                                      Face(1, 3, 2),
                                                                      Face(2, 3, 0),
-                                                                     Face(0, 3, 1) } {
+                                                                     Face(0, 3, 1)} {
     updateFaceInfo();
 }
 
@@ -25,9 +25,9 @@ void EPA::Polytope::updateFaceInfo() {
         const VE::Vector &B = vertices_[face.index[1]];
         const VE::Vector &C = vertices_[face.index[2]];
 
-        VE::Vector BA = B - A;
-        VE::Vector BC = C - A;
-        face.normal = (BA * BC).normolize();
+        VE::Vector BA = A - B;
+        VE::Vector BC = C - B;
+        face.normal = (BC * BA).normolize();
         face.distance = face.normal.dot(B);
 
         face.actualInfo = true;
@@ -62,7 +62,7 @@ void EPA::Polytope::deleteFace(size_t faceNumber) {
     faces_.pop_back();
 }
 
-size_t EPA::Polytope::minimalDistanceFace() const {
+const EPA::Face &EPA::Polytope::closestFaceToOrigin() const {
     size_t minimalDistanceFaceNumber;
     float minimalDistance = std::numeric_limits<float>::infinity();
     for (size_t i = 0; i < faces_.size(); i++) {
@@ -72,14 +72,14 @@ size_t EPA::Polytope::minimalDistanceFace() const {
             minimalDistanceFaceNumber = i;
         }
     }
-    return minimalDistanceFaceNumber;
+    return faces_[minimalDistanceFaceNumber];
 }
 
 const EPA::Face &EPA::Polytope::operator[](size_t i) const {
     return faces_[i];
 }
 
-void EPA::Polytope::draw(const Color &color) {
+void EPA::Polytope::draw(VE::Vector a, const Color &color) {
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, vertices_.data());
 
@@ -87,8 +87,17 @@ void EPA::Polytope::draw(const Color &color) {
         glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
         glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_INT, faces_[i].index);
         Vector polygonCenter = (vertices_[faces_[i].index[0]] + vertices_[faces_[i].index[1]] + vertices_[faces_[i].index[2]]) / 3;
-        faces_[i].normal.draw(polygonCenter);
     }
+
+    for (int i = 0; i < faces_.size(); i++) {
+        Vector polygonCenter = (vertices_[faces_[i].index[0]] + vertices_[faces_[i].index[1]] + vertices_[faces_[i].index[2]]) / 3;
+        if (faces_[i].normal.dot(a) > 0.0f) {
+            faces_[i].normal.draw(polygonCenter, Color(1, 0, 0));
+        } else {
+            faces_[i].normal.draw(polygonCenter);
+        }
+    }
+
 
     vertices_[0].drawPoint(12, Color(1, 0, 0));
     vertices_[1].drawPoint(12, Color(0, 1, 0));
@@ -116,7 +125,7 @@ void EPA::UnigueEdge::add(size_t a, size_t b) {
     auto reverse = std::find(
             edges_.begin(),
             edges_.end(),
-            std::make_pair(a, b)
+            std::make_pair(b, a)
     );
 
     if (reverse != edges_.end()) {
@@ -138,24 +147,41 @@ EPA::EPA(const Collider &collider1, const Collider &collider2, const std::vector
 }
 
 Vector EPA::getResolutionVector() {
-    float minimalDistance;
-    Vector minimalNormal;
-    for (int i = 0; i < 1; i++) {
-        size_t minimalDistanceFace = polytope_.minimalDistanceFace();
-        minimalNormal = polytope_[minimalDistanceFace].normal;
-        minimalDistance = polytope_[minimalDistanceFace].distance;
+    VE::Vector returnVector;
 
-        Vector support = getSupportPoint(collider2_, collider2_, minimalNormal).point;
-        float supportDistance = support.dot(minimalNormal);
-        if (abs(supportDistance - minimalDistance) > Collision::tolerance) {
-            support.drawPoint(12);
-            //computeNewFaces(support);
+    for (int i = 0; i < globalParameters.epaIterations; i++) {
+        const Face &closestFaceToOrigin = polytope_.closestFaceToOrigin();
+        Vector extendVertex = getSupportPoint(collider1_, collider2_, closestFaceToOrigin.normal).point;
+        float extendVertexDistance = extendVertex.dot(closestFaceToOrigin.normal);
+
+        std::vector<float> direction;
+        for (size_t i = 0; i < polytope_.faceSize(); i++) {
+            direction.push_back(polytope_[i].normal.dot(extendVertex));
+        }
+        polytopeStage.push_back({polytope_, extendVertex, closestFaceToOrigin.normal, direction});
+
+        if (abs(extendVertexDistance - closestFaceToOrigin.distance) > Collision::tolerance) {
+            computeNewFaces(extendVertex);
         } else {
+            returnVector = closestFaceToOrigin.normal * (closestFaceToOrigin.distance + Collision::tolerance);
             break;
         }
     }
-    polytope_.draw();
-    return minimalNormal * (minimalDistance + Collision::tolerance);
+
+
+    globalParameters.direction = polytopeStage[globalParameters.polytopeStage < polytopeStage.size() ? globalParameters.polytopeStage :
+                                               polytopeStage.size() - 1].direction;
+    globalParameters.minEpaNormal = polytopeStage[globalParameters.polytopeStage < polytopeStage.size() ? globalParameters.polytopeStage :
+                                                  polytopeStage.size() - 1].minNormal;
+    globalParameters.pointSize = polytope_.verticesSize();
+    polytopeStage[globalParameters.polytopeStage < polytopeStage.size() ? globalParameters.polytopeStage : polytopeStage.size() - 1].polytope.draw(
+            polytopeStage[globalParameters.polytopeStage < polytopeStage.size() ? globalParameters.polytopeStage : polytopeStage.size() -
+                                                                                                                   1].support);
+    polytopeStage[globalParameters.polytopeStage < polytopeStage.size() ? globalParameters.polytopeStage : polytopeStage.size() -
+                                                                                                           1].support.draw(Color(0, 1, 0));
+//    polytopeStage[globalParameters.polytopeStage < polytopeStage.size() ? globalParameters.polytopeStage : polytopeStage.size() - 1].minNormal.draw(
+//            Color(1, 0, 0));
+    return returnVector;
 }
 
 void EPA::computeNewFaces(const Vector &support) {
