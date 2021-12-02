@@ -75,26 +75,16 @@ bool GJK::triangleCase() {
 
     if (sameDirection(CAn, CO)) {
         if (sameDirection(CA, CO)) {
-            simplex = {C, A};
+            simplex = {A, C};
             direction = CA * CO * CA;
         } else {
-            if (sameDirection(CB, CO)) {
-                simplex = {C, B};
-                direction = CB * CO * CB;
-            } else {
-                simplex = {C};
-                direction = CO;
-            }
+            simplex = {B, C};
+            return lineCase();
         }
     } else {
         if (sameDirection(CBn, CO)) {
-            if (sameDirection(CB, CO)) {
-                simplex = {C, B};
-                direction = CB * CO * CB;
-            } else {
-                simplex = {C};
-                direction = CO;
-            }
+            simplex = {B, C};
+            return lineCase();
         } else {
             if (sameDirection(BCA, CO)) {
                 direction = BCA;
@@ -118,30 +108,19 @@ bool GJK::tetrahedronCase() {
     VE::Vector DC = C - D;
     VE::Vector DO = D * -1;
 
-    VE::Vector ADB = DA * DB;
-    VE::Vector BDC = DB * DC;
-    VE::Vector CDA = DC * DA;
+    VE::Vector BDA = DB * DA;
+    VE::Vector CDB = DC * DB;
+    VE::Vector ADC = DA * DC;
 
-    VE::Vector CA = A - C;
-    VE::Vector CB = B - C;
-    VE::Vector CO = C * -1;
-    VE::Vector ACD = CA * CB;
-
-    if (sameDirection(ADB, DO)) {
+    if (sameDirection(BDA, DO)) {
         simplex = {A, B, D};
-        direction = ADB;
-
-        return false;
-    } else if (sameDirection(BDC, DO)) {
+        return triangleCase();
+    } else if (sameDirection(CDB, DO)) {
         simplex = {B, C, D};
-        direction = BDC;
-
-        return false;
-    } else if (sameDirection(CDA, DO)) {
+        return triangleCase();
+    } else if (sameDirection(ADC, DO)) {
         simplex = {C, A, D};
-        direction = CDA;
-
-        return false;
+        return triangleCase();
     } else {
         return true;
     }
@@ -149,9 +128,5 @@ bool GJK::tetrahedronCase() {
 
 bool GJK::sameDirection(const Vector &a, const Vector &b) {
     return a.dot(b) > 0.0f;
-}
-
-bool GJK::perpendicularVector(const Vector &a, const Vector &b) {
-    return a.dot(b) == 0.0f;
 }
 

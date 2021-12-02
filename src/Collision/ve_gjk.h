@@ -19,7 +19,6 @@ namespace VE {
         bool triangleCase();
         bool tetrahedronCase();
         bool sameDirection(const Vector &a, const Vector &b);
-        bool perpendicularVector(const Vector &a, const Vector &b);
 
         const Collider &collider1_;
         const Collider &collider2_;
