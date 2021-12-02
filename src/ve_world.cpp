@@ -6,10 +6,19 @@
 #include "Math/ve_matrix33.h"
 #include "Object/ve_box_collider.h"
 #include "Collision/ve_gjk.h"
+#include "imgui/imgui.h"
+#include "ve_global_parameters.h"
+
+VE::GlobalParameters globalParameters;
 
 using namespace VE;
 
 World::World() {
+    resetScene();
+}
+
+void World::resetScene() {
+    worldObjects.clear();
 
     auto body1 = std::make_shared<VE::RigidBody>();
     body1->addCollider(std::make_shared<VE::BoxCollider>());
@@ -50,28 +59,27 @@ void World::hid() {
         selectObject = (selectObject + 1) % 2;
     }
 
-    float spead = 0.05f;
+    float speed = globalParameters.cameraSpeed;
     if (keyboard_->isRepeat(VE_KEY_UP)) {
         if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, spead));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, speed));
         } else {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, spead, 0));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, speed, 0));
         }
     }
     if (keyboard_->isRepeat(VE_KEY_DOWN)) {
         if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, -spead));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, -speed));
         } else {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, -spead, 0));
+            worldObjects[selectObject]->moveTo(VE::Vector(0, -speed, 0));
         }
     }
     if (keyboard_->isRepeat(VE_KEY_LEFT)) {
-        worldObjects[selectObject]->moveTo(VE::Vector(-spead, 0, 0));
+        worldObjects[selectObject]->moveTo(VE::Vector(-speed, 0, 0));
     }
     if (keyboard_->isRepeat(VE_KEY_RIGHT)) {
-        worldObjects[selectObject]->moveTo(VE::Vector(spead, 0, 0));
+        worldObjects[selectObject]->moveTo(VE::Vector(speed, 0, 0));
     }
-
 }
 
 void World::hid_CameraControl() {
@@ -126,7 +134,9 @@ void World::hid_PositionControl() {
 }
 
 
+
 void VE::World::update(float dt) {
+    gui();
     hid();
     physics();
 }
@@ -141,6 +151,21 @@ void World::physics() {
         worldObjects[1]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
     }
 }
+
+void World::gui() {
+    ImGui::Begin("Control panel");
+    ImGui::SliderFloat("Camera speed", &globalParameters.cameraSpeed, 0.05f / 20, 0.05f * 4);
+    ImGui::SliderInt("EPA interations", &globalParameters.epaIterations, 1, 100);
+    ImGui::SliderInt("Polytope", &globalParameters.polytopeStage, 1, 100);
+
+//    ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
+//    ImGui::Checkbox("pseudoVelosity", &globalParameters.pseudoVelosity);
+//    ImGui::SliderInt("speed", &globalParameters.fastTime, 0, 20);
+    if (ImGui::Button("Reset")) resetScene();
+    ImGui::End();
+}
+
+
 
 
 

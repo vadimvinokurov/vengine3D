@@ -24,8 +24,10 @@ namespace VE {
         void hid();
         void hid_CameraControl();
         void hid_PositionControl();
-
+        void gui();
         void physics();
+
+        void resetScene();
         CameraPtr currentCamera_ = std::make_shared<Camera>();
 
 

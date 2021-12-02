@@ -76,18 +76,25 @@ void Window::run() {
         glfwSetTime(0);
         glfwPollEvents();
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         render.draw(world_);
         world_->update(dt_);
+
 
 
         if (mouse_->isLock()) {
             Vector lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
             glfwSetCursorPos(window_, lockScreenPosition.x(), lockScreenPosition.y());
-            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         } else {
-            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window_);
         dt_ = static_cast<float>(glfwGetTime());
