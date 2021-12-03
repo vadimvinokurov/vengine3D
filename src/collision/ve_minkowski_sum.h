@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_MINKOWSKI_SUM_H
 #define VENGINE3D_VE_MINKOWSKI_SUM_H
 
-#include "Object/ve_collider.h"
+#include "objects/ve_collider.h"
 
 namespace VE{
     void minkowskiSumPoint(const Collider &collider1, const Collider &collider2){

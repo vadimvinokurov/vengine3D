@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_SUPPORT_POINT_H
 
 #include "ve_collision_common.h"
-#include "Object/ve_collider.h"
+#include "objects/ve_collider.h"
 
 namespace VE{
     struct SupportPoint {

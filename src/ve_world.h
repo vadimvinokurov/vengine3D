@@ -6,10 +6,10 @@
 #define VENGINE3D_WORLD_H
 
 #include <memory>
-#include "Object/ve_rigid_body.hpp"
-#include "Object/ve_camera.h"
-#include "Control/ve_keyboard.h"
-#include "Control/ve_mouse.h"
+#include "objects/ve_rigid_body.hpp"
+#include "objects/ve_camera.h"
+#include "control/ve_keyboard.h"
+#include "control/ve_mouse.h"
 
 namespace VE {
     class World {

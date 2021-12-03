@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_GJK_H
 #define VENGINE3D_VE_GJK_H
 
-#include "Object/ve_collider.h"
+#include "objects/ve_collider.h"
 
 namespace VE {
     class GJK {

@@ -6,8 +6,8 @@
 #define VENGINE3D_RENDER_H
 
 #include "ve_world.h"
-#include "Object/ve_box_collider.h"
-#include "Object/ve_sphere_collider.h"
+#include "objects/ve_box_collider.h"
+#include "objects/ve_sphere_collider.h"
 
 namespace VE {
     class Render {

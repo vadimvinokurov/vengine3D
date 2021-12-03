@@ -3,10 +3,10 @@
 //
 
 #include "ve_world.h"
-#include "Math/ve_matrix33.h"
-#include "Object/ve_box_collider.h"
-#include "Collision/ve_gjk.h"
-#include "Collision/ve_minkowski_sum.h"
+#include "math/ve_matrix33.h"
+#include "objects/ve_box_collider.h"
+#include "collision/ve_gjk.h"
+#include "collision/ve_minkowski_sum.h"
 #include "imgui/imgui.h"
 #include "ve_global_parameters.h"
 
