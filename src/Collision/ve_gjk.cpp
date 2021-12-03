@@ -25,7 +25,8 @@ bool GJK::testIntersection(Vector &penetrationVector) {
         simplex.push_back(supportPoint);
 
         if (nextSimplex()) {
-            penetrationVector = EPA(collider1_, collider2_, simplex).getResolutionVector();
+            penetrationVector = EPA::PenetrationDepth(collider1_, collider2_, simplex).getVector();
+            penetrationVector.draw(VE::Vector(1, 1, 1));
             return true;
         }
     }
@@ -125,8 +126,3 @@ bool GJK::tetrahedronCase() {
         return true;
     }
 }
-
-bool GJK::sameDirection(const Vector &a, const Vector &b) {
-    return a.dot(b) > 0.0f;
-}
-

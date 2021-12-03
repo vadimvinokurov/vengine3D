@@ -6,68 +6,31 @@
 #define VENGINE3D_VE_EPA_H
 
 #include "Object/ve_collider.h"
+#include "ve_epa_polytope.h"
+#include "ve_epa_unique_edges.h"
 
 namespace VE {
-    class EPA {
-    private:
-        class UnigueEdge {
+    namespace EPA {
+        class PenetrationDepth{
         public:
-            void add(size_t a, size_t b);
-            const std::vector<std::pair<size_t, size_t>> &edges();
+            PenetrationDepth(const Collider &collider1, const Collider &collider2, const std::vector<Vector> &simplex);
+            Vector getVector();
         private:
-            std::vector<std::pair<size_t, size_t>> edges_;
+            void computeNewFaces(const Vector &support);
+            const Collider &collider1_;
+            const Collider &collider2_;
+            Polytope polytope_;
+
+
+            struct debugInfo {
+                Polytope polytope;
+                Vector support;
+                Vector minNormal;
+                std::vector<float> direction;
+            };
+            std::vector<debugInfo> polytopeStage;
         };
-
-        struct Face {
-            Face(unsigned int i1, unsigned int i2, unsigned int i3) : index{i1, i2, i3} {
-            }
-
-            unsigned int index[3] = {0, 0, 0};
-            Vector normal;
-            float distance = 0.0f;
-            bool actualInfo = false;
-        };
-
-        class Polytope {
-        public:
-            Polytope(const std::vector<Vector> &simplex);
-            const Face &operator[](size_t i) const;
-            void addFace(const Face &face);
-            void deleteFace(size_t faceNumber);
-            void addVertex(const Vector &vertex);
-            const Face &closestFaceToOrigin() const;
-
-            size_t faceSize() const;
-            size_t verticesSize() const;
-
-            void draw(VE::Vector a, const Color &color = Color(0.5f, 0.5f, 0.5f));
-            void info(std::string s = "");
-        private:
-            void updateFaceInfo();
-
-            std::vector<Vector> vertices_;
-            std::vector<Face> faces_;
-        };
-
-        bool sameDirection(const Vector &a, const Vector &b);
-    public:
-        EPA(const Collider &collider1, const Collider &collider2, const std::vector<Vector> &simplex);
-        Vector getResolutionVector();
-    private:
-        void computeNewFaces(const Vector &support);
-        const Collider &collider1_;
-        const Collider &collider2_;
-        Polytope polytope_;
-
-
-        struct debugInfo {
-            Polytope polytope;
-            Vector support;
-            Vector minNormal;
-            std::vector<float> direction;
-        };
-        std::vector<debugInfo> polytopeStage;
-    };
+    }
 }
 
 #endif //VENGINE3D_VE_EPA_H

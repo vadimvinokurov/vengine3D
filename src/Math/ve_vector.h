@@ -161,18 +161,6 @@ namespace VE {
             glEnd();
         }
 
-        void drawPoint(const VE::Color &color) const {
-            drawPoint(6, color);
-        }
-
-        void draw(const VE::Color &color) const {
-            draw(VE::Vector(), color);
-        }
-
-        void print() const {
-            std::cout << x_ << " " << y_ << " " << z_ << std::endl;
-        }
-
         void round(float roundSize = 10000.0f) {
             x_ = static_cast<int>(x_ * roundSize) / roundSize;
             y_ = static_cast<int>(y_ * roundSize) / roundSize;
@@ -189,6 +177,17 @@ namespace VE {
             return c;
         }
 
+        void drawPoint(const VE::Color &color) const {
+            drawPoint(6, color);
+        }
+
+        void draw(const VE::Color &color) const {
+            draw(VE::Vector(), color);
+        }
+
+        void print() const {
+            std::cout << x_ << " " << y_ << " " << z_ << std::endl;
+        }
     private:
         union {
             struct {
@@ -199,6 +198,9 @@ namespace VE {
             float c[3];
         };
 
+    };
+    inline bool sameDirection(const Vector &a, const Vector &b){
+        return a.dot(b) > 0.0f;
     };
 }
 

@@ -152,7 +152,7 @@ void World::physics() {
         worldObjects[0]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
         worldObjects[1]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
     }
-    minkowskiSumPoint(worldObjects[0]->collider(0), worldObjects[1]->collider(0));
+    //minkowskiSumPoint(worldObjects[0]->collider(0), worldObjects[1]->collider(0));
 }
 
 void World::gui() {
