@@ -20,9 +20,16 @@ namespace VE {
         Vector apply(const Vector &localPoint) const {
             return rotateMatrix() * (localPoint * scale) + position;
         }
+        Vector applyForNormal(const Vector &localNormal) const {
+            return rotateMatrix() * localNormal;
+        }
 
-        Vector applyInverse(const Vector &localPoint) const {
-            return rotateMatrix().getTranspose() * (localPoint - position) / scale;
+        Vector applyInverse(const Vector &globalPoint) const {
+            return rotateMatrix().getTranspose() * (globalPoint - position) / scale;
+        }
+
+        Vector applyInverseForNormal(const Vector &globalNormal) const {
+            return rotateMatrix().getTranspose() * globalNormal;
         }
 
         float scale;
