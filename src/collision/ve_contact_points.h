@@ -6,6 +6,7 @@
 #define VENGINE3D_VE_CONTACT_POINTS_H
 
 #include "objects/ve_box_collider.h"
+#include "math/ve_double_vertex_buffer.h"
 
 namespace VE {
     void getContactPoints(const BoxCollider &collider1, const BoxCollider &collider2, const Vector &contactNormal);
@@ -38,9 +39,7 @@ namespace VE {
         std::vector<ClipPlane> clipPlanes;
         ClipPlane mainPlane;
 
-
-
-        std::vector<VE::Vector> incidentFaceVertices;
+        DoubleVertexBuffer doubleVertexBuffer;
     };
 }
 
