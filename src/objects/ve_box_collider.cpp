@@ -91,8 +91,9 @@ void BoxCollider::computeLocalFaceNormals() {
 }
 
 ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {
-    float projectionMax = 0.0f;
+    float projectionMax = std::numeric_limits<float>::lowest();
     unsigned int selectedFaceNumber = std::numeric_limits<unsigned int>::max();
+
     for (unsigned int faceNumber = 0; faceNumber < 6; faceNumber++) {
         float projection = direction.dot(globalFaceNormals_[faceNumber]);
         if (projection > projectionMax) {
@@ -100,7 +101,6 @@ ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {
             selectedFaceNumber = faceNumber;
         }
     }
-
     assert(selectedFaceNumber != std::numeric_limits<unsigned int>::max());
 
     return getFace(selectedFaceNumber);

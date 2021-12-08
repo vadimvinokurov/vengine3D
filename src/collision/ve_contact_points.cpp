@@ -7,19 +7,11 @@
 
 using namespace VE;
 
-inline void printFace(const ColliderFace &face, const Color &color = Color(1, 0, 0)) {
-    face.vertices[0].drawPoint(12, color);
-    face.vertices[1].drawPoint(12, color);
-    face.vertices[2].drawPoint(12, color);
-    face.vertices[3].drawPoint(12, color);
-}
-
-
-ContactPoint::ContactPoint(const BoxCollider &collider1, const BoxCollider &collider2, const Vector &contactNormal) : contactNormal_(contactNormal) {
+ContactPoint::ContactPoint(const BoxCollider &collider1, const BoxCollider &collider2, const Vector &contactNormal) {
     ColliderFace faceC1 = collider1.getFaceInDirection(contactNormal);
     ColliderFace faceC2 = collider2.getFaceInDirection(contactNormal * -1);
 
-    bool isFaceC1Reference = selectReferenceEdge(faceC1, faceC2);
+    bool isFaceC1Reference = selectReferenceEdge(faceC1, faceC2, contactNormal);
     if (isFaceC1Reference) {
         generateClipPlanes(faceC1);
         doubleVertexBuffer.buffer2() = faceC2.vertices;
@@ -27,35 +19,36 @@ ContactPoint::ContactPoint(const BoxCollider &collider1, const BoxCollider &coll
         generateClipPlanes(faceC2);
         doubleVertexBuffer.buffer2() = faceC1.vertices;
     }
+
 }
 
-bool ContactPoint::selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2) {
-    return abs(face1.normal.dot(contactNormal_)) > abs(face2.normal.dot(contactNormal_));
+bool ContactPoint::selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2, const VE::Vector& contactNormal) {
+    return abs(face1.normal.dot(contactNormal)) > abs(face2.normal.dot(contactNormal));
 }
 
 std::vector<VE::Vector> ContactPoint::get() {
     for (const ClipPlane &clipPlane: clipPlanes) {
         doubleVertexBuffer.swapBuffer();
-        std::vector<VE::Vector>& inputVertices = doubleVertexBuffer.buffer1();
-        std::vector<VE::Vector>& outputVertices = doubleVertexBuffer.buffer2();
+        const std::vector<VE::Vector> &inputVertices = doubleVertexBuffer.buffer1();
+        std::vector<VE::Vector> &outputVertices = doubleVertexBuffer.buffer2();
         outputVertices.clear();
 
         for (size_t i = 0; i < inputVertices.size(); i++) {
             const VE::Vector &B = inputVertices[i];
-            const VE::Vector &A = inputVertices[(i - 1) % inputVertices.size()];
-            assert(!((i == 0) && ((i - 1) % inputVertices.size() != inputVertices.size() - 1)));
+            const VE::Vector &A = inputVertices[i == 0 ? inputVertices.size() - 1 : i - 1];
 
-            if(vertexInsidePlane(B, clipPlane)) {
-                if(!vertexInsidePlane(A, clipPlane)) {
-                    outputVertices.emplace_back(intersectionPoint(A,B,clipPlane));
+            if (vertexInsidePlane(B, clipPlane)) {
+                if (!vertexInsidePlane(A, clipPlane)) {
+                    outputVertices.emplace_back(intersectionPoint(A, B, clipPlane));
                 }
                 outputVertices.emplace_back(B);
-            } else if (vertexInsidePlane(A, clipPlane)){
-                outputVertices.emplace_back(intersectionPoint(A,B,clipPlane));
+            } else if (vertexInsidePlane(A, clipPlane)) {
+                outputVertices.emplace_back(intersectionPoint(A, B, clipPlane));
             }
         }
     }
-    printIncVeretices();
+
+    deleteVertexOutsideMainFace(doubleVertexBuffer.buffer2());
     return doubleVertexBuffer.buffer2();
 }
 
@@ -80,12 +73,16 @@ VE::Vector ContactPoint::intersectionPoint(const VE::Vector &A, const VE::Vector
     return A + (B - A) * t;
 }
 
-void ContactPoint::printIncVeretices() {
-    for (const auto &vertex: doubleVertexBuffer.buffer2()) {
-        vertex.drawPoint(12, Color(1, 0, 0));
-    }
-}
-
 bool ContactPoint::vertexInsidePlane(const Vector &A, const ContactPoint::ClipPlane &clipPlane) {
     return (A - clipPlane.point).dot(clipPlane.normal) <= 0;
+}
+
+void ContactPoint::deleteVertexOutsideMainFace(std::vector<VE::Vector> &vertices) {
+    for (size_t i = 0; i < vertices.size(); i++) {
+        if (!vertexInsidePlane(vertices[i], mainPlane)) {
+            vertices[i] = vertices.back();
+            vertices.pop_back();
+            i--;
+        }
+    }
 }

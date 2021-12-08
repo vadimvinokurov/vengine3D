@@ -25,7 +25,7 @@ void World::resetScene() {
     body1->setTransform([]() {
         Transform transform;
         transform.position = Vector(3.5f, 0.5f, 0.8f);
-        //transform.rotation = Vector(1,1,0)*M_PI_4;
+        //transform.rotation = Vector(1, 0, 0) * M_PI_4;
         return transform;
     }());
     worldObjects.push_back(body1);
@@ -145,8 +145,14 @@ void World::physics() {
     Vector contactPenetration;
     if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(contactPenetration)) {
 
-        VE::ContactPoint(static_cast<const VE::BoxCollider &>(worldObjects[0]->collider(0)),
-                         static_cast<const VE::BoxCollider &>(worldObjects[1]->collider(0)), contactPenetration.normolize()).get();
+        auto contactPoints = VE::ContactPoint(static_cast<const VE::BoxCollider &>(worldObjects[0]->collider(0)),
+                                              static_cast<const VE::BoxCollider &>(worldObjects[1]->collider(0)),
+                                              contactPenetration.normolize()).get();
+
+        for (auto &contactPoint: contactPoints) {
+            contactPoint.drawPoint(12, Color(1, 0, 0));
+        }
+
     }
 //    if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(gjkv)) {
 //        worldObjects[0]->collider(0).setColor(VE::Color(0.8, 0, 0));

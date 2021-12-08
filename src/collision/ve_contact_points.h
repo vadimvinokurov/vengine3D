@@ -27,15 +27,12 @@ namespace VE {
             float d;
         };
 
-        bool selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2);
+        bool selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2, const VE::Vector& contactNormal);
         void generateClipPlanes(const ColliderFace &referenceFace);
         bool vertexInsidePlane(const VE::Vector &A, const ClipPlane &clipPlane);
         VE::Vector intersectionPoint(const VE::Vector &A, const VE::Vector &B, const ClipPlane &clipPlane);
+        void deleteVertexOutsideMainFace(std::vector<VE::Vector>& vertices);
 
-        void printIncVeretices();
-
-
-        VE::Vector contactNormal_;
         std::vector<ClipPlane> clipPlanes;
         ClipPlane mainPlane;
 
