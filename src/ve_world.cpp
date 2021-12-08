@@ -143,9 +143,10 @@ void VE::World::update(float dt) {
 
 void World::physics() {
     Vector contactPenetration;
-    if(GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(contactPenetration)){
+    if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(contactPenetration)) {
 
-        VE::getContactPoints(static_cast<const VE::BoxCollider &>(worldObjects[0]->collider(0)), static_cast<const VE::BoxCollider &>(worldObjects[1]->collider(0)), contactPenetration.normolize());
+        VE::ContactPoint(static_cast<const VE::BoxCollider &>(worldObjects[0]->collider(0)),
+                         static_cast<const VE::BoxCollider &>(worldObjects[1]->collider(0)), contactPenetration.normolize()).get();
     }
 //    if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(gjkv)) {
 //        worldObjects[0]->collider(0).setColor(VE::Color(0.8, 0, 0));
@@ -161,8 +162,8 @@ void World::gui() {
     ImGui::Begin("Control panel");
     if (ImGui::Button("Reset")) resetScene();
     ImGui::SliderFloat("Camera speed", &globalParameters.cameraSpeed, 0.05f / 20, 0.05f * 4);
-    ImGui::SliderInt("EPA interations", &globalParameters.epaIterations, 1, 100);
-    ImGui::SliderInt("Polytope", &globalParameters.polytopeStage, 0, 100);
+    ImGui::SliderInt("face", &globalParameters.faceNumber, 0, 3);
+    ImGui::SliderInt("vector", &globalParameters.verctorNumber, 0, 3);
     ImGui::ColorEdit4("Color", globalParameters.rotate);
     ImGui::Text("Polytope vertex - %d:", globalParameters.pointSize);
     //ImGui::Text("minimal epa normal - %f %f %f:", globalParameters.minEpaNormal.x(),globalParameters.minEpaNormal.y(),globalParameters.minEpaNormal.z());

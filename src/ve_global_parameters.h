@@ -9,8 +9,8 @@
 
 namespace VE{
     struct GlobalParameters{
-        int epaIterations = 1;
-        int polytopeStage = 0;
+        int faceNumber = 0;
+        int verctorNumber = 0;
         float cameraSpeed = 0.05;
         VE::Vector minEpaNormal;
         int pointSize = 0;
