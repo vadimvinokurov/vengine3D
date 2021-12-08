@@ -22,10 +22,10 @@ ContactPoint::ContactPoint(const BoxCollider &collider1, const BoxCollider &coll
     bool isFaceC1Reference = selectReferenceEdge(faceC1, faceC2);
     if (isFaceC1Reference) {
         generateClipPlanes(faceC1);
-        generateIncedentFaceVectors(faceC2);
+        incidentFaceVertices = faceC2.vertices;
     } else {
         generateClipPlanes(faceC2);
-        generateIncedentFaceVectors(faceC1);
+        incidentFaceVertices = faceC1.vertices;
     }
 }
 
@@ -33,25 +33,31 @@ bool ContactPoint::selectReferenceEdge(const ColliderFace &face1, const Collider
     return abs(face1.normal.dot(contactNormal_)) > abs(face2.normal.dot(contactNormal_));
 }
 
-void ContactPoint::get() {
+std::vector<VE::Vector> ContactPoint::get() {
+    std::vector<VE::Vector> outputVertices = incidentFaceVertices;
 
-    for (const auto &clipPlane: clipPlanes) {
-        for(size_t i = 0; i < incedentFaceVectors.size(); i++){
-            if(clipVector(incedentFaceVectors[i], clipPlane)){
-                incedentFaceVectors[i] = incedentFaceVectors.back();
-                incedentFaceVectors.pop_back();
-                i--;
+    for (const ClipPlane &clipPlane: clipPlanes) {
+        incidentFaceVertices = outputVertices;
+        outputVertices.clear();
+
+        for (size_t i = 0; i < incidentFaceVertices.size(); i++) {
+            const VE::Vector &B = incidentFaceVertices[i];
+            const VE::Vector &A = incidentFaceVertices[(i - 1) % incidentFaceVertices.size()];
+            assert(!((i == 0) && ((i - 1) % incidentFaceVertices.size() != incidentFaceVertices.size() - 1)));
+
+            if(vertexInsidePlane(B, clipPlane)) {
+                if(!vertexInsidePlane(A, clipPlane)) {
+                    outputVertices.emplace_back(intersectionPoint(A,B,clipPlane));
+                }
+                outputVertices.emplace_back(B);
+            } else if (vertexInsidePlane(A, clipPlane)){
+                outputVertices.emplace_back(intersectionPoint(A,B,clipPlane));
             }
         }
     }
-    printIncVeretex();
-}
-
-void ContactPoint::generateIncedentFaceVectors(const ColliderFace &incedentFace) {
-    for (unsigned int i = 0; i < incedentFace.vertices.size() - 1; i++) {
-        incedentFaceVectors.emplace_back(incedentFace.vertices[i], incedentFace.vertices[i + 1]);
-    }
-    incedentFaceVectors.emplace_back(incedentFace.vertices.back(), incedentFace.vertices.front());
+    incidentFaceVertices = outputVertices;
+    printIncVeretices();
+    return incidentFaceVertices;
 }
 
 void ContactPoint::generateClipPlanes(const ColliderFace &referenceFace) {
@@ -67,26 +73,20 @@ void ContactPoint::generateClipPlanes(const ColliderFace &referenceFace) {
     mainPlane = ClipPlane(referenceFace.normal, referenceFace.vertices.front());
 }
 
-bool ContactPoint::clipVector(std::pair<VE::Vector, VE::Vector> &vector, const ContactPoint::ClipPlane &clipPlane) {
-    Vector &A = vector.first;
-    Vector &B = vector.second;
+VE::Vector ContactPoint::intersectionPoint(const VE::Vector &A, const VE::Vector &B, const ClipPlane &clipPlane) {
     const Vector &n = clipPlane.normal;
     const Vector &P = clipPlane.point;
     float d = clipPlane.d;
-
-    float aPosition = (A - P).dot(n);
-    float bPosition = (B - P).dot(n);
-    if (aPosition >= 0 && bPosition >= 0) {
-        return true;
-    } else if (aPosition < 0 && bPosition < 0) {
-        return false;
-    }
     float t = (d - A.dot(n)) / ((B - A).dot(n));
-    Vector Q = A + (B - A) * t;
-    if (aPosition >= 0) {
-        vector.first = Q;
-    } else {
-        vector.second = Q;
+    return A + (B - A) * t;
+}
+
+void ContactPoint::printIncVeretices() {
+    for (const auto &vertex: incidentFaceVertices) {
+        vertex.drawPoint(12, Color(1, 0, 0));
     }
-    return false;
+}
+
+bool ContactPoint::vertexInsidePlane(const Vector &A, const ContactPoint::ClipPlane &clipPlane) {
+    return (A - clipPlane.point).dot(clipPlane.normal) <= 0;
 }

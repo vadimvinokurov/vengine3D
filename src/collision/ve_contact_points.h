@@ -13,7 +13,7 @@ namespace VE {
     class ContactPoint {
     public:
         ContactPoint(const VE::BoxCollider &collider1, const VE::BoxCollider &collider2, const VE::Vector &contactNormal);
-        void get();
+        std::vector<VE::Vector> get();
     private:
         struct ClipPlane {
             ClipPlane() {};
@@ -27,25 +27,20 @@ namespace VE {
         };
 
         bool selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2);
-        void generateIncedentFaceVectors(const ColliderFace &incedentFace);
         void generateClipPlanes(const ColliderFace &referenceFace);
+        bool vertexInsidePlane(const VE::Vector &A, const ClipPlane &clipPlane);
+        VE::Vector intersectionPoint(const VE::Vector &A, const VE::Vector &B, const ClipPlane &clipPlane);
 
-        bool clipVector(std::pair<VE::Vector, VE::Vector> &vector, const ClipPlane &clipPlane);
-
-
-        void printIncVeretex() {
-            for (const auto &vector: incedentFaceVectors) {
-                vector.first.drawPoint(12, Color(1, 0, 0));
-                vector.second.drawPoint(12, Color(0, 1, 0));
-            }
-        }
+        void printIncVeretices();
 
 
         VE::Vector contactNormal_;
         std::vector<ClipPlane> clipPlanes;
         ClipPlane mainPlane;
 
-        std::vector<std::pair<VE::Vector, VE::Vector>> incedentFaceVectors;
+
+
+        std::vector<VE::Vector> incidentFaceVertices;
     };
 }
 

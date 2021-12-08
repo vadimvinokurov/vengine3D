@@ -9,7 +9,7 @@
 
 namespace VE{
     struct GlobalParameters{
-        int faceNumber = 0;
+        int clippingIteration = 0;
         int verctorNumber = 0;
         float cameraSpeed = 0.05;
         VE::Vector minEpaNormal;

@@ -162,7 +162,7 @@ void World::gui() {
     ImGui::Begin("Control panel");
     if (ImGui::Button("Reset")) resetScene();
     ImGui::SliderFloat("Camera speed", &globalParameters.cameraSpeed, 0.05f / 20, 0.05f * 4);
-    ImGui::SliderInt("face", &globalParameters.faceNumber, 0, 3);
+    ImGui::SliderInt("face", &globalParameters.clippingIteration, 0, 16);
     ImGui::SliderInt("vector", &globalParameters.verctorNumber, 0, 3);
     ImGui::ColorEdit4("Color", globalParameters.rotate);
     ImGui::Text("Polytope vertex - %d:", globalParameters.pointSize);
