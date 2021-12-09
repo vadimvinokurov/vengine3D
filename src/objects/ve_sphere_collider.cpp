@@ -11,16 +11,16 @@ SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center, 1.0
 }
 
 SphereCollider::SphereCollider(float radius, Vector center, float mass) : Collider(ColliderType::sphere),
-                                                                          radius_(radius) {
-    mass_ = mass;
-    localCenterOfMass_ = center;
+                                                                          radius_(radius){
+    centerOfMass_ = center;
 
+    mass_ = mass;
     computeSphereInertia();
     setGlvertices();
 }
 
 Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
-    return direction.normolize() * radius_ + globalCenterOfMass_;
+    return direction.normolize() * radius_ + centerOfMass_;
 }
 
 void SphereCollider::setGlvertices() {

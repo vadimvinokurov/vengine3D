@@ -24,6 +24,7 @@ namespace VE {
         virtual void setTransform(const Transform &transform);
 
         const Transform &transform() const;
+        const Vector& centerOfMass() const;
 
         float mass() const;
         const Matrix33 &inertia() const;
@@ -43,12 +44,9 @@ namespace VE {
         const ColliderType shapeType_;
 
         Transform transform_;
-
         Matrix33 inertia_;
         float mass_;
-
-        Vector localCenterOfMass_;
-        Vector globalCenterOfMass_;
+        Vector centerOfMass_;
 
         mutable VE::Color color_;
         std::vector<Vector> glvertices_;

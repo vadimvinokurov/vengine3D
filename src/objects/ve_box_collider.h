@@ -17,17 +17,18 @@ namespace VE {
         BoxCollider(float mass,  const Transform &localTransform = Transform());
         BoxCollider(const Transform &localTransform);
 
-
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
         virtual void setTransform(const Transform &transform) override;
 
         ColliderFace getFaceInDirection(const Vector &direction) const;
         ColliderFace getFace(unsigned int faceNumber) const;
     private:
-        void setGlvertices();
+        void computeVertices(float width, float height, float depth, const Transform &localTransform);
+        void computeFaceNormals();
         void computeCenterOfMass();
-        void computeLocalFaceNormals();
         void computeBoxInertia(float width, float height, float depth);
+        void setGlvertices();
+        void initGlobalBuffer();
 
         const std::vector<unsigned int> indices_;
         std::vector<Vector> localFaceNormals_;

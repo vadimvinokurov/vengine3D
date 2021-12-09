@@ -33,7 +33,6 @@ unsigned int Collider::indecesSize() const {
 
 void Collider::setTransform(const Transform &transform) {
     transform_ = transform;
-    globalCenterOfMass_ = transform.apply(localCenterOfMass_);
 }
 
 void Collider::setColor(const Color &color) const {
@@ -58,5 +57,9 @@ float Collider::mass() const {
 
 const Matrix33 &Collider::inertia() const {
     return inertia_;
+}
+
+const Vector &Collider::centerOfMass() const {
+    return centerOfMass_;
 }
 
