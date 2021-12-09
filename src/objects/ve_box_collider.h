@@ -12,20 +12,22 @@
 namespace VE {
     class BoxCollider : public Collider {
     public:
-        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, Transform localTransform = Transform());
-        BoxCollider(Transform localTransform);
+        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f,  const Transform &localTransform = Transform());
+        BoxCollider(float width, float height, float depth, const Transform &localTransform);
+        BoxCollider(float mass,  const Transform &localTransform = Transform());
+        BoxCollider(const Transform &localTransform);
+
 
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
         virtual void setTransform(const Transform &transform) override;
 
         ColliderFace getFaceInDirection(const Vector &direction) const;
         ColliderFace getFace(unsigned int faceNumber) const;
-
     private:
         void setGlvertices();
         void computeCenterOfMass();
         void computeLocalFaceNormals();
-
+        void computeBoxInertia(float width, float height, float depth);
 
         const std::vector<unsigned int> indices_;
         std::vector<Vector> localFaceNormals_;

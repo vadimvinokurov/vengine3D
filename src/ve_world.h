@@ -6,7 +6,7 @@
 #define VENGINE3D_WORLD_H
 
 #include <memory>
-#include "objects/ve_rigid_body.hpp"
+#include "objects/ve_rigid_body.h"
 #include "objects/ve_camera.h"
 #include "control/ve_keyboard.h"
 #include "control/ve_mouse.h"

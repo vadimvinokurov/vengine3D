@@ -48,3 +48,15 @@ const std::vector<Vector> &Collider::vertices() const {
     return glvertices_;
 }
 
+const Transform &Collider::transform() const {
+    return transform_;
+}
+
+float Collider::mass() const {
+    return mass_;
+}
+
+const Matrix33 &Collider::inertia() const {
+    return inertia_;
+}
+

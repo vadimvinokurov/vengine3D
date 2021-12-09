@@ -6,13 +6,16 @@
 
 using namespace VE;
 
-SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center) {
+SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center, 1.0f) {
 
 }
 
-SphereCollider::SphereCollider(float radius, Vector center) : Collider(ColliderType::sphere),
-                                                              radius_(radius) {
+SphereCollider::SphereCollider(float radius, Vector center, float mass) : Collider(ColliderType::sphere),
+                                                                          radius_(radius) {
+    mass_ = mass;
     localCenterOfMass_ = center;
+
+    computeSphereInertia();
     setGlvertices();
 }
 
@@ -47,5 +50,14 @@ void SphereCollider::setGlvertices() {
         glindices_.push_back(i * nF + 0);
         glindices_.push_back(i * nF + nF - 1);
     }
+}
+
+void SphereCollider::computeSphereInertia() {
+    float tmp = 2.0f / 5.0f * mass_ * radius_ * radius_;
+    inertia_ = Matrix33(
+            tmp, 0, 0,
+            0, tmp, 0,
+            0, 0, tmp
+    );
 }
 

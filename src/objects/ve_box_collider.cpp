@@ -6,28 +6,36 @@
 
 using namespace VE;
 
-BoxCollider::BoxCollider(Transform localTransform) : BoxCollider(1.0f, 1.0f, 1.0f, localTransform) {
 
-}
+BoxCollider::BoxCollider(float width, float height, float depth, const Transform &localTransform) : BoxCollider(width, height, depth, 1.0f,
+                                                                                                                localTransform) {}
 
-BoxCollider::BoxCollider(float width, float height, float depth, Transform localTransform) : Collider(ColliderType::box),
-                                                                                             indices_{3, 2, 1, 0,
-                                                                                                      4, 5, 6, 7,
-                                                                                                      0, 1, 5, 4,
-                                                                                                      2, 3, 7, 6,
-                                                                                                      3, 0, 4, 7,
-                                                                                                      1, 2, 6, 5},
+BoxCollider::BoxCollider(float mass, const Transform &localTransform) : BoxCollider(1.0f, 1.0f, 1.0f, mass, localTransform) {}
+
+BoxCollider::BoxCollider(const Transform &localTransform) : BoxCollider(1.0f, 1.0f, 1.0f, 1.0f, localTransform) {}
+
+BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Transform &localTransform) : Collider(ColliderType::box),
+                                                                                                                indices_{3, 2, 1, 0,
+                                                                                                                         4, 5, 6, 7,
+                                                                                                                         0, 1, 5, 4,
+                                                                                                                         2, 3, 7, 6,
+                                                                                                                         3, 0, 4, 7,
+                                                                                                                         1, 2, 6, 5},
 
 
-                                                                                             localVertices_{Vector(0, 0, 0),
-                                                                                                            Vector(width, 0, 0),
-                                                                                                            Vector(width, depth, 0),
-                                                                                                            Vector(0, depth, 0),
-                                                                                                            Vector(0, 0, height),
-                                                                                                            Vector(width, 0, height),
-                                                                                                            Vector(width, depth, height),
-                                                                                                            Vector(0, depth, height)} {
-
+                                                                                                                localVertices_{Vector(0, 0, 0),
+                                                                                                                               Vector(width, 0, 0),
+                                                                                                                               Vector(width, depth,
+                                                                                                                                      0),
+                                                                                                                               Vector(0, depth, 0),
+                                                                                                                               Vector(0, 0, height),
+                                                                                                                               Vector(width, 0,
+                                                                                                                                      height),
+                                                                                                                               Vector(width, depth,
+                                                                                                                                      height),
+                                                                                                                               Vector(0, depth,
+                                                                                                                                      height)} {
+    mass_ = mass;
     for (auto &vertex: localVertices_) {
         vertex = localTransform.apply(vertex);
     }
@@ -37,10 +45,34 @@ BoxCollider::BoxCollider(float width, float height, float depth, Transform local
     globalFaceNormals_ = localFaceNormals_;
 
 
+    computeBoxInertia(width, height, depth);
     computeCenterOfMass();
     setGlvertices();
 
 }
+
+void BoxCollider::computeBoxInertia(float width, float height, float depth) {
+    float tmp = mass_ / 12.0f;
+    float dWidth = width * width;
+    float dHeight = height * height;
+    float dDepth = depth * depth;
+
+    inertia_ = Matrix33(
+            tmp * (dHeight + dDepth), 0, 0,
+            0, tmp * (dWidth + dDepth), 0,
+            0, 0, tmp * (dWidth + dHeight)
+    );
+}
+
+
+void BoxCollider::computeCenterOfMass() {
+    Vector vertexSum;
+    for (auto &vertex: localVertices_) {
+        vertexSum += vertex;
+    }
+    localCenterOfMass_ = vertexSum / static_cast<float>(localVertices_.size());
+}
+
 
 Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
     float l = -INFINITY;
@@ -54,14 +86,6 @@ Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
         }
     }
     return lVertex;
-}
-
-void BoxCollider::computeCenterOfMass() {
-    Vector vertexSum;
-    for (auto &vertex: localVertices_) {
-        vertexSum += vertex;
-    }
-    localCenterOfMass_ = vertexSum / static_cast<float>(localVertices_.size());
 }
 
 

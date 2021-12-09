@@ -11,9 +11,10 @@ namespace VE {
     class SphereCollider : public Collider {
     public:
         SphereCollider(Vector center);
-        SphereCollider(float radius = 1.0f, Vector center = Vector());
+        SphereCollider(float radius = 1.0f, Vector center = Vector(), float mass = 1.0f);
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
     private:
+        void computeSphereInertia();
         void setGlvertices();
         float radius_ = 1.0f;
     };

@@ -2,8 +2,8 @@
 // Created by boris on 11/25/2021.
 //
 
-#ifndef VENGINE3D_VE_RIGID_BODY_HPP
-#define VENGINE3D_VE_RIGID_BODY_HPP
+#ifndef VENGINE3D_VE_RIGID_BODY_H
+#define VENGINE3D_VE_RIGID_BODY_H
 
 #include "ve_collider.h"
 #include "Math/ve_transform.h"
@@ -25,11 +25,14 @@ namespace VE {
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
 
-
+        Vector force_;
+        Vector torque_;
+        Vector linearVelocity_;
+        Vector angularVelocity_;
     };
 
     using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
 }
 
 
-#endif //VENGINE3D_VE_RIGID_BODY_HPP
+#endif //VENGINE3D_VE_RIGID_BODY_H

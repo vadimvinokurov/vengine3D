@@ -11,7 +11,7 @@ namespace VE{
     void minkowskiSumPoint(const Collider &collider1, const Collider &collider2){
         for(const Vector &vertex1: collider1.vertices()){
             for(const Vector &vertex2: collider2.vertices()){
-                (collider1.transform_.apply(vertex1) - collider2.transform_.apply(vertex2)).drawPoint();
+                (collider1.transform().apply(vertex1) - collider2.transform().apply(vertex2)).drawPoint();
             }
         }
     }
