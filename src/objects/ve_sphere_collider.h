@@ -11,18 +11,25 @@ namespace VE {
     class SphereCollider : public Collider {
     public:
         SphereCollider(Vector center);
-        SphereCollider(float radius = 1.0f, Vector center = Vector(), float mass = 1.0f);
+        SphereCollider(float radius = 1.0f, const Vector &center = Vector(), float mass = 1.0f);
+
+
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
         virtual void setTransform(const Transform &transform) override;
+        virtual void setLocalTransform(const Transform &localTransform) override;
+        virtual const Vector getCenterOfMass() const override;
 
-        virtual const void *verticesGLFormatData() const override ;
-        virtual const void *indicesGLFormatData(unsigned int offset = 0) const override ;
-        virtual unsigned int indecesSize() const override ;
+
+        virtual const void *verticesGLFormatData() const override;
+        virtual const void *indicesGLFormatData(unsigned int offset = 0) const override;
+        virtual unsigned int indecesSize() const override;
     private:
         void computeSphereInertia();
         void setGlvertices();
+        Vector localCenter_;
+        Vector globalCenter_;
         float radius_ = 1.0f;
-        Vector globalCenter;
+
 
         std::vector<Vector> glVerticesBuffer_;
         std::vector<unsigned int> glIndicesBuffer_;

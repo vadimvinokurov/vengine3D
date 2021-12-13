@@ -20,18 +20,28 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass) : C
 
     mass_ = mass;
     computeFaceNormals();
-    computeCenterOfMass();
-    initGlobalBuffer();
     computeBoxInertia(width, height, depth);
+
+    updateGlobalBuffer();
+}
+
+void BoxCollider::computeFaceNormals() {
+    for (unsigned int faceNumber = 0; faceNumber < 6; faceNumber++) {
+        Vector AB = localVertices_[indices_[4 * faceNumber + 1]] - localVertices_[indices_[4 * faceNumber]];
+        Vector BC = localVertices_[indices_[4 * faceNumber + 2]] - localVertices_[indices_[4 * faceNumber + 1]];
+
+        localFaceNormals_[faceNumber] = (AB * BC).normolize();
+    }
 }
 
 void BoxCollider::setLocalTransform(const Transform &localTransform) {
-    for (auto &vertex: localVertices_) {
-        vertex = localTransform.apply(vertex);
+    for (auto &localVertex: localVertices_) {
+        localVertex = localTransform.apply(localVertex);
     }
-    computeFaceNormals();
-    computeCenterOfMass();
-    initGlobalBuffer();
+    for (auto &localNormal: localFaceNormals_) {
+        localNormal = localTransform.applyForNormal(localNormal);
+    }
+    updateGlobalBuffer();
 }
 
 void BoxCollider::computeBoxInertia(float width, float height, float depth) {
@@ -47,32 +57,18 @@ void BoxCollider::computeBoxInertia(float width, float height, float depth) {
     );
 }
 
-void BoxCollider::computeFaceNormals() {
-    localFaceNormals_.clear();
-    for (unsigned int faceNumber = 0; faceNumber < 6; faceNumber++) {
-        Vector AB = localVertices_[indices_[4 * faceNumber + 1]] - localVertices_[indices_[4 * faceNumber]];
-        Vector BC = localVertices_[indices_[4 * faceNumber + 2]] - localVertices_[indices_[4 * faceNumber + 1]];
-
-        localFaceNormals_.emplace_back((AB * BC).normolize());
-    }
+const Vector BoxCollider::getCenterOfMass() const {
+    return (localVertices_[0] + localVertices_[1] + localVertices_[2] + localVertices_[3] +
+            localVertices_[4] + localVertices_[5] + localVertices_[6] + localVertices_[7]) / 8.0f;
 }
 
-void BoxCollider::computeCenterOfMass() {
-    Vector vertexSum;
-    for (auto &vertex: localVertices_) {
-        vertexSum += vertex;
-    }
-    centerOfMass_ = vertexSum / static_cast<float>(localVertices_.size());
-}
-
-void BoxCollider::initGlobalBuffer() {
+void BoxCollider::updateGlobalBuffer() {
     globalVertices_ = localVertices_;
     globalFaceNormals_ = localFaceNormals_;
 }
 
-
 Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
-    float l = -INFINITY;
+    float l = std::numeric_limits<float>::lowest();
 
     Vector lVertex;
     for (const VE::Vector &vertex: globalVertices_) {
@@ -85,7 +81,6 @@ Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
     return lVertex;
 }
 
-
 void BoxCollider::setTransform(const Transform &transform) {
     for (size_t i = 0; i < localVertices_.size(); i++) {
         globalVertices_[i] = transform.apply(localVertices_[i]);
@@ -93,7 +88,6 @@ void BoxCollider::setTransform(const Transform &transform) {
     for (size_t i = 0; i < localFaceNormals_.size(); i++) {
         globalFaceNormals_[i] = transform.applyForNormal(localFaceNormals_[i]);
     }
-    Collider::setTransform(transform);
 }
 
 ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {
@@ -130,6 +124,9 @@ const void *BoxCollider::indicesGLFormatData(unsigned int offset) const {
 unsigned int BoxCollider::indecesSize() const {
     return indices_.size();
 }
+
+
+
 
 
 

@@ -56,13 +56,13 @@ void RigidBody::computeMass() {
             invInertia_ = Matrix33();
             centerOfMass_ = Vector();
             for (auto &c: colliders_) {
-                centerOfMass_ += c->centerOfMass();
+                centerOfMass_ += c->getCenterOfMass();
             }
             centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
             return;
         }
         mass_ += collider->mass();
-        centerOfMass_ += collider->centerOfMass();
+        centerOfMass_ += collider->getCenterOfMass();
         inertia += collider->inertia();
     }
     mass_ = mass_ / static_cast<float>(colliders_.size());

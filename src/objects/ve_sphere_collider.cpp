@@ -10,17 +10,40 @@ SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center, 1.0
 
 }
 
-SphereCollider::SphereCollider(float radius, Vector center, float mass) : Collider(ColliderType::sphere),
-                                                                          radius_(radius) {
-    centerOfMass_ = center;
-    globalCenter = center;
+SphereCollider::SphereCollider(float radius, const Vector &center, float mass) : Collider(ColliderType::sphere),
+                                                                                 radius_(radius),
+                                                                                 localCenter_(center) {
     mass_ = mass;
     computeSphereInertia();
     setGlvertices();
+
+    globalCenter_ = localCenter_;
+}
+
+void SphereCollider::computeSphereInertia() {
+    float tmp = 2.0f / 5.0f * mass_ * radius_ * radius_;
+    inertia_ = Matrix33(
+            tmp, 0, 0,
+            0, tmp, 0,
+            0, 0, tmp
+    );
 }
 
 Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
-    return direction.normolize() * radius_ + globalCenter;
+    return direction.normolize() * radius_ + globalCenter_;
+}
+
+void SphereCollider::setTransform(const Transform &transform) {
+    globalCenter_ = transform.applyForNormal(localCenter_);
+}
+
+void SphereCollider::setLocalTransform(const Transform &localTransform) {
+    localCenter_ = localTransform.applyForNormal(localCenter_);
+    globalCenter_ = localCenter_;
+}
+
+const Vector SphereCollider::getCenterOfMass() const {
+    return localCenter_;
 }
 
 void SphereCollider::setGlvertices() {
@@ -32,8 +55,8 @@ void SphereCollider::setGlvertices() {
     for (int i = 1; i < nT; i++) {
         for (int j = 0; j < nF; j++) {
             glVerticesBuffer_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j),
-                                     radius_ * sinf(dT * i) * sinf(dF * j),
-                                     radius_ * cosf(dT * i));
+                                           radius_ * sinf(dT * i) * sinf(dF * j),
+                                           radius_ * cosf(dT * i));
 
         }
     }
@@ -50,20 +73,6 @@ void SphereCollider::setGlvertices() {
         glIndicesBuffer_.push_back(i * nF + 0);
         glIndicesBuffer_.push_back(i * nF + nF - 1);
     }
-}
-
-void SphereCollider::computeSphereInertia() {
-    float tmp = 2.0f / 5.0f * mass_ * radius_ * radius_;
-    inertia_ = Matrix33(
-            tmp, 0, 0,
-            0, tmp, 0,
-            0, 0, tmp
-    );
-}
-
-void SphereCollider::setTransform(const Transform &transform) {
-    globalCenter = transform.applyForNormal(centerOfMass_);
-    Collider::setTransform(transform);
 }
 
 const void *SphereCollider::verticesGLFormatData() const {
