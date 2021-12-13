@@ -17,6 +17,7 @@ namespace VE {
                       position(0, 0, 0) {
         }
 
+
         Vector apply(const Vector &localPoint) const {
             return rotateMatrix() * (localPoint * scale) + position;
         }

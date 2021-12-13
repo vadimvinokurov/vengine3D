@@ -20,7 +20,8 @@ void World::resetScene() {
     worldObjects.clear();
 
     auto body1 = std::make_shared<VE::RigidBody>();
-    body1->addCollider(std::make_shared<VE::BoxCollider>());
+    auto collider1 = std::make_shared<VE::BoxCollider>();
+    body1->addCollider(collider1);
     worldObjects.push_back(body1);
 
     auto body2 = std::make_shared<VE::RigidBody>();

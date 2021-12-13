@@ -7,7 +7,7 @@
 using namespace VE;
 
 RigidBody::RigidBody() {
-    angularVelocity_ = Vector(1,0,0) * M_PI_4;
+    angularVelocity_ = Vector(1, 0, 0) * M_PI_4;
 }
 
 RigidBody::~RigidBody() {
@@ -17,9 +17,12 @@ RigidBody::~RigidBody() {
 void RigidBody::addCollider(const VE::ColliderPtr &constShapePtr) {
     colliders_.emplace_back(constShapePtr);
     computeMass();
-    //Transform t;
-    //t.position = centerOfMass_*-1;
-    //colliders_[0]->setLocalTransform(t);
+
+    Transform t;
+    t.position = centerOfMass_ * -1;
+    for (const auto &collider: colliders_) {
+        collider->setLocalTransform(t);
+    }
 }
 
 void RigidBody::moveTo(VE::Vector dp) {
@@ -50,12 +53,12 @@ void RigidBody::computeMass() {
     float mass_ = 0;
     Matrix33 inertia;
     centerOfMass_ = Vector();
-    for (auto &collider: colliders_) {
-        if (collider->mass()) {
+    for (const auto &collider: colliders_) {
+        if (collider->mass() == 0) {
             invMass_ = 0;
             invInertia_ = Matrix33();
             centerOfMass_ = Vector();
-            for (auto &c: colliders_) {
+            for (const auto &c: colliders_) {
                 centerOfMass_ += c->getCenterOfMass();
             }
             centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
@@ -65,9 +68,9 @@ void RigidBody::computeMass() {
         centerOfMass_ += collider->getCenterOfMass();
         inertia += collider->inertia();
     }
-    mass_ = mass_ / static_cast<float>(colliders_.size());
     centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
     invInertia_ = inertia.getInverse();
+    invMass_ = static_cast<float>(colliders_.size()) / mass_;
 }
 
 void RigidBody::update(float dt) {
