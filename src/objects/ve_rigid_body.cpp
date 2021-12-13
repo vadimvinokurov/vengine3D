@@ -7,7 +7,7 @@
 using namespace VE;
 
 RigidBody::RigidBody() {
-    angularVelocity_ = Vector(1, 0, 0) * M_PI_4;
+    //angularVelocity_ = Vector(1, 0, 0) * M_PI_4;
 }
 
 RigidBody::~RigidBody() {
@@ -23,6 +23,7 @@ void RigidBody::addCollider(const VE::ColliderPtr &constShapePtr) {
     for (const auto &collider: colliders_) {
         collider->setLocalTransform(t);
     }
+    centerOfMass_.setZero();
 }
 
 void RigidBody::moveTo(VE::Vector dp) {
@@ -74,5 +75,44 @@ void RigidBody::computeMass() {
 }
 
 void RigidBody::update(float dt) {
+    updateVelocity(dt);
+    updateTransform(dt);
+}
+
+void RigidBody::updateVelocity(float dt) {
+    angularVelocity_ += invInertia_ * torque_ * dt;
+    linearVelocity_ += force_ * invMass_ * dt + gravity_ * dt;
+
+    force_.setZero();
+    torque_.setZero();
+}
+
+void RigidBody::updateTransform(float dt) {
+    transform_.position += linearVelocity_ * dt;
     transform_.rotation += angularVelocity_ * dt;
+}
+
+void RigidBody::addForce(const Vector &force) {
+    force_ += force_;
+}
+
+void RigidBody::addForce(const Vector &force, const Vector &forcePoint) {
+    force_ += force_;
+    torque_ += (forcePoint - centerOfMass_) * force;
+}
+
+void RigidBody::setLinearVelocity(const Vector &linearVelocity) {
+    linearVelocity_ = linearVelocity;
+}
+
+void RigidBody::setAngularVelocity(const Vector &angularVelocity) {
+    angularVelocity_ = angularVelocity;
+}
+
+const Vector &RigidBody::linearVelocity() const {
+    return linearVelocity_;
+}
+
+const Vector &RigidBody::angularVelocity() const {
+    return angularVelocity_;
 }

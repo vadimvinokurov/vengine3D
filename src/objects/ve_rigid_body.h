@@ -18,12 +18,23 @@ namespace VE {
         void moveTo(Vector dp);
         void update(float dt);
 
+        void addForce(const Vector &force);
+        void addForce(const Vector &force, const Vector &forcePoint);
+        void setLinearVelocity(const Vector &linearVelocity);
+        void setAngularVelocity(const Vector &angularVelocity);
+        const Vector &linearVelocity() const;
+        const Vector &angularVelocity() const;
+
+
+
         size_t collidersSize();
         const Collider &collider(size_t n);
         const Transform &transform() const;
         virtual ~RigidBody();
     private:
         void computeMass();
+        void updateVelocity(float dt);
+        void updateTransform(float dt);
 
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
@@ -32,9 +43,9 @@ namespace VE {
         float invMass_;
         Matrix33 invInertia_;
 
-
         Vector force_;
         Vector torque_;
+        Vector gravity_ = Vector();//Vector(0.0f, 0.0f, -9.8f);
         Vector linearVelocity_;
         Vector angularVelocity_;
     };

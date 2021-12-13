@@ -84,7 +84,6 @@ void Window::run() {
         world_->update(dt_);
 
 
-
         if (mouse_->isLock()) {
             Vector lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
             glfwSetCursorPos(window_, lockScreenPosition.x(), lockScreenPosition.y());
@@ -105,6 +104,7 @@ void Window::run() {
                                          + std::to_string(int(elapsedTime)) + " s; ").c_str());
             lableUpdateTime = 0.0f;
         }
+        dt_ = 1.0f / 75.0f;
     }
 }
 

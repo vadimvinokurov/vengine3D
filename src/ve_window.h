@@ -43,7 +43,7 @@ namespace VE {
         float width_, height_;
         std::string label_;
         WorldPtr world_;
-        float dt_ = 0;
+        float dt_ = 1.0f / 75.0f;
 
         float windowAspectRatio_ = 1.0f;
 

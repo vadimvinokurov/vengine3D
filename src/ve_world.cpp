@@ -33,6 +33,8 @@ void World::resetScene() {
     }());
 
     worldObjects.push_back(body2);
+
+    body1->addForce(Vector(0,40,0), Vector(0.5f, -0.5f,0.5f));
 }
 
 const Camera &World::currentCamera() {
