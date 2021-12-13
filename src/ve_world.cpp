@@ -5,8 +5,7 @@
 #include "ve_world.h"
 #include "math/ve_matrix33.h"
 #include "objects/ve_box_collider.h"
-#include "collision/ve_gjk.h"
-#include "collision/ve_contact_points.h"
+#include "collision/ve_collision.h"
 #include "imgui/imgui.h"
 #include "ve_global_parameters.h"
 
@@ -22,19 +21,18 @@ void World::resetScene() {
     auto body1 = std::make_shared<VE::RigidBody>();
     auto collider1 = std::make_shared<VE::BoxCollider>();
     body1->addCollider(collider1);
+    body1->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0.1f, 0.1f, 4);
+        return transform;
+    }());
+    //body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body1);
 
     auto body2 = std::make_shared<VE::RigidBody>();
     body2->addCollider(std::make_shared<VE::BoxCollider>());
-    body2->setTransform([]() {
-        Transform transform;
-        transform.position = Vector(4, 0, 0);
-        return transform;
-    }());
 
     worldObjects.push_back(body2);
-
-    body1->addForce(Vector(0,40,0), Vector(0.5f, -0.5f,0.5f));
 }
 
 const Camera &World::currentCamera() {
@@ -134,31 +132,25 @@ void World::hid_PositionControl() {
 void VE::World::update(float dt) {
     gui();
     hid();
+    prephysics(dt);
     physics(dt);
 }
 
+void World::prephysics(float dt) {
+}
+
 void World::physics(float dt) {
-    worldObjects[0]->update(dt);
-//    Vector contactPenetration;
-//    if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(contactPenetration)) {
-//
-//        auto contactPoints = VE::ContactPoint(static_cast<const VE::BoxCollider &>(worldObjects[0]->collider(0)),
-//                                              static_cast<const VE::BoxCollider &>(worldObjects[1]->collider(0)),
-//                                              contactPenetration.normolize()).get();
-//
-//        for (auto &contactPoint: contactPoints) {
-//            contactPoint.drawPoint(12, Color(1, 0, 0));
-//        }
-//
-//    }
-//    if (GJK(worldObjects[0]->collider(0), worldObjects[1]->collider(0)).testIntersection(gjkv)) {
-//        worldObjects[0]->collider(0).setColor(VE::Color(0.8, 0, 0));
-//        worldObjects[1]->collider(0).setColor(VE::Color(0.8, 0, 0));
-//    } else {
-//        worldObjects[0]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
-//        worldObjects[1]->collider(0).setColor(VE::Color(0.5, 0.5, 0.5));
-//    }
-    //minkowskiSumPoint(worldObjects[0]->collider(0), worldObjects[1]->collider(0));
+
+    for (auto &object: worldObjects) {
+        object->update(dt);
+    }
+    VE::ContactMainfold contactMainfold;
+    if (testIntersection(*worldObjects[0], *worldObjects[1], contactMainfold)) {
+        for (auto &contact:contactMainfold) {
+            contact.point.drawPoint(12, Color(1, 0, 0));
+        }
+    };
+
 }
 
 void World::gui() {
@@ -181,6 +173,8 @@ void World::gui() {
     ImGui::End();
 
 }
+
+
 
 
 

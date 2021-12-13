@@ -11,7 +11,8 @@ namespace VE {
     class GJK {
     public:
         GJK(const Collider &collider1, const Collider &collider2);
-        bool testIntersection(Vector &penetrationVector);
+        bool testIntersection();
+        const std::vector<VE::Vector>& getSimplex() const;
     private:
 
         bool nextSimplex();

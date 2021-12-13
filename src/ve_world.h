@@ -25,6 +25,8 @@ namespace VE {
         void hid_CameraControl();
         void hid_PositionControl();
         void gui();
+
+        void prephysics(float dt);
         void physics(float dt);
 
         void resetScene();

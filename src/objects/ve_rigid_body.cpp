@@ -35,11 +35,11 @@ const VE::Transform &RigidBody::transform() const {
     return transform_;
 }
 
-size_t RigidBody::collidersSize() {
+size_t RigidBody::collidersSize() const{
     return colliders_.size();
 }
 
-const Collider &RigidBody::collider(size_t n) {
+const Collider &RigidBody::collider(size_t n) const{
     return *colliders_[n];
 }
 
@@ -90,6 +90,7 @@ void RigidBody::updateVelocity(float dt) {
 void RigidBody::updateTransform(float dt) {
     transform_.position += linearVelocity_ * dt;
     transform_.rotation += angularVelocity_ * dt;
+    setTransform(transform_);
 }
 
 void RigidBody::addForce(const Vector &force) {
@@ -98,7 +99,7 @@ void RigidBody::addForce(const Vector &force) {
 
 void RigidBody::addForce(const Vector &force, const Vector &forcePoint) {
     force_ += force_;
-    torque_ += (forcePoint - centerOfMass_) * force;
+    torque_ += (forcePoint - centerOfMass()) * force;
 }
 
 void RigidBody::setLinearVelocity(const Vector &linearVelocity) {
@@ -115,4 +116,24 @@ const Vector &RigidBody::linearVelocity() const {
 
 const Vector &RigidBody::angularVelocity() const {
     return angularVelocity_;
+}
+
+void RigidBody::setGravity(const Vector &gravity) {
+    gravity_ = gravity;
+}
+
+float RigidBody::invMass() const {
+    return invMass_;
+}
+
+float RigidBody::restitution() const {
+    return restitution_;
+}
+
+const Vector &RigidBody::centerOfMass() const {
+    return transform_.position;
+}
+
+const Matrix33 &RigidBody::invInertia() const {
+    return invInertia_;
 }

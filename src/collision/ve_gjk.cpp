@@ -14,19 +14,19 @@ GJK::GJK(const Collider &collider1, const Collider &collider2) : collider1_(coll
                                                                  collider2_(collider2) {
 }
 
-bool GJK::testIntersection(Vector &penetrationVector) {
+bool GJK::testIntersection() {
     VE::Vector supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
 
     simplex.push_back(supportPoint);
     direction = (supportPoint * -1).normolize();
     while (1) {
         supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
-        if (supportPoint.dot(direction) <= 0) return false;
+        if (supportPoint.dot(direction) <= 0) {
+            return false;
+        }
         simplex.push_back(supportPoint);
 
         if (nextSimplex()) {
-            penetrationVector = EPA::PenetrationDepth(collider1_, collider2_, simplex).getVector();
-            penetrationVector.draw(VE::Vector(1, 1, 1));
             return true;
         }
     }
@@ -125,4 +125,8 @@ bool GJK::tetrahedronCase() {
     } else {
         return true;
     }
+}
+
+const std::vector<VE::Vector> &GJK::getSimplex() const {
+    return simplex;
 }

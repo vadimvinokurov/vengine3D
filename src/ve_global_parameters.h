@@ -16,6 +16,7 @@ namespace VE{
         int pointSize = 0;
         std::vector<float> direction;
         float rotate[4];
+        bool warmstarting = true;
 
     };
 }

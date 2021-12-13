@@ -18,17 +18,22 @@ namespace VE {
         void moveTo(Vector dp);
         void update(float dt);
 
+        void setGravity(const Vector &gravity);
         void addForce(const Vector &force);
         void addForce(const Vector &force, const Vector &forcePoint);
         void setLinearVelocity(const Vector &linearVelocity);
         void setAngularVelocity(const Vector &angularVelocity);
         const Vector &linearVelocity() const;
         const Vector &angularVelocity() const;
+        float invMass() const;
+        float restitution() const;
+
+        const Vector &centerOfMass() const;
+        const Matrix33 &invInertia() const;
 
 
-
-        size_t collidersSize();
-        const Collider &collider(size_t n);
+        size_t collidersSize() const;
+        const Collider &collider(size_t n) const;
         const Transform &transform() const;
         virtual ~RigidBody();
     private:
@@ -45,9 +50,10 @@ namespace VE {
 
         Vector force_;
         Vector torque_;
-        Vector gravity_ = Vector();//Vector(0.0f, 0.0f, -9.8f);
+        Vector gravity_ = Vector();
         Vector linearVelocity_;
         Vector angularVelocity_;
+        float restitution_ = 0.0f;
     };
 
     using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
