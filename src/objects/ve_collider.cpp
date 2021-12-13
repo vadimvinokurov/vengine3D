@@ -11,24 +11,12 @@ Collider::Collider(ColliderType shapeType) : shapeType_(shapeType),
 
 }
 
-const float *Collider::verticesGLFormatData() const {
-    return reinterpret_cast<const float *>(glvertices_.data());
-}
-
-const void *Collider::indicesGLFormatData(unsigned int offset) const {
-    return static_cast<const void *>(glindices_.data() + offset);
-}
-
 Collider::~Collider() {
 
 }
 
 ColliderType Collider::shapeType() const {
     return shapeType_;
-}
-
-unsigned int Collider::indecesSize() const {
-    return glindices_.size();
 }
 
 void Collider::setTransform(const Transform &transform) {
@@ -41,10 +29,6 @@ void Collider::setColor(const Color &color) const {
 
 Color Collider::color() const {
     return color_;
-}
-
-const std::vector<Vector> &Collider::vertices() const {
-    return glvertices_;
 }
 
 const Transform &Collider::transform() const {
@@ -61,5 +45,9 @@ const Matrix33 &Collider::inertia() const {
 
 const Vector &Collider::centerOfMass() const {
     return centerOfMass_;
+}
+
+void Collider::setLocalTransform(const Transform &localTransform) {
+    centerOfMass_ = localTransform.apply(centerOfMass_);
 }
 

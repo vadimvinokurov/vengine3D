@@ -26,6 +26,8 @@ namespace VE {
         const Transform &transform() const;
         const Vector& centerOfMass() const;
 
+        virtual void setLocalTransform(const Transform &localTransform);
+
         float mass() const;
         const Matrix33 &inertia() const;
 
@@ -33,24 +35,22 @@ namespace VE {
         Color color() const;
 
 
-        const float *verticesGLFormatData() const;
-        unsigned int indecesSize() const;
-        const void *indicesGLFormatData(unsigned int offset = 0) const;
-        const std::vector<Vector> &vertices() const;
+        virtual const void *verticesGLFormatData() const = 0;
+        virtual const void *indicesGLFormatData(unsigned int offset = 0) const = 0;
+        virtual unsigned int indecesSize() const = 0;
+
         virtual ~Collider();
     protected:
         explicit Collider(ColliderType shapeType);
 
         const ColliderType shapeType_;
 
-        Transform transform_;
-        Matrix33 inertia_;
-        float mass_;
-        Vector centerOfMass_;
 
+        Transform transform_;
+        float mass_;
+        Matrix33 inertia_;
+        Vector centerOfMass_;
         mutable VE::Color color_;
-        std::vector<Vector> glvertices_;
-        std::vector<unsigned int> glindices_;
     };
 
     using ColliderPtr = std::shared_ptr<Collider>;

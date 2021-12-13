@@ -11,16 +11,16 @@ SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center, 1.0
 }
 
 SphereCollider::SphereCollider(float radius, Vector center, float mass) : Collider(ColliderType::sphere),
-                                                                          radius_(radius){
+                                                                          radius_(radius) {
     centerOfMass_ = center;
-
+    globalCenter = center;
     mass_ = mass;
     computeSphereInertia();
     setGlvertices();
 }
 
 Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
-    return direction.normolize() * radius_ + centerOfMass_;
+    return direction.normolize() * radius_ + globalCenter;
 }
 
 void SphereCollider::setGlvertices() {
@@ -31,7 +31,7 @@ void SphereCollider::setGlvertices() {
     float dF = M_PI * 2 / nF;
     for (int i = 1; i < nT; i++) {
         for (int j = 0; j < nF; j++) {
-            glvertices_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j),
+            glVerticesBuffer_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j),
                                      radius_ * sinf(dT * i) * sinf(dF * j),
                                      radius_ * cosf(dT * i));
 
@@ -40,15 +40,15 @@ void SphereCollider::setGlvertices() {
 
     for (int i = 1; i < nT - 1; i++) {
         for (int j = 0; j < nF - 1; j++) {
-            glindices_.push_back((i - 1) * nF + j);
-            glindices_.push_back((i - 1) * nF + j + 1);
-            glindices_.push_back(i * nF + j + 1);
-            glindices_.push_back(i * nF + j);
+            glIndicesBuffer_.push_back((i - 1) * nF + j);
+            glIndicesBuffer_.push_back((i - 1) * nF + j + 1);
+            glIndicesBuffer_.push_back(i * nF + j + 1);
+            glIndicesBuffer_.push_back(i * nF + j);
         }
-        glindices_.push_back((i - 1) * nF + nF - 1);
-        glindices_.push_back((i - 1) * nF + 0);
-        glindices_.push_back(i * nF + 0);
-        glindices_.push_back(i * nF + nF - 1);
+        glIndicesBuffer_.push_back((i - 1) * nF + nF - 1);
+        glIndicesBuffer_.push_back((i - 1) * nF + 0);
+        glIndicesBuffer_.push_back(i * nF + 0);
+        glIndicesBuffer_.push_back(i * nF + nF - 1);
     }
 }
 
@@ -59,5 +59,22 @@ void SphereCollider::computeSphereInertia() {
             0, tmp, 0,
             0, 0, tmp
     );
+}
+
+void SphereCollider::setTransform(const Transform &transform) {
+    globalCenter = transform.applyForNormal(centerOfMass_);
+    Collider::setTransform(transform);
+}
+
+const void *SphereCollider::verticesGLFormatData() const {
+    return reinterpret_cast<const void *>(glVerticesBuffer_.data());
+}
+
+const void *SphereCollider::indicesGLFormatData(unsigned int offset) const {
+    return reinterpret_cast<const void *>(glIndicesBuffer_.data() + offset);
+}
+
+unsigned int SphereCollider::indecesSize() const {
+    return glIndicesBuffer_.size();
 }
 

@@ -12,25 +12,31 @@
 namespace VE {
     class BoxCollider : public Collider {
     public:
-        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f,  const Transform &localTransform = Transform());
-        BoxCollider(float width, float height, float depth, const Transform &localTransform);
-        BoxCollider(float mass,  const Transform &localTransform = Transform());
-        BoxCollider(const Transform &localTransform);
+        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f);
+
+        void setLocalTransform(const Transform &localTransform) override;
 
         virtual Vector farthestVertexInDirection(const Vector &direction) const override;
         virtual void setTransform(const Transform &transform) override;
 
         ColliderFace getFaceInDirection(const Vector &direction) const;
         ColliderFace getFace(unsigned int faceNumber) const;
+
+        virtual const void *verticesGLFormatData() const override ;
+        virtual const void *indicesGLFormatData(unsigned int offset = 0) const override ;
+        virtual unsigned int indecesSize() const override ;
     private:
-        void computeVertices(float width, float height, float depth, const Transform &localTransform);
         void computeFaceNormals();
         void computeCenterOfMass();
         void computeBoxInertia(float width, float height, float depth);
-        void setGlvertices();
         void initGlobalBuffer();
 
-        const std::vector<unsigned int> indices_;
+        const std::vector<unsigned int> indices_ = {3, 2, 1, 0,
+                                                    4, 5, 6, 7,
+                                                    0, 1, 5, 4,
+                                                    2, 3, 7, 6,
+                                                    3, 0, 4, 7,
+                                                    1, 2, 6, 5};
         std::vector<Vector> localFaceNormals_;
         std::vector<Vector> globalFaceNormals_;
         std::vector<Vector> localVertices_;

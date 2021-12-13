@@ -16,14 +16,22 @@ namespace VE {
         void addCollider(const ColliderPtr &constShapePtr);
         void setTransform(const Transform &transform);
         void moveTo(Vector dp);
+        void update(float dt);
 
         size_t collidersSize();
         const Collider &collider(size_t n);
         const Transform &transform() const;
         virtual ~RigidBody();
     private:
+        void computeMass();
+
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
+
+        Vector centerOfMass_;
+        float invMass_;
+        Matrix33 invInertia_;
+
 
         Vector force_;
         Vector torque_;

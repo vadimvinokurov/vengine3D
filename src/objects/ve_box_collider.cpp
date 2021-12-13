@@ -6,41 +6,32 @@
 
 using namespace VE;
 
+BoxCollider::BoxCollider(float width, float height, float depth, float mass) : Collider(ColliderType::box) {
 
-BoxCollider::BoxCollider(float width, float height, float depth, const Transform &localTransform) : BoxCollider(width, height, depth, 1.0f,
-                                                                                                                localTransform) {}
+    localVertices_ = {Vector(0, 0, 0),
+                      Vector(width, 0, 0),
+                      Vector(width, depth, 0),
+                      Vector(0, depth, 0),
+                      Vector(0, 0, height),
+                      Vector(width, 0, height),
+                      Vector(width, depth, height),
+                      Vector(0, depth, height)};
 
-BoxCollider::BoxCollider(float mass, const Transform &localTransform) : BoxCollider(1.0f, 1.0f, 1.0f, mass, localTransform) {}
-
-BoxCollider::BoxCollider(const Transform &localTransform) : BoxCollider(1.0f, 1.0f, 1.0f, 1.0f, localTransform) {}
-
-BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Transform &localTransform) : Collider(ColliderType::box),
-                                                                                                                indices_{3, 2, 1, 0,
-                                                                                                                         4, 5, 6, 7,
-                                                                                                                         0, 1, 5, 4,
-                                                                                                                         2, 3, 7, 6,
-                                                                                                                         3, 0, 4, 7,
-                                                                                                                         1, 2, 6, 5} {
 
     mass_ = mass;
-    computeVertices(width, height, depth, localTransform);
     computeFaceNormals();
     computeCenterOfMass();
-    computeBoxInertia(width, height, depth);
-    setGlvertices();
     initGlobalBuffer();
+    computeBoxInertia(width, height, depth);
 }
 
-void BoxCollider::computeVertices(float width, float height, float depth, const Transform &localTransform) {
-
-    localVertices_ = {localTransform.apply(Vector(0, 0, 0)),
-                      localTransform.apply(Vector(width, 0, 0)),
-                      localTransform.apply(Vector(width, depth, 0)),
-                      localTransform.apply(Vector(0, depth, 0)),
-                      localTransform.apply(Vector(0, 0, height)),
-                      localTransform.apply(Vector(width, 0, height)),
-                      localTransform.apply(Vector(width, depth, height)),
-                      localTransform.apply(Vector(0, depth, height))};
+void BoxCollider::setLocalTransform(const Transform &localTransform) {
+    for (auto &vertex: localVertices_) {
+        vertex = localTransform.apply(vertex);
+    }
+    computeFaceNormals();
+    computeCenterOfMass();
+    initGlobalBuffer();
 }
 
 void BoxCollider::computeBoxInertia(float width, float height, float depth) {
@@ -80,7 +71,6 @@ void BoxCollider::initGlobalBuffer() {
 }
 
 
-
 Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
     float l = -INFINITY;
 
@@ -106,11 +96,6 @@ void BoxCollider::setTransform(const Transform &transform) {
     Collider::setTransform(transform);
 }
 
-void BoxCollider::setGlvertices() {
-    glvertices_ = localVertices_;
-    glindices_ = indices_;
-}
-
 ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {
     float projectionMax = std::numeric_limits<float>::lowest();
     unsigned int selectedFaceNumber = std::numeric_limits<unsigned int>::max();
@@ -133,6 +118,20 @@ ColliderFace BoxCollider::getFace(unsigned int faceNumber) const {
                          globalVertices_[indices_[faceNumber * 4 + 2]], globalVertices_[indices_[faceNumber * 4 + 3]]},
                         globalFaceNormals_[faceNumber]);
 }
+
+const void *BoxCollider::verticesGLFormatData() const {
+    return reinterpret_cast<const void *>(localVertices_.data());
+}
+
+const void *BoxCollider::indicesGLFormatData(unsigned int offset) const {
+    return reinterpret_cast<const void *>(indices_.data() + offset);
+}
+
+unsigned int BoxCollider::indecesSize() const {
+    return indices_.size();
+}
+
+
 
 
 

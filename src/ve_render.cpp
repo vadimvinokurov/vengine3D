@@ -50,6 +50,7 @@ void drawAxis(float axisLen = 10) {
     glEnd();
 }
 
+
 void drawShape(const VE::Collider &shape, const VE::Transform transform) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
