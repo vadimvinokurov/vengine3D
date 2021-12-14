@@ -6,6 +6,7 @@
 #define VENGINE3D_WORLD_H
 
 #include <memory>
+#include "physics/ve_contact_solver.h"
 #include "objects/ve_rigid_body.h"
 #include "objects/ve_camera.h"
 #include "control/ve_keyboard.h"
@@ -31,7 +32,7 @@ namespace VE {
 
         void resetScene();
         CameraPtr currentCamera_ = std::make_shared<Camera>();
-
+        std::map<VE::ContactKey, VE::ContactSolver> contactSolvers;
 
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;

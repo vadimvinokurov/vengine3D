@@ -3,10 +3,7 @@
 //
 
 #include "ve_world.h"
-#include "math/ve_matrix33.h"
 #include "objects/ve_box_collider.h"
-#include "collision/ve_collision.h"
-#include "physics/ve_contact_solver.h"
 #include "imgui/imgui.h"
 #include "ve_global_parameters.h"
 
@@ -18,6 +15,7 @@ World::World() {
 
 void World::resetScene() {
     worldObjects.clear();
+    contactSolvers.clear();
 
     auto body1 = std::make_shared<VE::RigidBody>();
     auto collider1 = std::make_shared<VE::BoxCollider>();
@@ -35,7 +33,7 @@ void World::resetScene() {
     body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
     body2->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0.1f, 2);
+        transform.position = Vector(0, 0, 2);
         return transform;
     }());
     worldObjects.push_back(body2);
@@ -44,7 +42,11 @@ void World::resetScene() {
     auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
     floarCol->setColor(Color(0.3f, 0.3f, 0.3f));
     floor->addCollider(floarCol);
-
+    floor->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0, -0.5f);
+        return transform;
+    }());
     worldObjects.push_back(floor);
 }
 
@@ -150,50 +152,69 @@ void VE::World::update(float dt) {
 }
 
 void World::prephysics(float dt) {
-}
-
-void World::physics(float dt) {
-
-    for (auto &object: worldObjects) {
-        object->update(dt);
-    }
+    if (worldObjects.size() == 0) return;
 
     for (size_t i = 0; i < worldObjects.size() - 1; i++) {
         for (size_t j = i + 1; j < worldObjects.size(); j++) {
             VE::RigidBody &body1 = *worldObjects[i];
             VE::RigidBody &body2 = *worldObjects[j];
-            VE::ContactMainfold contactMainfold;
-            if (testIntersection(body1, body2, contactMainfold)) {
-                for (auto &contact:contactMainfold) {
-                    contact.point.drawPoint(12, Color(1, 0, 0));
-                }
-            };
+            if (body1.invMass() + body2.invMass() == 0) continue;
+            //if (!(body1.isCollision() && body2.isCollision())) continue;
 
-            auto a = ContactSolver(body1, body2);
-            a.preStep(dt);
-            a.applyImpulse(dt);
+            VE::ContactKey contactKey(body1, body2);
+//            if (!aabbCollisionDetection(body1, body2)) {
+//                contactSolvers.erase(contactKey);
+//                continue;
+//            }
+
+            VE::ContactSolver newContact(body1, body2);
+            if (newContact.isCollide()) {
+                auto citer = contactSolvers.find(contactKey);
+                if (citer == contactSolvers.end()) {
+                    contactSolvers.emplace(contactKey, newContact);
+                } else {
+                    citer->second.update(newContact.contactMainfold());
+                }
+            } else {
+                contactSolvers.erase(contactKey);
+            }
+        }
+    }
+}
+
+void World::physics(float dt) {
+    for (auto &object: worldObjects) {
+        object->updateVelocity(dt);
+    }
+
+    for (auto &contact: contactSolvers) {
+        contact.second.preStep(dt);
+    }
+
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &contact: contactSolvers) {
+            contact.second.applyImpulse(dt);
         }
     }
 
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &contact: contactSolvers) {
+            contact.second.applyPseudoImpulse(dt);
+        }
+    }
 
+    for (auto &object: worldObjects) {
+        object->updateTransform(dt);
+    }
 }
 
 void World::gui() {
     ImGui::Begin("Control panel");
     if (ImGui::Button("Reset")) resetScene();
     ImGui::SliderFloat("Camera speed", &globalParameters.cameraSpeed, 0.05f / 20, 0.05f * 4);
-    ImGui::SliderInt("face", &globalParameters.clippingIteration, 0, 16);
-    ImGui::SliderInt("vector", &globalParameters.verctorNumber, 0, 3);
-    ImGui::ColorEdit4("Color", globalParameters.rotate);
-    ImGui::Text("Polytope vertex - %d:", globalParameters.pointSize);
-    //ImGui::Text("minimal epa normal - %f %f %f:", globalParameters.minEpaNormal.x(),globalParameters.minEpaNormal.y(),globalParameters.minEpaNormal.z());
-
-    ImGui::BeginChild("Scrolling");
-    for (float v: globalParameters.direction) {
-        ImGui::Text("same direction %f", v);
-    }
-
-    ImGui::EndChild();
+    ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
+    ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
+    ImGui::Checkbox("pseudoVelosity", &globalParameters.pseudoVelosity);
 
     ImGui::End();
 

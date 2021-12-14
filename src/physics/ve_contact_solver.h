@@ -57,7 +57,7 @@ namespace VE {
         VE::RigidBody &body1;
         VE::RigidBody &body2;
 
-        const float mu = 0.2f;
+        float mu = 0.2f;
         float e = 0.0f;
     };
 }

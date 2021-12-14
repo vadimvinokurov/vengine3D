@@ -16,15 +16,26 @@ namespace VE {
         void addCollider(const ColliderPtr &constShapePtr);
         void setTransform(const Transform &transform);
         void moveTo(Vector dp);
-        void update(float dt);
+
+        void updateVelocity(float dt);
+        void updateTransform(float dt);
 
         void setGravity(const Vector &gravity);
         void addForce(const Vector &force);
         void addForce(const Vector &force, const Vector &forcePoint);
+
         void setLinearVelocity(const Vector &linearVelocity);
         void setAngularVelocity(const Vector &angularVelocity);
         const Vector &linearVelocity() const;
         const Vector &angularVelocity() const;
+
+        void setPseudoLinearVelocity(const Vector &pseudoLinearVelocity);
+        void setPseudoAngularVelocity(const Vector &pseudoAngularVelocity);
+        const Vector &pseudoLinearVelocity() const;
+        const Vector &pseudoAngularVelocity() const;
+
+        Vector globalToLocalPoint(const Vector &globalPoint);
+
         float invMass() const;
         float restitution() const;
 
@@ -38,21 +49,24 @@ namespace VE {
         virtual ~RigidBody();
     private:
         void computeMass();
-        void updateVelocity(float dt);
-        void updateTransform(float dt);
 
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
-
+        Matrix33 invInertia_;
         Vector centerOfMass_;
         float invMass_;
-        Matrix33 invInertia_;
+
 
         Vector force_;
         Vector torque_;
         Vector gravity_ = Vector();
         Vector linearVelocity_;
         Vector angularVelocity_;
+        Vector pseudoLinearVelocity_;
+        Vector pseudoAngularVelocity_;
+
+        float sleepEpsilont_ = 0.0001f;
+        float damping_ = 0.999f;
         float restitution_ = 0.0f;
     };
 

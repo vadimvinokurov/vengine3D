@@ -7,11 +7,9 @@
 using namespace VE;
 
 RigidBody::RigidBody() {
-    //angularVelocity_ = Vector(1, 0, 0) * M_PI_4;
 }
 
 RigidBody::~RigidBody() {
-
 }
 
 void RigidBody::addCollider(const VE::ColliderPtr &constShapePtr) {
@@ -35,11 +33,11 @@ const VE::Transform &RigidBody::transform() const {
     return transform_;
 }
 
-size_t RigidBody::collidersSize() const{
+size_t RigidBody::collidersSize() const {
     return colliders_.size();
 }
 
-const Collider &RigidBody::collider(size_t n) const{
+const Collider &RigidBody::collider(size_t n) const {
     return *colliders_[n];
 }
 
@@ -74,11 +72,6 @@ void RigidBody::computeMass() {
     invMass_ = static_cast<float>(colliders_.size()) / mass_;
 }
 
-void RigidBody::update(float dt) {
-    updateVelocity(dt);
-    updateTransform(dt);
-}
-
 void RigidBody::updateVelocity(float dt) {
     angularVelocity_ += invInertia_ * torque_ * dt;
     linearVelocity_ += force_ * invMass_ * dt + gravity_ * dt;
@@ -88,9 +81,24 @@ void RigidBody::updateVelocity(float dt) {
 }
 
 void RigidBody::updateTransform(float dt) {
-    transform_.position += linearVelocity_ * dt;
-    transform_.rotation += angularVelocity_ * dt;
+    if ((linearVelocity_ + pseudoLinearVelocity_).sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
+        linearVelocity_.setZero();
+        pseudoLinearVelocity_.setZero();
+    }
+
+    if ((angularVelocity_ + pseudoAngularVelocity_).sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
+        angularVelocity_.setZero();
+        pseudoAngularVelocity_.setZero();
+    }
+
+    transform_.position += (linearVelocity_ + pseudoLinearVelocity_) * dt;
+    transform_.rotation += (angularVelocity_ + pseudoAngularVelocity_) * dt;
     setTransform(transform_);
+
+    linearVelocity_ *= damping_;
+    angularVelocity_ *= damping_;
+    pseudoLinearVelocity_.setZero();
+    pseudoAngularVelocity_.setZero();
 }
 
 void RigidBody::addForce(const Vector &force) {
@@ -136,4 +144,24 @@ const Vector &RigidBody::centerOfMass() const {
 
 const Matrix33 &RigidBody::invInertia() const {
     return invInertia_;
+}
+
+void RigidBody::setPseudoLinearVelocity(const Vector &pseudoLinearVelocity) {
+    pseudoLinearVelocity_ = pseudoLinearVelocity;
+}
+
+void RigidBody::setPseudoAngularVelocity(const Vector &pseudoAngularVelocity) {
+    pseudoAngularVelocity_ = pseudoAngularVelocity;
+}
+
+const Vector &RigidBody::pseudoLinearVelocity() const {
+    return pseudoLinearVelocity_;
+}
+
+const Vector &RigidBody::pseudoAngularVelocity() const {
+    return pseudoAngularVelocity_;
+}
+
+Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
+    return transform_.applyInverse(globalPoint);
 }
