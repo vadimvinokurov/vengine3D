@@ -47,6 +47,7 @@ namespace VE {
 
         void update(ContactMainfold newContactMainfold);
     private:
+
         float speedSlop = 0.15f;
         float penetrationSlop = 0.01f;
         float beta = 0.2f;
@@ -57,8 +58,8 @@ namespace VE {
         VE::RigidBody &body1;
         VE::RigidBody &body2;
 
-        float mu = 0.2f;
-        float e = 0.0f;
+        float friction_ = 0.2f;
+        float restitution_ = 0.0f;
     };
 }
 

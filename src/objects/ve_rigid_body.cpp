@@ -165,3 +165,7 @@ const Vector &RigidBody::pseudoAngularVelocity() const {
 Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
     return transform_.applyInverse(globalPoint);
 }
+
+float RigidBody::friction() const {
+    return friction_;
+}

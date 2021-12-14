@@ -21,9 +21,13 @@ namespace VE {
         float pseudoImpulse = 0.0f;
 
         float normalEffectiveMass = 0.0f;
-        float tangentEffectiveMass = 0.0f;
+        float tangent1EffectiveMass = 0.0f;
+        float tangent2EffectiveMass = 0.0f;
+
         float normalInitRelativeVelocity = 0.0f;
-        float tangentInitRelativeVelocity = 0.0f;
+        float tangent1InitRelativeVelocity = 0.0f;
+        float tangent2InitRelativeVelocity = 0.0f;
+
         float bias = 0.0f;
         bool saved = false;
     };

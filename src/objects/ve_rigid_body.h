@@ -38,6 +38,7 @@ namespace VE {
 
         float invMass() const;
         float restitution() const;
+        float friction() const;
 
         const Vector &centerOfMass() const;
         const Matrix33 &invInertia() const;
@@ -68,6 +69,7 @@ namespace VE {
         float sleepEpsilont_ = 0.0001f;
         float damping_ = 0.999f;
         float restitution_ = 0.0f;
+        float friction_ = 0.2f;
     };
 
     using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
