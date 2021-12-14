@@ -47,9 +47,9 @@ namespace VE {
 
         void update(ContactMainfold newContactMainfold);
     private:
-        const float speedSlop = 0.15f;
-        const float penetrationSlop = 0.01f;
-        const float beta = 0.2f;
+        float speedSlop = 0.15f;
+        float penetrationSlop = 0.01f;
+        float beta = 0.2f;
 
         ContactMainfold contactMainfold_;
 

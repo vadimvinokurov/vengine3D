@@ -49,7 +49,7 @@ void RigidBody::setTransform(const Transform &transform) {
 }
 
 void RigidBody::computeMass() {
-    float mass_ = 0;
+    float mass = 0;
     Matrix33 inertia;
     centerOfMass_ = Vector();
     for (const auto &collider: colliders_) {
@@ -63,13 +63,13 @@ void RigidBody::computeMass() {
             centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
             return;
         }
-        mass_ += collider->mass();
+        mass += collider->mass();
         centerOfMass_ += collider->getCenterOfMass();
         inertia += collider->inertia();
     }
     centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
     invInertia_ = inertia.getInverse();
-    invMass_ = static_cast<float>(colliders_.size()) / mass_;
+    invMass_ = 1 / mass;
 }
 
 void RigidBody::updateVelocity(float dt) {

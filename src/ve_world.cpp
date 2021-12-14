@@ -22,14 +22,14 @@ void World::resetScene() {
     body1->addCollider(collider1);
     body1->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0.4f, 0.4f, 4);
+        transform.position = Vector(0.5f, 0.5f, 4);
         return transform;
     }());
     body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body1);
 
     auto body2 = std::make_shared<VE::RigidBody>();
-    body2->addCollider(std::make_shared<VE::BoxCollider>());
+    body2->addCollider(std::make_shared<VE::BoxCollider>(1,1,1,10));
     body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
     body2->setTransform([]() {
         Transform transform;

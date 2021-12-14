@@ -264,9 +264,17 @@ namespace VE {
         }
 
         virtual ~Matrix33() = default;
-
+        friend inline Vector operator*(const Vector &vector, const Matrix33 &matrix33);
     private:
         float a[3][3]{};
+    };
+
+    inline Vector operator*(const Vector &v, const Matrix33 &m) {
+        Vector res;
+        res.setX(m.a[0][0] * v.x() + m.a[1][0] * v.y() + m.a[2][0] * v.z());
+        res.setY(m.a[0][1] * v.x() + m.a[1][1] * v.y() + m.a[2][1] * v.z());
+        res.setZ(m.a[0][2] * v.x() + m.a[1][2] * v.y() + m.a[2][2] * v.z());
+        return res;
     };
 }
 
