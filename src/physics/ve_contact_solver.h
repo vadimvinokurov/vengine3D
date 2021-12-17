@@ -29,7 +29,13 @@ namespace VE {
         VE::RigidBody *bodyptr2;
     };
 
-
+    namespace ContactSolverParametrs {
+        const float speedSlop = 0.15f;
+        const float penetrationSlop = 0.01f;
+        const float beta = 0.2f;
+        const float normalDeviation = 0.99f;
+        const float contactSlop = 0.01f;
+    };
 
     class ContactSolver {
     public:
@@ -47,19 +53,14 @@ namespace VE {
 
         void update(ContactMainfold newContactMainfold);
     private:
-
-        float speedSlop = 0.15f;
-        float penetrationSlop = 0.01f;
-        float beta = 0.2f;
+        float computeEffectiveMass(const Vector &J0, const Vector &J1, const Vector &J2, const Vector &J3);
 
         ContactMainfold contactMainfold_;
-
-        bool contact = false;
         VE::RigidBody &body1;
         VE::RigidBody &body2;
-
-        float friction_ = 0.2f;
-        float restitution_ = 0.0f;
+        bool contact = false;
+        float friction_;
+        float restitution_;
     };
 }
 

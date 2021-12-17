@@ -169,3 +169,7 @@ Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
 float RigidBody::friction() const {
     return friction_;
 }
+
+void RigidBody::setRestitution(float restitution) {
+    restitution_ = restitution;
+}

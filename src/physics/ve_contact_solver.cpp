@@ -33,10 +33,10 @@ void ContactSolver::update(ContactMainfold newContactMainfold) {
                 VE::Vector newLocalNormalOb2 = body2.globalToLocalPoint(newContactPoint.point + newContactPoint.normal) - newLocalCPointOb2;
 
 
-                if ((localCPointOb1 - newLocalCPointOb1).sqrtAbs() < 0.01f &&
-                    (localCPointOb2 - newLocalCPointOb2).sqrtAbs() < 0.01f &&
-                    localNormalOb1.dot(newLocalNormalOb1) > 0.99f &&
-                    localNormalOb2.dot(newLocalNormalOb2) > 0.99f) {
+                if ((localCPointOb1 - newLocalCPointOb1).sqrtAbs() < ContactSolverParametrs::contactSlop &&
+                    (localCPointOb2 - newLocalCPointOb2).sqrtAbs() < ContactSolverParametrs::contactSlop &&
+                    localNormalOb1.dot(newLocalNormalOb1) > ContactSolverParametrs::normalDeviation &&
+                    localNormalOb2.dot(newLocalNormalOb2) >ContactSolverParametrs:: normalDeviation) {
 
                     newContactPoint.normalImpulse = contactPoint.normalImpulse;
                     newContactPoint.tangent1Impulse = contactPoint.tangent1Impulse;
@@ -51,50 +51,54 @@ void ContactSolver::update(ContactMainfold newContactMainfold) {
 }
 
 
-void ContactSolver::preStep(float dt) {
-    for (ManifoldContactPoint &contactPoint: contactMainfold_) {
+float ContactSolver::computeEffectiveMass(const Vector &J0, const Vector &J1, const Vector &J2, const Vector &J3) {
+    return 0;
+}
 
-        Vector r1 = contactPoint.point - body1.centerOfMass();
-        Vector r2 = contactPoint.point - body2.centerOfMass();
+void ContactSolver::preStep(float dt) {
+    for (ManifoldContactPoint &contact: contactMainfold_) {
+
+        Vector r1 = contact.point - body1.centerOfMass();
+        Vector r2 = contact.point - body2.centerOfMass();
         VE::Vector relativeVelocity = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
 
-        contactPoint.bias = -beta / dt * std::max(0.0f, contactPoint.collisionDepth - penetrationSlop);
+        contact.bias = -ContactSolverParametrs::beta / dt * std::max(0.0f, contact.collisionDepth - ContactSolverParametrs::penetrationSlop);
 
-        Vector nCrossR1 = contactPoint.normal * r1;
-        Vector nCrossR2 = contactPoint.normal * r2;
-        contactPoint.normalEffectiveMass = 1 / (body1.invMass() + body2.invMass() +
+        Vector nCrossR1 = contact.normal * r1;
+        Vector nCrossR2 = contact.normal * r2;
+        contact.normalEffectiveMass = 1 / (body1.invMass() + body2.invMass() +
                                                 (nCrossR1 * body1.invInertia()).dot(nCrossR1) +
                                                 (nCrossR2 * body2.invInertia()).dot(nCrossR2));
-        contactPoint.normalInitRelativeVelocity = std::min(relativeVelocity.dot(contactPoint.normal) + speedSlop, 0.0f);
+        contact.normalInitRelativeVelocity = std::min(relativeVelocity.dot(contact.normal) + ContactSolverParametrs::speedSlop, 0.0f);
 
 
-        contactPoint.tangent1 = (contactPoint.normal * (contactPoint.normal * relativeVelocity)).normolize();
-        Vector t1CrossR1 = contactPoint.tangent1 * r1;
-        Vector t1CrossR2 = contactPoint.tangent1 * r2;
-        contactPoint.tangent1EffectiveMass = 1 / (body1.invMass() + body2.invMass() +
+        contact.tangent1 = (contact.normal * (contact.normal * relativeVelocity)).normolize();
+        Vector t1CrossR1 = contact.tangent1 * r1;
+        Vector t1CrossR2 = contact.tangent1 * r2;
+        contact.tangent1EffectiveMass = 1 / (body1.invMass() + body2.invMass() +
                                                   (t1CrossR1 * body1.invInertia()).dot(t1CrossR1) +
                                                   (t1CrossR2 * body2.invInertia()).dot(t1CrossR2));
-        contactPoint.tangent1InitRelativeVelocity = relativeVelocity.dot(contactPoint.tangent1);
+        contact.tangent1InitRelativeVelocity = relativeVelocity.dot(contact.tangent1);
 
 
-        contactPoint.tangent2 = contactPoint.normal * contactPoint.tangent1;
-        Vector t2CrossR1 = contactPoint.tangent2 * r1;
-        Vector t2CrossR2 = contactPoint.tangent2 * r2;
-        contactPoint.tangent2EffectiveMass = 1 / (body1.invMass() + body2.invMass() +
+        contact.tangent2 = contact.normal * contact.tangent1;
+        Vector t2CrossR1 = contact.tangent2 * r1;
+        Vector t2CrossR2 = contact.tangent2 * r2;
+        contact.tangent2EffectiveMass = 1 / (body1.invMass() + body2.invMass() +
                                                   (t2CrossR1 * body1.invInertia()).dot(t2CrossR1) +
                                                   (t2CrossR2 * body2.invInertia()).dot(t2CrossR2));
-        contactPoint.tangent2InitRelativeVelocity = relativeVelocity.dot(contactPoint.tangent2);
+        contact.tangent2InitRelativeVelocity = relativeVelocity.dot(contact.tangent2);
 
 
-        Vector L = contactPoint.normal * contactPoint.normalImpulse + contactPoint.tangent1 * contactPoint.tangent1Impulse +
-                   contactPoint.tangent2 * contactPoint.tangent2Impulse;
+        Vector L = contact.normal * contact.normalImpulse + contact.tangent1 * contact.tangent1Impulse +
+                contact.tangent2 * contact.tangent2Impulse;
         body1.setLinearVelocity(body1.linearVelocity() - L * body1.invMass());
         body1.setAngularVelocity(body1.angularVelocity() - body1.invInertia() * (r1 * L));
         body2.setLinearVelocity(body2.linearVelocity() + L * body2.invMass());
         body2.setAngularVelocity(body2.angularVelocity() + body2.invInertia() * (r2 * L));
 
 
-        L = contactPoint.normal * contactPoint.pseudoImpulse;
+        L = contact.normal * contact.pseudoImpulse;
         if (globalParameters.pseudoVelosity) {
             body1.setPseudoLinearVelocity(body1.pseudoLinearVelocity() - L * body1.invMass());
             body1.setPseudoAngularVelocity(body1.pseudoAngularVelocity() - body1.invInertia() * (r1 * L));
@@ -107,17 +111,17 @@ void ContactSolver::preStep(float dt) {
 
 
 void ContactSolver::applyImpulse(float dt) {
-    for (ManifoldContactPoint &contactPoint: contactMainfold_) {
-        Vector r1 = contactPoint.point - body1.centerOfMass();
-        Vector r2 = contactPoint.point - body2.centerOfMass();
+    for (ManifoldContactPoint &contact: contactMainfold_) {
+        Vector r1 = contact.point - body1.centerOfMass();
+        Vector r2 = contact.point - body2.centerOfMass();
         Vector vrel = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
 
-        float vn = vrel.dot(contactPoint.normal);
-        float dPn = contactPoint.normalEffectiveMass * -(vn + restitution_ * contactPoint.normalInitRelativeVelocity);
-        float oldPn = contactPoint.normalImpulse;
-        contactPoint.normalImpulse = std::max(contactPoint.normalImpulse + dPn, 0.0f);
-        dPn = contactPoint.normalImpulse - oldPn;
-        Vector L = contactPoint.normal * dPn;
+        float vn = vrel.dot(contact.normal);
+        float dPn = contact.normalEffectiveMass * -(vn + restitution_ * contact.normalInitRelativeVelocity);
+        float oldPn = contact.normalImpulse;
+        contact.normalImpulse = std::max(contact.normalImpulse + dPn, 0.0f);
+        dPn = contact.normalImpulse - oldPn;
+        Vector L = contact.normal * dPn;
 
         body1.setLinearVelocity(body1.linearVelocity() - L * body1.invMass());
         body1.setAngularVelocity(body1.angularVelocity() - body1.invInertia() * (r1 * L));
@@ -127,13 +131,13 @@ void ContactSolver::applyImpulse(float dt) {
 
 
         vrel = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
-        float vt = vrel.dot(contactPoint.tangent1);
-        float dPt = contactPoint.tangent1EffectiveMass * -(vt + restitution_ * contactPoint.tangent1InitRelativeVelocity);
-        float oldPt = contactPoint.tangent1Impulse;
-        contactPoint.tangent1Impulse = std::clamp(contactPoint.tangent1Impulse + dPt, -contactPoint.normalImpulse * friction_,
-                                                  contactPoint.normalImpulse * friction_);
-        dPt = contactPoint.tangent1Impulse - oldPt;
-        L = contactPoint.tangent1 * dPt;
+        float vt = vrel.dot(contact.tangent1);
+        float dPt = contact.tangent1EffectiveMass * -(vt + restitution_ * contact.tangent1InitRelativeVelocity);
+        float oldPt = contact.tangent1Impulse;
+        contact.tangent1Impulse = std::clamp(contact.tangent1Impulse + dPt, -contact.normalImpulse * friction_,
+                                                  contact.normalImpulse * friction_);
+        dPt = contact.tangent1Impulse - oldPt;
+        L = contact.tangent1 * dPt;
 
         body1.setLinearVelocity(body1.linearVelocity() - L * body1.invMass());
         body1.setAngularVelocity(body1.angularVelocity() - body1.invInertia() * (r1 * L));
@@ -143,13 +147,13 @@ void ContactSolver::applyImpulse(float dt) {
 
 
         vrel = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
-        vt = vrel.dot(contactPoint.tangent2);
-        dPt = contactPoint.tangent2EffectiveMass * -(vt + restitution_ * contactPoint.tangent2InitRelativeVelocity);
-        oldPt = contactPoint.tangent2Impulse;
-        contactPoint.tangent2Impulse = std::clamp(contactPoint.tangent2Impulse + dPt, -contactPoint.normalImpulse * friction_,
-                                                  contactPoint.normalImpulse * friction_);
-        dPt = contactPoint.tangent2Impulse - oldPt;
-        L = contactPoint.tangent2 * dPt;
+        vt = vrel.dot(contact.tangent2);
+        dPt = contact.tangent2EffectiveMass * -(vt + restitution_ * contact.tangent2InitRelativeVelocity);
+        oldPt = contact.tangent2Impulse;
+        contact.tangent2Impulse = std::clamp(contact.tangent2Impulse + dPt, -contact.normalImpulse * friction_,
+                                             contact.normalImpulse * friction_);
+        dPt = contact.tangent2Impulse - oldPt;
+        L = contact.tangent2 * dPt;
 
         body1.setLinearVelocity(body1.linearVelocity() - L * body1.invMass());
         body1.setAngularVelocity(body1.angularVelocity() - body1.invInertia() * (r1 * L));
@@ -161,21 +165,21 @@ void ContactSolver::applyImpulse(float dt) {
 
 void ContactSolver::applyPseudoImpulse(float dt) {
     if (globalParameters.pseudoVelosity) {
-        for (ManifoldContactPoint &contactPoint: contactMainfold_) {
-            Vector r1 = contactPoint.point - body1.centerOfMass();
-            Vector r2 = contactPoint.point - body2.centerOfMass();
+        for (ManifoldContactPoint &contact: contactMainfold_) {
+            Vector r1 = contact.point - body1.centerOfMass();
+            Vector r2 = contact.point - body2.centerOfMass();
 
             Vector vrel = body2.pseudoLinearVelocity() + body2.pseudoAngularVelocity() * r2 - body1.pseudoLinearVelocity() -
                           body1.pseudoAngularVelocity() * r1;
 
-            float vn = vrel.dot(contactPoint.normal);
+            float vn = vrel.dot(contact.normal);
 
-            float dPn = contactPoint.normalEffectiveMass * -(vn + contactPoint.bias);
-            float oldPn = contactPoint.pseudoImpulse;
-            contactPoint.pseudoImpulse = std::max(contactPoint.pseudoImpulse + dPn, 0.0f);
-            dPn = contactPoint.pseudoImpulse - oldPn;
+            float dPn = contact.normalEffectiveMass * -(vn + contact.bias);
+            float oldPn = contact.pseudoImpulse;
+            contact.pseudoImpulse = std::max(contact.pseudoImpulse + dPn, 0.0f);
+            dPn = contact.pseudoImpulse - oldPn;
 
-            Vector L = contactPoint.normal * dPn;
+            Vector L = contact.normal * dPn;
 
             body1.setPseudoLinearVelocity(body1.pseudoLinearVelocity() - L * body1.invMass());
             body1.setPseudoAngularVelocity(body1.pseudoAngularVelocity() - body1.invInertia() * (r1 * L));
@@ -185,3 +189,4 @@ void ContactSolver::applyPseudoImpulse(float dt) {
         }
     }
 }
+

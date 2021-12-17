@@ -4,6 +4,7 @@
 
 #include "ve_world.h"
 #include "objects/ve_box_collider.h"
+#include "objects/ve_sphere_collider.h"
 #include "imgui/imgui.h"
 #include "ve_global_parameters.h"
 
@@ -17,26 +18,42 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
+    for(int i = 0; i < 10; i++){
+        auto body1 = std::make_shared<VE::RigidBody>();
+        auto collider1 = std::make_shared<VE::BoxCollider>();
+        body1->addCollider(collider1);
+        body1->setTransform([i]() {
+            Transform transform;
+            transform.position = Vector(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
+            return transform;
+        }());
+        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        worldObjects.push_back(body1);
+    }
+
     auto body1 = std::make_shared<VE::RigidBody>();
     auto collider1 = std::make_shared<VE::BoxCollider>();
     body1->addCollider(collider1);
     body1->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0.5f, 0.5f, 4);
+        transform.position = Vector(5.5f, 0.5f, 0.6f + 10.2f);
         return transform;
     }());
+    body1->setRestitution(0.99f);
     body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body1);
 
-    auto body2 = std::make_shared<VE::RigidBody>();
-    body2->addCollider(std::make_shared<VE::BoxCollider>(1,1,1,10));
-    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
-    body2->setTransform([]() {
-        Transform transform;
-        transform.position = Vector(0, 0, 2);
-        return transform;
-    }());
-    worldObjects.push_back(body2);
+
+
+//    auto body2 = std::make_shared<VE::RigidBody>();
+//    body2->addCollider(std::make_shared<VE::BoxCollider>(1,1,1,10));
+//    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
+//    body2->setTransform([]() {
+//        Transform transform;
+//        transform.position = Vector(0, 0, 2);
+//        return transform;
+//    }());
+//    worldObjects.push_back(body2);
 
     auto floor = std::make_shared<VE::RigidBody>();
     auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);

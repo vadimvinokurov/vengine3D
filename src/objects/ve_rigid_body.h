@@ -40,6 +40,8 @@ namespace VE {
         float restitution() const;
         float friction() const;
 
+        void setRestitution(float restitution);
+
         const Vector &centerOfMass() const;
         const Matrix33 &invInertia() const;
 
