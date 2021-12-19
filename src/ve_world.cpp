@@ -18,42 +18,28 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    for(int i = 0; i < 10; i++){
+    auto spawBox =  [&](const Transform &transform){
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
         body1->addCollider(collider1);
-        body1->setTransform([i]() {
-            Transform transform;
-            transform.position = Vector(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
-            return transform;
-        }());
+        body1->setTransform(transform);
         body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
+    };
+
+    for (int i = 0; i < 10; i++) {
+        Transform transform;
+        transform.position = Vector(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
+        spawBox(transform);
     }
 
-    auto body1 = std::make_shared<VE::RigidBody>();
-    auto collider1 = std::make_shared<VE::BoxCollider>();
-    body1->addCollider(collider1);
-    body1->setTransform([]() {
-        Transform transform;
-        transform.position = Vector(5.5f, 0.5f, 0.6f + 10.2f);
-        return transform;
-    }());
-    body1->setRestitution(0.99f);
-    body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
-    worldObjects.push_back(body1);
 
+    Transform transform;
+    transform.position = Vector(3.0f, 0.5f, 0.5f);
+    spawBox(transform);
+    transform.position = Vector(3.0f, 0.0f, 1.0f);
+    //spawBox(transform);
 
-
-//    auto body2 = std::make_shared<VE::RigidBody>();
-//    body2->addCollider(std::make_shared<VE::BoxCollider>(1,1,1,10));
-//    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
-//    body2->setTransform([]() {
-//        Transform transform;
-//        transform.position = Vector(0, 0, 2);
-//        return transform;
-//    }());
-//    worldObjects.push_back(body2);
 
     auto floor = std::make_shared<VE::RigidBody>();
     auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
@@ -211,12 +197,6 @@ void World::physics(float dt) {
     for (int i = 0; i < globalParameters.iterations; i++) {
         for (auto &contact: contactSolvers) {
             contact.second.applyImpulse(dt);
-        }
-    }
-
-    for (int i = 0; i < globalParameters.iterations; i++) {
-        for (auto &contact: contactSolvers) {
-            contact.second.applyPseudoImpulse(dt);
         }
     }
 

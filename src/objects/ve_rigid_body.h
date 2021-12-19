@@ -29,11 +29,6 @@ namespace VE {
         const Vector &linearVelocity() const;
         const Vector &angularVelocity() const;
 
-        void setPseudoLinearVelocity(const Vector &pseudoLinearVelocity);
-        void setPseudoAngularVelocity(const Vector &pseudoAngularVelocity);
-        const Vector &pseudoLinearVelocity() const;
-        const Vector &pseudoAngularVelocity() const;
-
         Vector globalToLocalPoint(const Vector &globalPoint);
 
         float invMass() const;
@@ -65,8 +60,6 @@ namespace VE {
         Vector gravity_ = Vector();
         Vector linearVelocity_;
         Vector angularVelocity_;
-        Vector pseudoLinearVelocity_;
-        Vector pseudoAngularVelocity_;
 
         float sleepEpsilont_ = 0.0001f;
         float damping_ = 0.999f;

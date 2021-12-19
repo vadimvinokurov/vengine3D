@@ -81,24 +81,20 @@ void RigidBody::updateVelocity(float dt) {
 }
 
 void RigidBody::updateTransform(float dt) {
-    if ((linearVelocity_ + pseudoLinearVelocity_).sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
+    if (linearVelocity_.sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
         linearVelocity_.setZero();
-        pseudoLinearVelocity_.setZero();
     }
 
-    if ((angularVelocity_ + pseudoAngularVelocity_).sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
+    if (angularVelocity_.sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
         angularVelocity_.setZero();
-        pseudoAngularVelocity_.setZero();
     }
 
-    transform_.position += (linearVelocity_ + pseudoLinearVelocity_) * dt;
-    transform_.rotation += (angularVelocity_ + pseudoAngularVelocity_) * dt;
+    transform_.position += linearVelocity_ * dt;
+    transform_.rotation += angularVelocity_ * dt;
     setTransform(transform_);
 
     linearVelocity_ *= damping_;
     angularVelocity_ *= damping_;
-    pseudoLinearVelocity_.setZero();
-    pseudoAngularVelocity_.setZero();
 }
 
 void RigidBody::addForce(const Vector &force) {
@@ -144,22 +140,6 @@ const Vector &RigidBody::centerOfMass() const {
 
 const Matrix33 &RigidBody::invInertia() const {
     return invInertia_;
-}
-
-void RigidBody::setPseudoLinearVelocity(const Vector &pseudoLinearVelocity) {
-    pseudoLinearVelocity_ = pseudoLinearVelocity;
-}
-
-void RigidBody::setPseudoAngularVelocity(const Vector &pseudoAngularVelocity) {
-    pseudoAngularVelocity_ = pseudoAngularVelocity;
-}
-
-const Vector &RigidBody::pseudoLinearVelocity() const {
-    return pseudoLinearVelocity_;
-}
-
-const Vector &RigidBody::pseudoAngularVelocity() const {
-    return pseudoAngularVelocity_;
 }
 
 Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {

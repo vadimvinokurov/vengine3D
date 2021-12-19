@@ -41,24 +41,21 @@ namespace VE {
     public:
         ContactSolver(VE::RigidBody &body1, VE::RigidBody &body2);
 
-        bool isCollide() {
-            return contact;
-        }
+        bool isCollide();
 
         void preStep(float dt);
         void applyImpulse(float dt);
-        void applyPseudoImpulse(float dt);
 
-        const ContactMainfold &contactMainfold() { return contactMainfold_; }
+        const ContactMainfold &contactMainfold();
 
         void update(ContactMainfold newContactMainfold);
     private:
-        float computeEffectiveMass(const Vector &J0, const Vector &J1, const Vector &J2, const Vector &J3);
+        float computeEffectiveMass(const Vector &nCrossR1, const Vector &nCrossR2);
 
         ContactMainfold contactMainfold_;
         VE::RigidBody &body1;
         VE::RigidBody &body2;
-        bool contact = false;
+        bool contact_;
         float friction_;
         float restitution_;
     };
