@@ -33,8 +33,8 @@ namespace VE {
         const float speedSlop = 0.15f;
         const float penetrationSlop = 0.01f;
         const float beta = 0.2f;
-        const float normalDeviation = 0.99f;
-        const float contactSlop = 0.01f;
+        const float normalDeviation = 0.98f;
+        const float contactSlop = 0.02f;
     };
 
     class ContactSolver {

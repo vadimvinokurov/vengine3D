@@ -37,6 +37,7 @@ void World::resetScene() {
     Transform transform;
     transform.position = Vector(3.0f, 0.5f, 0.5f);
     spawBox(transform);
+    worldObjects.back()->setLinearVelocity(Vector(10,0,0));
     transform.position = Vector(3.0f, 0.0f, 1.0f);
     //spawBox(transform);
 

@@ -12,6 +12,11 @@ ContactSolver::ContactSolver(RigidBody &body1, RigidBody &body2) : body1(body1),
     contact_ = testIntersection(body1, body2, contactMainfold_);
     restitution_ = (body1.restitution() + body2.restitution()) / 2;
     friction_ = (body1.friction() + body2.friction()) / 2;
+    if(contact_){
+        for (ManifoldContactPoint &contactPoint: contactMainfold_) {
+            contactPoint.point.drawPoint(6,Color(1,0,0));
+        }
+    }
 }
 
 void ContactSolver::update(ContactMainfold newContactMainfold) {
