@@ -51,7 +51,7 @@ void drawAxis(float axisLen = 10) {
 }
 
 
-void drawShape(const VE::Collider &shape, const VE::Transform transform) {
+void drawShape(const VE::Collider &shape, const VE::Transform &transform, const Color& color) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
@@ -61,7 +61,7 @@ void drawShape(const VE::Collider &shape, const VE::Transform transform) {
     glRotatef(transform.rotation);
     glScalef(transform.scale);
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
-        glColor3f(shape.color().red() + i / 100.0, shape.color().grean() + i / 100.0, shape.color().blue() + i / 100.0);
+        glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
         glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
     drawAxis(2);
@@ -100,7 +100,7 @@ void Render::draw(const WorldPtr &world) {
 
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
         for (size_t colliderNumber = 0; colliderNumber < rigidBody->collidersSize(); colliderNumber++) {
-            drawShape(rigidBody->collider(colliderNumber), rigidBody->transform());
+            drawShape(rigidBody->collider(colliderNumber), rigidBody->transform(), rigidBody->color());
         }
     }
 }

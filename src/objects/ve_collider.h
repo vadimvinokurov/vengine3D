@@ -25,10 +25,6 @@ namespace VE {
 
         const Matrix33 &inertia() const { return inertia_; }
 
-        void setColor(const Color &color) const { color_ = color; }
-
-        Color color() const { return color_; }
-
         virtual const Vector getCenterOfMass() const = 0;
         virtual void setLocalTransform(const Transform &localTransform) = 0;
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
@@ -46,8 +42,6 @@ namespace VE {
         Matrix33 inertia_;
         float mass_;
         const ColliderType shapeType_;
-
-        mutable Color color_ = Color(0.5f, 0.5f, 0.5f);
     };
 
     using ColliderPtr = std::shared_ptr<Collider>;

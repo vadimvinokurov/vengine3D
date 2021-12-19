@@ -18,7 +18,7 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    auto spawBox =  [&](const Transform &transform){
+    auto spawBox = [&](const Transform &transform) {
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
         body1->addCollider(collider1);
@@ -43,13 +43,13 @@ void World::resetScene() {
 
     auto floor = std::make_shared<VE::RigidBody>();
     auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
-    floarCol->setColor(Color(0.3f, 0.3f, 0.3f));
     floor->addCollider(floarCol);
     floor->setTransform([]() {
         Transform transform;
         transform.position = Vector(0, 0, -0.5f);
         return transform;
     }());
+    floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
 }
 
@@ -203,6 +203,15 @@ void World::physics(float dt) {
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
     }
+
+    for (auto &object: worldObjects) {
+        if (object->linearVelocity() == Vector()) {
+            object->setColor(Color(0.3f, 0.3f, 0.3f));
+        } else {
+            object->setColor(Color(0.5f, 0.5f, 0.5f));
+        }
+    }
+
 }
 
 void World::gui() {

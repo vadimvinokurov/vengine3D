@@ -65,15 +65,11 @@ void Window::run() {
         return;
     }
 
-
+    glfwSwapInterval(globalParameters.simSpeed);
     float lableUpdateTime = 0;
     float elapsedTime = 0;
-    glfwSwapInterval(1);
-
     Render render(windowAspectRatio_);
     while (!glfwWindowShouldClose(window_)) {
-        glfwSwapInterval(globalParameters.simSpeed);
-
         glfwSetTime(0);
         glfwPollEvents();
 
@@ -82,7 +78,7 @@ void Window::run() {
         ImGui::NewFrame();
 
         render.draw(world_);
-        world_->update(dt_);
+        world_->update(1.0f / 75.0f);
 
 
         if (mouse_->isLock()) {
@@ -105,8 +101,7 @@ void Window::run() {
                                          + std::to_string(int(elapsedTime)) + " s; ").c_str());
             lableUpdateTime = 0.0f;
         }
-        dt_ = 1.0f / 75.0f;
-
+        glfwSwapInterval(globalParameters.simSpeed);
     }
 }
 

@@ -45,6 +45,10 @@ namespace VE {
         const Collider &collider(size_t n) const;
         const Transform &transform() const;
         virtual ~RigidBody();
+
+
+        void setColor(const Color &color) const { color_ = color; }
+        Color color() const { return color_; }
     private:
         void computeMass();
 
@@ -61,10 +65,12 @@ namespace VE {
         Vector linearVelocity_;
         Vector angularVelocity_;
 
-        float sleepEpsilont_ = 0.0001f;
+        float sleepEpsilont_ = 0.001f;
         float damping_ = 0.999f;
         float restitution_ = 0.0f;
         float friction_ = 0.2f;
+
+        mutable Color color_ = Color(0.5f, 0.5f, 0.5f);
     };
 
     using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
