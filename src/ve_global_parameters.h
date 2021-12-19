@@ -9,9 +9,8 @@
 
 namespace VE{
     struct GlobalParameters{
-        float cameraSpeed = 0.05;
+        int simSpeed = 1;
         bool warmstarting = true;
-        bool pseudoVelosity = true;
         int iterations = 10;
     };
 }

@@ -71,8 +71,9 @@ void Window::run() {
     glfwSwapInterval(1);
 
     Render render(windowAspectRatio_);
-
     while (!glfwWindowShouldClose(window_)) {
+        glfwSwapInterval(globalParameters.simSpeed);
+
         glfwSetTime(0);
         glfwPollEvents();
 
@@ -105,6 +106,7 @@ void Window::run() {
             lableUpdateTime = 0.0f;
         }
         dt_ = 1.0f / 75.0f;
+
     }
 }
 

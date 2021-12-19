@@ -71,7 +71,7 @@ void World::hid() {
         selectObject = (selectObject + 1) % 2;
     }
 
-    float speed = globalParameters.cameraSpeed;
+    float speed = 0.01f;
     if (keyboard_->isRepeat(VE_KEY_UP)) {
         if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
             worldObjects[selectObject]->moveTo(VE::Vector(0, 0, speed));
@@ -208,10 +208,9 @@ void World::physics(float dt) {
 void World::gui() {
     ImGui::Begin("Control panel");
     if (ImGui::Button("Reset")) resetScene();
-    ImGui::SliderFloat("Camera speed", &globalParameters.cameraSpeed, 0.05f / 20, 0.05f * 4);
+    ImGui::SliderInt("Sim speed", &globalParameters.simSpeed, 0, 10);
     ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
-    ImGui::Checkbox("pseudoVelosity", &globalParameters.pseudoVelosity);
 
     ImGui::End();
 
