@@ -11,7 +11,7 @@
 using namespace VE;
 
 World::World() {
-    resetScene();
+    //resetScene();
 }
 
 void World::resetScene() {
@@ -37,7 +37,7 @@ void World::resetScene() {
     Transform transform;
     transform.position = Vector(3.0f, 0.5f, 0.5f);
     spawBox(transform);
-    worldObjects.back()->setLinearVelocity(Vector(10,0,0));
+    worldObjects.back()->setLinearVelocity(Vector(10, 0, 0));
     transform.position = Vector(3.0f, 0.0f, 1.0f);
     //spawBox(transform);
 
@@ -67,33 +67,6 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 void World::hid() {
     hid_CameraControl();
     hid_PositionControl();
-    static int selectObject = 0;
-    if (keyboard_->isPressed(VE_KEY_F1)) {
-        selectObject = (selectObject + 1) % 2;
-    }
-
-    float speed = 0.01f;
-    if (keyboard_->isRepeat(VE_KEY_UP)) {
-        if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, speed));
-        } else {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, speed, 0));
-        }
-    }
-    if (keyboard_->isRepeat(VE_KEY_DOWN)) {
-        if (keyboard_->isRepeat(VE_KEY_LEFT_SHIFT)) {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, 0, -speed));
-        } else {
-            worldObjects[selectObject]->moveTo(VE::Vector(0, -speed, 0));
-        }
-    }
-    if (keyboard_->isRepeat(VE_KEY_LEFT)) {
-        worldObjects[selectObject]->moveTo(VE::Vector(-speed, 0, 0));
-    }
-    if (keyboard_->isRepeat(VE_KEY_RIGHT)) {
-        worldObjects[selectObject]->moveTo(VE::Vector(speed, 0, 0));
-    }
-
 }
 
 void World::hid_CameraControl() {
@@ -104,47 +77,24 @@ void World::hid_CameraControl() {
         mouse_->unlockMouse();
     }
     if (mouse_->isRepeat(VE_MOUSE_BUTTON_3)) {
-        currentCamera_->setDeltaRotation(
-                VE::Vector(mouse_->deltaPosition().y(), 0, mouse_->deltaPosition().x() * -1) * mouseSense);
+        currentCamera_->setDirection(    mouse_->deltaPosition().y(), mouse_->deltaPosition().x() * -1);
     }
 }
 
 void World::hid_PositionControl() {
-    float spead = 0.2f;
-    float speadUpDown = 0;
+    float cameraSpeed = 15.0f / 75.0f;
     if (keyboard_->isRepeat(VE_KEY_W)) {
-        speadUpDown = spead;
+        currentCamera_->moveAlongDirection(cameraSpeed);
     }
     if (keyboard_->isRepeat(VE_KEY_S)) {
-        speadUpDown = -spead;
+        currentCamera_->moveAlongDirection(-cameraSpeed);
     }
-    float speadLeftRight = 0;
     if (keyboard_->isRepeat(VE_KEY_D)) {
-        speadLeftRight = spead;
+        currentCamera_->moveAlongSide(cameraSpeed);
     }
     if (keyboard_->isRepeat(VE_KEY_A)) {
-        speadLeftRight = -spead;
+        currentCamera_->moveAlongSide(-cameraSpeed);
     }
-
-    VE::Vector normalUpDown(0, 0, -1);
-    VE::Vector normalLeftRight(1, 0, 0);
-
-    float alfa = currentCamera_->rotation().x() * static_cast<float>(M_PI) / 180.0f;
-    VE::Matrix33 rx(1, 0, 0,
-                    0, cosf(alfa), -sinf(alfa),
-                    0, sinf(alfa), cosf(alfa));
-
-    alfa = currentCamera_->rotation().z() * static_cast<float>(M_PI) / 180.0f;
-    VE::Matrix33 rz(cosf(alfa), -sinf(alfa), 0,
-                    sinf(alfa), cosf(alfa), 0,
-                    0, 0, 1);
-
-
-    normalUpDown = rz * rx * normalUpDown;
-    currentCamera_->setPosition(currentCamera_->position() + normalUpDown * speadUpDown);
-
-    normalLeftRight = rz * rx * normalLeftRight;
-    currentCamera_->setPosition(currentCamera_->position() + normalLeftRight * speadLeftRight);
 }
 
 

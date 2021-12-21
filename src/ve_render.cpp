@@ -52,7 +52,7 @@ void drawAxis(float axisLen = 10) {
 }
 
 
-void drawShape(const VE::Collider &shape, const VE::Transform &transform, const Color& color) {
+void drawShape(const VE::Collider &shape, const VE::Transform &transform, const Color &color) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
@@ -82,21 +82,13 @@ void drawFlor() {
     drawAxis();
 }
 
-void Render::moveCamera() {
-    Camera camera = world_->currentCamera();
-    glRotatef(-camera.rotation().x(), 1, 0, 0);
-    glRotatef(-camera.rotation().y(), 0, 1, 0);
-    glRotatef(-camera.rotation().z(), 0, 0, 1);
-    glTranslated(-camera.position().x(), -camera.position().y(), -camera.position().z());
-}
-
 void Render::draw(const WorldPtr &world) {
     world_ = world;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    moveCamera();
+    glLoadMatrixf(world_->currentCamera().getViewMatrix().data());
     drawFlor();
 
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
