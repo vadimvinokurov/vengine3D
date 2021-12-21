@@ -26,6 +26,7 @@ void glScalef(float scale) {
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    //glClearColor(0.2f, 0.7f, 1.0f, 0.0f);
     glClearDepth(1.0f);
 
     glMatrixMode(GL_PROJECTION);
