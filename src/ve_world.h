@@ -36,8 +36,6 @@ namespace VE {
 
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;
-
-        const float mouseSense = 50.0f;
     };
 
     using WorldPtr = std::shared_ptr<World>;

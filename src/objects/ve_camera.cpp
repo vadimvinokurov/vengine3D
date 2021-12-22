@@ -3,14 +3,14 @@
 //
 
 #include "ve_camera.h"
+#include "math/ve_matrix33.h"
 
 using namespace VE;
 
-Camera::Camera() {
-    position_ = Vector(0, -17.5, 0);
-    cameraDirection_ = Vector(0, -1, 0);
-    cameraUp_ = Vector(0, 0, 1);
-    cameraRight_ = Vector(1, 0, 0);
+Camera::Camera() : position_(0, -17.5, 0),
+                   cameraDirection_(CameraParameters::defaultCameraDirection),
+                   cameraUp_(CameraParameters::defaultCameraUp),
+                   cameraRight_(CameraParameters::defaultCameraRight) {
 }
 
 void Camera::moveAlongDirection(float distance) {
@@ -26,7 +26,7 @@ const Vector &Camera::position() const {
 }
 
 const Vector &Camera::direction() const {
-    return cameraDirection_;
+    return direction_;
 }
 
 const std::array<float, 16> &Camera::getViewMatrix() const {
@@ -50,14 +50,21 @@ Camera::~Camera() {
 
 }
 
-void Camera::setDirection(float pitch, float yam) {
-    static float p = 0;
-    static float y = 0;
-    p += pitch * 10;
-    y += yam * 10;
-    std::cout << p << " " << y << std::endl;
-    auto radians = [](float angle) { return angle / 180.0f; };
-    cameraDirection_.setX(cosf(radians(p)) * cosf(radians(y)));
-    cameraDirection_.setY(cosf(radians(p)) * sinf(radians(y)));
-    cameraDirection_.setZ(sinf(radians(p)));
+void Camera::setDirection(float dPitch, float dYam) {
+    pitch_ += dPitch * CameraParameters::sensitivity;
+    yam_ += dYam * CameraParameters::sensitivity;
+    float alfa = pitch_ * static_cast<float>(M_PI) / 180.0f;
+    VE::Matrix33 rx(1, 0, 0,
+                    0, cosf(alfa), -sinf(alfa),
+                    0, sinf(alfa), cosf(alfa));
+
+    float beta = yam_ * static_cast<float>(M_PI) / 180.0f;
+    VE::Matrix33 rz(cosf(beta), -sinf(beta), 0,
+                    sinf(beta), cosf(beta), 0,
+                    0, 0, 1);
+
+    cameraDirection_ = rz * rx * CameraParameters::defaultCameraDirection;
+    cameraUp_ = rz * rx * CameraParameters::defaultCameraUp;
+    cameraRight_ = rz * rx * CameraParameters::defaultCameraRight;
+    direction_ = cameraDirection_ * -1;
 }

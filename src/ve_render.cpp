@@ -96,5 +96,6 @@ void Render::draw(const WorldPtr &world) {
             drawShape(rigidBody->collider(colliderNumber), rigidBody->transform(), rigidBody->color());
         }
     }
+
 }
 
