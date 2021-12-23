@@ -11,17 +11,12 @@
 using namespace VE;
 
 World::World() {
-    mouseObject_ = std::make_shared<VE::RigidBody>();
-    auto collider1 = std::make_shared<VE::BoxCollider>();
-    mouseObject_->addCollider(collider1);
-    mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(mouseObject_, mouseObject_->centerOfMass());
     resetScene();
 }
 
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
-    worldObjects.push_back(mouseObject_);
     auto spawBox = [&](const Transform &transform) {
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
@@ -71,7 +66,7 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 void World::hid(float dt) {
 
 
-    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
+    if (mouse_->isPressed(VE_MOUSE_BUTTON_2)) {
         Transform transform;
         transform.position = currentCamera_->position();
         auto body1 = std::make_shared<VE::RigidBody>();
@@ -82,7 +77,22 @@ void World::hid(float dt) {
         body1->setLinearVelocity(currentCamera_->direction() * 20);
         worldObjects.push_back(body1);
     }
-
+    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
+        mouseJointSolver_.reset();
+        float minLen = std::numeric_limits<float>::max();
+        RigidBodyPtr o;
+        for(auto &object:worldObjects){
+            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
+            if(currentLen < minLen) {
+                minLen = currentLen;
+                o = object;
+            }
+        }
+        mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
+    }
+    if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
+        mouseJointSolver_.reset();
+    }
     cameraControl(dt);
 }
 
@@ -156,8 +166,9 @@ void World::physics(float dt) {
         object->updateVelocity(dt);
     }
 
-    //mouseObject_->setPosition(currentCamera_->position() + currentCamera_->direction() * 10 );
-    mouseJointSolver_->applyImpulse(dt, currentCamera_->position() + currentCamera_->direction() * 10);
+    if(mouseJointSolver_) {
+        mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
+    }
 
     for (auto &contact: contactSolvers) {
         contact.second.preStep(dt);

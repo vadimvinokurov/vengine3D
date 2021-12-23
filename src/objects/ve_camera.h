@@ -25,6 +25,8 @@ namespace VE {
 
         void setDirection(float dPitch, float dYam);
 
+        Vector getPointAlongDirection(float length);
+
         const Vector &position() const;
         const Vector &direction() const;
         const std::array<float, 16> &getViewMatrix() const;

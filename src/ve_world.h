@@ -36,7 +36,6 @@ namespace VE {
 
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;
-        VE::RigidBodyPtr mouseObject_;
         VE::MouseJointSolverPtr mouseJointSolver_;
     };
 

@@ -45,8 +45,8 @@ namespace VE {
         RigidBodyPtr body;
         Vector bodyLocalPoint;
 
-        const float maxForce = 5000.0f;
-        const float beta = 0.2;
+        float maxForce = 5000.0f;
+        float beta = 0.2;
     };
 
     using MouseJointSolverPtr = std::shared_ptr<VE::MouseJointSolver>;

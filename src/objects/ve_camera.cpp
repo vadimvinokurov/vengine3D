@@ -68,3 +68,7 @@ void Camera::setDirection(float dPitch, float dYam) {
     cameraRight_ = rz * rx * CameraParameters::defaultCameraRight;
     direction_ = cameraDirection_ * -1;
 }
+
+Vector Camera::getPointAlongDirection(float length) {
+    return position_ + direction_ * length;
+}
