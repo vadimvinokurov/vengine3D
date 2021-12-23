@@ -66,29 +66,32 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 void World::hid(float dt) {
 
 
-    if (mouse_->isPressed(VE_MOUSE_BUTTON_2)) {
+    if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
         Transform transform;
-        transform.position = currentCamera_->position();
+        transform.position = currentCamera_->getPointAlongDirection(20);
+        transform.rotation = Vector(0, 1, 0) * (M_PI_4);
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
         body1->addCollider(collider1);
         body1->setTransform(transform);
         body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
-        body1->setLinearVelocity(currentCamera_->direction() * 20);
+        //body1->setLinearVelocity(currentCamera_->direction() * 20);
         worldObjects.push_back(body1);
     }
     if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
         mouseJointSolver_.reset();
         float minLen = std::numeric_limits<float>::max();
-        RigidBodyPtr o;
-        for(auto &object:worldObjects){
+        RigidBodyPtr selectObject;
+        for (auto &object:worldObjects) {
             float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
-            if(currentLen < minLen) {
+            if (currentLen < minLen) {
                 minLen = currentLen;
-                o = object;
+                selectObject = object;
             }
         }
-        mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
+        if (minLen != std::numeric_limits<float>::max()) {
+            mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(selectObject, selectObject->centerOfMass());
+        }
     }
     if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
         mouseJointSolver_.reset();
@@ -99,13 +102,13 @@ void World::hid(float dt) {
 void World::cameraControl(float dt) {
     float cameraSpeed = 15.0f * dt;
 
-    if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
+    if (mouse_->isPressed(VE_MOUSE_BUTTON_2)) {
         mouse_->lockMouse();
     }
-    if (mouse_->isRelease(VE_MOUSE_BUTTON_3)) {
+    if (mouse_->isRelease(VE_MOUSE_BUTTON_2)) {
         mouse_->unlockMouse();
     }
-    if (mouse_->isRepeat(VE_MOUSE_BUTTON_3)) {
+    if (mouse_->isRepeat(VE_MOUSE_BUTTON_2)) {
         currentCamera_->setDirection(mouse_->deltaPosition().y(), mouse_->deltaPosition().x() * -1);
     }
 
@@ -166,7 +169,7 @@ void World::physics(float dt) {
         object->updateVelocity(dt);
     }
 
-    if(mouseJointSolver_) {
+    if (mouseJointSolver_) {
         mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
     }
 

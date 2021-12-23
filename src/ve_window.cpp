@@ -78,7 +78,7 @@ void Window::run() {
         ImGui::NewFrame();
 
         render.draw(world_);
-        world_->update(1.0f / 75.0f);
+        world_->update(dt_);
 
 
         if (mouse_->isLock()) {
@@ -101,7 +101,7 @@ void Window::run() {
                                          + std::to_string(int(elapsedTime)) + " s; ").c_str());
             lableUpdateTime = 0.0f;
         }
-        glfwSwapInterval(globalParameters.simSpeed);
+        dt_ = 1.0f / 75.0f;
     }
 }
 
