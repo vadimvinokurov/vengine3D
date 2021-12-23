@@ -64,12 +64,9 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 }
 
 
-void World::hid() {
-    hid_CameraControl();
-    hid_PositionControl();
-}
+void World::hid(float dt) {
 
-void World::hid_CameraControl() {
+
     if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
         Transform transform;
         transform.position = currentCamera_->position();
@@ -81,6 +78,12 @@ void World::hid_CameraControl() {
         body1->setLinearVelocity(currentCamera_->direction() * 20);
         worldObjects.push_back(body1);
     }
+    cameraControl(dt);
+}
+
+void World::cameraControl(float dt) {
+    float cameraSpeed = 15.0f * dt;
+
     if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
         mouse_->lockMouse();
     }
@@ -90,10 +93,7 @@ void World::hid_CameraControl() {
     if (mouse_->isRepeat(VE_MOUSE_BUTTON_3)) {
         currentCamera_->setDirection(mouse_->deltaPosition().y(), mouse_->deltaPosition().x() * -1);
     }
-}
 
-void World::hid_PositionControl() {
-    float cameraSpeed = 15.0f / 75.0f;
     if (keyboard_->isRepeat(VE_KEY_W)) {
         currentCamera_->moveAlongDirection(cameraSpeed);
     }
@@ -108,10 +108,9 @@ void World::hid_PositionControl() {
     }
 }
 
-
 void VE::World::update(float dt) {
     gui();
-    hid();
+    hid(dt);
     prephysics(dt);
     physics(dt);
 }
@@ -165,15 +164,6 @@ void World::physics(float dt) {
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
     }
-
-    for (auto &object: worldObjects) {
-        if (object->linearVelocity() == Vector()) {
-            object->setColor(Color(0.3f, 0.3f, 0.3f));
-        } else {
-            object->setColor(Color(0.5f, 0.5f, 0.5f));
-        }
-    }
-
 }
 
 void World::gui() {
