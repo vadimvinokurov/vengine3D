@@ -24,12 +24,14 @@ namespace VE {
         void addForce(const Vector &force);
         void addForce(const Vector &force, const Vector &forcePoint);
 
+        void setPosition(const Vector &position);
         void setLinearVelocity(const Vector &linearVelocity);
         void setAngularVelocity(const Vector &angularVelocity);
         const Vector &linearVelocity() const;
         const Vector &angularVelocity() const;
 
         Vector globalToLocalPoint(const Vector &globalPoint);
+        Vector localToGlobalPoint(const Vector &localPoint);
 
         float invMass() const;
         float restitution() const;

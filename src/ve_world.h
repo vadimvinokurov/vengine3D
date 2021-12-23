@@ -7,6 +7,7 @@
 
 #include <memory>
 #include "physics/ve_contact_solver.h"
+#include "physics/ve_mouse_joint_solver.h"
 #include "objects/ve_rigid_body.h"
 #include "objects/ve_camera.h"
 #include "control/ve_keyboard.h"
@@ -35,6 +36,8 @@ namespace VE {
 
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;
+        VE::RigidBodyPtr mouseObject_;
+        VE::MouseJointSolverPtr mouseJointSolver_;
     };
 
     using WorldPtr = std::shared_ptr<World>;

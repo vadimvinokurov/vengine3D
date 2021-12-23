@@ -145,6 +145,9 @@ const Matrix33 &RigidBody::invInertia() const {
 Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
     return transform_.applyInverse(globalPoint);
 }
+Vector RigidBody::localToGlobalPoint(const Vector &localPoint) {
+    return transform_.apply(localPoint);;
+}
 
 float RigidBody::friction() const {
     return friction_;
@@ -152,4 +155,8 @@ float RigidBody::friction() const {
 
 void RigidBody::setRestitution(float restitution) {
     restitution_ = restitution;
+}
+
+void RigidBody::setPosition(const Vector &position) {
+    transform_.position = position;
 }

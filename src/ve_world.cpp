@@ -11,13 +11,17 @@
 using namespace VE;
 
 World::World() {
+    mouseObject_ = std::make_shared<VE::RigidBody>();
+    auto collider1 = std::make_shared<VE::BoxCollider>();
+    mouseObject_->addCollider(collider1);
+    mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(mouseObject_, mouseObject_->centerOfMass());
     resetScene();
 }
 
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
-
+    worldObjects.push_back(mouseObject_);
     auto spawBox = [&](const Transform &transform) {
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
@@ -78,6 +82,7 @@ void World::hid(float dt) {
         body1->setLinearVelocity(currentCamera_->direction() * 20);
         worldObjects.push_back(body1);
     }
+
     cameraControl(dt);
 }
 
@@ -151,6 +156,9 @@ void World::physics(float dt) {
         object->updateVelocity(dt);
     }
 
+    //mouseObject_->setPosition(currentCamera_->position() + currentCamera_->direction() * 10 );
+    mouseJointSolver_->applyImpulse(dt, currentCamera_->position() + currentCamera_->direction() * 10);
+
     for (auto &contact: contactSolvers) {
         contact.second.preStep(dt);
     }
@@ -164,6 +172,7 @@ void World::physics(float dt) {
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
     }
+
 }
 
 void World::gui() {
