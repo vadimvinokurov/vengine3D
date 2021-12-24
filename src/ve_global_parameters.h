@@ -9,7 +9,7 @@
 
 namespace VE{
     struct GlobalParameters{
-        int simSpeed = 1;
+        bool polygone = true;
         bool warmstarting = true;
         int iterations = 10;
     };

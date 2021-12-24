@@ -23,6 +23,10 @@ namespace VE {
         void setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse);
         std::vector<VE::RigidBodyPtr> worldObjects;
     private:
+        void scene1();
+        void scene2();
+
+
         void hid(float dt);
         void cameraControl(float dt);
         void gui();

@@ -65,7 +65,7 @@ void Window::run() {
         return;
     }
 
-    glfwSwapInterval(globalParameters.simSpeed);
+    glfwSwapInterval(1);
     float lableUpdateTime = 0;
     float elapsedTime = 0;
     Render render(windowAspectRatio_);

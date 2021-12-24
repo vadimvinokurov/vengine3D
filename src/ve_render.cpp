@@ -63,9 +63,9 @@ void drawShape(const VE::Collider &shape, const VE::Transform &transform, const 
     glScalef(transform.scale);
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
         glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
-        glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
+        glDrawElements(globalParameters.polygone ? GL_POLYGON : GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
-    drawAxis(2);
+    //drawAxis(2);
     glPopMatrix();
     glDisableClientState(GL_VERTEX_ARRAY);
 };

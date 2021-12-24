@@ -14,10 +14,8 @@ World::World() {
     resetScene();
 }
 
-void World::resetScene() {
-    worldObjects.clear();
-    contactSolvers.clear();
 
+void World::scene1() {
     auto floor = std::make_shared<VE::RigidBody>();
     auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
     floor->addCollider(floarCol);
@@ -28,8 +26,6 @@ void World::resetScene() {
     }());
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
-
-
 
 
     auto spawBox = [&](const Transform &transform) {
@@ -56,6 +52,43 @@ void World::resetScene() {
     //spawBox(transform);
 }
 
+void World::scene2() {
+//    auto floor = std::make_shared<VE::RigidBody>();
+//    auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
+//    floor->addCollider(floarCol);
+//    floor->setTransform([]() {
+//        Transform transform;
+//        transform.position = Vector(0, 0, -0.5f);
+//        return transform;
+//    }());
+//    floor->setColor(Color(0.3f, 0.3f, 0.3f));
+//    worldObjects.push_back(floor);
+
+    auto spawBox = [&](const Transform &transform) {
+        auto body1 = std::make_shared<VE::RigidBody>();
+        auto collider1 = std::make_shared<VE::BoxCollider>();
+        body1->addCollider(collider1);
+        body1->setTransform(transform);
+        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        worldObjects.push_back(body1);
+        return body1;
+    };
+
+    Transform transform;
+    transform.position = Vector(0, 0, 0.5f);
+    auto o = spawBox(transform);
+
+    //mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0.5f, 0.5f, 1.0f));
+    mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass() + Vector(0.2f, 0.2f, 0.1f));
+}
+
+void World::resetScene() {
+    worldObjects.clear();
+    contactSolvers.clear();
+
+    scene2();
+}
+
 const Camera &World::currentCamera() {
     return *currentCamera_;
 }
@@ -67,7 +100,6 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 
 
 void World::hid(float dt) {
-
 
     if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
         Transform transform;
@@ -98,6 +130,9 @@ void World::hid(float dt) {
     }
     if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
         mouseJointSolver_.reset();
+    }
+    if (keyboard_->isPressed(VE_KEY_F1)) {
+        globalParameters.polygone = !globalParameters.polygone;
     }
     cameraControl(dt);
 }
@@ -196,13 +231,14 @@ void World::physics(float dt) {
 void World::gui() {
     ImGui::Begin("Control panel");
     if (ImGui::Button("Reset")) resetScene();
-    ImGui::SliderInt("Sim speed", &globalParameters.simSpeed, 0, 10);
+    ImGui::Checkbox("polygone", &globalParameters.polygone);
     ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
 
     ImGui::End();
 
 }
+
 
 
 
