@@ -12,11 +12,6 @@ ContactSolver::ContactSolver(RigidBody &body1, RigidBody &body2) : body1(body1),
     contact_ = testIntersection(body1, body2, contactMainfold_);
     restitution_ = (body1.restitution() + body2.restitution()) / 2;
     friction_ = (body1.friction() + body2.friction()) / 2;
-    if (contact_) {
-        for (ManifoldContactPoint &contactPoint: contactMainfold_) {
-            contactPoint.point.drawPoint(6, Color(1, 0, 0));
-        }
-    }
 }
 
 void ContactSolver::update(ContactMainfold newContactMainfold) {
@@ -90,6 +85,11 @@ void ContactSolver::preStep(float dt) {
 
         body2.setPseudoLinearVelocity(body2.pseudoLinearVelocity() + pseudoL * body2.invMass());
         body2.setPseudoAngularVelocity(body2.pseudoAngularVelocity() + body2.invInertia() * (r2 * pseudoL));
+
+
+        contact.point.drawPoint(6, Color(1, 0, 0));
+        contact.tangent1.draw(contact.point);
+        contact.tangent2.draw(contact.point, Color(0, 1, 0));
     }
 }
 

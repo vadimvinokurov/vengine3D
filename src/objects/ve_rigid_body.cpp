@@ -24,6 +24,31 @@ void RigidBody::addCollider(const VE::ColliderPtr &constShapePtr) {
     centerOfMass_.setZero();
 }
 
+void RigidBody::computeMass() {
+    float mass = 0.0f;
+    Matrix33 inertia;
+    centerOfMass_.setZero();
+
+    bool infinityMass = false;
+    for (const auto &collider: colliders_) {
+        if (collider->mass() == 0) {
+            infinityMass = true;
+        }
+        mass += collider->mass();
+        centerOfMass_ += collider->getCenterOfMass();
+        inertia += collider->inertia();
+    }
+    centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
+
+    if (infinityMass) {
+        invInertia_.setZero();
+        invMass_ = 0.0f;
+    } else {
+        invInertia_ = inertia.getInverse();
+        invMass_ = 1 / mass;
+    }
+}
+
 void RigidBody::moveTo(VE::Vector dp) {
     transform_.position += dp;
     setTransform(transform_);
@@ -46,30 +71,6 @@ void RigidBody::setTransform(const Transform &transform) {
     for (auto &collider: colliders_) {
         collider->setTransform(transform_);
     }
-}
-
-void RigidBody::computeMass() {
-    float mass = 0;
-    Matrix33 inertia;
-    centerOfMass_ = Vector();
-    for (const auto &collider: colliders_) {
-        if (collider->mass() == 0) {
-            invMass_ = 0;
-            invInertia_ = Matrix33();
-            centerOfMass_ = Vector();
-            for (const auto &c: colliders_) {
-                centerOfMass_ += c->getCenterOfMass();
-            }
-            centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
-            return;
-        }
-        mass += collider->mass();
-        centerOfMass_ += collider->getCenterOfMass();
-        inertia += collider->inertia();
-    }
-    centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
-    invInertia_ = inertia.getInverse();
-    invMass_ = 1 / mass;
 }
 
 void RigidBody::updateVelocity(float dt) {
@@ -165,6 +166,7 @@ const Matrix33 &RigidBody::invInertia() const {
 Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
     return transform_.applyInverse(globalPoint);
 }
+
 Vector RigidBody::localToGlobalPoint(const Vector &localPoint) {
     return transform_.apply(localPoint);;
 }

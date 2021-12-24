@@ -17,6 +17,21 @@ World::World() {
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
+
+    auto floor = std::make_shared<VE::RigidBody>();
+    auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
+    floor->addCollider(floarCol);
+    floor->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0, -0.5f);
+        return transform;
+    }());
+    floor->setColor(Color(0.3f, 0.3f, 0.3f));
+    worldObjects.push_back(floor);
+
+
+
+
     auto spawBox = [&](const Transform &transform) {
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
@@ -39,18 +54,6 @@ void World::resetScene() {
     worldObjects.back()->setLinearVelocity(Vector(10, 0, 0));
     transform.position = Vector(3.0f, 0.0f, 1.0f);
     //spawBox(transform);
-
-
-    auto floor = std::make_shared<VE::RigidBody>();
-    auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
-    floor->addCollider(floarCol);
-    floor->setTransform([]() {
-        Transform transform;
-        transform.position = Vector(0, 0, -0.5f);
-        return transform;
-    }());
-    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-    worldObjects.push_back(floor);
 }
 
 const Camera &World::currentCamera() {
@@ -69,7 +72,7 @@ void World::hid(float dt) {
     if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
         Transform transform;
         transform.position = currentCamera_->getPointAlongDirection(20);
-        transform.rotation = Vector(0, 1, 0) * (M_PI_4);
+        transform.rotation = Vector(1, 1, 0) * (M_PI_4);
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
         body1->addCollider(collider1);
@@ -180,11 +183,6 @@ void World::physics(float dt) {
     for (int i = 0; i < globalParameters.iterations; i++) {
         for (auto &contact: contactSolvers) {
             contact.second.applyImpulse(dt);
-        }
-    }
-
-    for (int i = 0; i < globalParameters.iterations; i++) {
-        for (auto &contact: contactSolvers) {
             contact.second.applyPseudoImpulse(dt);
         }
     }
