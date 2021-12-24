@@ -45,7 +45,7 @@ namespace VE {
 
         void preStep(float dt);
         void applyImpulse(float dt);
-
+        void applyPseudoImpulse(float dt);
         const ContactMainfold &contactMainfold();
 
         void update(ContactMainfold newContactMainfold);

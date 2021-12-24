@@ -183,6 +183,12 @@ void World::physics(float dt) {
         }
     }
 
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &contact: contactSolvers) {
+            contact.second.applyPseudoImpulse(dt);
+        }
+    }
+
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
     }

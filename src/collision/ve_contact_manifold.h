@@ -18,6 +18,7 @@ namespace VE {
         float normalImpulse = 0.0f;
         float tangent1Impulse = 0.0f;
         float tangent2Impulse = 0.0f;
+        float pseudoImpulse = 0.0f;
 
         float normalEffectiveMass = 0.0f;
         float tangent1EffectiveMass = 0.0f;
@@ -26,6 +27,7 @@ namespace VE {
         float normalInitRelativeVelocity = 0.0f;
         float tangent1InitRelativeVelocity = 0.0f;
         float tangent2InitRelativeVelocity = 0.0f;
+
 
         float bias = 0.0f;
         bool saved = false;

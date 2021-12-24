@@ -12,9 +12,9 @@ ContactSolver::ContactSolver(RigidBody &body1, RigidBody &body2) : body1(body1),
     contact_ = testIntersection(body1, body2, contactMainfold_);
     restitution_ = (body1.restitution() + body2.restitution()) / 2;
     friction_ = (body1.friction() + body2.friction()) / 2;
-    if(contact_){
+    if (contact_) {
         for (ManifoldContactPoint &contactPoint: contactMainfold_) {
-            contactPoint.point.drawPoint(6,Color(1,0,0));
+            contactPoint.point.drawPoint(6, Color(1, 0, 0));
         }
     }
 }
@@ -44,6 +44,7 @@ void ContactSolver::update(ContactMainfold newContactMainfold) {
                     newContactPoint.normalImpulse = contactPoint.normalImpulse;
                     newContactPoint.tangent1Impulse = contactPoint.tangent1Impulse;
                     newContactPoint.tangent2Impulse = contactPoint.tangent2Impulse;
+                    newContactPoint.pseudoImpulse = contactPoint.pseudoImpulse;
                     newContactPoint.saved = true;
                     break;
                 }
@@ -75,12 +76,20 @@ void ContactSolver::preStep(float dt) {
         contact.bias = -ContactSolverParametrs::beta / dt * std::max(0.0f, contact.collisionDepth - ContactSolverParametrs::penetrationSlop);
 
 
-        Vector L = contact.normal * contact.normalImpulse + contact.tangent1 * contact.tangent1Impulse +
+        Vector L = contact.normal * contact.normalImpulse +
+                   contact.tangent1 * contact.tangent1Impulse +
                    contact.tangent2 * contact.tangent2Impulse;
         body1.setLinearVelocity(body1.linearVelocity() - L * body1.invMass());
         body1.setAngularVelocity(body1.angularVelocity() - body1.invInertia() * (r1 * L));
         body2.setLinearVelocity(body2.linearVelocity() + L * body2.invMass());
         body2.setAngularVelocity(body2.angularVelocity() + body2.invInertia() * (r2 * L));
+
+        Vector pseudoL = contact.normal * contact.pseudoImpulse;
+        body1.setPseudoLinearVelocity(body1.pseudoLinearVelocity() - pseudoL * body1.invMass());
+        body1.setPseudoAngularVelocity(body1.pseudoAngularVelocity() - body1.invInertia() * (r1 * pseudoL));
+
+        body2.setPseudoLinearVelocity(body2.pseudoLinearVelocity() + pseudoL * body2.invMass());
+        body2.setPseudoAngularVelocity(body2.pseudoAngularVelocity() + body2.invInertia() * (r2 * pseudoL));
     }
 }
 
@@ -96,7 +105,7 @@ void ContactSolver::applyImpulse(float dt) {
         Vector r2 = contact.point - body2.centerOfMass();
         Vector vrel = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
 
-        float dPn = contact.normalEffectiveMass * -(vrel.dot(contact.normal) + contact.bias + restitution_ * contact.normalInitRelativeVelocity );
+        float dPn = contact.normalEffectiveMass * -(vrel.dot(contact.normal) + restitution_ * contact.normalInitRelativeVelocity);
         float oldPn = contact.normalImpulse;
         contact.normalImpulse = std::max(contact.normalImpulse + dPn, 0.0f);
         Vector Ln = contact.normal * (contact.normalImpulse - oldPn);
@@ -122,6 +131,31 @@ void ContactSolver::applyImpulse(float dt) {
 
         body2.setLinearVelocity(body2.linearVelocity() + L * body2.invMass());
         body2.setAngularVelocity(body2.angularVelocity() + body2.invInertia() * (r2 * L));
+    }
+}
+
+void ContactSolver::applyPseudoImpulse(float dt) {
+    for (ManifoldContactPoint &contact: contactMainfold_) {
+        Vector r1 = contact.point - body1.centerOfMass();
+        Vector r2 = contact.point - body2.centerOfMass();
+
+        Vector vrel = body2.pseudoLinearVelocity() + body2.pseudoAngularVelocity() * r2 - body1.pseudoLinearVelocity() -
+                      body1.pseudoAngularVelocity() * r1;
+
+        float vn = vrel.dot(contact.normal);
+
+        float dPn = contact.normalEffectiveMass * -(vn + contact.bias);
+        float oldPn = contact.pseudoImpulse;
+        contact.pseudoImpulse = std::max(contact.pseudoImpulse + dPn, 0.0f);
+        dPn = contact.pseudoImpulse - oldPn;
+
+        Vector L = contact.normal * dPn;
+
+        body1.setPseudoLinearVelocity(body1.pseudoLinearVelocity() - L * body1.invMass());
+        body1.setPseudoAngularVelocity(body1.pseudoAngularVelocity() - body1.invInertia() * (r1 * L));
+
+        body2.setPseudoLinearVelocity(body2.pseudoLinearVelocity() + L * body2.invMass());
+        body2.setPseudoAngularVelocity(body2.pseudoAngularVelocity() + body2.invInertia() * (r2 * L));
     }
 }
 
