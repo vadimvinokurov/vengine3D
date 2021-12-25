@@ -13,8 +13,13 @@ namespace VE {
             bodyLocalPoint = body->globalToLocalPoint(jointPoint);
         }
 
+        void setDebug(bool d){
+            debug = d;
+        }
+
         void applyImpulse(float dt, const Vector &mousePoint) {
             VE::Vector bp = body->localToGlobalPoint(bodyLocalPoint);
+
             Vector cPos = bp - mousePoint;
 
             Vector r = bp - body->centerOfMass();
@@ -37,16 +42,18 @@ namespace VE {
 
 
             body->setLinearVelocity(body->linearVelocity() + lymbda * body->invMass());
-            body->setAngularVelocity(body->angularVelocity() + (r * lymbda) * body->invInertia());
-
+            body->setAngularVelocity(body->angularVelocity() + body->invInertia() * (r * lymbda));
+            if(debug) body->angularVelocity().print();
+            bp.drawPoint(12);
         }
 
     private:
         RigidBodyPtr body;
         Vector bodyLocalPoint;
 
-        float maxForce = 5000.0f;
+        float maxForce = 500.0f;
         float beta = 0.2;
+        bool debug = false;
     };
 
     using MouseJointSolverPtr = std::shared_ptr<VE::MouseJointSolver>;

@@ -41,6 +41,7 @@ namespace VE {
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;
         VE::MouseJointSolverPtr mouseJointSolver_;
+        VE::MouseJointSolverPtr jointSolver_;
     };
 
     using WorldPtr = std::shared_ptr<World>;

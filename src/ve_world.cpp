@@ -74,12 +74,15 @@ void World::scene2() {
         return body1;
     };
 
+
+
     Transform transform;
-    transform.position = Vector(0, 0, 0.5f);
+    transform.position = Vector(0, 10, 0.5f);
     auto o = spawBox(transform);
 
-    //mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0.5f, 0.5f, 1.0f));
-    mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass() + Vector(0.2f, 0.2f, 0.1f));
+    jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0.5f, 9.5f, 1.0f));
+    //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
+    jointSolver_->setDebug(true);
 }
 
 void World::resetScene() {
@@ -210,6 +213,7 @@ void World::physics(float dt) {
     if (mouseJointSolver_) {
         mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
     }
+    jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
 
     for (auto &contact: contactSolvers) {
         contact.second.preStep(dt);
