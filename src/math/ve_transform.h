@@ -21,6 +21,7 @@ namespace VE {
         Vector apply(const Vector &localPoint) const {
             return rotateMatrix() * (localPoint * scale) + position;
         }
+
         Vector applyForNormal(const Vector &localNormal) const {
             return rotateMatrix() * localNormal;
         }
@@ -39,6 +40,30 @@ namespace VE {
 
     private:
         Matrix33 rotateMatrix() const {
+            return rotateMatrixEuler();
+        }
+
+        Matrix33 rotateMatrixEuler() const {
+            float alfa = rotation.x();
+            float beta = rotation.y();
+            float gamma = rotation.z();
+
+            VE::Matrix33 rx(1, 0, 0,
+                            0, cosf(alfa), -sinf(alfa),
+                            0, sinf(alfa), cosf(alfa));
+
+            VE::Matrix33 ry(cosf(beta), 0, sinf(beta),
+                            0, 1, 0,
+                            -sinf(beta), 0, cosf(beta));
+
+            VE::Matrix33 rz(cosf(gamma), -sinf(gamma), 0,
+                            sinf(gamma), cosf(gamma), 0,
+                            0, 0, 1);
+
+            return rz * ry * rx;
+        }
+
+        Matrix33 rotateMatrixVector() const {
             Vector d = rotation.normolize();
             float angle = rotation.abs();
             float cosfi = cosf(angle);
@@ -58,6 +83,7 @@ namespace VE {
                     cosfi + (1 - cosfi) * d.z() * d.z()
             );
         }
+
     };
 }
 

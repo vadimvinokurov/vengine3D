@@ -13,7 +13,7 @@ namespace VE {
             bodyLocalPoint = body->globalToLocalPoint(jointPoint);
         }
 
-        void setDebug(bool d){
+        void setDebug(bool d) {
             debug = d;
         }
 
@@ -43,7 +43,8 @@ namespace VE {
 
             body->setLinearVelocity(body->linearVelocity() + lymbda * body->invMass());
             body->setAngularVelocity(body->angularVelocity() + body->invInertia() * (r * lymbda));
-            if(debug) body->angularVelocity().print();
+            if (debug) std::cout << body->angularVelocity().abs() << std::endl;
+            globalParameters.rotate.print();
             bp.drawPoint(12);
         }
 

@@ -69,20 +69,19 @@ void World::scene2() {
         auto collider1 = std::make_shared<VE::BoxCollider>();
         body1->addCollider(collider1);
         body1->setTransform(transform);
-        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        //body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
         return body1;
     };
 
 
-
     Transform transform;
-    transform.position = Vector(0, 10, 0.5f);
+    transform.position = Vector(0, 0, 0);
     auto o = spawBox(transform);
 
-    jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0.5f, 9.5f, 1.0f));
+    //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0.5f, 9.5f, 1.0f));
     //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
-    jointSolver_->setDebug(true);
+    //jointSolver_->setDebug(true);
 }
 
 void World::resetScene() {
@@ -103,7 +102,9 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 
 
 void World::hid(float dt) {
-
+    Transform t;
+    t.rotation = globalParameters.rotate;
+    worldObjects[0]->setTransform(t);
     if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
         Transform transform;
         transform.position = currentCamera_->getPointAlongDirection(20);
@@ -116,24 +117,24 @@ void World::hid(float dt) {
         //body1->setLinearVelocity(currentCamera_->direction() * 20);
         worldObjects.push_back(body1);
     }
-    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
-        mouseJointSolver_.reset();
-        float minLen = std::numeric_limits<float>::max();
-        RigidBodyPtr selectObject;
-        for (auto &object:worldObjects) {
-            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
-            if (currentLen < minLen) {
-                minLen = currentLen;
-                selectObject = object;
-            }
-        }
-        if (minLen != std::numeric_limits<float>::max()) {
-            mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(selectObject, selectObject->centerOfMass());
-        }
-    }
-    if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
-        mouseJointSolver_.reset();
-    }
+//    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
+//        mouseJointSolver_.reset();
+//        float minLen = std::numeric_limits<float>::max();
+//        RigidBodyPtr selectObject;
+//        for (auto &object:worldObjects) {
+//            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
+//            if (currentLen < minLen) {
+//                minLen = currentLen;
+//                selectObject = object;
+//            }
+//        }
+//        if (minLen != std::numeric_limits<float>::max()) {
+//            mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(selectObject, selectObject->centerOfMass());
+//        }
+//    }
+//    if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
+//        mouseJointSolver_.reset();
+//    }
     if (keyboard_->isPressed(VE_KEY_F1)) {
         globalParameters.polygone = !globalParameters.polygone;
     }
@@ -213,7 +214,10 @@ void World::physics(float dt) {
     if (mouseJointSolver_) {
         mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
     }
-    jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
+    if (jointSolver_) {
+        jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
+    }
+
 
     for (auto &contact: contactSolvers) {
         contact.second.preStep(dt);
@@ -237,6 +241,12 @@ void World::gui() {
     if (ImGui::Button("Reset")) resetScene();
     ImGui::Checkbox("polygone", &globalParameters.polygone);
     ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
+
+    static float alfa = 0, beta = 0, gamma = 0;
+    ImGui::SliderFloat("x", &alfa, 0.0f, 180.0f);
+    ImGui::SliderFloat("y", &beta, 0.0f, 180.0f);
+    ImGui::SliderFloat("z", &gamma, 0.0f, 180.0f);
+    globalParameters.rotate = Vector(alfa, beta, gamma) / 180.0f * M_PI;
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
 
     ImGui::End();

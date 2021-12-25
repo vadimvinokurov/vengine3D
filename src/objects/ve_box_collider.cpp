@@ -114,7 +114,7 @@ ColliderFace BoxCollider::getFace(unsigned int faceNumber) const {
 }
 
 const void *BoxCollider::verticesGLFormatData() const {
-    return reinterpret_cast<const void *>(localVertices_.data());
+    return reinterpret_cast<const void *>(globalVertices_.data());
 }
 
 const void *BoxCollider::indicesGLFormatData(unsigned int offset) const {
