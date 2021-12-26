@@ -10,7 +10,7 @@
 namespace VE{
     struct GlobalParameters{
         Vector rotate;
-        bool polygone = true;
+        bool polygone = false;
         bool warmstarting = true;
         int iterations = 10;
     };

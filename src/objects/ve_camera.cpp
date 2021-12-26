@@ -7,10 +7,11 @@
 
 using namespace VE;
 
-Camera::Camera() : position_(0, -17.5, 0),
+Camera::Camera() : position_(CameraParameters::defaultCameraPosition),
                    cameraDirection_(CameraParameters::defaultCameraDirection),
                    cameraUp_(CameraParameters::defaultCameraUp),
                    cameraRight_(CameraParameters::defaultCameraRight) {
+    setDirection(0,0);
 }
 
 void Camera::moveAlongDirection(float distance) {

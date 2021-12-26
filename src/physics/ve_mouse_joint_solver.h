@@ -18,12 +18,12 @@ namespace VE {
         }
 
         void applyImpulse(float dt, const Vector &mousePoint) {
+            body->angularVelocity().print();
             VE::Vector bp = body->localToGlobalPoint(bodyLocalPoint);
 
             Vector cPos = bp - mousePoint;
 
             Vector r = bp - body->centerOfMass();
-
             VE::Matrix33 E;
             E.setIdentity();
 
@@ -31,7 +31,7 @@ namespace VE {
                            -r.z(), 0.0f, r.x(),
                            r.y(), -r.x(), 0.0f);
 
-            VE::Matrix33 k = E * body->invMass() * E.getTranspose() + R * body->invInertia() * R.getTranspose();
+            VE::Matrix33 k = E * body->invMass() + R * body->invInertia() * R.getTranspose();
             VE::Matrix33 effectiveMass = k.getInverse();
 
             VE::Vector cVel = body->linearVelocity() + body->angularVelocity() * r;
@@ -43,16 +43,15 @@ namespace VE {
 
             body->setLinearVelocity(body->linearVelocity() + lymbda * body->invMass());
             body->setAngularVelocity(body->angularVelocity() + body->invInertia() * (r * lymbda));
-            if (debug) std::cout << body->angularVelocity().abs() << std::endl;
-            globalParameters.rotate.print();
             bp.drawPoint(12);
+            r.draw(body->centerOfMass());
         }
 
     private:
         RigidBodyPtr body;
         Vector bodyLocalPoint;
 
-        float maxForce = 500.0f;
+        float maxForce = 20.0f;
         float beta = 0.2;
         bool debug = false;
     };

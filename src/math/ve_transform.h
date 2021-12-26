@@ -40,7 +40,7 @@ namespace VE {
 
     private:
         Matrix33 rotateMatrix() const {
-            return rotateMatrixEuler();
+            return rotateMatrixAxisAngle();
         }
 
         Matrix33 rotateMatrixEuler() const {
@@ -63,27 +63,27 @@ namespace VE {
             return rz * ry * rx;
         }
 
-        Matrix33 rotateMatrixVector() const {
+        Matrix33 rotateMatrixAxisAngle() const {
             Vector d = rotation.normolize();
             float angle = rotation.abs();
             float cosfi = cosf(angle);
             float sinfi = sinf(angle);
+            float t = (1 - cosfi);
 
             return Matrix33(
-                    cosfi + (1 - cosfi) * d.x() * d.x(),
-                    (1 - cosfi) * d.x() * d.y() - sinfi * d.z(),
-                    (1 - cosfi) * d.x() * d.z() + sinfi * d.y(),
+                    cosfi +  t* d.x() * d.x(),
+                    t * d.x() * d.y() - sinfi * d.z(),
+                    t * d.x() * d.z() + sinfi * d.y(),
 
-                    (1 - cosfi) * d.y() * d.x() + sinfi * d.z(),
-                    cosfi + (1 - cosfi) * d.y() * d.y(),
-                    (1 - cosfi) * d.y() * d.z() - sinfi * d.x(),
+                    t * d.y() * d.x() + sinfi * d.z(),
+                    cosfi + t * d.y() * d.y(),
+                    t * d.y() * d.z() - sinfi * d.x(),
 
-                    (1 - cosfi) * d.z() * d.x() - sinfi * d.y(),
-                    (1 - cosfi) * d.z() * d.y() + sinfi * d.x(),
-                    cosfi + (1 - cosfi) * d.z() * d.z()
+                    t * d.z() * d.x() - sinfi * d.y(),
+                    t * d.z() * d.y() + sinfi * d.x(),
+                    cosfi + t * d.z() * d.z()
             );
         }
-
     };
 }
 

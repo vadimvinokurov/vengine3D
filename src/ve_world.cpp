@@ -75,13 +75,16 @@ void World::scene2() {
     };
 
 
+    Vector offset(10,2,0);
+
     Transform transform;
-    transform.position = Vector(0, 0, 0);
+    transform.position = Vector(0.5f, 0.5f, 0.5f) + offset;
     auto o = spawBox(transform);
 
-    //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0.5f, 9.5f, 1.0f));
+    jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0, 0, 1) + offset);
     //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
     //jointSolver_->setDebug(true);
+
 }
 
 void World::resetScene() {
@@ -102,21 +105,39 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 
 
 void World::hid(float dt) {
-    Transform t;
-    t.rotation = globalParameters.rotate;
-    worldObjects[0]->setTransform(t);
-    if (mouse_->isPressed(VE_MOUSE_BUTTON_3)) {
-        Transform transform;
-        transform.position = currentCamera_->getPointAlongDirection(20);
-        transform.rotation = Vector(1, 1, 0) * (M_PI_4);
-        auto body1 = std::make_shared<VE::RigidBody>();
-        auto collider1 = std::make_shared<VE::BoxCollider>();
-        body1->addCollider(collider1);
-        body1->setTransform(transform);
-        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
-        //body1->setLinearVelocity(currentCamera_->direction() * 20);
-        worldObjects.push_back(body1);
-    }
+//    Transform transform;
+//    transform.rotation = globalParameters.rotate;
+//    worldObjects[0]->setTransform(transform);
+
+//    float forceAbs = 100;
+//    Vector forceNormal = Vector(0, 1, 0).normolize();
+//    Vector forcePoint = Vector(1, 0, 1);
+//
+//    forcePoint.drawPoint(12);
+//    forceNormal.draw(forcePoint);
+//
+//
+//    Vector r = forcePoint - worldObjects[0]->centerOfMass();
+//    r.draw(worldObjects[0]->centerOfMass());
+//
+//    (r * forceNormal).draw(worldObjects[0]->centerOfMass());
+//
+//    if(mouse_->isPressed(VE_MOUSE_BUTTON_1)){
+//        worldObjects[0]->addForce(forceNormal * forceAbs, forcePoint);
+//    }
+//
+//    if (keyboard_->isPressed(VE_KEY_F2)) {
+//        Transform transform;
+//        transform.position = currentCamera_->getPointAlongDirection(20);
+//        transform.rotation = Vector(1, 1, 0) * (M_PI_4);
+//        auto body1 = std::make_shared<VE::RigidBody>();
+//        auto collider1 = std::make_shared<VE::BoxCollider>();
+//        body1->addCollider(collider1);
+//        body1->setTransform(transform);
+//        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+//        //body1->setLinearVelocity(currentCamera_->direction() * 20);
+//        worldObjects.push_back(body1);
+//    }
 //    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
 //        mouseJointSolver_.reset();
 //        float minLen = std::numeric_limits<float>::max();
