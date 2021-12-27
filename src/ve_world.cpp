@@ -69,13 +69,13 @@ void World::scene2() {
         auto collider1 = std::make_shared<VE::BoxCollider>();
         body1->addCollider(collider1);
         body1->setTransform(transform);
-        //body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
         return body1;
     };
 
 
-    Vector offset(10,2,0);
+    Vector offset(10,3,0);
 
     Transform transform;
     transform.position = Vector(0.5f, 0.5f, 0.5f) + offset;
@@ -110,7 +110,7 @@ void World::hid(float dt) {
 //    worldObjects[0]->setTransform(transform);
 
 //    float forceAbs = 100;
-//    Vector forceNormal = Vector(0, 1, 0).normolize();
+//    Vector forceNormal = Vector(1, 1, 0).normolize();
 //    Vector forcePoint = Vector(1, 0, 1);
 //
 //    forcePoint.drawPoint(12);
@@ -232,24 +232,24 @@ void World::physics(float dt) {
         object->updateVelocity(dt);
     }
 
-    if (mouseJointSolver_) {
-        mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
-    }
+//    if (mouseJointSolver_) {
+//        mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
+//    }
     if (jointSolver_) {
         jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
     }
 
 
-    for (auto &contact: contactSolvers) {
-        contact.second.preStep(dt);
-    }
-
-    for (int i = 0; i < globalParameters.iterations; i++) {
-        for (auto &contact: contactSolvers) {
-            contact.second.applyImpulse(dt);
-            contact.second.applyPseudoImpulse(dt);
-        }
-    }
+//    for (auto &contact: contactSolvers) {
+//        contact.second.preStep(dt);
+//    }
+//
+//    for (int i = 0; i < globalParameters.iterations; i++) {
+//        for (auto &contact: contactSolvers) {
+//            contact.second.applyImpulse(dt);
+//            contact.second.applyPseudoImpulse(dt);
+//        }
+//    }
 
     for (auto &object: worldObjects) {
         object->updateTransform(dt);

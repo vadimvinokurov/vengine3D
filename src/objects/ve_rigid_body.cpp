@@ -107,7 +107,7 @@ void RigidBody::addForce(const Vector &force) {
 }
 
 void RigidBody::addForce(const Vector &force, const Vector &forcePoint) {
-    force_ += force_;
+    force_ += force;
     torque_ += (forcePoint - centerOfMass()) * force;
 }
 
@@ -168,7 +168,7 @@ Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
 }
 
 Vector RigidBody::localToGlobalPoint(const Vector &localPoint) {
-    return transform_.apply(localPoint);;
+    return transform_.apply(localPoint);
 }
 
 float RigidBody::friction() const {

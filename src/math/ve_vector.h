@@ -98,14 +98,23 @@ namespace VE {
         }
 
         float abs() const {
-            return sqrt(sqrtAbs());
+            return sqrtf(sqrtAbs());
         }
 
         Vector normolize() const {
-            if (abs() == 0) {
+            float magnitude = abs();
+            if (magnitude == 0) {
                 return Vector(0, 0, 0);
             }
-            return Vector(x_ / abs(), y_ / abs(), z_ / abs());
+            return Vector(x_ / magnitude, y_ / magnitude, z_ / magnitude);
+        }
+
+        std::pair<Vector, float> decomposition() const {
+            float magnitude = abs();
+            if (magnitude == 0) {
+                return {Vector(0, 0, 0), magnitude};
+            }
+            return {Vector(x_ / magnitude, y_ / magnitude, z_ / magnitude), magnitude};
         }
 
         Vector mirror(const VE::Vector &normal) const {
@@ -199,9 +208,27 @@ namespace VE {
         };
 
     };
-    inline bool sameDirection(const Vector &a, const Vector &b){
+
+    inline bool sameDirection(const Vector &a, const Vector &b) {
         return a.dot(b) > 0.0f;
     };
+
+    inline Vector normolizeAngle(const Vector &angleVector) {
+        return angleVector;
+
+
+//        float angle = angleVector.abs();
+//        VE::Vector axis = angleVector.normolize();
+//
+//        float w = cos(angle / 2);
+//        VE::Vector q = axis * sin(angle / 2);
+//
+//        float newAngle = 2 * acosf(w);
+//        float s = sqrt(1 - (w * w));
+//        q = q / s;
+//
+//        return q * newAngle;
+    }
 }
 
 
