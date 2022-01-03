@@ -53,17 +53,6 @@ void World::scene1() {
 }
 
 void World::scene2() {
-//    auto floor = std::make_shared<VE::RigidBody>();
-//    auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
-//    floor->addCollider(floarCol);
-//    floor->setTransform([]() {
-//        Transform transform;
-//        transform.position = Vector(0, 0, -0.5f);
-//        return transform;
-//    }());
-//    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-//    worldObjects.push_back(floor);
-
     auto spawBox = [&](const Transform &transform) {
         auto body1 = std::make_shared<VE::RigidBody>();
         auto collider1 = std::make_shared<VE::BoxCollider>();
@@ -74,7 +63,6 @@ void World::scene2() {
         return body1;
     };
 
-
     Vector offset(10, 3, 0);
 
     Transform transform;
@@ -82,17 +70,13 @@ void World::scene2() {
     auto o = spawBox(transform);
 
     jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0, 0, 1) + offset);
-    //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(-0.5f, 0.2f, -0.5f));
-    //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
-    //jointSolver_->setDebug(true);
-
 }
 
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    scene2();
+    scene1();
 }
 
 const Camera &World::currentCamera() {
@@ -106,25 +90,7 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 
 
 void World::hid(float dt) {
-//    worldObjects[0]->setTransform(transform);
 
-//    float forceAbs = 100;
-//    Vector forceNormal = Vector(1, 1, 0).normolize();
-//    Vector forcePoint = Vector(1, 0, 1);
-//
-//    forcePoint.drawPoint(12);
-//    forceNormal.draw(forcePoint);
-//
-//
-//    Vector r = forcePoint - worldObjects[0]->centerOfMass();
-//    r.draw(worldObjects[0]->centerOfMass());
-//
-//    (r * forceNormal).draw(worldObjects[0]->centerOfMass());
-//
-//    if(mouse_->isPressed(VE_MOUSE_BUTTON_1)){
-//        worldObjects[0]->addForce(forceNormal * forceAbs, forcePoint);
-//    }
-//
 //    if (keyboard_->isPressed(VE_KEY_F2)) {
 //        Transform transform;
 //        transform.position = currentCamera_->getPointAlongDirection(20);
@@ -137,24 +103,24 @@ void World::hid(float dt) {
 //        //body1->setLinearVelocity(currentCamera_->direction() * 20);
 //        worldObjects.push_back(body1);
 //    }
-//    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
-//        mouseJointSolver_.reset();
-//        float minLen = std::numeric_limits<float>::max();
-//        RigidBodyPtr selectObject;
-//        for (auto &object:worldObjects) {
-//            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
-//            if (currentLen < minLen) {
-//                minLen = currentLen;
-//                selectObject = object;
-//            }
-//        }
-//        if (minLen != std::numeric_limits<float>::max()) {
-//            mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(selectObject, selectObject->centerOfMass());
-//        }
-//    }
-//    if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
-//        mouseJointSolver_.reset();
-//    }
+    if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
+        mouseJointSolver_.reset();
+        float minLen = std::numeric_limits<float>::max();
+        RigidBodyPtr selectObject;
+        for (auto &object:worldObjects) {
+            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
+            if (currentLen < minLen) {
+                minLen = currentLen;
+                selectObject = object;
+            }
+        }
+        if (minLen != std::numeric_limits<float>::max()) {
+            mouseJointSolver_ = std::make_shared<VE::MouseJointSolver>(selectObject, selectObject->centerOfMass());
+        }
+    }
+    if (mouse_->isRelease(VE_MOUSE_BUTTON_1)) {
+        mouseJointSolver_.reset();
+    }
     if (keyboard_->isPressed(VE_KEY_F1)) {
         globalParameters.polygone = !globalParameters.polygone;
     }
@@ -231,29 +197,28 @@ void World::physics(float dt) {
         object->updateVelocity(dt);
     }
 
-//    if (mouseJointSolver_) {
-//        mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
-//    }
+    if (mouseJointSolver_) {
+        mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
+    }
+
     if (jointSolver_) {
         jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
     }
 
+    for (auto &contact: contactSolvers) {
+        contact.second.preStep(dt);
+    }
 
-//    for (auto &contact: contactSolvers) {
-//        contact.second.preStep(dt);
-//    }
-//
-//    for (int i = 0; i < globalParameters.iterations; i++) {
-//        for (auto &contact: contactSolvers) {
-//            contact.second.applyImpulse(dt);
-//            contact.second.applyPseudoImpulse(dt);
-//        }
-//    }
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &contact: contactSolvers) {
+            contact.second.applyImpulse(dt);
+            contact.second.applyPseudoImpulse(dt);
+        }
+    }
 
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
     }
-
 }
 
 void World::gui() {

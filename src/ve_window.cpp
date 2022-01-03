@@ -101,7 +101,7 @@ void Window::run() {
                                          + std::to_string(int(elapsedTime)) + " s; ").c_str());
             lableUpdateTime = 0.0f;
         }
-        dt_ = 1.0f / 75.0f;
+        dt_ = 1.0f / 30.0f;
     }
 }
 

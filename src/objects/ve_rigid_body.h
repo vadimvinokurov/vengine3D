@@ -15,7 +15,6 @@ namespace VE {
         RigidBody();
         void addCollider(const ColliderPtr &constShapePtr);
         void setTransform(const Transform &transform);
-        void moveTo(Vector dp);
 
         void updateVelocity(float dt);
         void updateTransform(float dt);
