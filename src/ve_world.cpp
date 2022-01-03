@@ -75,13 +75,14 @@ void World::scene2() {
     };
 
 
-    Vector offset(10,3,0);
+    Vector offset(10, 3, 0);
 
     Transform transform;
     transform.position = Vector(0.5f, 0.5f, 0.5f) + offset;
     auto o = spawBox(transform);
 
     jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0, 0, 1) + offset);
+    //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(-0.5f, 0.2f, -0.5f));
     //jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, o->centerOfMass());
     //jointSolver_->setDebug(true);
 
@@ -105,8 +106,6 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 
 
 void World::hid(float dt) {
-//    Transform transform;
-//    transform.rotation = globalParameters.rotate;
 //    worldObjects[0]->setTransform(transform);
 
 //    float forceAbs = 100;
@@ -264,9 +263,9 @@ void World::gui() {
     ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
 
     static float alfa = 0, beta = 0, gamma = 0;
-    ImGui::SliderFloat("x", &alfa, 0.0f, 180.0f);
-    ImGui::SliderFloat("y", &beta, 0.0f, 180.0f);
-    ImGui::SliderFloat("z", &gamma, 0.0f, 180.0f);
+    ImGui::SliderFloat("x", &alfa, 0.0f, 360.0f);
+    ImGui::SliderFloat("y", &beta, 0.0f, 360.0f);
+    ImGui::SliderFloat("z", &gamma, 0.0f, 360.0f);
     globalParameters.rotate = Vector(alfa, beta, gamma) / 180.0f * M_PI;
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
 

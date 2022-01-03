@@ -209,6 +209,10 @@ namespace VE {
 
     };
 
+    inline Vector operator*(float factor, const Vector& v) {
+        return v * factor;
+    }
+
     inline bool sameDirection(const Vector &a, const Vector &b) {
         return a.dot(b) > 0.0f;
     };
