@@ -32,7 +32,7 @@ namespace VE {
     namespace ContactSolverParametrs {
         const float speedSlop = 0.15f;
         const float penetrationSlop = 0.01f;
-        const float beta = 0.3f;
+        const float beta = 0.2f;
         const float normalDeviation = 0.99f;
         const float contactSlop = 0.01f;
     };

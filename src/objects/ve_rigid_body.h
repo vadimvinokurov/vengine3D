@@ -76,7 +76,7 @@ namespace VE {
         float sleepEpsilont_ = 0.001f;
         float damping_ = 0.999f;
         float restitution_ = 0.0f;
-        float friction_ = 0.2f;
+        float friction_ = 0.8f;
 
         mutable Color color_ = Color(0.5f, 0.5f, 0.5f);
     };

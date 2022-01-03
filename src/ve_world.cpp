@@ -37,7 +37,7 @@ void World::scene1() {
         worldObjects.push_back(body1);
     };
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 10; i++) {
         Transform transform;
         transform.position = Vector(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
         spawBox(transform);

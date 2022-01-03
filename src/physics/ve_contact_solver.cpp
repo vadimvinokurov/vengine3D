@@ -86,15 +86,7 @@ void ContactSolver::preStep(float dt) {
         body2.setPseudoLinearVelocity(body2.pseudoLinearVelocity() + pseudoL * body2.invMass());
         body2.setPseudoAngularVelocity(body2.pseudoAngularVelocity() + body2.invInertia() * (r2 * pseudoL));
 
-
         contact.point.drawPoint(6, Color(1, 0, 0));
-//        r2.draw(body2.centerOfMass());
-//        contact.normal.draw(contact.point, Color(0, 0, 1));
-////        contact.tangent1.draw(contact.point);
-////        contact.tangent2.draw(contact.point, Color(0, 1, 0));
-//        Vector r = relativeVelocity.normolize();
-//        r.draw(contact.point);
-//        body2.angularVelocity().draw(body2.centerOfMass(), Color(0, 1, 0));
     }
 }
 
@@ -130,8 +122,7 @@ void ContactSolver::applyImpulse(float dt) {
         Vector Lt2 = contact.tangent2 * (contact.tangent2Impulse - oldPt2);
 
 
-        Vector L = Ln;
-        L = L + Lt1 + Lt2;
+        Vector L = Ln + Lt1 + Lt2;
         body1.setLinearVelocity(body1.linearVelocity() - L * body1.invMass());
         body1.setAngularVelocity(body1.angularVelocity() - body1.invInertia() * (r1 * L));
 
