@@ -32,6 +32,7 @@ namespace VE {
     private:
         static std::array<Vector, 8> computeVertices(float width, float height, float depth, const Vector &localPosition);
         static std::array<Vector, 6> computeFaceNormals(const std::array<Vector, 8> &vertices, const std::vector<unsigned int> &indices);
+        static Vector computeCenterOfMass(const std::array<Vector, 8> &vertices);
 
 
         const std::vector<unsigned int> indices_ = {3, 2, 1, 0,
@@ -45,7 +46,8 @@ namespace VE {
         std::array<Vector, 6> localFaceNormals_;
         std::array<Vector, 8> globalVertices_;
         std::array<Vector, 6> globalFaceNormals_;
-
+        Vector localCenterOfMass_;
+        Vector globalCenterOfMass_;
         float width_;
         float height_;
         float depth_;

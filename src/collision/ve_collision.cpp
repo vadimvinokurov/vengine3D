@@ -20,6 +20,14 @@ bool VE::testIntersection(const VE::Collider &collider1, const VE::Collider &col
     return false;
 }
 
+bool VE::testIntersection(const VE::SphereCollider &sphere1, const VE::SphereCollider &sphere2, VE::Vector &contactPenetration) {
+    Vector sphereDistanceVector = sphere2.getCenterOfMass() - sphere1.getCenterOfMass();
+    float radiusSum = sphere1.getRadius() + sphere2.getRadius();
+    float sphereDistance = sphereDistanceVector.abs();
+    contactPenetration = sphereDistanceVector.normolize() * (radiusSum - sphereDistance);
+    return sphereDistance < radiusSum;
+}
+
 bool VE::testIntersection(const VE::RigidBody &body1, const VE::RigidBody &body2) {
     for (size_t i = 0; i < body1.collidersSize(); i++) {
         for (size_t j = 0; j < body2.collidersSize(); j++) {
@@ -36,17 +44,20 @@ bool VE::testIntersection(const VE::RigidBody &body1, const VE::RigidBody &body2
     Vector contactPenetration;
     for (size_t i = 0; i < body1.collidersSize(); i++) {
         for (size_t j = 0; j < body2.collidersSize(); j++) {
+
+
+
             if (testIntersection(body1.collider(i), body2.collider(j),contactPenetration)) {
                 Vector normal = contactPenetration.normolize();
                 float collisionDepth = contactPenetration.abs();
 
-                auto contactPoints = VE::ContactPoint(static_cast<const VE::BoxCollider &>(body1.collider(i)),
-                                                      static_cast<const VE::BoxCollider &>(body2.collider(j)),
-                                                      normal).get();
+//                auto contactPoints = VE::ContactPoint(static_cast<const VE::BoxCollider &>(body1.collider(i)),
+//                                                      static_cast<const VE::BoxCollider &>(body2.collider(j)),
+//                                                      normal).get();
 
-                for (auto& contactPoint: contactPoints) {
-                    contactMainfold.emplace_back(contactPoint, normal, collisionDepth);
-                }
+//                for (auto& contactPoint: contactPoints) {
+//                    contactMainfold.emplace_back(contactPoint, normal, collisionDepth);
+//                }
             }
 
         }

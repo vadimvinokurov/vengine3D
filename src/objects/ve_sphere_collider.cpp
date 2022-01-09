@@ -20,6 +20,7 @@ ColliderPtr SphereCollider::create(float radius, float mass, const Vector &local
 
 void SphereCollider::setLocalPosition(const Vector &localPosition) {
     localCenter_ += localPosition;
+    globalCenter_ = localCenter_;
     setGlvertices();
 }
 
@@ -41,7 +42,7 @@ void SphereCollider::setTransform(const Transform &transform) {
 }
 
 Vector SphereCollider::getCenterOfMass() const {
-    return localCenter_;
+    return globalCenter_;
 }
 
 void SphereCollider::setGlvertices() {
@@ -83,4 +84,8 @@ const void *SphereCollider::indicesGLFormatData(unsigned int offset) const {
 
 unsigned int SphereCollider::indecesSize() const {
     return glIndicesBuffer_.size();
+}
+
+float SphereCollider::getRadius() const {
+    return radius_;
 }

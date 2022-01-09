@@ -19,6 +19,7 @@ namespace VE {
         void setTransform(const Transform &transform) override;
         Vector getCenterOfMass() const override;
         Matrix33 getInertia() const override;
+        float getRadius() const;
 
 
         virtual const void *verticesGLFormatData() const override;

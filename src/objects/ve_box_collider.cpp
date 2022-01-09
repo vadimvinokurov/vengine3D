@@ -16,12 +16,17 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
           localFaceNormals_(computeFaceNormals(localVertices_, indices_)),
           globalVertices_(localVertices_),
           globalFaceNormals_(localFaceNormals_),
+          localCenterOfMass_(computeCenterOfMass(localVertices_)),
+          globalCenterOfMass_(localCenterOfMass_),
           width_(width),
           height_(height),
           depth_(depth) {}
 
 void BoxCollider::setLocalPosition(const Vector &localPosition) {
     std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector &v) { v += localPosition; });
+    globalVertices_ = localVertices_;
+    localCenterOfMass_ = computeCenterOfMass(localVertices_);
+    globalCenterOfMass_ = localCenterOfMass_;
 }
 
 std::array<Vector, 8> BoxCollider::computeVertices(float width, float height, float depth, const Vector &localPosition) {
@@ -50,6 +55,11 @@ std::array<Vector, 6> BoxCollider::computeFaceNormals(const std::array<Vector, 8
     return faceNormals;
 }
 
+Vector BoxCollider::computeCenterOfMass(const std::array<Vector, 8> &vertices) {
+    return std::accumulate(vertices.begin(), vertices.end(), Vector()) / vertices.size();
+}
+
+
 Matrix33 BoxCollider::getInertia() const {
     float tmp = mass_ / 12.0f;
     float sqrtWidth = width_ * width_;
@@ -64,7 +74,7 @@ Matrix33 BoxCollider::getInertia() const {
 }
 
 Vector BoxCollider::getCenterOfMass() const {
-    return std::accumulate(localVertices_.begin(), localVertices_.end(), Vector()) / 8.0f;
+    return globalCenterOfMass_;
 }
 
 Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
@@ -88,6 +98,7 @@ void BoxCollider::setTransform(const Transform &transform) {
     for (size_t i = 0; i < localFaceNormals_.size(); i++) {
         globalFaceNormals_[i] = transform.applyForNormal(localFaceNormals_[i]);
     }
+    globalCenterOfMass_ = transform.apply(localCenterOfMass_);
 }
 
 ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {
@@ -126,7 +137,6 @@ const void *BoxCollider::indicesGLFormatData(unsigned int offset) const {
 unsigned int BoxCollider::indecesSize() const {
     return indices_.size();
 }
-
 
 
 
