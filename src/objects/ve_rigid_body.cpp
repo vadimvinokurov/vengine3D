@@ -6,22 +6,21 @@
 
 using namespace VE;
 
-RigidBody::RigidBody() {
+
+RigidBodyPtr RigidBody::creat(std::vector<ColliderPtr> &&collidersPtr) {
+    return std::make_shared<VE::RigidBody>(std::forward<std::vector<ColliderPtr>>(collidersPtr));
+}
+
+RigidBody::RigidBody(std::vector<ColliderPtr> &&collidersPtr) : colliders_(collidersPtr) {
+    computeMass();
+    auto f = [&centerOfMass = centerOfMass_](ColliderPtr &c) {
+        c->setLocalPosition(centerOfMass * -1);
+    };
+    std::for_each(colliders_.begin(), colliders_.end(), f);
+    centerOfMass_.setZero();
 }
 
 RigidBody::~RigidBody() {
-}
-
-void RigidBody::addCollider(const VE::ColliderPtr &constShapePtr) {
-    colliders_.emplace_back(constShapePtr);
-    computeMass();
-
-//    Transform t;
-//    t.position = centerOfMass_ * -1;
-//    for (const auto &collider: colliders_) {
-//        collider->setLocalTransform(t);
-//    }
-//    centerOfMass_.setZero();
 }
 
 void RigidBody::computeMass() {
@@ -31,19 +30,30 @@ void RigidBody::computeMass() {
 
     bool infinityMass = false;
     for (const auto &collider: colliders_) {
+        centerOfMass_ += collider->getCenterOfMass();
+        mass += collider->mass();
+        inertia += collider->getInertia();
+
         if (collider->mass() == 0) {
             infinityMass = true;
         }
-        mass += collider->mass();
-        centerOfMass_ += collider->getCenterOfMass();
-        inertia += collider->getInertia();
     }
-    centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
+    centerOfMass_ /= static_cast<float>(colliders_.size());
 
     if (infinityMass) {
         invInertia_.setZero();
         invMass_ = 0.0f;
     } else {
+        for (const auto &collider: colliders_) {
+            Vector r = centerOfMass_ - collider->getCenterOfMass();
+            float sqrtX = r.x() * r.x();
+            float sqrtY = r.y() * r.y();
+            float sqrtZ = r.z() * r.z();
+
+            inertia += Matrix33((sqrtY + sqrtZ) * collider->mass(), 0, 0,
+                                0, (sqrtX + sqrtZ) * collider->mass(), 0,
+                                0, 0, (sqrtX + sqrtY) * collider->mass());
+        }
         invInertia_ = inertia.getInverse();
         invMass_ = 1 / mass;
     }
@@ -77,6 +87,7 @@ void RigidBody::updateVelocity(float dt) {
 }
 
 void RigidBody::updateTransform(float dt) {
+    centerOfMass_.drawPoint(12);
     if ((linearVelocity_ + pseudoLinearVelocity_).sqrtAbs() < (sleepEpsilont_ * sleepEpsilont_)) {
         linearVelocity_.setZero();
         pseudoLinearVelocity_.setZero();

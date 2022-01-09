@@ -23,6 +23,7 @@ namespace VE {
 
         float mass() const { return mass_; }
 
+        virtual void setLocalPosition(const Vector& localPosition) = 0;
         virtual Vector getCenterOfMass() const = 0;
         virtual Matrix33 getInertia() const = 0;
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
@@ -45,6 +46,7 @@ namespace VE {
 
     using ColliderPtr = std::shared_ptr<Collider>;
     using ConstColliderPtr = std::shared_ptr<const Collider>;
+    using CollidersPtrVector = std::vector<ColliderPtr>;
 }
 
 

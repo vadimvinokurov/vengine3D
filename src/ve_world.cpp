@@ -16,8 +16,7 @@ World::World() {
 
 
 void World::scene1() {
-    auto floor = std::make_shared<VE::RigidBody>();
-    floor->addCollider(std::make_shared<VE::BoxCollider>(100, 1, 100, 0));
+    RigidBodyPtr floor = RigidBody::creat({BoxCollider::create(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
         transform.position = Vector(0, 0, -0.5f);
@@ -28,9 +27,7 @@ void World::scene1() {
 
 
     auto spawBox = [&](const Transform &transform) {
-        auto body1 = std::make_shared<VE::RigidBody>();
-        auto collider1 = std::make_shared<VE::BoxCollider>(1, 1, 1, 1);
-        body1->addCollider(collider1);
+        RigidBodyPtr body1 = RigidBody::creat({BoxCollider::create(1, 1, 1, 1)});
         body1->setTransform(transform);
         body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
@@ -41,21 +38,11 @@ void World::scene1() {
         transform.position = Vector(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
         spawBox(transform);
     }
-
-
-    Transform transform;
-    transform.position = Vector(3.0f, 0.5f, 0.5f);
-    spawBox(transform);
-    worldObjects.back()->setLinearVelocity(Vector(10, 0, 0));
-    transform.position = Vector(3.0f, 0.0f, 1.0f);
-    //spawBox(transform);
 }
 
 void World::scene2() {
     auto spawBox = [&](const Transform &transform) {
-        auto body1 = std::make_shared<VE::RigidBody>();
-        auto collider1 = std::make_shared<VE::BoxCollider>();
-        body1->addCollider(collider1);
+        auto body1 = RigidBody::creat({BoxCollider::create()});
         body1->setTransform(transform);
         body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
@@ -72,10 +59,41 @@ void World::scene2() {
 }
 
 void World::scene3() {
-    auto body = std::make_shared<VE::RigidBody>();
-    body->addCollider(std::make_shared<VE::BoxCollider>(1, 1, 1, 1));
-    //body->setGravity(Vector(0.0f, 0.0f, -9.8f));
-    worldObjects.push_back(body);
+    RigidBodyPtr floor = RigidBody::creat({BoxCollider::create(100, 1, 100, 0)});
+    floor->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0, -0.5f);
+        return transform;
+    }());
+    floor->setColor(Color(0.3f, 0.3f, 0.3f));
+    worldObjects.push_back(floor);
+
+    std::vector<VE::ColliderPtr> a;
+    RigidBodyPtr body1 = RigidBody::creat(
+            {
+                    BoxCollider::create(1, 1, 1, 1, Vector(0.0f, 0.0f, 0.0f)),
+            });
+    body1->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0, 1.5f);
+        return transform;
+    }());
+    body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    worldObjects.push_back(body1);
+
+
+    RigidBodyPtr body2 = RigidBody::creat(
+            {
+                    BoxCollider::create(1, 1, 1, 1, Vector(0.0f, 0.0f, 0.0f)),
+                    BoxCollider::create(1, 1, 1, 1, Vector(1.0f, 0.0f, 0.0f))
+            });
+    body2->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0.6f, 10.5f);
+        return transform;
+    }());
+    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    worldObjects.push_back(body2);
 
 }
 
@@ -83,7 +101,7 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    scene1();
+    scene3();
 }
 
 const Camera &World::currentCamera() {

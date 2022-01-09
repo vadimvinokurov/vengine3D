@@ -6,6 +6,10 @@
 
 using namespace VE;
 
+ColliderPtr BoxCollider::create(float width, float height, float depth, float mass, const Vector &localPosition) {
+    return std::make_shared<VE::BoxCollider>(width, height, depth, mass, localPosition);
+}
+
 BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Vector &localPosition)
         : Collider(ColliderType::box, mass),
           localVertices_(computeVertices(width, height, depth, localPosition)),
@@ -15,6 +19,10 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
           width_(width),
           height_(height),
           depth_(depth) {}
+
+void BoxCollider::setLocalPosition(const Vector &localPosition) {
+    std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector &v) { v += localPosition; });
+}
 
 std::array<Vector, 8> BoxCollider::computeVertices(float width, float height, float depth, const Vector &localPosition) {
     float halfWidth = width / 2;

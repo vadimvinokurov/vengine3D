@@ -18,6 +18,9 @@ SphereCollider::SphereCollider(float radius, const Vector &center, float mass) :
     globalCenter_ = localCenter_;
 }
 
+void SphereCollider::setLocalPosition(const Vector &localPosition) {
+    localCenter_ += localPosition;
+}
 
 Matrix33 SphereCollider::getInertia() const {
     float tmp = 2.0f / 5.0f * mass_ * radius_ * radius_;

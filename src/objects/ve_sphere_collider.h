@@ -13,7 +13,7 @@ namespace VE {
         SphereCollider(Vector center);
         SphereCollider(float radius = 1.0f, const Vector &center = Vector(), float mass = 1.0f);
 
-
+        void setLocalPosition(const Vector& localPosition) override;
         Vector farthestVertexInDirection(const Vector &direction) const override;
         void setTransform(const Transform &transform) override;
         Vector getCenterOfMass() const override;

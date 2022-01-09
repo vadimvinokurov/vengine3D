@@ -6,14 +6,18 @@
 #define VENGINE3D_VE_RIGID_BODY_H
 
 #include "ve_collider.h"
-#include "Math/ve_transform.h"
+#include "math/ve_transform.h"
 #include "stdlibraries.h"
 
 namespace VE {
+    class RigidBody;
+
+    using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
+
     class RigidBody {
     public:
-        RigidBody();
-        void addCollider(const ColliderPtr &constShapePtr);
+        explicit RigidBody(std::vector<ColliderPtr> &&collidersPtr);
+        static RigidBodyPtr creat(std::vector<ColliderPtr> &&collidersPtr);
         void setTransform(const Transform &transform);
 
         void updateVelocity(float dt);
@@ -54,7 +58,9 @@ namespace VE {
 
 
         void setColor(const Color &color) const { color_ = color; }
+
         Color color() const { return color_; }
+
     private:
         void computeMass();
 
@@ -80,8 +86,6 @@ namespace VE {
 
         mutable Color color_ = Color(0.5f, 0.5f, 0.5f);
     };
-
-    using RigidBodyPtr = std::shared_ptr<VE::RigidBody>;
 }
 
 
