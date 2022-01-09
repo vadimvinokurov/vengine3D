@@ -72,6 +72,14 @@ void World::scene2() {
     jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0, 0, 1) + offset);
 }
 
+void World::scene3() {
+        auto body = std::make_shared<VE::RigidBody>();
+        body->addCollider(std::make_shared<VE::BoxCollider>(1,1,1,1));
+        //body->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        worldObjects.push_back(body);
+
+}
+
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
@@ -90,19 +98,6 @@ void World::setHid(const KeyboardPtr &keyboard, const MousePtr &mouse) {
 
 
 void World::hid(float dt) {
-
-//    if (keyboard_->isPressed(VE_KEY_F2)) {
-//        Transform transform;
-//        transform.position = currentCamera_->getPointAlongDirection(20);
-//        transform.rotation = Vector(1, 1, 0) * (M_PI_4);
-//        auto body1 = std::make_shared<VE::RigidBody>();
-//        auto collider1 = std::make_shared<VE::BoxCollider>();
-//        body1->addCollider(collider1);
-//        body1->setTransform(transform);
-//        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
-//        //body1->setLinearVelocity(currentCamera_->direction() * 20);
-//        worldObjects.push_back(body1);
-//    }
     if (mouse_->isPressed(VE_MOUSE_BUTTON_1)) {
         mouseJointSolver_.reset();
         float minLen = std::numeric_limits<float>::max();

@@ -10,19 +10,18 @@ SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center, 1.0
 
 }
 
-SphereCollider::SphereCollider(float radius, const Vector &center, float mass) : Collider(ColliderType::sphere),
+SphereCollider::SphereCollider(float radius, const Vector &center, float mass) : Collider(ColliderType::sphere, mass),
                                                                                  radius_(radius),
                                                                                  localCenter_(center) {
-    mass_ = mass;
-    computeSphereInertia();
-    setGlvertices();
 
+    setGlvertices();
     globalCenter_ = localCenter_;
 }
 
-void SphereCollider::computeSphereInertia() {
+
+Matrix33 SphereCollider::getInertia() const {
     float tmp = 2.0f / 5.0f * mass_ * radius_ * radius_;
-    inertia_ = Matrix33(
+    return Matrix33(
             tmp, 0, 0,
             0, tmp, 0,
             0, 0, tmp
@@ -42,7 +41,7 @@ void SphereCollider::setLocalTransform(const Transform &localTransform) {
     globalCenter_ = localCenter_;
 }
 
-const Vector SphereCollider::getCenterOfMass() const {
+Vector SphereCollider::getCenterOfMass() const {
     return localCenter_;
 }
 
@@ -86,4 +85,3 @@ const void *SphereCollider::indicesGLFormatData(unsigned int offset) const {
 unsigned int SphereCollider::indecesSize() const {
     return glIndicesBuffer_.size();
 }
-

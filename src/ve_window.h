@@ -14,13 +14,13 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "ve_world.h"
-#include "Control/ve_keyboard.h"
-#include "Control/ve_mouse.h"
+#include "control/ve_keyboard.h"
+#include "control/ve_mouse.h"
 
 namespace VE {
     class Window final {
     public:
-        explicit Window(int width = 1280/2, int height = 720/2, const std::string &label = "VEngine3D");
+        explicit Window(int width = 1280, int height = 720, const std::string &label = "VEngine3D");
         void run();
         void setWorld(const WorldPtr &shownWorld);
         void setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse);

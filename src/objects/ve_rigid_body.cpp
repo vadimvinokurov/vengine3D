@@ -36,7 +36,7 @@ void RigidBody::computeMass() {
         }
         mass += collider->mass();
         centerOfMass_ += collider->getCenterOfMass();
-        inertia += collider->inertia();
+        inertia += collider->getInertia();
     }
     centerOfMass_ = centerOfMass_ / static_cast<float>(colliders_.size());
 

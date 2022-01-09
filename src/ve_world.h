@@ -25,7 +25,7 @@ namespace VE {
     private:
         void scene1();
         void scene2();
-
+        void scene3();
 
         void hid(float dt);
         void cameraControl(float dt);
