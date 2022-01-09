@@ -16,12 +16,12 @@ void RigidBody::addCollider(const VE::ColliderPtr &constShapePtr) {
     colliders_.emplace_back(constShapePtr);
     computeMass();
 
-    Transform t;
-    t.position = centerOfMass_ * -1;
-    for (const auto &collider: colliders_) {
-        collider->setLocalTransform(t);
-    }
-    centerOfMass_.setZero();
+//    Transform t;
+//    t.position = centerOfMass_ * -1;
+//    for (const auto &collider: colliders_) {
+//        collider->setLocalTransform(t);
+//    }
+//    centerOfMass_.setZero();
 }
 
 void RigidBody::computeMass() {

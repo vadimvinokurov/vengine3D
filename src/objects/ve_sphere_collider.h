@@ -16,7 +16,6 @@ namespace VE {
 
         Vector farthestVertexInDirection(const Vector &direction) const override;
         void setTransform(const Transform &transform) override;
-        void setLocalTransform(const Transform &localTransform) override;
         Vector getCenterOfMass() const override;
         Matrix33 getInertia() const override;
 

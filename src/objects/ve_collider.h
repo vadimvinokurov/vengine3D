@@ -25,7 +25,6 @@ namespace VE {
 
         virtual Vector getCenterOfMass() const = 0;
         virtual Matrix33 getInertia() const = 0;
-        virtual void setLocalTransform(const Transform &localTransform) = 0;
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
         virtual void setTransform(const Transform &transform) = 0;
 

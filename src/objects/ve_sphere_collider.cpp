@@ -36,11 +36,6 @@ void SphereCollider::setTransform(const Transform &transform) {
     globalCenter_ = transform.applyForNormal(localCenter_);
 }
 
-void SphereCollider::setLocalTransform(const Transform &localTransform) {
-    localCenter_ = localTransform.applyForNormal(localCenter_);
-    globalCenter_ = localCenter_;
-}
-
 Vector SphereCollider::getCenterOfMass() const {
     return localCenter_;
 }

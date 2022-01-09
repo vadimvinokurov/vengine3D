@@ -12,9 +12,8 @@
 namespace VE {
     class BoxCollider : public Collider {
     public:
-        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f);
+        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f, const Vector &localPosition = Vector());
 
-        void setLocalTransform(const Transform &localTransform) override;
         Vector farthestVertexInDirection(const Vector &direction) const override;
         void setTransform(const Transform &transform) override;
         Vector getCenterOfMass() const override;
@@ -27,8 +26,10 @@ namespace VE {
         const void *indicesGLFormatData(unsigned int offset = 0) const override;
         unsigned int indecesSize() const override;
     private:
+        static std::array<Vector, 8> computeVertices(float width, float height, float depth, const Vector &localPosition);
         static std::array<Vector, 6> computeFaceNormals(const std::array<Vector, 8> &vertices, const std::vector<unsigned int> &indices);
-        void updateGlobalBuffer();
+
+
         const std::vector<unsigned int> indices_ = {3, 2, 1, 0,
                                                     4, 5, 6, 7,
                                                     0, 1, 5, 4,

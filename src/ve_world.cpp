@@ -17,8 +17,7 @@ World::World() {
 
 void World::scene1() {
     auto floor = std::make_shared<VE::RigidBody>();
-    auto floarCol = std::make_shared<VE::BoxCollider>(100, 1, 100, 0);
-    floor->addCollider(floarCol);
+    floor->addCollider(std::make_shared<VE::BoxCollider>(100, 1, 100, 0));
     floor->setTransform([]() {
         Transform transform;
         transform.position = Vector(0, 0, -0.5f);
@@ -30,7 +29,7 @@ void World::scene1() {
 
     auto spawBox = [&](const Transform &transform) {
         auto body1 = std::make_shared<VE::RigidBody>();
-        auto collider1 = std::make_shared<VE::BoxCollider>();
+        auto collider1 = std::make_shared<VE::BoxCollider>(1, 1, 1, 1);
         body1->addCollider(collider1);
         body1->setTransform(transform);
         body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
@@ -73,10 +72,10 @@ void World::scene2() {
 }
 
 void World::scene3() {
-        auto body = std::make_shared<VE::RigidBody>();
-        body->addCollider(std::make_shared<VE::BoxCollider>(1,1,1,1));
-        //body->setGravity(Vector(0.0f, 0.0f, -9.8f));
-        worldObjects.push_back(body);
+    auto body = std::make_shared<VE::RigidBody>();
+    body->addCollider(std::make_shared<VE::BoxCollider>(1, 1, 1, 1));
+    //body->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    worldObjects.push_back(body);
 
 }
 
