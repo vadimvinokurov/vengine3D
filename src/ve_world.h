@@ -26,6 +26,7 @@ namespace VE {
         void scene1();
         void scene2();
         void scene3();
+        void scene4();
 
         void hid(float dt);
         void cameraControl(float dt);

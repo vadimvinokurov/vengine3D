@@ -6,20 +6,21 @@
 
 using namespace VE;
 
-SphereCollider::SphereCollider(Vector center) : SphereCollider(1.0f, center, 1.0f) {
-
+SphereCollider::SphereCollider(float radius, float mass, const Vector &localPosition) :
+        Collider(ColliderType::sphere, mass),
+        radius_(radius),
+        localCenter_(localPosition),
+        globalCenter_(localCenter_) {
+    setGlvertices();
 }
 
-SphereCollider::SphereCollider(float radius, const Vector &center, float mass) : Collider(ColliderType::sphere, mass),
-                                                                                 radius_(radius),
-                                                                                 localCenter_(center) {
-
-    setGlvertices();
-    globalCenter_ = localCenter_;
+ColliderPtr SphereCollider::create(float radius, float mass, const Vector &localPosition) {
+    return std::make_shared<SphereCollider>(radius, mass, localPosition);
 }
 
 void SphereCollider::setLocalPosition(const Vector &localPosition) {
     localCenter_ += localPosition;
+    setGlvertices();
 }
 
 Matrix33 SphereCollider::getInertia() const {

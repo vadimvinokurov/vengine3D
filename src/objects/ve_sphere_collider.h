@@ -10,8 +10,9 @@
 namespace VE {
     class SphereCollider : public Collider {
     public:
-        SphereCollider(Vector center);
-        SphereCollider(float radius = 1.0f, const Vector &center = Vector(), float mass = 1.0f);
+        SphereCollider(float radius, float mass, const Vector &localPosition);
+
+        static ColliderPtr create(float radius = 1.0f, float mass = 1.0f, const Vector &localPosition = Vector());
 
         void setLocalPosition(const Vector& localPosition) override;
         Vector farthestVertexInDirection(const Vector &direction) const override;

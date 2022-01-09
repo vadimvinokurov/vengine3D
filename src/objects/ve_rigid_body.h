@@ -17,7 +17,7 @@ namespace VE {
     class RigidBody {
     public:
         explicit RigidBody(std::vector<ColliderPtr> &&collidersPtr);
-        static RigidBodyPtr creat(std::vector<ColliderPtr> &&collidersPtr);
+        static RigidBodyPtr create(std::vector<ColliderPtr> &&collidersPtr);
         void setTransform(const Transform &transform);
 
         void updateVelocity(float dt);
