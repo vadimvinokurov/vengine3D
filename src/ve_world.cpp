@@ -111,12 +111,12 @@ void World::scene4() {
             {
                     SphereCollider::create(1, 1, Vector(0.0f, 0.0f, 0.0f)),
             });
-//    body2->setTransform([]() {
-//        Transform transform;
-//        transform.position = Vector(0, 0.6f, 10.5f);
-//        return transform;
-//    }());
-//    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    body2->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0.6f, 10.5f);
+        return transform;
+    }());
+    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body2);
 
 }
@@ -125,7 +125,7 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    scene4();
+    scene1();
 }
 
 const Camera &World::currentCamera() {

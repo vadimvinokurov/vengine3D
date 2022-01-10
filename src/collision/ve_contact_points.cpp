@@ -7,7 +7,7 @@
 
 using namespace VE;
 
-ContactPoint::ContactPoint(const BoxCollider &collider1, const BoxCollider &collider2, const Vector &contactNormal) {
+BoxBoxContactPoint::BoxBoxContactPoint(const BoxCollider &collider1, const BoxCollider &collider2, const Vector &contactNormal) {
     ColliderFace faceC1 = collider1.getFaceInDirection(contactNormal);
     ColliderFace faceC2 = collider2.getFaceInDirection(contactNormal * -1);
 
@@ -22,11 +22,11 @@ ContactPoint::ContactPoint(const BoxCollider &collider1, const BoxCollider &coll
 
 }
 
-bool ContactPoint::selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2, const VE::Vector& contactNormal) {
+bool BoxBoxContactPoint::selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2, const VE::Vector& contactNormal) {
     return abs(face1.normal.dot(contactNormal)) > abs(face2.normal.dot(contactNormal));
 }
 
-std::vector<VE::Vector> ContactPoint::get() {
+std::vector<VE::Vector> BoxBoxContactPoint::get() {
     for (const ClipPlane &clipPlane: clipPlanes) {
         doubleVertexBuffer.swapBuffer();
         const std::vector<VE::Vector> &inputVertices = doubleVertexBuffer.buffer1();
@@ -52,7 +52,7 @@ std::vector<VE::Vector> ContactPoint::get() {
     return doubleVertexBuffer.buffer2();
 }
 
-void ContactPoint::generateClipPlanes(const ColliderFace &referenceFace) {
+void BoxBoxContactPoint::generateClipPlanes(const ColliderFace &referenceFace) {
     for (unsigned int i = 0; i < referenceFace.vertices.size() - 1; i++) {
         VE::Vector planeNormal = (referenceFace.vertices[i + 1] - referenceFace.vertices[i]) * referenceFace.normal;
         VE::Vector planeVertex = referenceFace.vertices[i];
@@ -65,7 +65,7 @@ void ContactPoint::generateClipPlanes(const ColliderFace &referenceFace) {
     mainPlane = ClipPlane(referenceFace.normal, referenceFace.vertices.front());
 }
 
-VE::Vector ContactPoint::intersectionPoint(const VE::Vector &A, const VE::Vector &B, const ClipPlane &clipPlane) {
+VE::Vector BoxBoxContactPoint::intersectionPoint(const VE::Vector &A, const VE::Vector &B, const ClipPlane &clipPlane) {
     const Vector &n = clipPlane.normal;
     const Vector &P = clipPlane.point;
     float d = clipPlane.d;
@@ -73,11 +73,11 @@ VE::Vector ContactPoint::intersectionPoint(const VE::Vector &A, const VE::Vector
     return A + (B - A) * t;
 }
 
-bool ContactPoint::vertexInsidePlane(const Vector &A, const ContactPoint::ClipPlane &clipPlane) {
+bool BoxBoxContactPoint::vertexInsidePlane(const Vector &A, const BoxBoxContactPoint::ClipPlane &clipPlane) {
     return (A - clipPlane.point).dot(clipPlane.normal) <= 0;
 }
 
-void ContactPoint::deleteVertexOutsideMainFace(std::vector<VE::Vector> &vertices) {
+void BoxBoxContactPoint::deleteVertexOutsideMainFace(std::vector<VE::Vector> &vertices) {
     for (size_t i = 0; i < vertices.size(); i++) {
         if (!vertexInsidePlane(vertices[i], mainPlane)) {
             vertices[i] = vertices.back();

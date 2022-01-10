@@ -14,7 +14,7 @@
 
 namespace VE {
     enum class ColliderType {
-        sphere = 0, box, capsule
+        sphere = 0, box
     };
 
     class Collider {
@@ -23,7 +23,7 @@ namespace VE {
 
         float mass() const { return mass_; }
 
-        virtual void setLocalPosition(const Vector& localPosition) = 0;
+        virtual void setLocalPosition(const Vector &localPosition) = 0;
         virtual Vector getCenterOfMass() const = 0;
         virtual Matrix33 getInertia() const = 0;
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;

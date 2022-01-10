@@ -8,6 +8,7 @@
 #include "ve_contact_manifold.h"
 #include "objects/ve_colliders.h"
 #include "collision/ve_intersection.h"
+#include "ve_contact_points.h"
 
 namespace VE {
     inline bool getContactMainfold(const VE::RigidBody &body1, const VE::RigidBody &body2, VE::ContactMainfold &contactMainfold) {
@@ -17,18 +18,15 @@ namespace VE {
             for (size_t j = 0; j < body2.collidersSize(); j++) {
 
 
-
-                if (testIntersection(body1.collider(i), body2.collider(j),contactPenetration)) {
+                if (testIntersection(body1.collider(i), body2.collider(j), contactPenetration)) {
                     Vector normal = contactPenetration.normolize();
                     float collisionDepth = contactPenetration.abs();
 
-//                auto contactPoints = VE::ContactPoint(static_cast<const VE::BoxCollider &>(body1.collider(i)),
-//                                                      static_cast<const VE::BoxCollider &>(body2.collider(j)),
-//                                                      normal).get();
+                    auto contactPoints = VE::getContactsPoint(body1.collider(i), body2.collider(j), normal);
 
-//                for (auto& contactPoint: contactPoints) {
-//                    contactMainfold.emplace_back(contactPoint, normal, collisionDepth);
-//                }
+                    for (auto &contactPoint: contactPoints) {
+                        contactMainfold.emplace_back(contactPoint, normal, collisionDepth);
+                    }
                 }
 
             }
