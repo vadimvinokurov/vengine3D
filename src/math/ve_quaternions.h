@@ -99,6 +99,10 @@ namespace VE {
             return sqrtf(norma());
         }
 
+        Quaternion normalization() const {
+            return (*this)/(*this).abs();
+        }
+
         Quaternion conjugate() const {
             return Quaternion(v_ * -1, w_);
         }
