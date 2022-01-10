@@ -138,7 +138,7 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    scene2();
+    scene4();
 }
 
 const Camera &World::currentCamera() {

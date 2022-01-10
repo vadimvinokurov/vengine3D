@@ -31,6 +31,10 @@ namespace VE {
                               cosf(0.5f * angle));
         }
 
+        Vector toAxisAngle() const {
+            return (v_ / sqrt(1 - w_ * w_)) * (2 * acos(w_));
+        }
+
         float dot(const Quaternion &b) const {
             return v_.dot(b.v_) + w_ * b.w_;
         }
@@ -100,7 +104,7 @@ namespace VE {
         }
 
         Quaternion normalization() const {
-            return (*this)/(*this).abs();
+            return (*this) / (*this).abs();
         }
 
         Quaternion conjugate() const {
