@@ -3,13 +3,12 @@
 //
 
 #include "ve_contact_solver.h"
-#include "collision/ve_collision.h"
 
 using namespace VE;
 
 
 ContactSolver::ContactSolver(RigidBody &body1, RigidBody &body2) : body1(body1), body2(body2) {
-    contact_ = testIntersection(body1, body2, contactMainfold_);
+    contact_ = getContactMainfold(body1, body2, contactMainfold_);
     restitution_ = (body1.restitution() + body2.restitution()) / 2;
     friction_ = (body1.friction() + body2.friction()) / 2;
 }

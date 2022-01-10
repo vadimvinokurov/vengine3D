@@ -7,7 +7,7 @@
 
 #include "stdlibraries.h"
 #include "objects/ve_rigid_body.h"
-#include "collision/ve_collision.h"
+#include "collision/ve_collision_system.h"
 #include "ve_global_parameters.h"
 
 namespace VE {

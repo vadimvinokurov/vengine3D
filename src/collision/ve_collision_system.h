@@ -1,0 +1,41 @@
+//
+// Created by boris on 1/10/2022.
+//
+
+#ifndef VENGINE3D_COLLISIONSYSTEM_H
+#define VENGINE3D_COLLISIONSYSTEM_H
+
+#include "ve_contact_manifold.h"
+#include "objects/ve_colliders.h"
+#include "collision/ve_intersection.h"
+
+namespace VE {
+    inline bool getContactMainfold(const VE::RigidBody &body1, const VE::RigidBody &body2, VE::ContactMainfold &contactMainfold) {
+        contactMainfold.clear();
+        Vector contactPenetration;
+        for (size_t i = 0; i < body1.collidersSize(); i++) {
+            for (size_t j = 0; j < body2.collidersSize(); j++) {
+
+
+
+                if (testIntersection(body1.collider(i), body2.collider(j),contactPenetration)) {
+                    Vector normal = contactPenetration.normolize();
+                    float collisionDepth = contactPenetration.abs();
+
+//                auto contactPoints = VE::ContactPoint(static_cast<const VE::BoxCollider &>(body1.collider(i)),
+//                                                      static_cast<const VE::BoxCollider &>(body2.collider(j)),
+//                                                      normal).get();
+
+//                for (auto& contactPoint: contactPoints) {
+//                    contactMainfold.emplace_back(contactPoint, normal, collisionDepth);
+//                }
+                }
+
+            }
+        }
+        return !contactMainfold.empty();
+    }
+}
+
+
+#endif //VENGINE3D_COLLISIONSYSTEM_H
