@@ -38,7 +38,8 @@ Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const 
 }
 
 void SphereCollider::setTransform(const Transform &transform) {
-    globalCenter_ = transform.applyForNormal(localCenter_);
+    globalCenter_ = transform.apply(localCenter_);
+    setGlvertices();
 }
 
 Vector SphereCollider::getCenterOfMass() const {
@@ -46,9 +47,11 @@ Vector SphereCollider::getCenterOfMass() const {
 }
 
 void SphereCollider::setGlvertices() {
+    glVerticesBuffer_.clear();
+    glIndicesBuffer_.clear();
+
     int nT = 10;
     int nF = 10;
-
     float dT = M_PI / nT;
     float dF = M_PI * 2 / nF;
     for (int i = 1; i < nT; i++) {
@@ -58,6 +61,10 @@ void SphereCollider::setGlvertices() {
                                            radius_ * cosf(dT * i));
 
         }
+    }
+
+    for(auto & a: glVerticesBuffer_){
+        a += globalCenter_;
     }
 
     for (int i = 1; i < nT - 1; i++) {

@@ -17,12 +17,12 @@ namespace VE {
 
     inline std::vector<VE::Vector>
     boxSphereContactPoint(const BoxCollider &box, const VE::SphereCollider &sphere, const VE::Vector &contactNormal) {
-        return {contactNormal * sphere.getRadius() * -1};
+        return {sphere.getCenterOfMass() - contactNormal * sphere.getRadius()};
     }
 
     inline std::vector<VE::Vector>
     boxSphereContactPoint(const VE::SphereCollider &sphere, const BoxCollider &box, const VE::Vector &contactNormal) {
-        return {contactNormal * sphere.getRadius()};
+        return {sphere.getCenterOfMass() + contactNormal * sphere.getRadius()};
     }
 
     class BoxBoxContactPoint {
@@ -75,14 +75,15 @@ namespace VE {
 
         IntersactionType intersactionType(collider1.shapeType(), collider2.shapeType());
 
-        if(intersactionType == t[0]){
-            return BoxBoxContactPoint(static_cast<const BoxCollider &>(collider1),static_cast<const BoxCollider &>(collider2), contactNormal).get();
-        } else if(intersactionType == t[1]){
-            return boxSphereContactPoint(static_cast<const BoxCollider &>(collider1),static_cast<const SphereCollider &>(collider2), contactNormal);
-        } else if(intersactionType == t[2]){
-            return boxSphereContactPoint(static_cast<const SphereCollider &>(collider1),static_cast<const BoxCollider &>(collider2), contactNormal);
-        } else if(intersactionType == t[3]){
-            return sphereSphereContactPoint(static_cast<const SphereCollider &>(collider1),static_cast<const SphereCollider &>(collider2), contactNormal);
+        if (intersactionType == t[0]) {
+            return BoxBoxContactPoint(static_cast<const BoxCollider &>(collider1), static_cast<const BoxCollider &>(collider2), contactNormal).get();
+        } else if (intersactionType == t[1]) {
+            return boxSphereContactPoint(static_cast<const BoxCollider &>(collider1), static_cast<const SphereCollider &>(collider2), contactNormal);
+        } else if (intersactionType == t[2]) {
+            return boxSphereContactPoint(static_cast<const SphereCollider &>(collider1), static_cast<const BoxCollider &>(collider2), contactNormal);
+        } else if (intersactionType == t[3]) {
+            return sphereSphereContactPoint(static_cast<const SphereCollider &>(collider1), static_cast<const SphereCollider &>(collider2),
+                                            contactNormal);
         }
         assert(false && "getContactsPoint");
         return {};

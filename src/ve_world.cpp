@@ -45,6 +45,7 @@ void World::scene2() {
         auto body1 = RigidBody::create({BoxCollider::create()});
         body1->setTransform(transform);
         body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        body1->setLinearVelocity(Vector(0.0f, -10.0f, 0.0f));
         worldObjects.push_back(body1);
         return body1;
     };
@@ -113,11 +114,23 @@ void World::scene4() {
             });
     body2->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0.6f, 10.5f);
+        transform.position = Vector(0, 0, 10.5f);
         return transform;
     }());
     body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body2);
+
+    RigidBodyPtr body3 = RigidBody::create(
+            {
+                    SphereCollider::create(1, 1, Vector(0.0f, 0.0f, 0.0f)),
+            });
+    body3->setTransform([]() {
+        Transform transform;
+        transform.position = Vector(0, 0, 1.5f);
+        return transform;
+    }());
+    body3->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    worldObjects.push_back(body3);
 
 }
 
@@ -125,7 +138,7 @@ void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    scene1();
+    scene2();
 }
 
 const Camera &World::currentCamera() {
