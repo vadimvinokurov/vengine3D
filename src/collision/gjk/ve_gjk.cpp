@@ -3,9 +3,9 @@
 //
 
 #include "ve_gjk.h"
-#include "ve_epa.h"
-#include "ve_collision_common.h"
-#include "ve_support_point.h"
+#include "collision/epa/ve_epa.h"
+#include "collision/ve_collision_common.h"
+#include "collision/ve_support_point.h"
 
 using namespace VE;
 

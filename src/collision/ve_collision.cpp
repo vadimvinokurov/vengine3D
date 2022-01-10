@@ -3,8 +3,8 @@
 //
 
 #include "ve_collision.h"
-#include "ve_gjk.h"
-#include "ve_epa.h"
+#include "collision/gjk/ve_gjk.h"
+#include "collision/epa/ve_epa.h"
 #include "ve_contact_points.h"
 
 bool VE::testIntersection(const VE::Collider &collider1, const VE::Collider &collider2) {

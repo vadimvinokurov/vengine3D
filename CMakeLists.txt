@@ -8,12 +8,8 @@ add_subdirectory(glfw)
 include_directories("./src")
 include_directories("./glfw/include")
 
-file(GLOB Sources_src "./src/*.cpp")
-file(GLOB Sources_subdir "./src/*/*.cpp")
-
-set (SOURCE_FILES ${Sources_src} ${Sources_subdir})
+file(GLOB Sources "./src/*.cpp" "./src/*/*.cpp" "./src/*/*/*.cpp")
 
 
-
-add_executable(vengine3D ${SOURCE_FILES})
+add_executable(vengine3D ${Sources})
 target_link_libraries(vengine3D glfw -lopengl32)

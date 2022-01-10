@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_EPA_POLYTOPE_H
 
 #include "ve_epa_face.h"
-#include "Math/ve_vector.h"
+#include "math/ve_vector.h"
 #include "stdlibraries.h"
 
 namespace VE{

@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_EPA_FACE_H
 #define VENGINE3D_VE_EPA_FACE_H
 
-#include "Math/ve_vector.h"
+#include "math/ve_vector.h"
 
 namespace VE {
     namespace EPA {

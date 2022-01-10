@@ -3,7 +3,7 @@
 //
 
 #include "ve_epa.h"
-#include "ve_support_point.h"
+#include "collision/ve_support_point.h"
 #include "stdlibraries.h"
 #include "ve_global_parameters.h"
 
