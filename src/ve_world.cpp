@@ -134,11 +134,32 @@ void World::scene4() {
 
 }
 
+void World::scene5() {
+    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+    floor->setTransform(Transform(Vector(0, 0, -0.5f)));
+    floor->setColor(Color(0.3f, 0.3f, 0.3f));
+    worldObjects.push_back(floor);
+
+    float s = 1.0f;
+    float b = 0.8f;
+    for (int i = 1; i < 100; i++) {
+        RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
+        stairs->setTransform(Transform(Vector(s * b * i, 0, s * i / 2)));
+        worldObjects.push_back(stairs);
+    }
+
+    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
+    actors_.push_back(Actor::create(Vector(0, 0, 20)));
+}
+
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
 
-    scene4();
+    scene5();
+    for (auto &actor: actors_) {
+        std::copy(actor->getObjects().begin(), actor->getObjects().end(), std::back_inserter(worldObjects));
+    }
 }
 
 const Camera &World::currentCamera() {
@@ -253,6 +274,11 @@ void World::physics(float dt) {
     if (jointSolver_) {
         jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
     }
+
+    for (auto &actor:actors_) {
+        actor->update(dt);
+    }
+
 
     for (auto &contact: contactSolvers) {
         contact.second.preStep(dt);

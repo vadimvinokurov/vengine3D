@@ -12,6 +12,7 @@
 #include "objects/ve_camera.h"
 #include "control/ve_keyboard.h"
 #include "control/ve_mouse.h"
+#include "objects/ve_actor.h"
 
 namespace VE {
     class World {
@@ -27,6 +28,7 @@ namespace VE {
         void scene2();
         void scene3();
         void scene4();
+        void scene5();
 
         void hid(float dt);
         void cameraControl(float dt);
@@ -43,6 +45,7 @@ namespace VE {
         VE::KeyboardPtr keyboard_;
         VE::MouseJointSolverPtr mouseJointSolver_;
         VE::MouseJointSolverPtr jointSolver_;
+        std::vector<ActorPtr> actors_;
     };
 
     using WorldPtr = std::shared_ptr<World>;

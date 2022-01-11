@@ -30,7 +30,7 @@ void RigidBody::computeMass() {
 
     bool infinityMass = false;
     for (const auto &collider: colliders_) {
-        centerOfMass_ += collider->getCenterOfMass();
+        centerOfMass_ += collider->getCenterOfMass() * collider->mass();
         mass += collider->mass();
         inertia += collider->getInertia();
 
@@ -38,11 +38,12 @@ void RigidBody::computeMass() {
             infinityMass = true;
         }
     }
-    centerOfMass_ /= static_cast<float>(colliders_.size());
+
 
     if (infinityMass) {
         invInertia_.setZero();
         invMass_ = 0.0f;
+        centerOfMass_ /= static_cast<float>(colliders_.size());
     } else {
         for (const auto &collider: colliders_) {
             Vector r = centerOfMass_ - collider->getCenterOfMass();
@@ -56,6 +57,7 @@ void RigidBody::computeMass() {
         }
         invInertia_ = inertia.getInverse();
         invMass_ = 1 / mass;
+        centerOfMass_ *= invMass_;
     }
 }
 

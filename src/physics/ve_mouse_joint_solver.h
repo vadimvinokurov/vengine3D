@@ -45,7 +45,7 @@ namespace VE {
         RigidBodyPtr body;
         Vector bodyLocalPoint;
 
-        float maxForce = 2000.0f;
+        float maxForce = 20000.0f;
         float beta = 0.2f;
     };
 

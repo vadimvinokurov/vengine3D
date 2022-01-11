@@ -16,5 +16,6 @@
 #include <cassert>
 #include <map>
 #include <numeric>
+#include <iterator>
 
 #endif //VENGINE3D_STDLIBRARIES_H
