@@ -13,15 +13,13 @@
 namespace VE {
     class Transform {
     public:
-        Transform() : scale(1.0f),
-                      rotation(Quaternion::fromAxisAngle(Vector(0, 1, 0), 0.0f)),
-                      position(0, 0, 0) {
-        }
-
+        Transform(const Vector &_position = Vector(),
+                  const Quaternion &_rotation = Quaternion::fromAxisAngle(Vector(0, 1, 0), 0.0f)) :
+                rotation(_rotation),
+                position(_position) {}
 
         Vector apply(const Vector &localPoint) const {
-            Vector scalePoint = localPoint * scale;
-            Vector rotatedVector = (rotation * Quaternion(scalePoint) * rotation.inverse()).v();
+            Vector rotatedVector = (rotation * Quaternion(localPoint) * rotation.inverse()).v();
             return rotatedVector + position;
         }
 
@@ -33,7 +31,7 @@ namespace VE {
             Quaternion inverseRotate = rotation.conjugate();
             Vector localPoint = globalPoint - position;
             Vector rv = (inverseRotate * Quaternion(localPoint) * inverseRotate.inverse()).v();
-            return rv / scale;
+            return rv;
         }
 
         Vector applyInverseForNormal(const Vector &globalNormal) const {
@@ -41,7 +39,6 @@ namespace VE {
             return (inverseRotate * Quaternion(globalNormal) * inverseRotate.inverse()).v();
         }
 
-        float scale;
         Quaternion rotation;
         Vector position;
     };
