@@ -275,16 +275,14 @@ void World::physics(float dt) {
         jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
     }
 
-    for (auto &actor:actors_) {
-        actor->update(dt);
-    }
-
-
     for (auto &contact: contactSolvers) {
         contact.second.preStep(dt);
     }
 
     for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &actor:actors_) {
+            actor->update(dt);
+        }
         for (auto &contact: contactSolvers) {
             contact.second.applyImpulse(dt);
             contact.second.applyPseudoImpulse(dt);

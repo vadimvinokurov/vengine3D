@@ -26,10 +26,10 @@ namespace VE {
                     {
                             SphereCollider::create(0.2f, 5, Vector(0.0f, 0.0f, 0.8f)),
 
-                            SphereCollider::create(0.3f, 15, Vector(0.0f, 0.0f, 0.3f)),
-                            SphereCollider::create(0.3f, 15, Vector(0.0f, 0.0f, 0.1f)),
-                            SphereCollider::create(0.3f, 15, Vector(0.0f, 0.0f, -0.1f)),
-                            SphereCollider::create(0.3f, 15, Vector(0.0f, 0.0f, -0.3f)),
+                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, 0.3f)),
+                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, 0.1f)),
+                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, -0.1f)),
+                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, -0.3f)),
                     });
             body->setTransform(Transform(Vector(0, 0, 0) + position));
             bodys_.push_back(body);
@@ -81,8 +81,8 @@ namespace VE {
             leftFood->setTransform(Transform(Vector(-0.2f, 0, -1.1f) + position));
             bodys_.push_back(leftFood);
 
-            Vector pointRightHand(0.325f, 0, 0.35f);
-            Vector pointLeftHand(-0.325f, 0, 0.35f);
+            Vector pointRightHand(0.4f, 0, 0.35f);
+            Vector pointLeftHand(-0.4f, 0, 0.35f);
             Vector pointRightFood(0.2f, 0, -0.625f);
             Vector pointLeftFood(-0.2f, 0, -0.625f);
 
@@ -98,15 +98,17 @@ namespace VE {
         }
 
         void update(float dt) {
-            for (size_t i = 0; i < globalParameters.iterations; i++) {
-                for (auto &joint:joints_) {
-                    joint.applyImpulse(dt);
-                }
+            for (auto &joint:joints_) {
+                joint.applyImpulse(dt);
             }
         }
 
         std::vector<VE::RigidBodyPtr> &getObjects() {
             return bodys_;
+        }
+
+        std::vector<VE::BallAndSocketJointSolver> &getJoints() {
+            return joints_;
         }
 
     private:

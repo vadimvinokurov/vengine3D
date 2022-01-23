@@ -58,7 +58,7 @@ namespace VE {
         VE::Vector body1anchor;
         VE::Vector body2anchor;
 
-        const float beta = 0.8f;
+        const float beta = 0.2f;
     };
 }
 
