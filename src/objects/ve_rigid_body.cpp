@@ -45,6 +45,8 @@ void RigidBody::computeMass() {
         invMass_ = 0.0f;
         centerOfMass_ /= static_cast<float>(colliders_.size());
     } else {
+        invMass_ = 1 / mass;
+        centerOfMass_ *= invMass_;
         for (const auto &collider: colliders_) {
             Vector r = centerOfMass_ - collider->getCenterOfMass();
             float sqrtX = r.x() * r.x();
@@ -56,8 +58,6 @@ void RigidBody::computeMass() {
                                 0, 0, (sqrtX + sqrtY) * collider->mass());
         }
         invInertia_ = inertia.getInverse();
-        invMass_ = 1 / mass;
-        centerOfMass_ *= invMass_;
     }
 }
 

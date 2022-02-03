@@ -28,7 +28,7 @@ namespace VE {
             VE::Matrix33 Jv2;
             Jv1.setIdentity();
             Jv2.setIdentity();
-            Jv1 *= -1;
+            Jv2 *= -1;
 
 
             VE::Matrix33 Jw1(0.0f, r1.z(), -r1.y(),
