@@ -40,6 +40,7 @@ void RigidBody::computeMass() {
     }
 
 
+
     if (infinityMass) {
         invInertia_.setZero();
         invMass_ = 0.0f;
