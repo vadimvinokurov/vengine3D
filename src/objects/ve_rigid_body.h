@@ -48,7 +48,7 @@ namespace VE {
         void setRestitution(float restitution);
 
         const Vector &centerOfMass() const;
-        const Matrix33 &invInertia() const;
+        const Matrix4 &invInertia() const;
 
 
         size_t collidersSize() const;
@@ -66,7 +66,7 @@ namespace VE {
 
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
-        Matrix33 invInertia_;
+        Matrix4 invInertia_;
         Vector centerOfMass_;
         float invMass_;
 

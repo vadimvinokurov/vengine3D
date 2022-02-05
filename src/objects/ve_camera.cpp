@@ -3,7 +3,7 @@
 //
 
 #include "ve_camera.h"
-#include "math/ve_matrix33.h"
+#include "math/ve_matrix4.h"
 
 using namespace VE;
 
@@ -55,15 +55,15 @@ void Camera::setDirection(float dPitch, float dYam) {
     pitch_ += dPitch * CameraParameters::sensitivity;
     yam_ += dYam * CameraParameters::sensitivity;
     float alfa = pitch_ * static_cast<float>(M_PI) / 180.0f;
-    VE::Matrix33 rx(1, 0, 0,
+    VE::Matrix4 rx(1, 0, 0,
                     0, cosf(alfa), -sinf(alfa),
                     0, sinf(alfa), cosf(alfa));
-
+    rx.transpose();
     float beta = yam_ * static_cast<float>(M_PI) / 180.0f;
-    VE::Matrix33 rz(cosf(beta), -sinf(beta), 0,
+    VE::Matrix4 rz(cosf(beta), -sinf(beta), 0,
                     sinf(beta), cosf(beta), 0,
                     0, 0, 1);
-
+    rz.transpose();
     cameraDirection_ = rz * rx * CameraParameters::defaultCameraDirection;
     cameraUp_ = rz * rx * CameraParameters::defaultCameraUp;
     cameraRight_ = rz * rx * CameraParameters::defaultCameraRight;

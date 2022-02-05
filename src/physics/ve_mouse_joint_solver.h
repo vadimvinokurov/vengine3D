@@ -19,16 +19,16 @@ namespace VE {
             Vector cPos = bp - mousePoint;
 
             Vector r = bp - body->centerOfMass();
-            VE::Matrix33 E;
-            E.setIdentity();
+            VE::Matrix4 E;
 
-            VE::Matrix33 R(0.0f, r.z, -r.y,
+            VE::Matrix4 R(0.0f, r.z, -r.y,
                            -r.z, 0.0f, r.x,
                            r.y, -r.x, 0.0f);
+            R.transpose();
 
 
             VE::Vector cVel = body->linearVelocity() + body->angularVelocity() * r;
-            VE::Matrix33 effectiveMass = (E * body->invMass() + R * body->invInertia() * R.getTranspose()).getInverse();
+            VE::Matrix4 effectiveMass = (E * body->invMass() + R * body->invInertia() * R.getTransposed()).getInversed();
 
             VE::Vector b = cPos * beta / dt;
             VE::Vector lymbda = effectiveMass * ((cVel + b) * -1);

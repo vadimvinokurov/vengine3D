@@ -24,9 +24,9 @@ void SphereCollider::setLocalPosition(const Vector &localPosition) {
     setGlvertices();
 }
 
-Matrix33 SphereCollider::getInertia() const {
+Matrix4 SphereCollider::getInertia() const {
     float tmp = 2.0f / 5.0f * mass_ * radius_ * radius_;
-    return Matrix33(
+    return Matrix4(
             tmp, 0, 0,
             0, tmp, 0,
             0, 0, tmp

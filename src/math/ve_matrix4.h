@@ -20,6 +20,12 @@
     this->v[2 * 4 + aRow] * z + \
     this->v[3 * 4 + aRow] * w
 
+#define V4M4D(m, aCol, x, y, z, w) \
+    m[aCol * 4 + 0] * x + \
+    m[aCol * 4 + 1] * y + \
+    m[aCol * 4 + 2] * z + \
+    m[aCol * 4 + 3] * w
+
 #define M4SWAP(x, y) {float t = x; x = y; y = t; }
 
 #define M4_3X3MINOR(x, c0, c1, c2, r0, r1, r2) \
@@ -50,6 +56,14 @@ namespace VE {
                 yx(fv[4]), yy(fv[5]), yz(fv[6]), yw(fv[7]),
                 zx(fv[8]), zy(fv[9]), zz(fv[10]), zw(fv[11]),
                 tx(fv[12]), ty(fv[13]), tz(fv[14]), tw(fv[15]) {}
+
+        Matrix4(float _00, float _01, float _02,
+                float _10, float _11, float _12,
+                float _20, float _21, float _22) :
+                xx(_00), xy(_01), xz(_02), xw(0),
+                yx(_10), yy(_11), yz(_12), yw(0),
+                zx(_20), zy(_21), zz(_22), zw(0),
+                tx(0), ty(0), tz(0), tw(1) {}
 
         bool operator==(const Matrix4 &b) const {
             for (size_t i = 0; i < 16; ++i) {
@@ -148,10 +162,15 @@ namespace VE {
 
         }
 
-        Vector transformVector(const Vector &v3) const {
+        Vector operator*(const Vector &v3) const {
             return Vector{M4V4D(0, v3.x, v3.y, v3.z, 1.0f),
                           M4V4D(1, v3.x, v3.y, v3.z, 1.0f),
                           M4V4D(2, v3.x, v3.y, v3.z, 1.0f)};
+
+        }
+
+        Vector transformVector(const Vector &v3) const {
+            return *this * v3;
         }
 
         Vector transformVector(const Vector &v3, float &w) const {
@@ -218,6 +237,11 @@ namespace VE {
 
         Matrix4& inverse() {
             *this = this->getInversed();
+            return *this;
+        }
+
+        Matrix4& setZero() {
+            memset(v, 0, sizeof(float) * 16);
             return *this;
         }
 
@@ -303,6 +327,12 @@ namespace VE {
             };
         };
     };
+    inline Vector operator*(const Vector &v3, const Matrix4& m) {
+        return Vector{V4M4D(m.v, 0, v3.x, v3.y, v3.z, 1.0f),
+                      V4M4D(m.v, 1, v3.x, v3.y, v3.z, 1.0f),
+                      V4M4D(m.v, 2, v3.x, v3.y, v3.z, 1.0f)};
+
+    }
 }
 
 

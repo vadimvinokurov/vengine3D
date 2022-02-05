@@ -127,7 +127,7 @@ namespace VE {
             return (*this * Quaternion(v) * this->inverse()).v();
         }
 
-        Matrix33 getMatrix() const {
+        Matrix4 getMatrix() const {
             float x = v_.x;
             float y = v_.y;
             float z = v_.z;
@@ -136,7 +136,7 @@ namespace VE {
             float sqrtY = v_.y * v_.y;
             float sqrtZ = v_.z * v_.z;
 
-            return Matrix33(1 - (2 * sqrtY + 2 * sqrtZ), 2 * x * y + 2 * z * w_, 2 * x * z - 2 * y * w_,
+            return Matrix4(1 - (2 * sqrtY + 2 * sqrtZ), 2 * x * y + 2 * z * w_, 2 * x * z - 2 * y * w_,
                             2 * x * y - 2 * z * w_, 1 - (2 * sqrtX + 2 * sqrtZ), 2 * y * z + 2 * x * w_,
                             2 * x * z + 2 * y * w_, 2 * y * z - 2 * x * w_, 1 - (2 * sqrtX + 2 * sqrtY));
         }

@@ -25,7 +25,7 @@ RigidBody::~RigidBody() {
 
 void RigidBody::computeMass() {
     float mass = 0.0f;
-    Matrix33 inertia;
+    Matrix4 inertia;
     centerOfMass_.setZero();
 
     bool infinityMass = false;
@@ -53,11 +53,11 @@ void RigidBody::computeMass() {
             float sqrtY = r.y * r.y;
             float sqrtZ = r.z * r.z;
 
-            inertia += Matrix33((sqrtY + sqrtZ) * collider->mass(), 0, 0,
+            inertia += Matrix4((sqrtY + sqrtZ) * collider->mass(), 0, 0,
                                 0, (sqrtX + sqrtZ) * collider->mass(), 0,
                                 0, 0, (sqrtX + sqrtY) * collider->mass());
         }
-        invInertia_ = inertia.getInverse();
+        invInertia_ = inertia.getInversed();
     }
 }
 
@@ -169,7 +169,7 @@ const Vector &RigidBody::centerOfMass() const {
     return transform_.position;
 }
 
-const Matrix33 &RigidBody::invInertia() const {
+const Matrix4 &RigidBody::invInertia() const {
     return invInertia_;
 }
 
