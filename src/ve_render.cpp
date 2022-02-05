@@ -13,8 +13,8 @@ void glTranslatef(VE::Vector position) {
 };
 
 void glRotatef(VE::Vector rotate) {
-    float angle = rotate.abs() * 180.0f / M_PI;
-    VE::Vector rotateVector = rotate.normolize();
+    auto [rotateVector, angleInRad] = rotate.getNormalAndLen();
+    float angle = angleInRad * 180.0f / M_PI;
     glRotatef(angle, rotateVector.x(), rotateVector.y(), rotateVector.z());
 };
 

@@ -178,7 +178,7 @@ void World::hid(float dt) {
         float minLen = std::numeric_limits<float>::max();
         RigidBodyPtr selectObject;
         for (auto &object:worldObjects) {
-            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).sqrtAbs();
+            float currentLen = (object->centerOfMass() - currentCamera_->getPointAlongDirection(10)).lenSqrt();
             if (currentLen < minLen) {
                 minLen = currentLen;
                 selectObject = object;

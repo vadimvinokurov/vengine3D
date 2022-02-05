@@ -22,8 +22,8 @@ namespace VE {
     inline bool testSpheresIntersection(const SphereCollider &sphere1, const SphereCollider &sphere2, Vector &contactPenetration) {
         Vector sphereDistanceVector = sphere2.getCenterOfMass() - sphere1.getCenterOfMass();
         float radiusSum = sphere1.getRadius() + sphere2.getRadius();
-        float sphereDistance = sphereDistanceVector.abs();
-        contactPenetration = sphereDistanceVector.normolize() * (radiusSum - sphereDistance);
+        float sphereDistance = sphereDistanceVector.len();
+        contactPenetration = sphereDistanceVector.normalized() * (radiusSum - sphereDistance);
         return sphereDistance < radiusSum;
     }
 

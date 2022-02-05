@@ -30,8 +30,8 @@ void ContactSolver::update(ContactMainfold newContactMainfold) {
                 Vector newLocalNormalOb1 = body1.globalToLocalPoint(newContactPoint.point + newContactPoint.normal) - newLocalContactPointOb1;
                 Vector newLocalNormalOb2 = body2.globalToLocalPoint(newContactPoint.point + newContactPoint.normal) - newLocalContactPointOb2;
 
-                if ((localContactPointOb1 - newLocalContactPointOb1).sqrtAbs() < ContactSolverParametrs::contactSlop &&
-                    (localContactPointOb2 - newLocalContactPointOb2).sqrtAbs() < ContactSolverParametrs::contactSlop &&
+                if ((localContactPointOb1 - newLocalContactPointOb1).lenSqrt() < ContactSolverParametrs::contactSlop &&
+                        (localContactPointOb2 - newLocalContactPointOb2).lenSqrt() < ContactSolverParametrs::contactSlop &&
                     localNormalOb1.dot(newLocalNormalOb1) > ContactSolverParametrs::normalDeviation &&
                     localNormalOb2.dot(newLocalNormalOb2) > ContactSolverParametrs::normalDeviation) {
 
@@ -56,8 +56,8 @@ void ContactSolver::preStep(float dt) {
 
         VE::Vector relativeVelocity = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
 
-        contact.tangent1 = (contact.normal * (contact.normal * relativeVelocity)).normolize();
-        contact.tangent2 = (contact.normal * contact.tangent1).normolize();
+        contact.tangent1 = (contact.normal * (contact.normal * relativeVelocity)).normalized();
+        contact.tangent2 = (contact.normal * contact.tangent1).normalized();
 
         contact.normalEffectiveMass = computeEffectiveMass(contact.normal * r1, contact.normal * r2);
         contact.tangent1EffectiveMass = computeEffectiveMass(contact.tangent1 * r1, contact.tangent1 * r2);

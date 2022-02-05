@@ -18,7 +18,7 @@ bool GJK::testIntersection() {
     VE::Vector supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
 
     simplex.push_back(supportPoint);
-    direction = (supportPoint * -1).normolize();
+    direction = (supportPoint * -1).normalized();
     while (1) {
         supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
         if (supportPoint.dot(direction) <= 0) {

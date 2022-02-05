@@ -34,7 +34,7 @@ Matrix33 SphereCollider::getInertia() const {
 }
 
 Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
-    return direction.normolize() * radius_ + globalCenter_;
+    return direction.normalized() * radius_ + globalCenter_;
 }
 
 void SphereCollider::setTransform(const Transform &transform) {

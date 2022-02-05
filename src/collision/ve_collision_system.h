@@ -19,8 +19,7 @@ namespace VE {
 
 
                 if (testIntersection(body1.collider(i), body2.collider(j), contactPenetration)) {
-                    Vector normal = contactPenetration.normolize();
-                    float collisionDepth = contactPenetration.abs();
+                    auto[normal, collisionDepth] = contactPenetration.getNormalAndLen();
 
                     auto contactPoints = VE::getContactsPoint(body1.collider(i), body2.collider(j), normal);
 

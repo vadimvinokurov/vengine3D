@@ -33,7 +33,7 @@ namespace VE {
             VE::Vector b = cPos * beta / dt;
             VE::Vector lymbda = effectiveMass * ((cVel + b) * -1);
             float maxImpulse = maxForce * dt;
-            lymbda = lymbda.normolize() * std::min(lymbda.abs(), maxImpulse);
+            lymbda = lymbda.normalized() * std::min(lymbda.len(), maxImpulse);
 
             body->setLinearVelocity(body->linearVelocity() + lymbda * body->invMass());
             body->setAngularVelocity(body->angularVelocity() + body->invInertia() * (r * lymbda));

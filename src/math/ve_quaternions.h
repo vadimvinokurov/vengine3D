@@ -22,7 +22,7 @@ namespace VE {
         Quaternion(const Vector &v) : Quaternion(v, 0.0f) {}
 
         static Quaternion fromAxisAngle(const Vector &axisAngle) {
-            auto[n, angle] = axisAngle.decomposition();
+            auto[n, angle] = axisAngle.getNormalAndLen();
             return fromAxisAngle(n, angle);
         }
 
@@ -121,6 +121,24 @@ namespace VE {
 
         float w() const {
             return w_;
+        }
+
+        Vector rotate(const Vector& v){
+            return (*this * Quaternion(v) * this->inverse()).v();
+        }
+
+        Matrix33 getMatrix() const {
+            float x = v_.x();
+            float y = v_.y();
+            float z = v_.z();
+
+            float sqrtX = v_.x() * v_.x();
+            float sqrtY = v_.y() * v_.y();
+            float sqrtZ = v_.z() * v_.z();
+
+            return Matrix33(1 - (2 * sqrtY + 2 * sqrtZ), 2 * x * y + 2 * z * w_, 2 * x * z - 2 * y * w_,
+                            2 * x * y - 2 * z * w_, 1 - (2 * sqrtX + 2 * sqrtZ), 2 * y * z + 2 * x * w_,
+                            2 * x * z + 2 * y * w_, 2 * y * z - 2 * x * w_, 1 - (2 * sqrtX + 2 * sqrtY));
         }
 
         void print() {
