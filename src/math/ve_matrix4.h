@@ -9,23 +9,32 @@
 #include "ve_vector4.h"
 
 #define M4D(aRow, bCol) \
-    a.v[0 * 4 + aRow] * b.v[bCol * 4 + 0] + \
-    a.v[1 * 4 + aRow] * b.v[bCol * 4 + 1] + \
-    a.v[2 * 4 + aRow] * b.v[bCol * 4 + 2] + \
-    a.v[3 * 4 + aRow] * b.v[bCol * 4 + 3]
+    this->v[0 * 4 + aRow] * b.v[bCol * 4 + 0] + \
+    this->v[1 * 4 + aRow] * b.v[bCol * 4 + 1] + \
+    this->v[2 * 4 + aRow] * b.v[bCol * 4 + 2] + \
+    this->v[3 * 4 + aRow] * b.v[bCol * 4 + 3]
 
 #define M4V4D(aRow, x, y, z, w) \
-    a.v[0 * 4 + aRow] * x + \
-    a.v[1 * 4 + aRow] * y + \
-    a.v[2 * 4 + aRow] * z + \
-    a.v[3 * 4 + aRow] * w
+    this->v[0 * 4 + aRow] * x + \
+    this->v[1 * 4 + aRow] * y + \
+    this->v[2 * 4 + aRow] * z + \
+    this->v[3 * 4 + aRow] * w
 
+#define M4SWAP(x, y) {float t = x; x = y; y = t; }
+
+#define M4_3X3MINOR(x, c0, c1, c2, r0, r1, r2) \
+    (x[c0 * 4 + r0] * (x[c1 * 4 + r1] * x[c2 * 4 + r2] - x[c1 * 4 + r2] * x[c2 * 4 + r1]) - \
+     x[c1 * 4 + r0] * (x[c0 * 4 + r1] * x[c2 * 4 + r2] - x[c0 * 4 + r2] * x[c2 * 4 + r1]) + \
+     x[c2 * 4 + r0] * (x[c0 * 4 + r1] * x[c1 * 4 + r2] - x[c0 * 4 + r2] * x[c1 * 4 + r1]))
 
 namespace VE {
     struct Matrix4 {
         static constexpr float EPSILON = 0.000001f;
 
-        Matrix4() {}
+        Matrix4() : xx(1), xy(0), xz(0), xw(0),
+                    yx(0), yy(1), yz(0), yw(0),
+                    zx(0), zy(0), zz(1), zw(0),
+                    tx(0), ty(0), tz(0), tw(1) {}
 
         Matrix4(float _00, float _01, float _02, float _03,
                 float _10, float _11, float _12, float _13,
@@ -42,18 +51,18 @@ namespace VE {
                 zx(fv[8]), zy(fv[9]), zz(fv[10]), zw(fv[11]),
                 tx(fv[12]), ty(fv[13]), tz(fv[14]), tw(fv[15]) {}
 
-        bool operator==(const Matrix4 &b) {
+        bool operator==(const Matrix4 &b) const {
             for (size_t i = 0; i < 16; ++i) {
                 if (fabsf(this->v[i] - b.v[i]) > EPSILON) return false;
             }
             return true;
         }
 
-        bool operator!=(const Matrix4 &b) {
+        bool operator!=(const Matrix4 &b) const {
             return !(*this == b);
         }
 
-        Matrix4 operator+(const Matrix4 &b) {
+        Matrix4 operator+(const Matrix4 &b) const {
             const Matrix4 &a = *this;
             return Matrix4(
                     a.xx + b.xx, a.xy + b.xy, a.xz + b.xz, a.xw + b.xw,
@@ -63,7 +72,7 @@ namespace VE {
             );
         }
 
-        Matrix4 operator-(const Matrix4 &b) {
+        Matrix4 operator-(const Matrix4 &b) const {
             const Matrix4 &a = *this;
             return Matrix4(
                     a.xx - b.xx, a.xy - b.xy, a.xz - b.xz, a.xw - b.xw,
@@ -73,7 +82,7 @@ namespace VE {
             );
         }
 
-        Matrix4 operator*(float f) {
+        Matrix4 operator*(float f) const {
             return Matrix4(
                     xx * f, xy * f, xz * f, xw * f,
                     yx * f, yy * f, yz * f, yw * f,
@@ -82,7 +91,7 @@ namespace VE {
             );
         }
 
-        Matrix4 operator/(float f) {
+        Matrix4 operator/(float f) const {
             f = 1.0f / f;
             return Matrix4(
                     xx * f, xy * f, xz * f, xw * f,
@@ -121,7 +130,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix4 operator*(const Matrix4 &b) {
+        Matrix4 operator*(const Matrix4 &b) const {
             const Matrix4 &a = *this;
             return Matrix4(
                     M4D(0, 0), M4D(1, 0), M4D(2, 0), M4D(3, 0),
@@ -131,8 +140,7 @@ namespace VE {
             );
         }
 
-        Vector4 operator*(const Vector4 &v4) {
-            const Matrix4 &a = *this;
+        Vector4 operator*(const Vector4 &v4) const {
             return Vector4{M4V4D(0, v4.x, v4.y, v4.z, v4.w),
                            M4V4D(1, v4.x, v4.y, v4.z, v4.w),
                            M4V4D(2, v4.x, v4.y, v4.z, v4.w),
@@ -140,6 +148,96 @@ namespace VE {
 
         }
 
+        Vector transformVector(const Vector &v3) const {
+            return Vector{M4V4D(0, v3.x, v3.y, v3.z, 1.0f),
+                          M4V4D(1, v3.x, v3.y, v3.z, 1.0f),
+                          M4V4D(2, v3.x, v3.y, v3.z, 1.0f)};
+        }
+
+        Vector transformVector(const Vector &v3, float &w) const {
+            float tmpw = w;
+            w = M4V4D(3, v3.x, v3.y, v3.z, tmpw);
+            return Vector{M4V4D(0, v3.x, v3.y, v3.z, tmpw),
+                          M4V4D(1, v3.x, v3.y, v3.z, tmpw),
+                          M4V4D(2, v3.x, v3.y, v3.z, tmpw)};
+        }
+
+        Matrix4 getTransposed() const {
+            return Matrix4(xx, yx, zx, tx,
+                           xy, yy, zy, ty,
+                           xz, yz, zz, tz,
+                           xw, yw, zw, tw);
+        }
+
+        Matrix4 &transpose() {
+            M4SWAP(yx, xy);
+            M4SWAP(zx, xz);
+            M4SWAP(tx, xw);
+            M4SWAP(zy, yz);
+            M4SWAP(ty, yw);
+            M4SWAP(tz, zw);
+
+            return *this;
+        }
+
+        float determinant() const {
+            return this->v[0] * M4_3X3MINOR(this->v, 1, 2, 3, 1, 2, 3)
+                   - this->v[4] * M4_3X3MINOR(this->v, 0, 2, 3, 1, 2, 3)
+                   + this->v[8] * M4_3X3MINOR(this->v, 0, 1, 3, 1, 2, 3)
+                   - this->v[12] * M4_3X3MINOR(this->v, 0, 1, 2, 1, 2, 3);
+        }
+
+        Matrix4 getInversed() const {
+            float det = this->determinant();
+            if (det == 0.0f) {
+                return Matrix4();
+            }
+
+            //Cof (M[i, j]) = Minor(M[i, j]] * pow(-1, i + j)
+            Matrix4 cofactor;
+            cofactor.v[0] = M4_3X3MINOR(this->v, 1, 2, 3, 1, 2, 3);
+            cofactor.v[1] = -M4_3X3MINOR(this->v, 1, 2, 3, 0, 2, 3);
+            cofactor.v[2] = M4_3X3MINOR(this->v, 1, 2, 3, 0, 1, 3);
+            cofactor.v[3] = -M4_3X3MINOR(this->v, 1, 2, 3, 0, 1, 2);
+            cofactor.v[4] = -M4_3X3MINOR(this->v, 0, 2, 3, 1, 2, 3);
+            cofactor.v[5] = M4_3X3MINOR(this->v, 0, 2, 3, 0, 2, 3);
+            cofactor.v[6] = -M4_3X3MINOR(this->v, 0, 2, 3, 0, 1, 3);
+            cofactor.v[7] = M4_3X3MINOR(this->v, 0, 2, 3, 0, 1, 2);
+            cofactor.v[8] = M4_3X3MINOR(this->v, 0, 1, 3, 1, 2, 3);
+            cofactor.v[9] = -M4_3X3MINOR(this->v, 0, 1, 3, 0, 2, 3);
+            cofactor.v[10] = M4_3X3MINOR(this->v, 0, 1, 3, 0, 1, 3);
+            cofactor.v[11] = -M4_3X3MINOR(this->v, 0, 1, 3, 0, 1, 2);
+            cofactor.v[12] = -M4_3X3MINOR(this->v, 0, 1, 2, 1, 2, 3);
+            cofactor.v[13] = M4_3X3MINOR(this->v, 0, 1, 2, 0, 2, 3);
+            cofactor.v[14] = -M4_3X3MINOR(this->v, 0, 1, 2, 0, 1, 3);
+            cofactor.v[15] = M4_3X3MINOR(this->v, 0, 1, 2, 0, 1, 2);
+            cofactor.transpose();
+
+            return cofactor * (1.0f / det);
+        }
+
+        Matrix4& inverse() {
+            *this = this->getInversed();
+            return *this;
+        }
+
+        void print() const {
+            std::cout << std::endl;
+            std::cout << v[0] << " " << v[1] << " " << v[2] << " " << v[3] << std::endl;
+            std::cout << v[4] << " " << v[5] << " " << v[6] << " " << v[7] << std::endl;
+            std::cout << v[8] << " " << v[9] << " " << v[10] << " " << v[11] << std::endl;
+            std::cout << v[12] << " " << v[13] << " " << v[14] << " " << v[15] << std::endl;
+            std::cout << std::endl;
+        }
+
+        void printInv() const {
+            std::cout << std::endl;
+            std::cout << v[0] << " " << v[4] << " " << v[8] << " " << v[12] << std::endl;
+            std::cout << v[1] << " " << v[5] << " " << v[9] << " " << v[13] << std::endl;
+            std::cout << v[2] << " " << v[6] << " " << v[10] << " " << v[14] << std::endl;
+            std::cout << v[3] << " " << v[7] << " " << v[11] << " " << v[15] << std::endl;
+            std::cout << std::endl;
+        }
 
         union {
             float v[16] = {0};
