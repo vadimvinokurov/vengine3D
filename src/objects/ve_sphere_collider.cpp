@@ -55,9 +55,9 @@ void SphereCollider::setGlvertices() {
     float dF = M_PI * 2 / nF;
     for (int i = 1; i < nT; i++) {
         for (int j = 0; j < nF; j++) {
-            glVerticesBuffer_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j) + localCenter_.x(),
-                                           radius_ * sinf(dT * i) * sinf(dF * j) + localCenter_.y(),
-                                           radius_ * cosf(dT * i) + localCenter_.z());
+            glVerticesBuffer_.emplace_back(radius_ * sinf(dT * i) * cosf(dF * j) + localCenter_.x,
+                                           radius_ * sinf(dT * i) * sinf(dF * j) + localCenter_.y,
+                                           radius_ * cosf(dT * i) + localCenter_.z);
 
         }
     }

@@ -49,9 +49,9 @@ void RigidBody::computeMass() {
         centerOfMass_ *= invMass_;
         for (const auto &collider: colliders_) {
             Vector r = centerOfMass_ - collider->getCenterOfMass();
-            float sqrtX = r.x() * r.x();
-            float sqrtY = r.y() * r.y();
-            float sqrtZ = r.z() * r.z();
+            float sqrtX = r.x * r.x;
+            float sqrtY = r.y * r.y;
+            float sqrtZ = r.z * r.z;
 
             inertia += Matrix33((sqrtY + sqrtZ) * collider->mass(), 0, 0,
                                 0, (sqrtX + sqrtZ) * collider->mass(), 0,

@@ -11,7 +11,7 @@ Camera::Camera() : position_(CameraParameters::defaultCameraPosition),
                    cameraDirection_(CameraParameters::defaultCameraDirection),
                    cameraUp_(CameraParameters::defaultCameraUp),
                    cameraRight_(CameraParameters::defaultCameraRight) {
-    setDirection(0,0);
+    setDirection(0, 0);
 }
 
 void Camera::moveAlongDirection(float distance) {
@@ -36,12 +36,12 @@ const std::array<float, 16> &Camera::getViewMatrix() const {
     const Vector &D = cameraDirection_;
     const Vector &P = position_;
 
-    viewMatrix_ = {cameraRight_.x(), cameraUp_.x(), cameraDirection_.x(), 0,
-                   cameraRight_.y(), cameraUp_.y(), cameraDirection_.y(), 0,
-                   cameraRight_.z(), cameraUp_.z(), cameraDirection_.z(), 0,
-                   -R.x() * P.x() - R.y() * P.y() - R.z() * P.z(),
-                   -U.x() * P.x() - U.y() * P.y() - U.z() * P.z(),
-                   -D.x() * P.x() - D.y() * P.y() - D.z() * P.z(),
+    viewMatrix_ = {cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
+                   cameraRight_.y, cameraUp_.y, cameraDirection_.y, 0,
+                   cameraRight_.z, cameraUp_.z, cameraDirection_.z, 0,
+                   -R.x * P.x - R.y * P.y - R.z * P.z,
+                   -U.x * P.x - U.y * P.y - U.z * P.z,
+                   -D.x * P.x - D.y * P.y - D.z * P.z,
                    1};
 
     return viewMatrix_;

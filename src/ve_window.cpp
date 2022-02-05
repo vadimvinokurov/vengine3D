@@ -83,7 +83,7 @@ void Window::run() {
 
         if (mouse_->isLock()) {
             Vector lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
-            glfwSetCursorPos(window_, lockScreenPosition.x(), lockScreenPosition.y());
+            glfwSetCursorPos(window_, lockScreenPosition.x, lockScreenPosition.y);
             //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         } else {
             //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -159,14 +159,14 @@ void Window::setCallbackFunction() {
 Vector Window::screenToOpenGLCoordinate(const Vector &screenCoordinate) {
     float xScale = width_ / (windowAspectRatio_ * 2);
     float yScale = height_ / 2;
-    return Vector(screenCoordinate.x() / xScale - windowAspectRatio_, 1 - screenCoordinate.y() / yScale);
+    return Vector(screenCoordinate.x / xScale - windowAspectRatio_, 1 - screenCoordinate.y / yScale);
 }
 
 Vector Window::openGLToScreenCoordinate(const Vector &openGLCoordinate) {
     float xScale = width_ / (windowAspectRatio_ * 2);
     float yScale = height_ / 2;
-    return Vector((windowAspectRatio_ + openGLCoordinate.x()) * xScale,
-                  (1 - openGLCoordinate.y()) * yScale);
+    return Vector((windowAspectRatio_ + openGLCoordinate.x) * xScale,
+                  (1 - openGLCoordinate.y) * yScale);
 }
 
 

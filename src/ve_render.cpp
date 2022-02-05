@@ -9,13 +9,13 @@ using namespace VE;
 
 
 void glTranslatef(VE::Vector position) {
-    glTranslatef(position.x(), position.y(), position.z());
+    glTranslatef(position.x, position.y, position.z);
 };
 
 void glRotatef(VE::Vector rotate) {
     auto [rotateVector, angleInRad] = rotate.getNormalAndLen();
     float angle = angleInRad * 180.0f / M_PI;
-    glRotatef(angle, rotateVector.x(), rotateVector.y(), rotateVector.z());
+    glRotatef(angle, rotateVector.x, rotateVector.y, rotateVector.z);
 };
 
 

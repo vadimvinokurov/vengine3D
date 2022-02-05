@@ -22,9 +22,9 @@ namespace VE {
             VE::Matrix33 E;
             E.setIdentity();
 
-            VE::Matrix33 R(0.0f, r.z(), -r.y(),
-                           -r.z(), 0.0f, r.x(),
-                           r.y(), -r.x(), 0.0f);
+            VE::Matrix33 R(0.0f, r.z, -r.y,
+                           -r.z, 0.0f, r.x,
+                           r.y, -r.x, 0.0f);
 
 
             VE::Vector cVel = body->linearVelocity() + body->angularVelocity() * r;

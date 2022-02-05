@@ -141,9 +141,9 @@ namespace VE {
 
         Vector operator*(const Vector &b) const {
             Vector res;
-            res.setX(a[0][0] * b.x() + a[0][1] * b.y() + a[0][2] * b.z());
-            res.setY(a[1][0] * b.x() + a[1][1] * b.y() + a[1][2] * b.z());
-            res.setZ(a[2][0] * b.x() + a[2][1] * b.y() + a[2][2] * b.z());
+            res.x = (a[0][0] * b.x + a[0][1] * b.y + a[0][2] * b.z);
+            res.y = (a[1][0] * b.x + a[1][1] * b.y + a[1][2] * b.z);
+            res.z = (a[2][0] * b.x + a[2][1] * b.y + a[2][2] * b.z);
             return res;
         }
 
@@ -271,9 +271,9 @@ namespace VE {
 
     inline Vector operator*(const Vector &v, const Matrix33 &m) {
         Vector res;
-        res.setX(m.a[0][0] * v.x() + m.a[1][0] * v.y() + m.a[2][0] * v.z());
-        res.setY(m.a[0][1] * v.x() + m.a[1][1] * v.y() + m.a[2][1] * v.z());
-        res.setZ(m.a[0][2] * v.x() + m.a[1][2] * v.y() + m.a[2][2] * v.z());
+        res.x = (m.a[0][0] * v.x + m.a[1][0] * v.y + m.a[2][0] * v.z);
+        res.y = (m.a[0][1] * v.x + m.a[1][1] * v.y + m.a[2][1] * v.z);
+        res.z = (m.a[0][2] * v.x + m.a[1][2] * v.y + m.a[2][2] * v.z);
         return res;
     };
 }

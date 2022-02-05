@@ -15,48 +15,50 @@ namespace VE {
     struct Vector {
         static constexpr float EPSILON = 0.000001f;
 
-        Vector(float fillValue = 0.0f) : x_(fillValue), y_(fillValue), z_(fillValue) {};
+        Vector(float fillValue = 0.0f) : x(fillValue), y(fillValue), z(fillValue) {};
 
-        Vector(float x, float y, float z = 0.0f) : x_(x), y_(y), z_(z) {};
+        Vector(float x_, float y_, float z_ = 0.0f) : x(x_), y(y_), z(z_) {};
+
+        Vector(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
 
         Vector(const Vector &vector) = default;
 
         Vector &operator=(const Vector &vector) = default;
 
         Vector operator+(const Vector &other) const {
-            return Vector(x_ + other.x_, y_ + other.y_, z_ + other.z_);
+            return Vector(x + other.x, y + other.y, z + other.z);
         }
 
         Vector operator-(const Vector &other) const {
-            return Vector(x_ - other.x_, y_ - other.y_, z_ - other.z_);
+            return Vector(x - other.x, y - other.y, z - other.z);
         }
 
         Vector operator*(float factor) const {
-            return Vector(x_ * factor, y_ * factor, z_ * factor);
+            return Vector(x * factor, y * factor, z * factor);
         }
 
         Vector operator/(float factor) const {
             float invFactor = 1.0f / factor;
-            return (*this) * invFactor;
+            return Vector(x * invFactor, y * invFactor, z * invFactor);
         }
 
         Vector operator*(const Vector &other) const {
             const Vector &a = (*this);
             const Vector &b = other;
-            return Vector(a.y() * b.z() - a.z() * b.y(), a.z() * b.x() - a.x() * b.z(), a.x() * b.y() - a.y() * b.x());
+            return Vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
         }
 
         Vector &operator+=(const Vector &other) {
-            x_ += other.x_;
-            y_ += other.y_;
-            z_ += other.z_;
+            x += other.x;
+            y += other.y;
+            z += other.z;
             return *this;
         }
 
         Vector &operator-=(const Vector &other) {
-            x_ -= other.x_;
-            y_ -= other.y_;
-            z_ -= other.z_;
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
             return *this;
         }
 
@@ -64,17 +66,21 @@ namespace VE {
             const Vector &a = (*this);
             const Vector &b = other;
 
-            x_ = a.y() * b.z() - a.z() * b.y();
-            y_ = a.z() * b.x() - a.x() * b.z();
-            z_ = a.x() * b.y() - a.y() * b.x();
+            float tmpx_ = a.y * b.z - a.z * b.y;
+            float tmpy_ = a.z * b.x - a.x * b.z;
+            float tmpz_ = a.x * b.y - a.y * b.x;
+
+            x = tmpx_;
+            y = tmpy_;
+            z = tmpz_;
 
             return *this;
         }
 
         Vector &operator*=(float factor) {
-            x_ *= factor;
-            y_ *= factor;
-            z_ *= factor;
+            x *= factor;
+            y *= factor;
+            z *= factor;
 
             return *this;
         }
@@ -82,9 +88,9 @@ namespace VE {
         Vector &operator/=(float factor) {
             float invFactor = 1.0f / factor;
 
-            x_ *= invFactor;
-            y_ *= invFactor;
-            z_ *= invFactor;
+            x *= invFactor;
+            y *= invFactor;
+            z *= invFactor;
 
             return *this;
         }
@@ -92,11 +98,11 @@ namespace VE {
         float dot(const Vector &other) const {
             const Vector &a = (*this);
             const Vector &b = other;
-            return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
+            return a.x * b.x + a.y * b.y + a.z * b.z;
         }
 
         float lenSqrt() const {
-            return x_ * x_ + y_ * y_ + z_ * z_;
+            return x * x + y * y + z * z;
         }
 
         float len() const {
@@ -158,32 +164,20 @@ namespace VE {
             return *this - projectionX2;
         }
 
-        float x() const { return x_; }
-
-        float y() const { return y_; }
-
-        float z() const { return z_; }
-
-        void setX(float x) { x_ = x; }
-
-        void setY(float y) { y_ = y; }
-
-        void setZ(float z) { z_ = z; }
-
         void round(float roundSize = 10000.0f) {
-            x_ = static_cast<int>(x_ * roundSize) / roundSize;
-            y_ = static_cast<int>(y_ * roundSize) / roundSize;
-            z_ = static_cast<int>(z_ * roundSize) / roundSize;
+            x = static_cast<int>(x * roundSize) / roundSize;
+            y = static_cast<int>(y * roundSize) / roundSize;
+            z = static_cast<int>(z * roundSize) / roundSize;
         }
 
         void setZero() {
-            x_ = 0.0f;
-            y_ = 0.0f;
-            z_ = 0.0f;
+            x = 0.0f;
+            y = 0.0f;
+            z = 0.0f;
         };
 
         const float *data() const {
-            return rawVector_;
+            return v;
         }
 
         //Debug function
@@ -192,13 +186,13 @@ namespace VE {
             glLineWidth(2);
             glColor3f(color.red(), color.grean(), color.blue());
             glBegin(GL_LINES);
-            glVertex3f(basePoint.x(), basePoint.y(), basePoint.z());
+            glVertex3f(basePoint.x, basePoint.y, basePoint.z);
             Vector vector = basePoint + *this;
-            glVertex3f(vector.x(), vector.y(), vector.z());
+            glVertex3f(vector.x, vector.y, vector.z);
             glEnd();
             glPointSize(6);
             glBegin(GL_POINTS);
-            glVertex3f(vector.x(), vector.y(), vector.z());
+            glVertex3f(vector.x, vector.y, vector.z);
             glEnd();
         }
 
@@ -206,7 +200,7 @@ namespace VE {
             glColor3f(color.red(), color.grean(), color.blue());
             glPointSize(size);
             glBegin(GL_POINTS);
-            glVertex3f(this->x(), this->y(), this->z());
+            glVertex3f(this->x, this->y, this->z);
             glEnd();
         }
 
@@ -219,7 +213,7 @@ namespace VE {
         }
 
         void print() const {
-            std::cout << x_ << " " << y_ << " " << z_ << std::endl;
+            std::cout << x << " " << y << " " << z << std::endl;
         }
 
         static float angle(const Vector &a, const Vector &b) {
@@ -251,14 +245,13 @@ namespace VE {
             return s * a + e * b;
         }
 
-    private:
         union {
+            float v[3];
             struct {
-                float x_ = 0.0f;
-                float y_ = 0.0f;
-                float z_ = 0.0f;
+                float x = 0.0f;
+                float y = 0.0f;
+                float z = 0.0f;
             };
-            float rawVector_[3];
         };
 
     };

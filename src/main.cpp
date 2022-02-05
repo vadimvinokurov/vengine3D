@@ -1,5 +1,6 @@
 #include "ve_window.h"
 #include "ve_global_parameters.h"
+#include "Math/ve_matrix4.h"
 
 VE::GlobalParameters globalParameters;
 

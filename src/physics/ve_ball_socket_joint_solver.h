@@ -31,12 +31,12 @@ namespace VE {
             Jv2 *= -1;
 
 
-            VE::Matrix33 Jw1(0.0f, r1.z(), -r1.y(),
-                             -r1.z(), 0.0f, r1.x(),
-                             r1.y(), -r1.x(), 0.0f);
-            VE::Matrix33 Jw2(0.0f, -r2.z(), r2.y(),
-                             r2.z(), 0.0f, -r2.x(),
-                             -r2.y(), r2.x(), 0.0f);
+            VE::Matrix33 Jw1(0.0f, r1.z, -r1.y,
+                             -r1.z, 0.0f, r1.x,
+                             r1.y, -r1.x, 0.0f);
+            VE::Matrix33 Jw2(0.0f, -r2.z, r2.y,
+                             r2.z, 0.0f, -r2.x,
+                             -r2.y, r2.x, 0.0f);
 
             VE::Matrix33 k = Jv1 * body1->invMass() * Jv1.getTranspose() + Jw1 * body1->invInertia() * Jw1.getTranspose() +
                              Jv2 * body2->invMass() * Jv2.getTranspose() + Jw2 * body2->invInertia() * Jw2.getTranspose();

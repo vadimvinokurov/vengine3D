@@ -207,7 +207,7 @@ void World::cameraControl(float dt) {
         mouse_->unlockMouse();
     }
     if (mouse_->isRepeat(VE_MOUSE_BUTTON_2)) {
-        currentCamera_->setDirection(mouse_->deltaPosition().y(), mouse_->deltaPosition().x() * -1);
+        currentCamera_->setDirection(mouse_->deltaPosition().y, mouse_->deltaPosition().x * -1);
     }
 
     if (keyboard_->isRepeat(VE_KEY_W)) {

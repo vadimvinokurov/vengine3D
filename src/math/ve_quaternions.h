@@ -128,13 +128,13 @@ namespace VE {
         }
 
         Matrix33 getMatrix() const {
-            float x = v_.x();
-            float y = v_.y();
-            float z = v_.z();
+            float x = v_.x;
+            float y = v_.y;
+            float z = v_.z;
 
-            float sqrtX = v_.x() * v_.x();
-            float sqrtY = v_.y() * v_.y();
-            float sqrtZ = v_.z() * v_.z();
+            float sqrtX = v_.x * v_.x;
+            float sqrtY = v_.y * v_.y;
+            float sqrtZ = v_.z * v_.z;
 
             return Matrix33(1 - (2 * sqrtY + 2 * sqrtZ), 2 * x * y + 2 * z * w_, 2 * x * z - 2 * y * w_,
                             2 * x * y - 2 * z * w_, 1 - (2 * sqrtX + 2 * sqrtZ), 2 * y * z + 2 * x * w_,
