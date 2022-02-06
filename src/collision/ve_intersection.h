@@ -23,7 +23,7 @@ namespace VE {
         Vector sphereDistanceVector = sphere2.getCenterOfMass() - sphere1.getCenterOfMass();
         float radiusSum = sphere1.getRadius() + sphere2.getRadius();
         float sphereDistance = sphereDistanceVector.len();
-        contactPenetration = sphereDistanceVector.normalized() * (radiusSum - sphereDistance);
+        contactPenetration = sphereDistanceVector.getNormalized() * (radiusSum - sphereDistance);
         return sphereDistance < radiusSum;
     }
 

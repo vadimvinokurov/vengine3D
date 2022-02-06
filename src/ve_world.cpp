@@ -229,6 +229,15 @@ void VE::World::update(float dt) {
     hid(dt);
     prephysics(dt);
     physics(dt);
+
+    auto drawPoint = Vector(0, 10, 0);
+    auto a = Vector(-5, 0, 5);
+    auto b = Vector(5, 0, 5);
+
+    Quaternion q;
+
+    a.draw(drawPoint);
+    b.draw(drawPoint);
 }
 
 void World::prephysics(float dt) {

@@ -50,7 +50,7 @@ std::array<Vector, 6> BoxCollider::computeFaceNormals(const std::array<Vector, 8
         Vector AB = vertices[indices[4 * faceNumber + 1]] - vertices[indices[4 * faceNumber]];
         Vector BC = vertices[indices[4 * faceNumber + 2]] - vertices[indices[4 * faceNumber + 1]];
 
-        faceNormals[faceNumber] = (AB * BC).normalized();
+        faceNormals[faceNumber] = (AB * BC).getNormalized();
     }
     return faceNormals;
 }

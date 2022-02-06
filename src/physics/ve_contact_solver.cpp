@@ -56,8 +56,8 @@ void ContactSolver::preStep(float dt) {
 
         VE::Vector relativeVelocity = body2.linearVelocity() + body2.angularVelocity() * r2 - body1.linearVelocity() - body1.angularVelocity() * r1;
 
-        contact.tangent1 = (contact.normal * (contact.normal * relativeVelocity)).normalized();
-        contact.tangent2 = (contact.normal * contact.tangent1).normalized();
+        contact.tangent1 = (contact.normal * (contact.normal * relativeVelocity)).getNormalized();
+        contact.tangent2 = (contact.normal * contact.tangent1).getNormalized();
 
         contact.normalEffectiveMass = computeEffectiveMass(contact.normal * r1, contact.normal * r2);
         contact.tangent1EffectiveMass = computeEffectiveMass(contact.tangent1 * r1, contact.tangent1 * r2);

@@ -67,7 +67,7 @@ void EPA::Polytope::updateFacesData() {
 
         VE::Vector BA = A - B;
         VE::Vector BC = C - B;
-        face.normal = (BC * BA).normalized();
+        face.normal = (BC * BA).getNormalized();
         face.distance = face.normal.dot(B);
 
         face.actualData = true;

@@ -111,7 +111,7 @@ namespace VE {
             return sqrtf(lenSq);
         }
 
-        Vector normalized() const {
+        Vector getNormalized() const {
             float lenSq = lenSqrt();
             if (lenSq < EPSILON) return *this;
             return (*this) / sqrtf(lenSq);
@@ -231,7 +231,7 @@ namespace VE {
         }
 
         static Vector nlerp(const Vector &s, const Vector &e, float t) {
-            return (s + (e - s) * t).normalized();
+            return (s + (e - s) * t).getNormalized();
         }
 
         static Vector slerp(const Vector &s, const Vector &e, float t) {

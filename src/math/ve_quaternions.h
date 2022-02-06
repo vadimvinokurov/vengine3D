@@ -31,6 +31,11 @@ namespace VE {
                               cosf(0.5f * angle));
         }
 
+        static Quaternion fromTo(const Vector &from, const Vector &to){
+            Vector f = from.getNormalized();
+            return Quaternion();
+        }
+
         Vector toAxisAngle() const {
             return (v_ / sqrt(1 - w_ * w_)) * (2 * acos(w_));
         }
