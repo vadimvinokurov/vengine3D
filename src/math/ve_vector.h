@@ -141,7 +141,7 @@ namespace VE {
             return !(*this == other);
         }
 
-        Vector projection(const VE::Vector &b) const {
+        Vector getProjection(const VE::Vector &b) const {
             float bLenSqrt = b.lenSqrt();
 
             if (bLenSqrt < EPSILON)
@@ -150,11 +150,11 @@ namespace VE {
             return b * scale;
         }
 
-        Vector rejection(const VE::Vector &b) const {
-            return *this - this->projection(b);
+        Vector getRejection(const VE::Vector &b) const {
+            return *this - this->getProjection(b);
         }
 
-        Vector reflection(const VE::Vector &b) const {
+        Vector getReflection(const VE::Vector &b) const {
             float bLenSqrt = b.lenSqrt();
 
             if (bLenSqrt < EPSILON)
