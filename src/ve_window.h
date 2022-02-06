@@ -4,23 +4,17 @@
 
 #ifndef VENGINE3D_WINDOW_H
 #define VENGINE3D_WINDOW_H
-
-#include <string>
-#include <iostream>
-
-#include "GLFW/glfw3.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-
+#include "stdlibs.h"
 #include "ve_world.h"
 #include "control/ve_keyboard.h"
 #include "control/ve_mouse.h"
 
+struct GLFWwindow;
+
 namespace VE {
     class Window final {
     public:
-        explicit Window(int width = 1280, int height = 720, const std::string &label = "VEngine3D");
+        Window(int width = 1280, int height = 720, const std::string &label = "VEngine3D");
         void run();
         void setWorld(const WorldPtr &shownWorld);
         void setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse);

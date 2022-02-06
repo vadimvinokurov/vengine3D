@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_MATRIX3_H
 #define VENGINE3D_VE_MATRIX3_H
 
-//#include "ve_matrix33.h"
+#include "stdlibs.h"
 #include "ve_vector.h"
 
 namespace VE {
@@ -197,7 +197,15 @@ namespace VE {
         }
 
         Matrix3 &setZero() {
-            memset(v, 0, sizeof(float) * 9);
+            v[0] = 0;
+            v[1] = 0;
+            v[2] = 0;
+            v[3] = 0;
+            v[4] = 0;
+            v[5] = 0;
+            v[6] = 0;
+            v[7] = 0;
+            v[8] = 0;
             return *this;
         }
 

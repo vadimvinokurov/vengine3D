@@ -5,14 +5,14 @@
 #ifndef VENGINE3D_VE_GLOBAL_PARAMETERS_H
 #define VENGINE3D_VE_GLOBAL_PARAMETERS_H
 
-#include "Math/ve_vector.h"
+#include "math/ve_vector.h"
 
 namespace VE{
     struct GlobalParameters{
-        Vector rotate;
-        bool polygone = false;
-        bool warmstarting = true;
-        int iterations = 10;
+        static Vector rotate;
+        static bool polygone;
+        static bool warmstarting;
+        static int iterations;
     };
 }
 

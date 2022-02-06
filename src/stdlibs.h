@@ -2,11 +2,12 @@
 // Created by boris on 11/18/2021.
 //
 
-#ifndef VENGINE3D_STDLIBRARIES_H
-#define VENGINE3D_STDLIBRARIES_H
+#ifndef VENGINE3D_STDLIBS_H
+#define VENGINE3D_STDLIBS_H
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 #include <cmath>
 #include <vector>
 #include <memory>
@@ -18,4 +19,4 @@
 #include <numeric>
 #include <iterator>
 
-#endif //VENGINE3D_STDLIBRARIES_H
+#endif //VENGINE3D_STDLIBS_H

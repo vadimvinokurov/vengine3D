@@ -8,7 +8,7 @@
 #include "ve_vector.h"
 #include "ve_matrix3.h"
 #include "ve_quaternion.h"
-#include "stdlibraries.h"
+#include "stdlibs.h"
 
 namespace VE {
     struct Transform {

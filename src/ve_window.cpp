@@ -2,11 +2,16 @@
 // Created by boris on 11/13/2021.
 //
 
-#include "ve_window.h"
-#include "ve_render.h"
+#define GLFW_INCLUDE_NONE
+#include "GLFW/glfw3.h"
+#include <glad/glad.h>
 
-#include <stdexcept>
-#include <cmath>
+#include "ve_window.h"
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "render/ve_render.h"
 
 using namespace VE;
 
@@ -25,6 +30,7 @@ void Window::windowInitialization(int width, int height, const std::string &labe
     glfwSetWindowUserPointer(window_, this);
     setCallbackFunction();
     windowAspectRatio_ = static_cast<float>(width) / static_cast<float>(height);
+    gladLoadGL();
 }
 
 void Window::guiInitialization() {

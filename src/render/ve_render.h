@@ -8,6 +8,7 @@
 #include "ve_world.h"
 #include "objects/ve_box_collider.h"
 #include "objects/ve_sphere_collider.h"
+#include "ve_shader.h"
 
 namespace VE {
     class Render {
