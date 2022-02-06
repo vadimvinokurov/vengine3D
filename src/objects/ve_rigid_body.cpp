@@ -174,11 +174,11 @@ const Matrix3 &RigidBody::invInertia() const {
 }
 
 Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
-    return transform_.applyInverse(globalPoint);
+    return transform_.getInversed().applyToPoint(globalPoint);
 }
 
 Vector RigidBody::localToGlobalPoint(const Vector &localPoint) {
-    return transform_.apply(localPoint);
+    return transform_.applyToPoint(localPoint);
 }
 
 float RigidBody::friction() const {

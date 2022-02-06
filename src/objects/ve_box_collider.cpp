@@ -93,12 +93,12 @@ Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
 
 void BoxCollider::setTransform(const Transform &transform) {
     for (size_t i = 0; i < localVertices_.size(); i++) {
-        globalVertices_[i] = transform.apply(localVertices_[i]);
+        globalVertices_[i] = transform.applyToPoint(localVertices_[i]);
     }
     for (size_t i = 0; i < localFaceNormals_.size(); i++) {
-        globalFaceNormals_[i] = transform.applyForNormal(localFaceNormals_[i]);
+        globalFaceNormals_[i] = transform.applyToVector(localFaceNormals_[i]);
     }
-    globalCenterOfMass_ = transform.apply(localCenterOfMass_);
+    globalCenterOfMass_ = transform.applyToPoint(localCenterOfMass_);
 }
 
 ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {

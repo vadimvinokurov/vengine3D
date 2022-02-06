@@ -38,7 +38,7 @@ Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const 
 }
 
 void SphereCollider::setTransform(const Transform &transform) {
-    globalCenter_ = transform.apply(localCenter_);
+    globalCenter_ = transform.applyToPoint(localCenter_);
 }
 
 Vector SphereCollider::getCenterOfMass() const {

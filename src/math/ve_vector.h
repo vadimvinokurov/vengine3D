@@ -260,6 +260,10 @@ namespace VE {
         return v * factor;
     }
 
+    inline Vector multiply(const Vector &a, const Vector &b) {
+        return Vector(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
+
     inline bool sameDirection(const Vector &a, const Vector &b) {
         return a.dot(b) > 0.0f;
     };

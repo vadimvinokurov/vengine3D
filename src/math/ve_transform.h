@@ -11,34 +11,121 @@
 #include "stdlibraries.h"
 
 namespace VE {
-    class Transform {
-    public:
-        Transform(const Vector &_position = Vector(),
-                  const Quaternion &_rotation = Quaternion::fromAxisAngle(Vector(0, 1, 0), 0.0f)) :
+    struct Transform {
+        static constexpr float EPSILON = 0.000001f;
+
+        Transform() : position(0, 0, 0),
+                      rotation(0, 0, 0, 1),
+                      scale(1, 1, 1) {}
+
+        Transform(const Vector &_position, const Quaternion &_rotation, const Vector &_scale) :
+                position(_position),
                 rotation(_rotation),
-                position(_position) {}
+                scale(_scale) {}
 
-        Vector apply(const Vector &localPoint) const {
-            return rotation.rotate(localPoint) + position;
+        Transform(const Vector &_position) :
+                position(_position),
+                rotation(0, 0, 0, 1),
+                scale(1, 1, 1) {}
+
+        Transform(const Quaternion &_rotation) :
+                position(0, 0, 0),
+                rotation(_rotation),
+                scale(1, 1, 1) {}
+
+        Vector applyToPoint(const Vector &localPoint) const {
+            return rotation.rotate(multiply(localPoint, scale)) + position;
         }
 
-        Vector applyForNormal(const Vector &localNormal) const {
-            return (rotation * Quaternion(localNormal) * rotation.inverse()).v();
+        Vector applyToVector(const Vector &localPoint) const {
+            return rotation.rotate(multiply(localPoint, scale));
         }
 
-        Vector applyInverse(const Vector &globalPoint) const {
-            Quaternion inverseRotate = rotation.conjugate();
-            Vector localPoint = globalPoint - position;
-            return inverseRotate.rotate(localPoint);
+        Transform getInversed() {
+            Transform inv;
+
+            inv.rotation = this->rotation.inverse();
+
+            inv.scale.x = fabsf(scale.x) < EPSILON ? 0.0f : 1.0f / scale.x;
+            inv.scale.y = fabsf(scale.y) < EPSILON ? 0.0f : 1.0f / scale.y;
+            inv.scale.z = fabsf(scale.z) < EPSILON ? 0.0f : 1.0f / scale.z;
+
+            Vector invTrans = position * -1.0f;
+
+            inv.position = inv.rotation.rotate(multiply(inv.scale, invTrans));
+
+            return inv;
         }
 
-        Vector applyInverseForNormal(const Vector &globalNormal) const {
-            Quaternion inverseRotate = rotation.conjugate();
-            return (inverseRotate * Quaternion(globalNormal) * inverseRotate.inverse()).v();
+        Matrix4 toMatrix() const {
+            Vector x = rotation.rotate(Vector(1, 0, 0));
+            Vector y = rotation.rotate(Vector(0, 1, 0));
+            Vector z = rotation.rotate(Vector(0, 0, 1));
+
+            x *= scale.x;
+            y *= scale.y;
+            z *= scale.z;
+
+            return Matrix4(
+                    x.x, x.y, x.z, 0,
+                    y.x, y.y, y.z, 0,
+                    z.x, z.y, z.z, 0,
+                    position.x, position.y, position.z, 1
+            );
+
         }
 
-        Quaternion rotation;
+        static Transform fromMatrix(const Matrix4 &m) {
+            Transform out;
+
+            out.position = Vector(m.v[12], m.v[13], m.v[14]);
+            out.rotation = Quaternion::fromMatrix(m);
+
+            Matrix4 rotScaleMatrix(
+                    m.v[0], m.v[1], m.v[2], 0,
+                    m.v[4], m.v[5], m.v[6], 0,
+                    m.v[8], m.v[9], m.v[10], 0,
+                    0, 0, 0, 1
+            );
+
+            Matrix4 invRotationMatrix = out.rotation.inverse().toMatrix4();
+            Matrix4 scaleSkewMatrix = rotScaleMatrix * invRotationMatrix;
+
+            out.scale.x = scaleSkewMatrix.v[0];
+            out.scale.y = scaleSkewMatrix.v[5];
+            out.scale.z = scaleSkewMatrix.v[10];
+
+            return out;
+        }
+
+        static Transform combine(const Transform &a, const Transform &b) {
+            Transform out;
+            out.scale = multiply(a.scale, b.scale);
+            out.rotation = b.rotation * a.rotation;
+
+            out.position = a.rotation.rotate(multiply(a.scale, b.position));
+            out.position += a.position;
+
+            return out;
+        }
+
+        static Transform mix(const Transform &a, const Transform &b, float t) {
+            Quaternion bRotation = b.rotation;
+            if (a.rotation.dot(b.rotation) < 0.0f) {
+                bRotation *= -1;
+            }
+
+            return Transform(
+                    Vector::lerp(a.position, b.position, t),
+                    Quaternion::nlerp(a.rotation, bRotation, t),
+                    Vector::lerp(a.scale, b.scale, t)
+            );
+        }
+
+
         Vector position;
+        Quaternion rotation;
+        Vector scale;
     };
 }
 

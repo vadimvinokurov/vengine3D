@@ -19,7 +19,7 @@ namespace VE {
 
         Quaternion(float w, const Vector &v) : v_(v), w_(w) {}
 
-        Quaternion(float w, float i, float j, float k) : v_(i, j, k), w_(w) {}
+        Quaternion(float i, float j, float k, float w) : v_(i, j, k), w_(w) {}
 
         Quaternion(const Vector &v) : Quaternion(v, 0.0f) {}
 
