@@ -7,7 +7,7 @@
 
 #include "math/ve_vector.h"
 #include "math/ve_transform.h"
-#include "math/ve_matrix33.h"
+#include "math/ve_matrix3.h"
 
 #include <vector>
 #include <memory>
@@ -25,7 +25,7 @@ namespace VE {
 
         virtual void setLocalPosition(const Vector &localPosition) = 0;
         virtual Vector getCenterOfMass() const = 0;
-        virtual Matrix33 getInertia() const = 0;
+        virtual Matrix3 getInertia() const = 0;
         virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
         virtual void setTransform(const Transform &transform) = 0;
 

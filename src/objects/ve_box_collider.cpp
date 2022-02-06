@@ -60,13 +60,13 @@ Vector BoxCollider::computeCenterOfMass(const std::array<Vector, 8> &vertices) {
 }
 
 
-Matrix33 BoxCollider::getInertia() const {
+Matrix3 BoxCollider::getInertia() const {
     float tmp = mass_ / 12.0f;
     float sqrtWidth = width_ * width_;
     float sqrtHeight = height_ * height_;
     float sqrtDepth = depth_ * depth_;
 
-    return Matrix33(
+    return Matrix3(
             tmp * (sqrtHeight + sqrtDepth), 0, 0,
             0, tmp * (sqrtWidth + sqrtDepth), 0,
             0, 0, tmp * (sqrtWidth + sqrtHeight)

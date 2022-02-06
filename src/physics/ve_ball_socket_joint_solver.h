@@ -24,23 +24,21 @@ namespace VE {
             VE::Vector cPos = body1->localToGlobalPoint(body1anchor) - body2->localToGlobalPoint(body2anchor);
             VE::Vector cVel = body1->linearVelocity() + body1->angularVelocity() * r1 - body2->linearVelocity() - body2->angularVelocity() * r2;
 
-            VE::Matrix33 Jv1;
-            VE::Matrix33 Jv2;
-            Jv1.setIdentity();
-            Jv2.setIdentity();
+            VE::Matrix3 Jv1;
+            VE::Matrix3 Jv2;
             Jv2 *= -1;
 
 
-            VE::Matrix33 Jw1(0.0f, r1.z, -r1.y,
+            VE::Matrix3 Jw1(0.0f, r1.z, -r1.y,
                              -r1.z, 0.0f, r1.x,
                              r1.y, -r1.x, 0.0f);
-            VE::Matrix33 Jw2(0.0f, -r2.z, r2.y,
+            VE::Matrix3 Jw2(0.0f, -r2.z, r2.y,
                              r2.z, 0.0f, -r2.x,
                              -r2.y, r2.x, 0.0f);
 
-            VE::Matrix33 k = Jv1 * body1->invMass() * Jv1.getTranspose() + Jw1 * body1->invInertia() * Jw1.getTranspose() +
-                             Jv2 * body2->invMass() * Jv2.getTranspose() + Jw2 * body2->invInertia() * Jw2.getTranspose();
-            VE::Matrix33 effectiveMass = k.getInverse();
+            VE::Matrix3 k = Jv1 * body1->invMass() * Jv1.getTransposed() + Jw1 * body1->invInertia() * Jw1.getTransposed() +
+                             Jv2 * body2->invMass() * Jv2.getTransposed() + Jw2 * body2->invInertia() * Jw2.getTransposed();
+            VE::Matrix3 effectiveMass = k.getInversed();
 
             VE::Vector b = cPos * beta / dt;
             VE::Vector lymbda = effectiveMass * ((cVel + b) * -1);

@@ -197,7 +197,7 @@ namespace VE {
         }
 
         Matrix3 &setZero() {
-            memset(v, 0, sizeof(float) * 16);
+            memset(v, 0, sizeof(float) * 9);
             return *this;
         }
 
@@ -205,12 +205,12 @@ namespace VE {
             v[0] = 1;
             v[1] = 0;
             v[2] = 0;
-            v[4] = 0;
-            v[5] = 1;
+            v[3] = 0;
+            v[4] = 1;
+            v[5] = 0;
             v[6] = 0;
             v[7] = 0;
-            v[8] = 0;
-            v[9] = 1;
+            v[8] = 1;
             return *this;
         }
 

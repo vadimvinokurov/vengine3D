@@ -21,7 +21,7 @@ namespace VE {
         Vector farthestVertexInDirection(const Vector &direction) const override;
         void setTransform(const Transform &transform) override;
         Vector getCenterOfMass() const override;
-        Matrix33 getInertia() const override;
+        Matrix3 getInertia() const override;
 
         ColliderFace getFaceInDirection(const Vector &direction) const;
         ColliderFace getFace(unsigned int faceNumber) const;
