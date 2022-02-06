@@ -7,6 +7,23 @@
 
 namespace VE {
     struct Vector4 {
+        static constexpr float EPSILON = 0.000001f;
+
+        bool operator==(const Vector4 &other) const {
+            return (fabsf(this->x - other.x) < EPSILON) &&
+                   (fabsf(this->y - other.y) < EPSILON) &&
+                   (fabsf(this->z - other.z) < EPSILON) &&
+                   (fabsf(this->w - other.w) < EPSILON);
+        }
+
+        bool operator!=(const Vector4 &other) const {
+            return !(*this == other);
+        }
+
+        void print() const {
+            std::cout << x << " " << y << " " << z << " " << w << std::endl;
+        }
+
         union {
             struct {
                 float x;
