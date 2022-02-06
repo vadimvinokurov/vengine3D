@@ -2,9 +2,9 @@
 // Created by boris on 11/13/2021.
 //
 
-#define GLFW_INCLUDE_NONE
-#include "GLFW/glfw3.h"
 #include <glad/glad.h>
+#include "GLFW/glfw3.h"
+
 
 #include "ve_window.h"
 
@@ -30,7 +30,10 @@ void Window::windowInitialization(int width, int height, const std::string &labe
     glfwSetWindowUserPointer(window_, this);
     setCallbackFunction();
     windowAspectRatio_ = static_cast<float>(width) / static_cast<float>(height);
-    gladLoadGL();
+
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        throw std::runtime_error("Failed to initialize OpenGL context");
+    }
 }
 
 void Window::guiInitialization() {

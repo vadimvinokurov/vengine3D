@@ -18,5 +18,8 @@
 #include <map>
 #include <numeric>
 #include <iterator>
+#include <fstream>
+#include <sstream>
+#include <cstring>
 
 #endif //VENGINE3D_STDLIBS_H
