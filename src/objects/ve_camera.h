@@ -7,7 +7,7 @@
 
 #include "stdlibraries.h"
 #include "math/ve_vector.h"
-#include "stdlibraries.h"
+#include "math/ve_matrix4.h"
 
 namespace VE {
     namespace CameraParameters {
@@ -18,7 +18,8 @@ namespace VE {
 
         const float sensitivity = 50.0f;
     }
-    class Camera final {
+
+    class Camera {
     public:
         Camera();
         void moveAlongDirection(float distance);
@@ -30,10 +31,15 @@ namespace VE {
 
         const Vector &position() const;
         const Vector &direction() const;
-        const std::array<float, 16> &getViewMatrix() const;
-        ~Camera();
+        Matrix4 getViewMatrix() const;
+
+        static Matrix4 perspective(float fov, float aspect, float n, float f);
+
+        static Matrix4 frustum(float left, float right, float bottom, float top, float n, float f);
+
+        static Matrix4 ortho(float left, float right, float bottom, float top, float n, float f);
     private:
-        mutable std::array<float, 16> viewMatrix_;
+
         Vector position_;
         Vector direction_;
         Vector cameraDirection_;

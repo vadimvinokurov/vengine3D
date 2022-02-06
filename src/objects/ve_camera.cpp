@@ -30,25 +30,19 @@ const Vector &Camera::direction() const {
     return direction_;
 }
 
-const std::array<float, 16> &Camera::getViewMatrix() const {
+Matrix4 Camera::getViewMatrix() const {
     const Vector &R = cameraRight_;
     const Vector &U = cameraUp_;
     const Vector &D = cameraDirection_;
     const Vector &P = position_;
 
-    viewMatrix_ = {cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
+    return Matrix4 (cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
                    cameraRight_.y, cameraUp_.y, cameraDirection_.y, 0,
                    cameraRight_.z, cameraUp_.z, cameraDirection_.z, 0,
                    -R.x * P.x - R.y * P.y - R.z * P.z,
                    -U.x * P.x - U.y * P.y - U.z * P.z,
                    -D.x * P.x - D.y * P.y - D.z * P.z,
-                   1};
-
-    return viewMatrix_;
-}
-
-Camera::~Camera() {
-
+                   1);
 }
 
 void Camera::setDirection(float dPitch, float dYam) {
@@ -72,4 +66,34 @@ void Camera::setDirection(float dPitch, float dYam) {
 
 Vector Camera::getPointAlongDirection(float length) {
     return position_ + direction_ * length;
+}
+
+Matrix4 Camera::perspective(float fov, float aspect, float n, float f) {
+    float ymax = n * tanf(fov * static_cast<float>(M_PI) / 360.0f);
+    float xmax = ymax * aspect;
+    return Camera::frustum(-xmax, xmax, -ymax, ymax, n, f);
+}
+
+Matrix4 Camera::frustum(float left, float right, float bottom, float top, float n, float f) {
+    if (left == right || top == bottom || n == f) {
+        assert(false && "Invalid frustum\n");
+        return Matrix4();
+    }
+    return Matrix4(
+            (2.0f * n) / (right - left), 0.0f, 0.0f, 0.0f,
+            0.0f, (2.0f * n) / (top - bottom), 0.0f, 0.0f,
+            (right + left) / (right - left), (top + bottom) / (top - bottom), (-(f + n)) / (f - n), -1,
+            0.0f, 0.0f, (-2.0f * f * n) / (f - n), 0.0f);
+}
+
+Matrix4 Camera::ortho(float left, float right, float bottom, float top, float n, float f) {
+    if (left == right || top == bottom || n == f) {
+        assert(false && "Invalid frustum\n");
+        return Matrix4();
+    }
+    return Matrix4(
+            2.0f / (right - left), 0.0f, 0.0f, 0.0f,
+            0.0f, 2.0f / (top - bottom), 0.0f, 0.0f,
+            0.0f, 0.0f, -2.0f / (f - n), 0.0f,
+            -(right + left) / (right - left), -(top + bottom) / (top - bottom), (-(f + n)) / (f - n), 1);
 }

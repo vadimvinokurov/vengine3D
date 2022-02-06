@@ -244,6 +244,10 @@ namespace VE {
             return *this;
         }
 
+        float* data(){
+            return static_cast<float*>(v);
+        }
+
         void print() const {
             std::cout << std::endl;
             std::cout << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << v[3] << std::endl;

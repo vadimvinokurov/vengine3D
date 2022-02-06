@@ -13,7 +13,7 @@ void glTranslatef(VE::Vector position) {
 };
 
 void glRotatef(VE::Vector rotate) {
-    auto [rotateVector, angleInRad] = rotate.getNormalAndLen();
+    auto[rotateVector, angleInRad] = rotate.getNormalAndLen();
     float angle = angleInRad * 180.0f / M_PI;
     glRotatef(angle, rotateVector.x, rotateVector.y, rotateVector.z);
 };
@@ -27,7 +27,8 @@ Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) 
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-windowAspectRatio_, windowAspectRatio_, -1, 1, 2, 8000);
+    glLoadMatrixf(Camera::perspective(60.0f, windowAspectRatio_, 2, 8000).data());
+    //glLoadMatrixf(Camera::frustum(-windowAspectRatio_, windowAspectRatio_, -1, 1, 2, 8000).data());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
