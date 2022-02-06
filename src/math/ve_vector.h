@@ -231,7 +231,7 @@ namespace VE {
         }
 
         static Vector nlerp(const Vector &s, const Vector &e, float t) {
-            return (s + (e - s) * t).getNormalized();
+            return lerp(s, e, t).getNormalized();
         }
 
         static Vector slerp(const Vector &s, const Vector &e, float t) {

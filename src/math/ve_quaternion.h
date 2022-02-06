@@ -6,13 +6,14 @@
 #define VENGINE3D_VE_QUATERNION_H
 
 #include "ve_vector.h"
+#include "ve_matrix4.h"
 
 namespace VE {
 
     class Quaternion {
         static constexpr float EPSILON = 0.000001f;
     public:
-        Quaternion() {}
+        Quaternion() : v_(0.0f), w_(1.0f) {}
 
         Quaternion(const Vector &v, float w) : v_(v), w_(w) {}
 
@@ -21,39 +22,6 @@ namespace VE {
         Quaternion(float w, float i, float j, float k) : v_(i, j, k), w_(w) {}
 
         Quaternion(const Vector &v) : Quaternion(v, 0.0f) {}
-
-        static Quaternion fromAxisAngle(const Vector &axisAngle) {
-            auto[n, angle] = axisAngle.getNormalAndLen();
-            return fromAxisAngle(n, angle);
-        }
-
-        static Quaternion fromAxisAngle(const Vector &n, float angle) {
-            return Quaternion(n * sinf(0.5f * angle),
-                              cosf(0.5f * angle));
-        }
-
-        static Quaternion fromTo(const Vector &from, const Vector &to) {
-            Vector f = from.getNormalized();
-            Vector t = to.getNormalized();
-
-            if (f == t) {
-                return Quaternion();
-            } else if (f == t * -1.0f) {
-                Vector ortho(1, 0, 0);
-                if (fabsf(f.y) < fabsf(f.x)) {
-                    ortho = Vector(0, 1, 0);
-                }
-                if (fabsf(f.z) < fabsf(f.y) && fabsf(f.z) < fabsf(f.x)) {
-                    ortho = Vector(0, 0, 1);
-                }
-                return Quaternion((f * ortho).getNormalized(), 0.0f);
-            }
-
-            Vector half = (f + t).getNormalized();
-            Vector axis = f * half;
-            return Quaternion(axis, f.dot(half));
-
-        }
 
         float dot(const Quaternion &b) const {
             return v_.dot(b.v_) + w_ * b.w_;
@@ -116,11 +84,11 @@ namespace VE {
             return *this;
         }
 
-        bool operator==(const Quaternion& b) {
+        bool operator==(const Quaternion &b) {
             return fabsf(this->w_ - b.w_) < EPSILON && this->v_ == b.v_;
         }
 
-        bool operator!=(const Quaternion& b) {
+        bool operator!=(const Quaternion &b) {
             return !(*this == b);
         }
 
@@ -134,20 +102,20 @@ namespace VE {
 
         float len() const {
             float lenSq = lenSqrt();
-            if(lenSq < EPSILON) return 0.0f;
+            if (lenSq < EPSILON) return 0.0f;
             return sqrtf(norma());
         }
 
         Quaternion getNormalized() const {
             float lenSq = lenSqrt();
-            if(lenSq < EPSILON) return *this;
+            if (lenSq < EPSILON) return *this;
 
             return (*this) / sqrtf(lenSq);
         }
 
-        Quaternion& normalize() {
+        Quaternion &normalize() {
             float lenSq = lenSqrt();
-            if(lenSq < EPSILON) return *this;
+            if (lenSq < EPSILON) return *this;
             (*this) /= sqrtf(lenSq);
 
             return *this;
@@ -185,21 +153,82 @@ namespace VE {
             return (*this * Quaternion(v) * this->inverse()).v();
         }
 
-        Matrix3 getMatrix() const {
-            float x = v_.x;
-            float y = v_.y;
-            float z = v_.z;
+        Matrix4 toMatrix4() const {
+            this->print();
+            Vector r = this->rotate(Vector(1, 0, 0));
+            Vector f = this->rotate(Vector(0, 1, 0));
+            Vector u = this->rotate(Vector(0, 0, 1));
 
-            float sqrtX = v_.x * v_.x;
-            float sqrtY = v_.y * v_.y;
-            float sqrtZ = v_.z * v_.z;
-
-            return Matrix3(1 - (2 * sqrtY + 2 * sqrtZ), 2 * x * y + 2 * z * w_, 2 * x * z - 2 * y * w_,
-                           2 * x * y - 2 * z * w_, 1 - (2 * sqrtX + 2 * sqrtZ), 2 * y * z + 2 * x * w_,
-                           2 * x * z + 2 * y * w_, 2 * y * z - 2 * x * w_, 1 - (2 * sqrtX + 2 * sqrtY));
+            return Matrix4(r.x, r.y, r.z, 0.0f,
+                           u.x, u.y, u.z, 0.0f,
+                           f.x, f.y, f.z, 0.0f,
+                           0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        void print() {
+        static Quaternion fromAxisAngle(const Vector &axisAngle) {
+            auto[n, angle] = axisAngle.getNormalAndLen();
+            return fromAxisAngle(n, angle);
+        }
+
+        static Quaternion fromAxisAngle(const Vector &n, float angle) {
+            return Quaternion(n * sinf(0.5f * angle),
+                              cosf(0.5f * angle));
+        }
+
+        static Quaternion fromTo(const Vector &from, const Vector &to) {
+            Vector f = from.getNormalized();
+            Vector t = to.getNormalized();
+
+            if (f == t) {
+                return Quaternion();
+            } else if (f == t * -1.0f) {
+                Vector ortho(1, 0, 0);
+                if (fabsf(f.y) < fabsf(f.x)) {
+                    ortho = Vector(0, 1, 0);
+                }
+                if (fabsf(f.z) < fabsf(f.y) && fabsf(f.z) < fabsf(f.x)) {
+                    ortho = Vector(0, 0, 1);
+                }
+                return Quaternion((f * ortho).getNormalized(), 0.0f);
+            }
+
+            Vector half = (f + t).getNormalized();
+            Vector axis = f * half;
+            return Quaternion(axis, f.dot(half));
+
+        }
+
+        static Quaternion mix(const Quaternion &from, const Quaternion &to, float t) {
+            return from * (1.0f - t) + to * t;
+        }
+
+        static Quaternion nlerp(const Quaternion &from, const Quaternion &to, float t) {
+            return (from + (to - from) * t).getNormalized();
+        }
+
+        static Quaternion lookRotation(const Vector &direction, const Vector &up) {
+            Vector f = direction.getNormalized();
+            Vector u = up.getNormalized();
+            Vector r = u * f;
+            u = f * r;
+
+            Quaternion worldToObject = fromTo(Vector(0, 1, 0), f);
+            Vector objectUp = worldToObject.rotate(Vector(0, 0, 1));
+            Quaternion u2u = fromTo(objectUp, u);
+
+            return (worldToObject * u2u).getNormalized();
+        }
+
+        static Quaternion fromMatrix(const Matrix4 &m) {
+            auto up = Vector(m.up.x, m.up.y, m.up.z).getNormalized();
+            auto forward = Vector(m.forward.x, m.forward.y, m.forward.z).getNormalized();
+            Vector right = up * forward;
+            up = forward * right;
+
+            return lookRotation(forward, up);
+        }
+
+        void print() const {
             std::cout << w_ << " ";
             v_.print();
         }
@@ -208,13 +237,6 @@ namespace VE {
         Vector v_;
         float w_ = 0.0f;
     };
-
-    inline Quaternion cross(const Quaternion &P, const Quaternion &Q, const Quaternion &R) {
-        float w = (P.v() * Q.v()).dot(R.v());
-        Vector v = -P.w() * (Q.v() * R.v()) - Q.w() * (R.v() * P.v()) - R.w() * (P.v() * Q.v());
-
-        return Quaternion(v, w);
-    }
 }
 
 
