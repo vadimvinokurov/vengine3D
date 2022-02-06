@@ -2,14 +2,15 @@
 // Created by boris on 12/27/2021.
 //
 
-#ifndef VENGINE3D_VE_QUATERNIONS_H
-#define VENGINE3D_VE_QUATERNIONS_H
+#ifndef VENGINE3D_VE_QUATERNION_H
+#define VENGINE3D_VE_QUATERNION_H
 
 #include "ve_vector.h"
 
 namespace VE {
 
     class Quaternion {
+        static constexpr float EPSILON = 0.000001f;
     public:
         Quaternion() {}
 
@@ -31,13 +32,27 @@ namespace VE {
                               cosf(0.5f * angle));
         }
 
-        static Quaternion fromTo(const Vector &from, const Vector &to){
+        static Quaternion fromTo(const Vector &from, const Vector &to) {
             Vector f = from.getNormalized();
-            return Quaternion();
-        }
+            Vector t = to.getNormalized();
 
-        Vector toAxisAngle() const {
-            return (v_ / sqrt(1 - w_ * w_)) * (2 * acos(w_));
+            if (f == t) {
+                return Quaternion();
+            } else if (f == t * -1.0f) {
+                Vector ortho(1, 0, 0);
+                if (fabsf(f.y) < fabsf(f.x)) {
+                    ortho = Vector(0, 1, 0);
+                }
+                if (fabsf(f.z) < fabsf(f.y) && fabsf(f.z) < fabsf(f.x)) {
+                    ortho = Vector(0, 0, 1);
+                }
+                return Quaternion((f * ortho).getNormalized(), 0.0f);
+            }
+
+            Vector half = (f + t).getNormalized();
+            Vector axis = f * half;
+            return Quaternion(axis, f.dot(half));
+
         }
 
         float dot(const Quaternion &b) const {
@@ -67,7 +82,8 @@ namespace VE {
         }
 
         Quaternion operator/(float d) const {
-            return Quaternion(v_ / d, w_ / d);
+            float invD = 1.0f / d;
+            return Quaternion(v_ * invD, w_ * invD);
         }
 
         Quaternion &operator+=(const Quaternion &qb) {
@@ -100,16 +116,41 @@ namespace VE {
             return *this;
         }
 
+        bool operator==(const Quaternion& b) {
+            return fabsf(this->w_ - b.w_) < EPSILON && this->v_ == b.v_;
+        }
+
+        bool operator!=(const Quaternion& b) {
+            return !(*this == b);
+        }
+
         float norma() const {
             return (*this).dot(*this);
         }
 
-        float abs() const {
+        float lenSqrt() const {
+            return v_.lenSqrt() + w_ * w_;
+        }
+
+        float len() const {
+            float lenSq = lenSqrt();
+            if(lenSq < EPSILON) return 0.0f;
             return sqrtf(norma());
         }
 
-        Quaternion normalization() const {
-            return (*this) / (*this).abs();
+        Quaternion getNormalized() const {
+            float lenSq = lenSqrt();
+            if(lenSq < EPSILON) return *this;
+
+            return (*this) / sqrtf(lenSq);
+        }
+
+        Quaternion& normalize() {
+            float lenSq = lenSqrt();
+            if(lenSq < EPSILON) return *this;
+            (*this) /= sqrtf(lenSq);
+
+            return *this;
         }
 
         Quaternion conjugate() const {
@@ -120,6 +161,18 @@ namespace VE {
             return conjugate() / norma();
         }
 
+        Vector toAxisAngle() const {
+            return (v_ / sqrt(1 - w_ * w_)) * (2.0 * acosf(w_));
+        }
+
+        Vector getAxis() const {
+            return v_.getNormalized();
+        }
+
+        float getAngle() const {
+            return 2.0 * acosf(w_);
+        }
+
         const Vector &v() const {
             return v_;
         }
@@ -128,7 +181,7 @@ namespace VE {
             return w_;
         }
 
-        Vector rotate(const Vector& v){
+        Vector rotate(const Vector &v) const {
             return (*this * Quaternion(v) * this->inverse()).v();
         }
 
@@ -142,8 +195,8 @@ namespace VE {
             float sqrtZ = v_.z * v_.z;
 
             return Matrix3(1 - (2 * sqrtY + 2 * sqrtZ), 2 * x * y + 2 * z * w_, 2 * x * z - 2 * y * w_,
-                            2 * x * y - 2 * z * w_, 1 - (2 * sqrtX + 2 * sqrtZ), 2 * y * z + 2 * x * w_,
-                            2 * x * z + 2 * y * w_, 2 * y * z - 2 * x * w_, 1 - (2 * sqrtX + 2 * sqrtY));
+                           2 * x * y - 2 * z * w_, 1 - (2 * sqrtX + 2 * sqrtZ), 2 * y * z + 2 * x * w_,
+                           2 * x * z + 2 * y * w_, 2 * y * z - 2 * x * w_, 1 - (2 * sqrtX + 2 * sqrtY));
         }
 
         void print() {
@@ -165,4 +218,4 @@ namespace VE {
 }
 
 
-#endif //VENGINE3D_VE_QUATERNIONS_H
+#endif //VENGINE3D_VE_QUATERNION_H

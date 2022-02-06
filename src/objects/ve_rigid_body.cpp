@@ -102,7 +102,7 @@ void RigidBody::updateTransform(float dt) {
 
     transform_.position += (linearVelocity_ + pseudoLinearVelocity_) * dt;
     transform_.rotation += Quaternion((angularVelocity_ + pseudoAngularVelocity_) * 0.5f * dt) * transform_.rotation;
-    transform_.rotation = transform_.rotation.normalization();
+    transform_.rotation = transform_.rotation.getNormalized();
 
     setTransform(transform_);
 

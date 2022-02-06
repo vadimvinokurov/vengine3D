@@ -7,7 +7,7 @@
 
 #include "ve_vector.h"
 #include "ve_matrix3.h"
-#include "ve_quaternions.h"
+#include "ve_quaternion.h"
 #include "stdlibraries.h"
 
 namespace VE {
@@ -19,8 +19,7 @@ namespace VE {
                 position(_position) {}
 
         Vector apply(const Vector &localPoint) const {
-            Vector rotatedVector = (rotation * Quaternion(localPoint) * rotation.inverse()).v();
-            return rotatedVector + position;
+            return rotation.rotate(localPoint) + position;
         }
 
         Vector applyForNormal(const Vector &localNormal) const {
@@ -30,8 +29,7 @@ namespace VE {
         Vector applyInverse(const Vector &globalPoint) const {
             Quaternion inverseRotate = rotation.conjugate();
             Vector localPoint = globalPoint - position;
-            Vector rv = (inverseRotate * Quaternion(localPoint) * inverseRotate.inverse()).v();
-            return rv;
+            return inverseRotate.rotate(localPoint);
         }
 
         Vector applyInverseForNormal(const Vector &globalNormal) const {
