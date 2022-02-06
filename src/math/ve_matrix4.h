@@ -8,20 +8,6 @@
 #include <cmath>
 #include "ve_vector4.h"
 
-#define M4D(aRow, bCol) \
-    this->v[0 * 4 + aRow] * b.v[bCol * 4 + 0] + \
-    this->v[1 * 4 + aRow] * b.v[bCol * 4 + 1] + \
-    this->v[2 * 4 + aRow] * b.v[bCol * 4 + 2] + \
-    this->v[3 * 4 + aRow] * b.v[bCol * 4 + 3]
-
-#define M4V4D(aRow, x, y, z, w) \
-    this->v[0 * 4 + aRow] * x + \
-    this->v[1 * 4 + aRow] * y + \
-    this->v[2 * 4 + aRow] * z + \
-    this->v[3 * 4 + aRow] * w
-
-#define M4SWAP(x, y) {float t = x; x = y; y = t; }
-
 #define M4_3X3MINOR(x, c0, c1, c2, r0, r1, r2) \
     (x[c0 * 4 + r0] * (x[c1 * 4 + r1] * x[c2 * 4 + r2] - x[c1 * 4 + r2] * x[c2 * 4 + r1]) - \
      x[c1 * 4 + r0] * (x[c0 * 4 + r1] * x[c2 * 4 + r2] - x[c0 * 4 + r2] * x[c2 * 4 + r1]) + \
@@ -131,35 +117,45 @@ namespace VE {
         }
 
         Matrix4 operator*(const Matrix4 &b) const {
-            const Matrix4 &a = *this;
             return Matrix4(
-                    M4D(0, 0), M4D(1, 0), M4D(2, 0), M4D(3, 0),
-                    M4D(0, 1), M4D(1, 1), M4D(2, 1), M4D(3, 1),
-                    M4D(0, 2), M4D(1, 2), M4D(2, 2), M4D(3, 2),
-                    M4D(0, 3), M4D(1, 3), M4D(2, 3), M4D(3, 3)
-            );
+                    this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * b.v[3], //0
+                    this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * b.v[3], // 1
+                    this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * b.v[3], // 2
+                    this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * b.v[3], //3
+                    this->v[0] * b.v[4] + this->v[4] * b.v[5] + this->v[8] * b.v[6] + this->v[12] * b.v[7], // 4
+                    this->v[1] * b.v[4] + this->v[5] * b.v[5] + this->v[9] * b.v[6] + this->v[13] * b.v[7], // 5
+                    this->v[2] * b.v[4] + this->v[6] * b.v[5] + this->v[10] * b.v[6] + this->v[14] * b.v[7], // 6
+                    this->v[3] * b.v[4] + this->v[7] * b.v[5] + this->v[11] * b.v[6] + this->v[15] * b.v[7], // 7
+                    this->v[0] * b.v[8] + this->v[4] * b.v[9] + this->v[8] * b.v[10] + this->v[12] * b.v[11], // 8
+                    this->v[1] * b.v[8] + this->v[5] * b.v[9] + this->v[9] * b.v[10] + this->v[13] * b.v[11], // 9
+                    this->v[2] * b.v[8] + this->v[6] * b.v[9] + this->v[10] * b.v[10] + this->v[14] * b.v[11], // 10
+                    this->v[3] * b.v[8] + this->v[7] * b.v[9] + this->v[11] * b.v[10] + this->v[15] * b.v[11], // 11
+                    this->v[0] * b.v[12] + this->v[4] * b.v[13] + this->v[8] * b.v[14] + this->v[12] * b.v[15], // 12
+                    this->v[1] * b.v[12] + this->v[5] * b.v[13] + this->v[9] * b.v[14] + this->v[13] * b.v[15], // 13
+                    this->v[2] * b.v[12] + this->v[6] * b.v[13] + this->v[10] * b.v[14] + this->v[14] * b.v[15], // 14
+                    this->v[3] * b.v[12] + this->v[7] * b.v[13] + this->v[11] * b.v[14] + this->v[15] * b.v[15]); // 15
         }
 
-        Vector4 operator*(const Vector4 &v4) const {
-            return Vector4{M4V4D(0, v4.x, v4.y, v4.z, v4.w),
-                           M4V4D(1, v4.x, v4.y, v4.z, v4.w),
-                           M4V4D(2, v4.x, v4.y, v4.z, v4.w),
-                           M4V4D(3, v4.x, v4.y, v4.z, v4.w)};
-
+        Vector4 operator*(const Vector4 &b) const {
+            return Vector4{this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * b.v[3],
+                           this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * b.v[3],
+                           this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * b.v[3],
+                           this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * b.v[3]};
         }
 
-        Vector transformVector(const Vector &v3) const {
-            return Vector{M4V4D(0, v3.x, v3.y, v3.z, 1.0f),
-                          M4V4D(1, v3.x, v3.y, v3.z, 1.0f),
-                          M4V4D(2, v3.x, v3.y, v3.z, 1.0f)};
+        Vector transformVector(const Vector &b) const {
+            return Vector(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * 1.0f,
+                          this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * 1.0f,
+                          this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * 1.0f);
         }
 
-        Vector transformVector(const Vector &v3, float &w) const {
+        Vector transformVector(const Vector &b, float &w) const {
             float tmpw = w;
-            w = M4V4D(3, v3.x, v3.y, v3.z, tmpw);
-            return Vector{M4V4D(0, v3.x, v3.y, v3.z, tmpw),
-                          M4V4D(1, v3.x, v3.y, v3.z, tmpw),
-                          M4V4D(2, v3.x, v3.y, v3.z, tmpw)};
+            w = this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * tmpw;
+
+            return Vector(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * tmpw,
+                          this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * tmpw,
+                          this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * tmpw);
         }
 
         Matrix4 getTransposed() const {
@@ -170,12 +166,12 @@ namespace VE {
         }
 
         Matrix4 &transpose() {
-            M4SWAP(yx, xy);
-            M4SWAP(zx, xz);
-            M4SWAP(tx, xw);
-            M4SWAP(zy, yz);
-            M4SWAP(ty, yw);
-            M4SWAP(tz, zw);
+            std::swap(yx, xy);
+            std::swap(zx, xz);
+            std::swap(tx, xw);
+            std::swap(zy, yz);
+            std::swap(ty, yw);
+            std::swap(tz, zw);
 
             return *this;
         }
@@ -196,46 +192,64 @@ namespace VE {
             //Cof (M[i, j]) = Minor(M[i, j]] * pow(-1, i + j)
             Matrix4 cofactor;
             cofactor.v[0] = M4_3X3MINOR(this->v, 1, 2, 3, 1, 2, 3);
-            cofactor.v[1] = -M4_3X3MINOR(this->v, 1, 2, 3, 0, 2, 3);
-            cofactor.v[2] = M4_3X3MINOR(this->v, 1, 2, 3, 0, 1, 3);
-            cofactor.v[3] = -M4_3X3MINOR(this->v, 1, 2, 3, 0, 1, 2);
-            cofactor.v[4] = -M4_3X3MINOR(this->v, 0, 2, 3, 1, 2, 3);
+            cofactor.v[4] = -M4_3X3MINOR(this->v, 1, 2, 3, 0, 2, 3);
+            cofactor.v[8] = M4_3X3MINOR(this->v, 1, 2, 3, 0, 1, 3);
+            cofactor.v[12] = -M4_3X3MINOR(this->v, 1, 2, 3, 0, 1, 2);
+
+            cofactor.v[1] = -M4_3X3MINOR(this->v, 0, 2, 3, 1, 2, 3);
             cofactor.v[5] = M4_3X3MINOR(this->v, 0, 2, 3, 0, 2, 3);
-            cofactor.v[6] = -M4_3X3MINOR(this->v, 0, 2, 3, 0, 1, 3);
-            cofactor.v[7] = M4_3X3MINOR(this->v, 0, 2, 3, 0, 1, 2);
-            cofactor.v[8] = M4_3X3MINOR(this->v, 0, 1, 3, 1, 2, 3);
-            cofactor.v[9] = -M4_3X3MINOR(this->v, 0, 1, 3, 0, 2, 3);
+            cofactor.v[9] = -M4_3X3MINOR(this->v, 0, 2, 3, 0, 1, 3);
+            cofactor.v[13] = M4_3X3MINOR(this->v, 0, 2, 3, 0, 1, 2);
+
+            cofactor.v[2] = M4_3X3MINOR(this->v, 0, 1, 3, 1, 2, 3);
+            cofactor.v[6] = -M4_3X3MINOR(this->v, 0, 1, 3, 0, 2, 3);
             cofactor.v[10] = M4_3X3MINOR(this->v, 0, 1, 3, 0, 1, 3);
-            cofactor.v[11] = -M4_3X3MINOR(this->v, 0, 1, 3, 0, 1, 2);
-            cofactor.v[12] = -M4_3X3MINOR(this->v, 0, 1, 2, 1, 2, 3);
-            cofactor.v[13] = M4_3X3MINOR(this->v, 0, 1, 2, 0, 2, 3);
-            cofactor.v[14] = -M4_3X3MINOR(this->v, 0, 1, 2, 0, 1, 3);
+            cofactor.v[14] = -M4_3X3MINOR(this->v, 0, 1, 3, 0, 1, 2);
+
+            cofactor.v[3] = -M4_3X3MINOR(this->v, 0, 1, 2, 1, 2, 3);
+            cofactor.v[7] = M4_3X3MINOR(this->v, 0, 1, 2, 0, 2, 3);
+            cofactor.v[11] = -M4_3X3MINOR(this->v, 0, 1, 2, 0, 1, 3);
             cofactor.v[15] = M4_3X3MINOR(this->v, 0, 1, 2, 0, 1, 2);
-            cofactor.transpose();
 
             return cofactor * (1.0f / det);
         }
 
-        Matrix4& inverse() {
+        Matrix4 &inverse() {
             *this = this->getInversed();
+            return *this;
+        }
+
+        Matrix4 &setZero() {
+            memset(v, 0, sizeof(float) * 16);
+            return *this;
+        }
+
+        Matrix4 &setIdentity() {
+            v[0] = 1;
+            v[1] = 0;
+            v[2] = 0;
+            v[3] = 0;
+            v[4] = 0;
+            v[5] = 1;
+            v[6] = 0;
+            v[7] = 0;
+            v[8] = 0;
+            v[9] = 0;
+            v[10] = 1;
+            v[11] = 0;
+            v[12] = 0;
+            v[13] = 0;
+            v[14] = 0;
+            v[15] = 1;
             return *this;
         }
 
         void print() const {
             std::cout << std::endl;
-            std::cout << v[0] << " " << v[1] << " " << v[2] << " " << v[3] << std::endl;
-            std::cout << v[4] << " " << v[5] << " " << v[6] << " " << v[7] << std::endl;
-            std::cout << v[8] << " " << v[9] << " " << v[10] << " " << v[11] << std::endl;
-            std::cout << v[12] << " " << v[13] << " " << v[14] << " " << v[15] << std::endl;
-            std::cout << std::endl;
-        }
-
-        void printInv() const {
-            std::cout << std::endl;
-            std::cout << v[0] << " " << v[4] << " " << v[8] << " " << v[12] << std::endl;
-            std::cout << v[1] << " " << v[5] << " " << v[9] << " " << v[13] << std::endl;
-            std::cout << v[2] << " " << v[6] << " " << v[10] << " " << v[14] << std::endl;
-            std::cout << v[3] << " " << v[7] << " " << v[11] << " " << v[15] << std::endl;
+            std::cout << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << v[3] << std::endl;
+            std::cout << v[4] << "\t" << v[5] << "\t" << v[6] << "\t" << v[7] << std::endl;
+            std::cout << v[8] << "\t" << v[9] << "\t" << v[10] << "\t" << v[11] << std::endl;
+            std::cout << v[12] << "\t" << v[13] << "\t" << v[14] << "\t" << v[15] << std::endl;
             std::cout << std::endl;
         }
 
@@ -303,6 +317,13 @@ namespace VE {
             };
         };
     };
+
+    inline Vector4 operator*(const Vector4 &b, const Matrix4 &a) {
+        return Vector4{a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2] + a.v[3] * b.v[3],
+                       a.v[4] * b.v[0] + a.v[5] * b.v[1] + a.v[6] * b.v[2] + a.v[7] * b.v[3],
+                       a.v[8] * b.v[0] + a.v[9] * b.v[1] + a.v[10] * b.v[2] + a.v[11] * b.v[3],
+                       a.v[12] * b.v[0] + a.v[13] * b.v[1] + a.v[14] * b.v[2] + a.v[15] * b.v[3]};
+    }
 }
 
 

@@ -7,6 +7,9 @@
 
 namespace VE {
     struct Vector4 {
+        void print() const {
+            std::cout << x << " " << y << " " << z << " " << w << std::endl;
+        }
         union {
             struct {
                 float x;
