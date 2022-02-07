@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_MATRIX4_H
 
 #include <cmath>
-#include "ve_vector4.h"
+#include "ve_vector.h"
 
 #define M4_3X3MINOR(x, c0, c1, c2, r0, r1, r2) \
     (x[c0 * 4 + r0] * (x[c1 * 4 + r1] * x[c2 * 4 + r2] - x[c1 * 4 + r2] * x[c2 * 4 + r1]) - \
@@ -275,10 +275,10 @@ namespace VE {
         union {
             float v[16] = {0};
             struct {
-                Vector4 right;
-                Vector4 up;
-                Vector4 forward;
-                Vector4 position;
+                SVector4 right;
+                SVector4 up;
+                SVector4 forward;
+                SVector4 position;
             };
             struct {
                 float xx;

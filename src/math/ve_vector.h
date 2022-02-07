@@ -267,6 +267,72 @@ namespace VE {
     inline bool sameDirection(const Vector &a, const Vector &b) {
         return a.dot(b) > 0.0f;
     };
+
+    using Vector3 = Vector;
+
+    template<typename T>
+    struct TVector2 {
+        TVector2() : x(static_cast<T>(0)), y(static_cast<T>(0)) {}
+
+        TVector2(T x_, T y_) : x(x_), y(y_) {}
+
+        TVector2(T *fv) : x(fv[0]), y(fv[1]) {}
+
+        union {
+            struct {
+                T x;
+                T y;
+            };
+            T v[2];
+        };
+    };
+
+    using Vector2 = TVector2<float>;
+    using IVector2 = TVector2<int>;
+
+    template<typename T>
+    struct TVector4 {
+        TVector4() : x(static_cast<T>(0)),
+                     y(static_cast<T>(0)),
+                     z(static_cast<T>(0)),
+                     w(static_cast<T>(0)) {}
+
+        TVector4(T x_, T y_, T z_, T w_) : x(x_),
+                                           y(y_),
+                                           z(z_),
+                                           w(w_) {}
+
+        TVector4(T *fv) : x(fv[0]),
+                          y(fv[1]),
+                          z(fv[2]),
+                          w(fv[3]) {}
+
+        union {
+            struct {
+                T x;
+                T y;
+                T z;
+                T w;
+            };
+            T v[4];
+        };
+    };
+
+    using Vector4 = TVector4<float>;
+    using IVector4 = TVector4<int>;
+    using UIVector4 = TVector4<unsigned int>;
+
+    struct SVector4 {
+        union {
+            struct {
+                float x;
+                float y;
+                float z;
+                float w;
+            };
+            float v[4];
+        };
+    };
 }
 
 

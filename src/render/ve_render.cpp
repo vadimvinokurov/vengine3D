@@ -2,17 +2,23 @@
 // Created by boris on 11/16/2021.
 //
 
+#include "ve_shader.h"
+#include "ve_attribute.h"
+
 #include "ve_render.h"
+
+
 #include <iostream>
 
 using namespace VE;
 
 
-void glTranslatef(VE::Vector position) {
+
+void translate(VE::Vector position) {
     glTranslatef(position.x, position.y, position.z);
 };
 
-void glRotatef(VE::Vector rotate) {
+void rotate(VE::Vector rotate) {
     auto[rotateVector, angleInRad] = rotate.getNormalAndLen();
     float angle = angleInRad * 180.0f / M_PI;
     glRotatef(angle, rotateVector.x, rotateVector.y, rotateVector.z);
@@ -55,8 +61,8 @@ void drawShape(const VE::Collider &shape, const VE::Transform &transform, const 
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
 
     glPushMatrix();
-    glTranslatef(transform.position);
-    glRotatef(transform.rotation.toAxisAngle());
+    translate(transform.position);
+    rotate(transform.rotation.toAxisAngle());
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
         glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
         glDrawElements(globalParameters.polygone ? GL_POLYGON : GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
