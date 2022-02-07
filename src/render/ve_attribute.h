@@ -33,61 +33,60 @@ namespace VE {
     protected:
         unsigned handle_;
         unsigned count_;
-    private:
-
     };
+
+
+    template<typename T>
+    VE::Attribute<T>::Attribute() {
+        glGenBuffers(1, &handle_);
+        count_ = 0;
+    }
+
+    template<typename T>
+    VE::Attribute<T>::~Attribute() {
+        glDeleteBuffers(1, &handle_);
+    }
+
+    template<typename T>
+    void VE::Attribute<T>::set(T *inputArray, unsigned int arrayLength) {
+        count_ = arrayLength;
+
+        glBindBuffer(GL_ARRAY_BUFFER, handle_);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count_, inputArray, GL_STREAM_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    template<typename T>
+    void Attribute<T>::set(std::vector<T> &input) {
+        set(input.data(), input.size());
+    }
+
+    template<typename T>
+    void Attribute<T>::bindTo(unsigned int slot) {
+        glBindBuffer(GL_ARRAY_BUFFER, handle_);
+        glEnableVertexAttribArray(slot);
+        setAttributePointer(slot);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    template<typename T>
+    void Attribute<T>::unBindFrom(unsigned int slot) {
+        glBindBuffer(GL_ARRAY_BUFFER, handle_);
+        glEnableVertexAttribArray(slot);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    template<typename T>
+    unsigned int Attribute<T>::count() {
+        return count_;
+    }
+
+    template<typename T>
+    unsigned int Attribute<T>::getHandle() {
+        return handle_;
+    }
 }
 
-template<typename T>
-VE::Attribute<T>::Attribute() {
-    glGenBuffers(1, &handle_);
-    count_ = 0;
-}
-
-template<typename T>
-VE::Attribute<T>::~Attribute() {
-    glDeleteBuffers(1, &handle_);
-}
-
-template<typename T>
-void VE::Attribute<T>::set(T *inputArray, unsigned int arrayLength) {
-    count_ = arrayLength;
-    unsigned int size = sizeof(T);
-
-    glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glBufferData(GL_ARRAY_BUFFER, size * count_, inputArray, GL_STREAM_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-template<typename T>
-void VE::Attribute<T>::set(std::vector<T> &input) {
-    set(input.data(), input.size());
-}
-
-template<typename T>
-void VE::Attribute<T>::bindTo(unsigned int slot) {
-    glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glEnableVertexAttribArray(slot);
-    setAttributePointer(slot);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-template<typename T>
-void VE::Attribute<T>::unBindFrom(unsigned int slot) {
-    glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glEnableVertexAttribArray(slot);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-template<typename T>
-unsigned int VE::Attribute<T>::count() {
-    return count_;
-}
-
-template<typename T>
-unsigned int VE::Attribute<T>::getHandle() {
-    return handle_;
-}
 
 
 #endif //VENGINE3D_VE_ATTRIBUTE_H

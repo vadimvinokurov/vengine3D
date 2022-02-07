@@ -5,6 +5,7 @@
 #include "ve_shader.h"
 #include "ve_attribute.h"
 #include "ve_uniform.h"
+#include "ve_index_buffer.h"
 
 #include "ve_render.h"
 
@@ -12,7 +13,6 @@
 #include <iostream>
 
 using namespace VE;
-
 
 
 void translate(VE::Vector position) {
