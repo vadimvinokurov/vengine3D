@@ -8,8 +8,10 @@
 #include "ve_uniform.h"
 #include "ve_index_buffer.h"
 #include "ve_draw.h"
+#include "ve_texture.h"
 
 #include "ve_render.h"
+
 
 
 #include <iostream>
