@@ -233,9 +233,12 @@ namespace VE {
             v_.print();
         }
 
+        const float* data() const{
+            return v_.data();
+        }
     private:
-        Vector v_;
-        float w_ = 0.0f;
+            Vector v_;
+            float w_ = 0.0f;
     };
 }
 

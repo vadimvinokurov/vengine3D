@@ -260,7 +260,7 @@ namespace VE {
         }
 
         float* data(){
-            return static_cast<float*>(v);
+            return &v[0];
         }
 
         void print() const {

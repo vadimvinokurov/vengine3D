@@ -278,6 +278,10 @@ namespace VE {
 
         TVector2(T *fv) : x(fv[0]), y(fv[1]) {}
 
+        const T *data() const {
+            return &x;
+        }
+
         union {
             struct {
                 T x;
@@ -306,6 +310,10 @@ namespace VE {
                           y(fv[1]),
                           z(fv[2]),
                           w(fv[3]) {}
+
+        const T *data() const {
+            return &x;
+        }
 
         union {
             struct {

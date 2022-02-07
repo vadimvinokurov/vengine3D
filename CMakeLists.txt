@@ -15,6 +15,5 @@ file(GLOB Sources "./src/*.cpp" "./src/*/*.cpp" "./src/*/*/*.cpp")
 #else()
 #    add_compile_options(-Wall -Wextra -pedantic -Werror)
 #endif()
-
 add_executable(vengine3D ${Sources})
 target_link_libraries(vengine3D glfw -lopengl32)

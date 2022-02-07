@@ -4,6 +4,7 @@
 
 #include "ve_shader.h"
 #include "ve_attribute.h"
+#include "ve_uniform.h"
 
 #include "ve_render.h"
 
