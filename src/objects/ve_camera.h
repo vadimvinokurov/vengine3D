@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_CAMERA_H
 #define VENGINE3D_VE_CAMERA_H
 
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 #include "math/ve_vector.h"
 #include "math/ve_matrix4.h"
 

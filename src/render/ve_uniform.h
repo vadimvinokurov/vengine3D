@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_UNIFORM_H
 
 #include "glad/glad.h"
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 #include "math/ve_quaternion.h"
 
 

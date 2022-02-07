@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_MOUSE_H
 
 #include "ve_mousekey.h"
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 
 namespace VE {
 

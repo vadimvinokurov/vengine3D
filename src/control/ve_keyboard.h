@@ -7,7 +7,7 @@
 
 #include "ve_keyboardkey.h"
 #include "ve_keystate.h"
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 
 namespace VE{
     class Keyboard {

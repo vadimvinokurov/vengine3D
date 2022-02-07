@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_MATRIX3_H
 #define VENGINE3D_VE_MATRIX3_H
 
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 #include "ve_vector.h"
 
 namespace VE {

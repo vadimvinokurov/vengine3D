@@ -4,7 +4,7 @@
 
 #ifndef VENGINE3D_VE_SHADER_H
 #define VENGINE3D_VE_SHADER_H
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 
 namespace VE {
     class Shader {

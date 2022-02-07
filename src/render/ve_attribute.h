@@ -7,7 +7,7 @@
 
 #include <glad/glad.h>
 
-#include "stdlibs.h"
+#include "ve_stdlibs.h"
 #include "math/ve_vector.h"
 namespace VE {
     template<typename T>

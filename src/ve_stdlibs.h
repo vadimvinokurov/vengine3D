@@ -2,8 +2,8 @@
 // Created by boris on 11/18/2021.
 //
 
-#ifndef VENGINE3D_STDLIBS_H
-#define VENGINE3D_STDLIBS_H
+#ifndef VENGINE3D_VE_STDLIBS_H
+#define VENGINE3D_VE_STDLIBS_H
 
 #include <iostream>
 #include <string>
@@ -22,4 +22,4 @@
 #include <sstream>
 #include <cstring>
 
-#endif //VENGINE3D_STDLIBS_H
+#endif //VENGINE3D_VE_STDLIBS_H
