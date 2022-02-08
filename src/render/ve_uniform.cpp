@@ -3,8 +3,32 @@
 //
 
 #include "ve_uniform.h"
+#include "glad/glad.h"
+#include "math/ve_quaternion.h"
+#include "math/ve_vector.h"
+#include "math/ve_matrix4.h"
 
 using namespace VE;
+
+template class VE::Uniform<int>;
+template class VE::Uniform<IVector4>;
+template class VE::Uniform<IVector2>;
+template class VE::Uniform<float>;
+template class VE::Uniform<Vector2>;
+template class VE::Uniform<Vector3>;
+template class VE::Uniform<Vector4>;
+template class VE::Uniform<Quaternion>;
+template class VE::Uniform<Matrix4>;
+
+template<typename T>
+void Uniform<T>::set(unsigned int slot, const T &value) {
+    set(slot, const_cast<T*>(&value), 1);
+}
+
+template<typename T>
+void Uniform<T>::set(unsigned int slot, std::vector<T> &arr) {
+    set(slot, arr.data(), static_cast<unsigned int>(arr.size()));
+}
 
 template<>
 void Uniform<int>::set(unsigned int slot, int *arr, unsigned int arraySize) {
