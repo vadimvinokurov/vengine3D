@@ -5,10 +5,8 @@
 #ifndef VENGINE3D_VE_ATTRIBUTE_H
 #define VENGINE3D_VE_ATTRIBUTE_H
 
-#include <glad/glad.h>
-
 #include "ve_stdlibs.h"
-#include "math/ve_vector.h"
+
 namespace VE {
     template<typename T>
     class Attribute {
@@ -34,57 +32,6 @@ namespace VE {
         unsigned handle_;
         unsigned count_;
     };
-
-
-    template<typename T>
-    VE::Attribute<T>::Attribute() {
-        glGenBuffers(1, &handle_);
-        count_ = 0;
-    }
-
-    template<typename T>
-    VE::Attribute<T>::~Attribute() {
-        glDeleteBuffers(1, &handle_);
-    }
-
-    template<typename T>
-    void VE::Attribute<T>::set(T *inputArray, unsigned int arrayLength) {
-        count_ = arrayLength;
-
-        glBindBuffer(GL_ARRAY_BUFFER, handle_);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count_, inputArray, GL_STREAM_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    template<typename T>
-    void Attribute<T>::set(std::vector<T> &input) {
-        set(input.data(), input.size());
-    }
-
-    template<typename T>
-    void Attribute<T>::bindTo(unsigned int slot) {
-        glBindBuffer(GL_ARRAY_BUFFER, handle_);
-        glEnableVertexAttribArray(slot);
-        setAttributePointer(slot);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    template<typename T>
-    void Attribute<T>::unBindFrom(unsigned int slot) {
-        glBindBuffer(GL_ARRAY_BUFFER, handle_);
-        glEnableVertexAttribArray(slot);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    template<typename T>
-    unsigned int Attribute<T>::count() {
-        return count_;
-    }
-
-    template<typename T>
-    unsigned int Attribute<T>::getHandle() {
-        return handle_;
-    }
 }
 
 
