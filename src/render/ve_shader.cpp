@@ -10,30 +10,35 @@ VE::Shader::Shader() {
 
 VE::Shader::Shader(const std::string &vertex, const std::string &fragment) {
     handle_ = glCreateProgram();
-    Load(vertex, fragment);
+    load(vertex, fragment);
 }
 
 VE::Shader::~Shader() {
     glDeleteProgram(handle_);
 }
 
-void VE::Shader::Load(const std::string &vertex, const std::string &fragment) {
+void VE::Shader::load(const std::string &vertex, const std::string &fragment) {
     std::string vertexSource = readFile(vertex);
     std::string fragmentSource = readFile(fragment);
 
+    if (vertexSource.empty() || fragmentSource.empty()) {
+        return;
+    }
+
     unsigned int v = compileVertexShade(vertexSource);
-    unsigned int f = compileVertexShade(fragmentSource);
+    unsigned int f = compileFragmentShader(fragmentSource);
     if (linkShaders(v, f)) {
         populateAttributes();
         populateUniforms();
     }
+    std::cout << "Shader compiled successfully!" << std::endl;
 }
 
-void VE::Shader::Bind() {
+void VE::Shader::bind() {
     glUseProgram(handle_);
 }
 
-void VE::Shader::UnBind() {
+void VE::Shader::unBind() {
     glUseProgram(0);
 }
 
@@ -62,7 +67,10 @@ unsigned int VE::Shader::getHandle() {
 std::string VE::Shader::readFile(const std::string &path) {
     std::ifstream file;
     file.open(path);
-    if (!file.is_open()) return path;
+    if (!file.is_open()) {
+        std::cout << "Shader source file not found " << path << std::endl;
+        return std::string();
+    }
     std::stringstream contents;
     contents << file.rdbuf();
     return contents.str();
@@ -117,7 +125,7 @@ bool VE::Shader::linkShaders(unsigned int vertex, unsigned int fragment) {
 
     int success = 0;
     glGetProgramiv(handle_, GL_LINK_STATUS, &success);
-    if (success) {
+    if (!success) {
         char infoLog[512];
         glGetProgramInfoLog(handle_, 512, NULL, infoLog);
         std::string info = "ERROR: Shader linking failed. " + std::string(infoLog);

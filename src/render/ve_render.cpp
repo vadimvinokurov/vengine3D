@@ -1,17 +1,15 @@
 //
 // Created by boris on 11/16/2021.
 //
-
-
-#include "ve_shader.h"
-#include "ve_attribute.h"
-#include "ve_uniform.h"
-#include "ve_index_buffer.h"
-#include "ve_draw.h"
-#include "ve_texture.h"
-
 #include "ve_render.h"
 
+#include "ve_shader.h"
+#include "ve_uniform.h"
+//#include "ve_attribute.h"
+//
+//#include "ve_index_buffer.h"
+//#include "ve_draw.h"
+//#include "ve_texture.h"
 
 
 #include <iostream>
@@ -19,90 +17,45 @@
 using namespace VE;
 
 
-void translate(VE::Vector position) {
-    glTranslatef(position.x, position.y, position.z);
-};
-
-void rotate(VE::Vector rotate) {
-    auto[rotateVector, angleInRad] = rotate.getNormalAndLen();
-    float angle = angleInRad * 180.0f / M_PI;
-    glRotatef(angle, rotateVector.x, rotateVector.y, rotateVector.z);
-};
-
-
-Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-    //glClearColor(0.2f, 0.7f, 1.0f, 0.0f);
-    glClearDepth(1.0f);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(Camera::perspective(60.0f, windowAspectRatio_, 2, 8000).data());
-    //glLoadMatrixf(Camera::frustum(-windowAspectRatio_, windowAspectRatio_, -1, 1, 2, 8000).data());
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
-
-void drawAxis(float axisLen = 10) {
-    glLineWidth(3);
-    glBegin(GL_LINES);
-    glColor3f(1, 0, 0);
-    glVertex3d(0, 0, 0);
-    glVertex3d(axisLen, 0, 0);
-    glColor3f(0, 1, 0);
-    glVertex3d(0, 0, 0);
-    glVertex3d(0, axisLen, 0);
-    glColor3f(0, 0, 1);
-    glVertex3d(0, 0, 0);
-    glVertex3d(0, 0, axisLen);
-    glEnd();
-}
-
-
-void drawShape(const VE::Collider &shape, const VE::Transform &transform, const Color &color) {
-
+void drawShape(const VE::Collider &shape, const Color &color) {
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
-
-    glPushMatrix();
-    translate(transform.position);
-    rotate(transform.rotation.toAxisAngle());
     for (int i = 0; i < shape.indecesSize() / 4; i++) {
         glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
         glDrawElements(globalParameters.polygone ? GL_POLYGON : GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
     }
-    //drawAxis(2);
-    glPopMatrix();
     glDisableClientState(GL_VERTEX_ARRAY);
 };
 
-void drawFlor() {
-    float floorVertices[] = {1, 1, 0,
-                             -1, 1, 0,
-                             -1, -1, 0,
-                             1, -1, 0};
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, floorVertices);
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    drawAxis();
+
+Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
+    shader.load("../shaders/static.vert", "../shaders/lit.frag");
+    shader.bind();
+
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    glClearDepth(1.0f);
 }
 
 void Render::draw(const WorldPtr &world) {
     world_ = world;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
 
-    glLoadMatrixf(world_->currentCamera().getViewMatrix().data());
-    drawFlor();
+    Matrix4 projection = Camera::perspective(60.0f, windowAspectRatio_, 2, 8000);
+    Matrix4 view = world_->currentCamera().getViewMatrix();
 
+    Uniform<Matrix4>::set(shader.getUniform("projection"), projection);
+    Uniform<Matrix4>::set(shader.getUniform("view"), view);
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
         for (size_t colliderNumber = 0; colliderNumber < rigidBody->collidersSize(); colliderNumber++) {
-            drawShape(rigidBody->collider(colliderNumber), rigidBody->transform(), rigidBody->color());
+            Matrix4 model = rigidBody->transform().toMatrix();
+            Uniform<Matrix4>::set(shader.getUniform("model"), model);
+            drawShape(rigidBody->collider(colliderNumber), rigidBody->color());
         }
     }
+    Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());
 
 }
 

@@ -14,17 +14,16 @@ namespace VE {
         Shader();
         ~Shader();
         Shader(const std::string& vertex, const std::string& fragment);
-        void Load(const std::string& vertex, const std::string& fragment);
+        void load(const std::string& vertex, const std::string& fragment);
 
-        void Bind();
-        void UnBind();
+        void bind();
+        void unBind();
 
         unsigned int getAttribute(const std::string& name);
         unsigned int getUniform(const std::string& name);
         unsigned int getHandle();
 
     private:
-
         std::string readFile(const std::string& path);
         unsigned int compileVertexShade(const std::string& vertex);
         unsigned int compileFragmentShader(const std::string& fragment);
