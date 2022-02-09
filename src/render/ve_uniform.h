@@ -20,8 +20,8 @@ namespace VE {
         ~Uniform() = delete;
 
         static void set(unsigned int slot, const T &value);
-        static void set(unsigned int slot, std::vector<T> &arr);
-        static void set(unsigned int slot, T *arr, unsigned int arraySize);
+        static void set(unsigned int slot, const std::vector<T> &arr);
+        static void set(unsigned int slot, const T *arr, unsigned int arraySize);
 
     };
 }

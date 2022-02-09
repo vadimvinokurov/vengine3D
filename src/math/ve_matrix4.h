@@ -259,7 +259,7 @@ namespace VE {
             return *this;
         }
 
-        float* data(){
+        const float* data() const{
             return &v[0];
         }
 

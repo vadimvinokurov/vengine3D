@@ -47,33 +47,26 @@ void Render::draw(const WorldPtr &world) {
     Uniform<Matrix4>::set(shader.getUniform("projection"), projection);
     Uniform<Matrix4>::set(shader.getUniform("view"), view);
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
+        Matrix4 model = rigidBody->transform().toMatrix();
+        Uniform<Matrix4>::set(shader.getUniform("model"), model);
+        Uniform<Vector3>::set(shader.getUniform("color"), rigidBody->color());
+
         for (size_t colliderNumber = 0; colliderNumber < rigidBody->collidersSize(); colliderNumber++) {
-            Matrix4 model = rigidBody->transform().toMatrix();
-            Uniform<Matrix4>::set(shader.getUniform("model"), model);
+
             Attribute<Vector3> vertexPosition;
             vertexPosition.set(rigidBody->collider(colliderNumber).vertices());
-            Attribute<Vector3> vertexColor;
-
-            std::vector<Vector3> color(rigidBody->collider(colliderNumber).vertices().size(), rigidBody->color());
-            vertexColor.set(color);
 
             IndexBuffer indexBuffer;
             indexBuffer.set(rigidBody->collider(colliderNumber).indices());
 
-
             vertexPosition.bindTo(shader.getAttribute("position"));
-            vertexColor.bindTo(shader.getAttribute("color"));
 
-            VE::draw(indexBuffer, DrawMode::Polygon);
-
+            VE::draw(indexBuffer, globalParameters.polygone ? DrawMode::TriangleFan : DrawMode::LineLoop);
 
             vertexPosition.unBindFrom(shader.getAttribute("position"));
-            vertexColor.unBindFrom(shader.getAttribute("color"));
 
-            //drawShape(rigidBody->collider(colliderNumber), rigidBody->color());
         }
     }
     Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());
-
 }
 
