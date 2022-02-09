@@ -142,7 +142,7 @@ void World::scene5() {
 
     float s = 1.0f;
     float b = 0.8f;
-    for (int i = 1; i < 100; i++) {
+    for (int i = 1; i < 2; i++) {
         RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
         stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
         worldObjects.push_back(stairs);
@@ -303,6 +303,13 @@ void World::physics(float dt) {
 
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
+    }
+
+    for(const auto& c: worldObjects[0]->colliders()){
+        (c->normals()[0] * 10).draw(c->vertices()[0]);
+        (c->vertices()[0]).drawPoint(12);
+
+        break;
     }
 }
 

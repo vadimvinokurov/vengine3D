@@ -65,12 +65,8 @@ const VE::Transform &RigidBody::transform() const {
     return transform_;
 }
 
-size_t RigidBody::collidersSize() const {
-    return colliders_.size();
-}
-
-const Collider &RigidBody::collider(size_t n) const {
-    return *colliders_[n];
+const std::vector<ColliderPtr> &RigidBody::colliders() const {
+    return colliders_;
 }
 
 void RigidBody::setTransform(const Transform &transform) {

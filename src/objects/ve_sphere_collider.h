@@ -21,18 +21,23 @@ namespace VE {
         Matrix3 getInertia() const override;
         float getRadius() const;
 
+        static std::vector<Vector3> getGetRenderVertices(float radius, const Vector3 &position);
+        static std::vector<unsigned int> getGetRenderIndices();
 
         virtual const std::vector<Vector3>& vertices() const override;
         virtual const std::vector<unsigned int>& indices() const override;
+        virtual const std::vector<Vector3> &normals() const override;
     private:
-        void setGlvertices();
         Vector3 localCenter_;
         Vector3 globalCenter_;
         float radius_ = 1.0f;
 
+        static constexpr int nT = 10;
+        static constexpr int nF = 10;
 
-        std::vector<Vector3> glVerticesBuffer_;
-        std::vector<unsigned int> glIndicesBuffer_;
+        std::vector<Vector3> renderVertices_;
+        std::vector<unsigned int> renderIndices_;
+        std::vector<Vector3> renderNormals_;
     };
 }
 

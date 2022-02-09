@@ -30,7 +30,19 @@ namespace VE {
         virtual void setTransform(const Transform &transform) = 0;
 
         virtual const std::vector<Vector3>& vertices() const = 0;
+        virtual const std::vector<Vector3>& normals() const = 0;
         virtual const std::vector<unsigned int>& indices() const = 0;
+
+        static std::vector<Vector3> getRenderNormals(const std::vector<Vector3>& vertex, const std::vector<unsigned int>& index){
+            std::vector<Vector3> renderNormals;
+            for (unsigned int i = 0; i < index.size(); i += 3) {
+                Vector3 AB = vertex[index[i + 1]] - vertex[index[i + 0]];
+                Vector3 BC = vertex[index[i + 2]] - vertex[index[i + 1]];
+
+                renderNormals.push_back((AB * BC).getNormalized());
+            }
+            return renderNormals;
+        }
 
         virtual ~Collider() {}
 

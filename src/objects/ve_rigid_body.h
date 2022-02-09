@@ -51,8 +51,7 @@ namespace VE {
         const Matrix3 &invInertia() const;
 
 
-        size_t collidersSize() const;
-        const Collider &collider(size_t n) const;
+        const std::vector<ColliderPtr> &colliders() const;
         const Transform &transform() const;
         virtual ~RigidBody();
 

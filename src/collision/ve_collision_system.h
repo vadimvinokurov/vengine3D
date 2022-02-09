@@ -14,14 +14,15 @@ namespace VE {
     inline bool getContactMainfold(const VE::RigidBody &body1, const VE::RigidBody &body2, VE::ContactMainfold &contactMainfold) {
         contactMainfold.clear();
         Vector3 contactPenetration;
-        for (size_t i = 0; i < body1.collidersSize(); i++) {
-            for (size_t j = 0; j < body2.collidersSize(); j++) {
+        for (size_t i = 0; i < body1.colliders().size(); i++) {
+            for (size_t j = 0; j < body2.colliders().size(); j++) {
+                const VE::Collider &collider1 = *body1.colliders()[i];
+                const VE::Collider &collider2 = *body2.colliders()[j];
 
-
-                if (testIntersection(body1.collider(i), body2.collider(j), contactPenetration)) {
+                if (testIntersection(collider1, collider2, contactPenetration)) {
                     auto[normal, collisionDepth] = contactPenetration.getNormalAndLen();
 
-                    auto contactPoints = VE::getContactsPoint(body1.collider(i), body2.collider(j), normal);
+                    auto contactPoints = VE::getContactsPoint(collider1, collider2, normal);
 
                     for (auto &contactPoint: contactPoints) {
                         contactMainfold.emplace_back(contactPoint, normal, collisionDepth);

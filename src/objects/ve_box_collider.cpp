@@ -20,7 +20,8 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
           globalCenterOfMass_(localCenterOfMass_),
           width_(width),
           height_(height),
-          depth_(depth) {}
+          depth_(depth),
+          renderNormals_(getRenderNormals(localVertices_, renderIndices_)){}
 
 void BoxCollider::setLocalPosition(const Vector3 &localPosition) {
     std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector3 &v) { v += localPosition; });
@@ -132,6 +133,10 @@ const std::vector<Vector3> &BoxCollider::vertices() const {
 
 const std::vector<unsigned int> &BoxCollider::indices() const {
     return renderIndices_;
+}
+
+const std::vector<Vector3> &BoxCollider::normals() const {
+    return renderNormals_;
 }
 
 
