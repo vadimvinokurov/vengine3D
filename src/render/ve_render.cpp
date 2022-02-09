@@ -14,19 +14,6 @@
 
 using namespace VE;
 
-//
-//void drawShape(const VE::Collider &shape, const Color &color) {
-//    glEnableClientState(GL_VERTEX_ARRAY);
-//    glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
-//    for (int i = 0; i < shape.indecesSize() / 4; i++) {
-//        glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
-//        glDrawElements(globalParameters.polygone ? GL_POLYGON : GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
-//    }
-//    glDisableClientState(GL_VERTEX_ARRAY);
-//};
-
-
-
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
     shader.load("../shaders/static.vert", "../shaders/lit.frag");
     shader.bind();
@@ -61,7 +48,7 @@ void Render::draw(const WorldPtr &world) {
 
             vertexPosition.bindTo(shader.getAttribute("position"));
 
-            VE::draw(indexBuffer, globalParameters.polygone ? DrawMode::TriangleFan : DrawMode::LineLoop);
+            VE::draw(indexBuffer, DrawMode::Triangles);
 
             vertexPosition.unBindFrom(shader.getAttribute("position"));
 

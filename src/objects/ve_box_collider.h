@@ -14,10 +14,11 @@ namespace VE {
     public:
         BoxCollider(float width, float height, float depth, float mass, const Vector3 &localPosition);
 
-        static ColliderPtr create(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
+        static ColliderPtr
+        create(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
 
 
-        void setLocalPosition(const Vector3& localPosition) override;
+        void setLocalPosition(const Vector3 &localPosition) override;
         Vector3 farthestVertexInDirection(const Vector3 &direction) const override;
         void setTransform(const Transform &transform) override;
         Vector3 getCenterOfMass() const override;
@@ -26,8 +27,8 @@ namespace VE {
         ColliderFace getFaceInDirection(const Vector3 &direction) const;
         ColliderFace getFace(unsigned int faceNumber) const;
 
-        virtual const std::vector<Vector3>& vertices() const override;
-        virtual const std::vector<unsigned int>& indices() const override;
+        virtual const std::vector<Vector3> &vertices() const override;
+        virtual const std::vector<unsigned int> &indices() const override;
     private:
         static std::vector<Vector3> computeVertices(float width, float height, float depth, const Vector3 &localPosition);
         static std::vector<Vector3> computeFaceNormals(const std::vector<Vector3> &vertices, const std::vector<unsigned int> &indices);
@@ -40,6 +41,19 @@ namespace VE {
                                                     2, 3, 7, 6,
                                                     3, 0, 4, 7,
                                                     1, 2, 6, 5};
+
+        const std::vector<unsigned int> renderIndices_ = {3, 2, 1,
+                                                          1, 0, 3,
+                                                          4, 5, 6,
+                                                          6, 7, 4,
+                                                          0, 1, 5,
+                                                          5, 4, 0,
+                                                          2, 3, 7,
+                                                          7, 6, 2,
+                                                          3, 0, 4,
+                                                          4, 7, 3,
+                                                          1, 2, 6,
+                                                          6, 5, 1};
 
         std::vector<Vector3> localVertices_;
         std::vector<Vector3> localFaceNormals_;

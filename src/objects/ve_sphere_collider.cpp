@@ -64,15 +64,21 @@ void SphereCollider::setGlvertices() {
 
     for (int i = 1; i < nT - 1; i++) {
         for (int j = 0; j < nF - 1; j++) {
-            glIndicesBuffer_.push_back((i - 1) * nF + j);
-            glIndicesBuffer_.push_back((i - 1) * nF + j + 1);
-            glIndicesBuffer_.push_back(i * nF + j + 1);
-            glIndicesBuffer_.push_back(i * nF + j);
+            glIndicesBuffer_.push_back((i - 1) * nF + j); //0
+            glIndicesBuffer_.push_back((i - 1) * nF + j + 1); //1
+            glIndicesBuffer_.push_back(i * nF + j + 1); //2
+
+            glIndicesBuffer_.push_back(i * nF + j + 1); //2
+            glIndicesBuffer_.push_back(i * nF + j); //3
+            glIndicesBuffer_.push_back((i - 1) * nF + j); //0
         }
-        glIndicesBuffer_.push_back((i - 1) * nF + nF - 1);
-        glIndicesBuffer_.push_back((i - 1) * nF + 0);
-        glIndicesBuffer_.push_back(i * nF + 0);
-        glIndicesBuffer_.push_back(i * nF + nF - 1);
+        glIndicesBuffer_.push_back((i - 1) * nF + nF - 1); //0
+        glIndicesBuffer_.push_back((i - 1) * nF + 0); //1
+        glIndicesBuffer_.push_back(i * nF + 0); //2
+
+        glIndicesBuffer_.push_back(i * nF + 0); //2
+        glIndicesBuffer_.push_back(i * nF + nF - 1); //3
+        glIndicesBuffer_.push_back((i - 1) * nF + nF - 1); //0
     }
 }
 

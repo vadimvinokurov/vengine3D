@@ -131,7 +131,7 @@ const std::vector<Vector3> &BoxCollider::vertices() const {
 }
 
 const std::vector<unsigned int> &BoxCollider::indices() const {
-    return indices_;
+    return renderIndices_;
 }
 
 
