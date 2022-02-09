@@ -19,7 +19,7 @@ void World::scene1() {
     RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0, -0.5f);
+        transform.position = Vector3(0, 0, -0.5f);
         return transform;
     }());
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
@@ -29,13 +29,13 @@ void World::scene1() {
     auto spawBox = [&](const Transform &transform) {
         RigidBodyPtr body1 = RigidBody::create({BoxCollider::create(1, 1, 1, 1)});
         body1->setTransform(transform);
-        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+        body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
     };
 
     for (int i = 0; i < 10; i++) {
         Transform transform;
-        transform.position = Vector(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
+        transform.position = Vector3(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
         spawBox(transform);
     }
 }
@@ -44,26 +44,26 @@ void World::scene2() {
     auto spawBox = [&](const Transform &transform) {
         auto body1 = RigidBody::create({BoxCollider::create()});
         body1->setTransform(transform);
-        body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
-        body1->setLinearVelocity(Vector(0.0f, -10.0f, 0.0f));
+        body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
+        body1->setLinearVelocity(Vector3(0.0f, -10.0f, 0.0f));
         worldObjects.push_back(body1);
         return body1;
     };
 
-    Vector offset(10, 3, 0);
+    Vector3 offset(10, 3, 0);
 
     Transform transform;
-    transform.position = Vector(0.5f, 0.5f, 0.5f) + offset;
+    transform.position = Vector3(0.5f, 0.5f, 0.5f) + offset;
     auto o = spawBox(transform);
 
-    jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector(0, 0, 1) + offset);
+    jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector3(0, 0, 1) + offset);
 }
 
 void World::scene3() {
     RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0, -0.5f);
+        transform.position = Vector3(0, 0, -0.5f);
         return transform;
     }());
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
@@ -72,28 +72,28 @@ void World::scene3() {
     std::vector<VE::ColliderPtr> a;
     RigidBodyPtr body1 = RigidBody::create(
             {
-                    BoxCollider::create(1, 1, 1, 1, Vector(0.0f, 0.0f, 0.0f)),
+                    BoxCollider::create(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
     body1->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0, 1.5f);
+        transform.position = Vector3(0, 0, 1.5f);
         return transform;
     }());
-    body1->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body1);
 
 
     RigidBodyPtr body2 = RigidBody::create(
             {
-                    BoxCollider::create(1, 1, 1, 1, Vector(0.0f, 0.0f, 0.0f)),
-                    BoxCollider::create(1, 1, 1, 1, Vector(1.0f, 0.0f, 0.0f))
+                    BoxCollider::create(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    BoxCollider::create(1, 1, 1, 1, Vector3(1.0f, 0.0f, 0.0f))
             });
     body2->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0.6f, 10.5f);
+        transform.position = Vector3(0, 0.6f, 10.5f);
         return transform;
     }());
-    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    body2->setGravity(Vector3(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body2);
 
 }
@@ -102,7 +102,7 @@ void World::scene4() {
     RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0, -0.5f);
+        transform.position = Vector3(0, 0, -0.5f);
         return transform;
     }());
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
@@ -110,33 +110,33 @@ void World::scene4() {
 
     RigidBodyPtr body2 = RigidBody::create(
             {
-                    SphereCollider::create(1, 1, Vector(0.0f, 0.0f, 0.0f)),
+                    SphereCollider::create(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
     body2->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0, 10.5f);
+        transform.position = Vector3(0, 0, 10.5f);
         return transform;
     }());
-    body2->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    body2->setGravity(Vector3(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body2);
 
     RigidBodyPtr body3 = RigidBody::create(
             {
-                    SphereCollider::create(1, 1, Vector(0.0f, 0.0f, 0.0f)),
+                    SphereCollider::create(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
     body3->setTransform([]() {
         Transform transform;
-        transform.position = Vector(0, 0, 1.5f);
+        transform.position = Vector3(0, 0, 1.5f);
         return transform;
     }());
-    body3->setGravity(Vector(0.0f, 0.0f, -9.8f));
+    body3->setGravity(Vector3(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body3);
 
 }
 
 void World::scene5() {
     RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
-    floor->setTransform(Transform(Vector(0, 0, -0.5f)));
+    floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
 
@@ -144,12 +144,12 @@ void World::scene5() {
     float b = 0.8f;
     for (int i = 1; i < 100; i++) {
         RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
-        stairs->setTransform(Transform(Vector(s * b * i, 0, s * i / 2)));
+        stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
         worldObjects.push_back(stairs);
     }
 
     //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
-    actors_.push_back(Actor::create(Vector(0, 0, 20)));
+    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
 }
 
 void World::resetScene() {
@@ -230,16 +230,16 @@ void VE::World::update(float dt) {
     prephysics(dt);
     physics(dt);
 
-    auto drawPoint = Vector(0, 10, 0);
-    auto a = Vector(-5, 0, 5);
-    auto ar = Vector(-5, 0, 5);
-    auto b = Vector(5, 0, 5);
+    auto drawPoint = Vector3(0, 10, 0);
+    auto a = Vector3(-5, 0, 5);
+    auto ar = Vector3(-5, 0, 5);
+    auto b = Vector3(5, 0, 5);
 
     Quaternion q = Quaternion::fromTo(a, b);
     ar = q.rotate(ar);
     a.draw(drawPoint);
     b.draw(drawPoint);
-    ar.draw(drawPoint + Vector(0,1,0), VE::Color(1, 0, 0));
+    ar.draw(drawPoint + Vector3(0, 1, 0), VE::Color(1, 0, 0));
 
 }
 
@@ -284,7 +284,7 @@ void World::physics(float dt) {
     }
 
     if (jointSolver_) {
-        jointSolver_->applyImpulse(dt, Vector(0, 0, 10));
+        jointSolver_->applyImpulse(dt, Vector3(0, 0, 10));
     }
 
     for (auto &contact: contactSolvers) {
@@ -316,7 +316,7 @@ void World::gui() {
     ImGui::SliderFloat("x", &alfa, 0.0f, 360.0f);
     ImGui::SliderFloat("y", &beta, 0.0f, 360.0f);
     ImGui::SliderFloat("z", &gamma, 0.0f, 360.0f);
-    globalParameters.rotate = Vector(alfa, beta, gamma) / 180.0f * M_PI;
+    globalParameters.rotate = Vector3(alfa, beta, gamma) / 180.0f * M_PI;
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
 
     ImGui::End();

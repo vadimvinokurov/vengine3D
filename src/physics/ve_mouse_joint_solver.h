@@ -9,16 +9,16 @@
 namespace VE {
     class MouseJointSolver {
     public:
-        MouseJointSolver(RigidBodyPtr body, const Vector &jointPoint) : body(body) {
+        MouseJointSolver(RigidBodyPtr body, const Vector3 &jointPoint) : body(body) {
             bodyLocalPoint = body->globalToLocalPoint(jointPoint);
         }
 
-        void applyImpulse(float dt, const Vector &mousePoint) {
-            VE::Vector bp = body->localToGlobalPoint(bodyLocalPoint);
+        void applyImpulse(float dt, const Vector3 &mousePoint) {
+            VE::Vector3 bp = body->localToGlobalPoint(bodyLocalPoint);
 
-            Vector cPos = bp - mousePoint;
+            Vector3 cPos = bp - mousePoint;
 
-            Vector r = bp - body->centerOfMass();
+            Vector3 r = bp - body->centerOfMass();
             VE::Matrix3 E;
 
             VE::Matrix3 R(0.0f, r.z, -r.y,
@@ -26,11 +26,11 @@ namespace VE {
                            r.y, -r.x, 0.0f);
 
 
-            VE::Vector cVel = body->linearVelocity() + body->angularVelocity() * r;
+            VE::Vector3 cVel = body->linearVelocity() + body->angularVelocity() * r;
             VE::Matrix3 effectiveMass = (E * body->invMass() + R * body->invInertia() * R.getTransposed()).getInversed();
 
-            VE::Vector b = cPos * beta / dt;
-            VE::Vector lymbda = effectiveMass * ((cVel + b) * -1);
+            VE::Vector3 b = cPos * beta / dt;
+            VE::Vector3 lymbda = effectiveMass * ((cVel + b) * -1);
             float maxImpulse = maxForce * dt;
             lymbda = lymbda.getNormalized() * std::min(lymbda.len(), maxImpulse);
 
@@ -42,7 +42,7 @@ namespace VE {
 
     private:
         RigidBodyPtr body;
-        Vector bodyLocalPoint;
+        Vector3 bodyLocalPoint;
 
         float maxForce = 20000.0f;
         float beta = 0.2f;

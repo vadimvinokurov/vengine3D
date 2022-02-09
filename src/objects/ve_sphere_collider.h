@@ -10,29 +10,28 @@
 namespace VE {
     class SphereCollider : public Collider {
     public:
-        SphereCollider(float radius, float mass, const Vector &localPosition);
+        SphereCollider(float radius, float mass, const Vector3 &localPosition);
 
-        static ColliderPtr create(float radius = 1.0f, float mass = 1.0f, const Vector &localPosition = Vector());
+        static ColliderPtr create(float radius = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
 
-        void setLocalPosition(const Vector& localPosition) override;
-        Vector farthestVertexInDirection(const Vector &direction) const override;
+        void setLocalPosition(const Vector3& localPosition) override;
+        Vector3 farthestVertexInDirection(const Vector3 &direction) const override;
         void setTransform(const Transform &transform) override;
-        Vector getCenterOfMass() const override;
+        Vector3 getCenterOfMass() const override;
         Matrix3 getInertia() const override;
         float getRadius() const;
 
 
-        virtual const void *verticesGLFormatData() const override;
-        virtual const void *indicesGLFormatData(unsigned int offset = 0) const override;
-        virtual unsigned int indecesSize() const override;
+        virtual const std::vector<Vector3>& vertices() const override;
+        virtual const std::vector<unsigned int>& indices() const override;
     private:
         void setGlvertices();
-        Vector localCenter_;
-        Vector globalCenter_;
+        Vector3 localCenter_;
+        Vector3 globalCenter_;
         float radius_ = 1.0f;
 
 
-        std::vector<Vector> glVerticesBuffer_;
+        std::vector<Vector3> glVerticesBuffer_;
         std::vector<unsigned int> glIndicesBuffer_;
     };
 }

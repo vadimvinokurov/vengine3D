@@ -10,7 +10,7 @@
 namespace VE {
     class BallAndSocketJointSolver {
     public:
-        BallAndSocketJointSolver(RigidBodyPtr body1, RigidBodyPtr body2, const Vector &anchorPoint) :
+        BallAndSocketJointSolver(RigidBodyPtr body1, RigidBodyPtr body2, const Vector3 &anchorPoint) :
                 body1(body1),
                 body2(body2) {
             body1anchor = body1->globalToLocalPoint(anchorPoint);
@@ -18,11 +18,11 @@ namespace VE {
         }
 
         void applyImpulse(float dt) {
-            VE::Vector r1 = body1->localToGlobalPoint(body1anchor) - body1->centerOfMass();
-            VE::Vector r2 = body2->localToGlobalPoint(body2anchor) - body2->centerOfMass();
+            VE::Vector3 r1 = body1->localToGlobalPoint(body1anchor) - body1->centerOfMass();
+            VE::Vector3 r2 = body2->localToGlobalPoint(body2anchor) - body2->centerOfMass();
 
-            VE::Vector cPos = body1->localToGlobalPoint(body1anchor) - body2->localToGlobalPoint(body2anchor);
-            VE::Vector cVel = body1->linearVelocity() + body1->angularVelocity() * r1 - body2->linearVelocity() - body2->angularVelocity() * r2;
+            VE::Vector3 cPos = body1->localToGlobalPoint(body1anchor) - body2->localToGlobalPoint(body2anchor);
+            VE::Vector3 cVel = body1->linearVelocity() + body1->angularVelocity() * r1 - body2->linearVelocity() - body2->angularVelocity() * r2;
 
             VE::Matrix3 Jv1;
             VE::Matrix3 Jv2;
@@ -40,8 +40,8 @@ namespace VE {
                              Jv2 * body2->invMass() * Jv2.getTransposed() + Jw2 * body2->invInertia() * Jw2.getTransposed();
             VE::Matrix3 effectiveMass = k.getInversed();
 
-            VE::Vector b = cPos * beta / dt;
-            VE::Vector lymbda = effectiveMass * ((cVel + b) * -1);
+            VE::Vector3 b = cPos * beta / dt;
+            VE::Vector3 lymbda = effectiveMass * ((cVel + b) * -1);
 
             body1->setLinearVelocity(body1->linearVelocity() + lymbda * body1->invMass());
             body1->setAngularVelocity(body1->angularVelocity() + (r1 * lymbda) * body1->invInertia());
@@ -53,8 +53,8 @@ namespace VE {
     private:
         RigidBodyPtr body1;
         RigidBodyPtr body2;
-        VE::Vector body1anchor;
-        VE::Vector body2anchor;
+        VE::Vector3 body1anchor;
+        VE::Vector3 body2anchor;
 
         const float beta = 0.2f;
     };

@@ -15,7 +15,7 @@ GJK::GJK(const Collider &collider1, const Collider &collider2) : collider1_(coll
 }
 
 bool GJK::testIntersection() {
-    VE::Vector supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
+    VE::Vector3 supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
 
     simplex.push_back(supportPoint);
     direction = (supportPoint * -1).getNormalized();
@@ -46,10 +46,10 @@ bool GJK::nextSimplex() {
 }
 
 bool GJK::lineCase() {
-    const VE::Vector &A = simplex[0];
-    const VE::Vector &B = simplex[1];
-    VE::Vector BA = A - B;
-    VE::Vector BO = B * -1;
+    const VE::Vector3 &A = simplex[0];
+    const VE::Vector3 &B = simplex[1];
+    VE::Vector3 BA = A - B;
+    VE::Vector3 BO = B * -1;
 
     if (sameDirection(BA * -1, BO)) {
         simplex = {B};
@@ -62,17 +62,17 @@ bool GJK::lineCase() {
 
 bool GJK::triangleCase() {
 
-    VE::Vector &A = simplex[0];
-    VE::Vector &B = simplex[1];
-    VE::Vector &C = simplex[2];
+    VE::Vector3 &A = simplex[0];
+    VE::Vector3 &B = simplex[1];
+    VE::Vector3 &C = simplex[2];
 
-    VE::Vector CB = B - C;
-    VE::Vector CA = A - C;
-    VE::Vector CO = C * -1;
+    VE::Vector3 CB = B - C;
+    VE::Vector3 CA = A - C;
+    VE::Vector3 CO = C * -1;
 
-    VE::Vector BCA = CB * CA;
-    VE::Vector CAn = BCA * CA;
-    VE::Vector CBn = CB * BCA;
+    VE::Vector3 BCA = CB * CA;
+    VE::Vector3 CAn = BCA * CA;
+    VE::Vector3 CBn = CB * BCA;
 
     if (sameDirection(CAn, CO)) {
         if (sameDirection(CA, CO)) {
@@ -99,19 +99,19 @@ bool GJK::triangleCase() {
 }
 
 bool GJK::tetrahedronCase() {
-    VE::Vector &A = simplex[0];
-    VE::Vector &B = simplex[1];
-    VE::Vector &C = simplex[2];
-    VE::Vector &D = simplex[3];
+    VE::Vector3 &A = simplex[0];
+    VE::Vector3 &B = simplex[1];
+    VE::Vector3 &C = simplex[2];
+    VE::Vector3 &D = simplex[3];
 
-    VE::Vector DA = A - D;
-    VE::Vector DB = B - D;
-    VE::Vector DC = C - D;
-    VE::Vector DO = D * -1;
+    VE::Vector3 DA = A - D;
+    VE::Vector3 DB = B - D;
+    VE::Vector3 DC = C - D;
+    VE::Vector3 DO = D * -1;
 
-    VE::Vector BDA = DB * DA;
-    VE::Vector CDB = DC * DB;
-    VE::Vector ADC = DA * DC;
+    VE::Vector3 BDA = DB * DA;
+    VE::Vector3 CDB = DC * DB;
+    VE::Vector3 ADC = DA * DC;
 
     if (sameDirection(BDA, DO)) {
         simplex = {A, B, D};
@@ -127,6 +127,6 @@ bool GJK::tetrahedronCase() {
     }
 }
 
-const std::vector<VE::Vector> &GJK::getSimplex() const {
+const std::vector<VE::Vector3> &GJK::getSimplex() const {
     return simplex;
 }

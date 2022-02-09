@@ -10,7 +10,7 @@
 
 namespace VE {
     struct ColliderFace {
-        ColliderFace(const std::vector<VE::Vector> &v, const VE::Vector &n) : vertices(v), normal(n) {}
+        ColliderFace(const std::vector<VE::Vector3> &v, const VE::Vector3 &n) : vertices(v), normal(n) {}
 
         void projectionOn(const ColliderFace &refFace) {
             assert(refFace.normal.dot(normal) != 0.0f);
@@ -20,8 +20,8 @@ namespace VE {
             }
         }
 
-        std::vector<VE::Vector> vertices;
-        VE::Vector normal;
+        std::vector<VE::Vector3> vertices;
+        VE::Vector3 normal;
     };
 }
 

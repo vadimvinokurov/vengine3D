@@ -91,7 +91,7 @@ void Window::run() {
 
 
         if (mouse_->isLock()) {
-            Vector lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
+            Vector3 lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
             glfwSetCursorPos(window_, lockScreenPosition.x, lockScreenPosition.y);
             //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         } else {
@@ -133,7 +133,7 @@ void Window::mouseButtonEvent(int button, int action, int mods) {
     }
 }
 
-void Window::cursorChangePositionEvent(const VE::Vector &cursorPosition) {
+void Window::cursorChangePositionEvent(const VE::Vector3 &cursorPosition) {
     mouse_->setPosition(cursorPosition);
 }
 
@@ -149,7 +149,7 @@ void Window::keyEvent(int key, int scancode, int action, int mods) {
 
 void Window::setCallbackFunction() {
     auto cursor_callback = [](GLFWwindow *glfwwindow, double xpos, double ypos) {
-        VE::Vector openGLCoordinate = getThis(glfwwindow)->screenToOpenGLCoordinate(VE::Vector(xpos, ypos));
+        VE::Vector3 openGLCoordinate = getThis(glfwwindow)->screenToOpenGLCoordinate(VE::Vector3(xpos, ypos));
         getThis(glfwwindow)->cursorChangePositionEvent(openGLCoordinate);
     };
     glfwSetCursorPosCallback(window_, cursor_callback);
@@ -165,16 +165,16 @@ void Window::setCallbackFunction() {
     glfwSetKeyCallback(window_, keyEventFun);
 }
 
-Vector Window::screenToOpenGLCoordinate(const Vector &screenCoordinate) {
+Vector3 Window::screenToOpenGLCoordinate(const Vector3 &screenCoordinate) {
     float xScale = width_ / (windowAspectRatio_ * 2);
     float yScale = height_ / 2;
-    return Vector(screenCoordinate.x / xScale - windowAspectRatio_, 1 - screenCoordinate.y / yScale);
+    return Vector3(screenCoordinate.x / xScale - windowAspectRatio_, 1 - screenCoordinate.y / yScale);
 }
 
-Vector Window::openGLToScreenCoordinate(const Vector &openGLCoordinate) {
+Vector3 Window::openGLToScreenCoordinate(const Vector3 &openGLCoordinate) {
     float xScale = width_ / (windowAspectRatio_ * 2);
     float yScale = height_ / 2;
-    return Vector((windowAspectRatio_ + openGLCoordinate.x) * xScale,
+    return Vector3((windowAspectRatio_ + openGLCoordinate.x) * xScale,
                   (1 - openGLCoordinate.y) * yScale);
 }
 

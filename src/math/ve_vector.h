@@ -12,59 +12,61 @@
 #include "ve_color.h"
 
 namespace VE {
-    struct Vector {
+    struct Vector3 {
         static constexpr float EPSILON = 0.000001f;
 
-        Vector(float fillValue = 0.0f) : x(fillValue), y(fillValue), z(fillValue) {};
+        Vector3(float fillValue = 0.0f) : x(fillValue), y(fillValue), z(fillValue) {};
 
-        Vector(float x_, float y_, float z_ = 0.0f) : x(x_), y(y_), z(z_) {};
+        Vector3(float x_, float y_, float z_ = 0.0f) : x(x_), y(y_), z(z_) {};
 
-        Vector(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
+        Vector3(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
 
-        Vector(const Vector &vector) = default;
+        Vector3(const Color &c) : x(c.red()), y(c.grean()), z(c.blue()) {};
 
-        Vector &operator=(const Vector &vector) = default;
+        Vector3(const Vector3 &vector) = default;
 
-        Vector operator+(const Vector &other) const {
-            return Vector(x + other.x, y + other.y, z + other.z);
+        Vector3 &operator=(const Vector3 &vector) = default;
+
+        Vector3 operator+(const Vector3 &other) const {
+            return Vector3(x + other.x, y + other.y, z + other.z);
         }
 
-        Vector operator-(const Vector &other) const {
-            return Vector(x - other.x, y - other.y, z - other.z);
+        Vector3 operator-(const Vector3 &other) const {
+            return Vector3(x - other.x, y - other.y, z - other.z);
         }
 
-        Vector operator*(float factor) const {
-            return Vector(x * factor, y * factor, z * factor);
+        Vector3 operator*(float factor) const {
+            return Vector3(x * factor, y * factor, z * factor);
         }
 
-        Vector operator/(float factor) const {
+        Vector3 operator/(float factor) const {
             float invFactor = 1.0f / factor;
-            return Vector(x * invFactor, y * invFactor, z * invFactor);
+            return Vector3(x * invFactor, y * invFactor, z * invFactor);
         }
 
-        Vector operator*(const Vector &other) const {
-            const Vector &a = (*this);
-            const Vector &b = other;
-            return Vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+        Vector3 operator*(const Vector3 &other) const {
+            const Vector3 &a = (*this);
+            const Vector3 &b = other;
+            return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
         }
 
-        Vector &operator+=(const Vector &other) {
+        Vector3 &operator+=(const Vector3 &other) {
             x += other.x;
             y += other.y;
             z += other.z;
             return *this;
         }
 
-        Vector &operator-=(const Vector &other) {
+        Vector3 &operator-=(const Vector3 &other) {
             x -= other.x;
             y -= other.y;
             z -= other.z;
             return *this;
         }
 
-        Vector &operator*=(const Vector &other) {
-            const Vector &a = (*this);
-            const Vector &b = other;
+        Vector3 &operator*=(const Vector3 &other) {
+            const Vector3 &a = (*this);
+            const Vector3 &b = other;
 
             float tmpx_ = a.y * b.z - a.z * b.y;
             float tmpy_ = a.z * b.x - a.x * b.z;
@@ -77,7 +79,7 @@ namespace VE {
             return *this;
         }
 
-        Vector &operator*=(float factor) {
+        Vector3 &operator*=(float factor) {
             x *= factor;
             y *= factor;
             z *= factor;
@@ -85,7 +87,7 @@ namespace VE {
             return *this;
         }
 
-        Vector &operator/=(float factor) {
+        Vector3 &operator/=(float factor) {
             float invFactor = 1.0f / factor;
 
             x *= invFactor;
@@ -95,9 +97,9 @@ namespace VE {
             return *this;
         }
 
-        float dot(const Vector &other) const {
-            const Vector &a = (*this);
-            const Vector &b = other;
+        float dot(const Vector3 &other) const {
+            const Vector3 &a = (*this);
+            const Vector3 &b = other;
             return a.x * b.x + a.y * b.y + a.z * b.z;
         }
 
@@ -111,20 +113,20 @@ namespace VE {
             return sqrtf(lenSq);
         }
 
-        Vector getNormalized() const {
+        Vector3 getNormalized() const {
             float lenSq = lenSqrt();
             if (lenSq < EPSILON) return *this;
             return (*this) / sqrtf(lenSq);
         }
 
-        Vector &normalize() {
+        Vector3 &normalize() {
             float lenSq = lenSqrt();
             if (lenSq < EPSILON) return *this;
             (*this) /= sqrtf(lenSq);
             return *this;
         }
 
-        std::pair<Vector, float> getNormalAndLen() const {
+        std::pair<Vector3, float> getNormalAndLen() const {
             float lenSq = lenSqrt();
             if (lenSq < EPSILON) {
                 return {*this, 0.0f};
@@ -133,32 +135,32 @@ namespace VE {
             return {(*this) / magnitude, magnitude};
         }
 
-        bool operator==(const Vector &other) const {
+        bool operator==(const Vector3 &other) const {
             return (*this - other).lenSqrt() < EPSILON;
         }
 
-        bool operator!=(const Vector &other) const {
+        bool operator!=(const Vector3 &other) const {
             return !(*this == other);
         }
 
-        Vector getProjection(const VE::Vector &b) const {
+        Vector3 getProjection(const VE::Vector3 &b) const {
             float bLenSqrt = b.lenSqrt();
 
             if (bLenSqrt < EPSILON)
-                return Vector();
+                return Vector3();
             float scale = this->dot(b) / bLenSqrt;
             return b * scale;
         }
 
-        Vector getRejection(const VE::Vector &b) const {
+        Vector3 getRejection(const VE::Vector3 &b) const {
             return *this - this->getProjection(b);
         }
 
-        Vector getReflection(const VE::Vector &b) const {
+        Vector3 getReflection(const VE::Vector3 &b) const {
             float bLenSqrt = b.lenSqrt();
 
             if (bLenSqrt < EPSILON)
-                return Vector();
+                return Vector3();
             float scale = this->dot(b) / bLenSqrt;
             auto projectionX2 = b * scale * 2;
             return *this - projectionX2;
@@ -182,12 +184,12 @@ namespace VE {
 
         //Debug function
 
-        void draw(const Vector &basePoint = Vector(), const VE::Color &color = VE::Color()) const {
+        void draw(const Vector3 &basePoint = Vector3(), const VE::Color &color = VE::Color()) const {
             glLineWidth(2);
             glColor3f(color.red(), color.grean(), color.blue());
             glBegin(GL_LINES);
             glVertex3f(basePoint.x, basePoint.y, basePoint.z);
-            Vector vector = basePoint + *this;
+            Vector3 vector = basePoint + *this;
             glVertex3f(vector.x, vector.y, vector.z);
             glEnd();
             glPointSize(6);
@@ -209,14 +211,14 @@ namespace VE {
         }
 
         void draw(const VE::Color &color) const {
-            draw(VE::Vector(), color);
+            draw(VE::Vector3(), color);
         }
 
         void print() const {
             std::cout << x << " " << y << " " << z << std::endl;
         }
 
-        static float angle(const Vector &a, const Vector &b) {
+        static float angle(const Vector3 &a, const Vector3 &b) {
             float aLenSqrt = a.lenSqrt();
             float bLenSqrt = b.lenSqrt();
             if (aLenSqrt < EPSILON || bLenSqrt < EPSILON) {
@@ -225,16 +227,16 @@ namespace VE {
             return acosf(a.dot(b) / (sqrtf(aLenSqrt) * sqrtf(bLenSqrt)));
         }
 
-        static Vector lerp(const Vector &s, const Vector &e, float t) {
+        static Vector3 lerp(const Vector3 &s, const Vector3 &e, float t) {
             //return (1 - t) * s + t * e;
             return s + (e - s) * t;
         }
 
-        static Vector nlerp(const Vector &s, const Vector &e, float t) {
+        static Vector3 nlerp(const Vector3 &s, const Vector3 &e, float t) {
             return lerp(s, e, t).getNormalized();
         }
 
-        static Vector slerp(const Vector &s, const Vector &e, float t) {
+        static Vector3 slerp(const Vector3 &s, const Vector3 &e, float t) {
             if (t < 0.01f) return lerp(s, e, t);
 
             float theta = angle(s, e);
@@ -256,19 +258,17 @@ namespace VE {
 
     };
 
-    inline Vector operator*(float factor, const Vector &v) {
+    inline Vector3 operator*(float factor, const Vector3 &v) {
         return v * factor;
     }
 
-    inline Vector multiply(const Vector &a, const Vector &b) {
-        return Vector(a.x * b.x, a.y * b.y, a.z * b.z);
+    inline Vector3 multiply(const Vector3 &a, const Vector3 &b) {
+        return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     }
 
-    inline bool sameDirection(const Vector &a, const Vector &b) {
+    inline bool sameDirection(const Vector3 &a, const Vector3 &b) {
         return a.dot(b) > 0.0f;
     };
-
-    using Vector3 = Vector;
 
     template<typename T>
     struct TVector2 {

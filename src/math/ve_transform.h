@@ -18,12 +18,12 @@ namespace VE {
                       rotation(0, 0, 0, 1),
                       scale(1, 1, 1) {}
 
-        Transform(const Vector &_position, const Quaternion &_rotation, const Vector &_scale) :
+        Transform(const Vector3 &_position, const Quaternion &_rotation, const Vector3 &_scale) :
                 position(_position),
                 rotation(_rotation),
                 scale(_scale) {}
 
-        Transform(const Vector &_position) :
+        Transform(const Vector3 &_position) :
                 position(_position),
                 rotation(0, 0, 0, 1),
                 scale(1, 1, 1) {}
@@ -33,11 +33,11 @@ namespace VE {
                 rotation(_rotation),
                 scale(1, 1, 1) {}
 
-        Vector applyToPoint(const Vector &localPoint) const {
+        Vector3 applyToPoint(const Vector3 &localPoint) const {
             return rotation.rotate(multiply(localPoint, scale)) + position;
         }
 
-        Vector applyToVector(const Vector &localPoint) const {
+        Vector3 applyToVector(const Vector3 &localPoint) const {
             return rotation.rotate(multiply(localPoint, scale));
         }
 
@@ -50,7 +50,7 @@ namespace VE {
             inv.scale.y = fabsf(scale.y) < EPSILON ? 0.0f : 1.0f / scale.y;
             inv.scale.z = fabsf(scale.z) < EPSILON ? 0.0f : 1.0f / scale.z;
 
-            Vector invTrans = position * -1.0f;
+            Vector3 invTrans = position * -1.0f;
 
             inv.position = inv.rotation.rotate(multiply(inv.scale, invTrans));
 
@@ -58,9 +58,9 @@ namespace VE {
         }
 
         Matrix4 toMatrix() const {
-            Vector x = rotation.rotate(Vector(1, 0, 0));
-            Vector y = rotation.rotate(Vector(0, 1, 0));
-            Vector z = rotation.rotate(Vector(0, 0, 1));
+            Vector3 x = rotation.rotate(Vector3(1, 0, 0));
+            Vector3 y = rotation.rotate(Vector3(0, 1, 0));
+            Vector3 z = rotation.rotate(Vector3(0, 0, 1));
 
             x *= scale.x;
             y *= scale.y;
@@ -78,7 +78,7 @@ namespace VE {
         static Transform fromMatrix(const Matrix4 &m) {
             Transform out;
 
-            out.position = Vector(m.v[12], m.v[13], m.v[14]);
+            out.position = Vector3(m.v[12], m.v[13], m.v[14]);
             out.rotation = Quaternion::fromMatrix(m);
 
             Matrix4 rotScaleMatrix(
@@ -116,16 +116,16 @@ namespace VE {
             }
 
             return Transform(
-                    Vector::lerp(a.position, b.position, t),
+                    Vector3::lerp(a.position, b.position, t),
                     Quaternion::nlerp(a.rotation, bRotation, t),
-                    Vector::lerp(a.scale, b.scale, t)
+                    Vector3::lerp(a.scale, b.scale, t)
             );
         }
 
 
-        Vector position;
+        Vector3 position;
         Quaternion rotation;
-        Vector scale;
+        Vector3 scale;
     };
 }
 

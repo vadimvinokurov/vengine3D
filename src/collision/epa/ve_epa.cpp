@@ -9,16 +9,16 @@
 
 using namespace VE;
 
-EPA::PenetrationDepth::PenetrationDepth(const Collider &collider1, const Collider &collider2, const std::vector<Vector> &simplex): collider1_(collider1),
-                                                                                                                                   collider2_(collider2),
-                                                                                                                                   polytope_(simplex) {
+EPA::PenetrationDepth::PenetrationDepth(const Collider &collider1, const Collider &collider2, const std::vector<Vector3> &simplex): collider1_(collider1),
+                                                                                                                                    collider2_(collider2),
+                                                                                                                                    polytope_(simplex) {
 
 }
 
-Vector EPA::PenetrationDepth::getVector() {
+Vector3 EPA::PenetrationDepth::getVector() {
     while(true){
         const Face &closestFaceToOrigin = polytope_.getClosestFaceToOrigin();
-        Vector extendVertex = getSupportPoint(collider1_, collider2_, closestFaceToOrigin.normal).point;
+        Vector3 extendVertex = getSupportPoint(collider1_, collider2_, closestFaceToOrigin.normal).point;
         float extendVertexDistance = extendVertex.dot(closestFaceToOrigin.normal);
         if (abs(extendVertexDistance - closestFaceToOrigin.distance) > Collision::tolerance) {
             computeNewFaces(extendVertex);
@@ -28,7 +28,7 @@ Vector EPA::PenetrationDepth::getVector() {
     }
 }
 
-void EPA::PenetrationDepth::computeNewFaces(const Vector &support) {
+void EPA::PenetrationDepth::computeNewFaces(const Vector3 &support) {
     UnigueEdge unigueEdge;
     for (size_t i = 0; i < polytope_.getFacesSize(); i++) {
         if (sameDirection(polytope_[i].normal, support - polytope_.getFaceVertex(i, 0))) {

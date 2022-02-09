@@ -17,74 +17,74 @@ namespace VE {
 
     class Actor {
     public:
-        static ActorPtr create(const Vector &position = Vector()) {
+        static ActorPtr create(const Vector3 &position = Vector3()) {
             return std::make_shared<Actor>(position);
         }
 
-        Actor(const Vector &position) {
+        Actor(const Vector3 &position) {
             RigidBodyPtr body = RigidBody::create(
                     {
-                            SphereCollider::create(0.2f, 5, Vector(0.0f, 0.0f, 0.8f)),
+                            SphereCollider::create(0.2f, 5, Vector3(0.0f, 0.0f, 0.8f)),
 
-                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, 0.3f)),
-                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, 0.1f)),
-                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, -0.1f)),
-                            SphereCollider::create(0.3f, 20, Vector(0.0f, 0.0f, -0.3f)),
+                            SphereCollider::create(0.3f, 20, Vector3(0.0f, 0.0f, 0.3f)),
+                            SphereCollider::create(0.3f, 20, Vector3(0.0f, 0.0f, 0.1f)),
+                            SphereCollider::create(0.3f, 20, Vector3(0.0f, 0.0f, -0.1f)),
+                            SphereCollider::create(0.3f, 20, Vector3(0.0f, 0.0f, -0.3f)),
                     });
-            body->setTransform(Transform(Vector(0, 0, 0) + position));
+            body->setTransform(Transform(Vector3(0, 0, 0) + position));
             bodys_.push_back(body);
 
             RigidBodyPtr rightHand = RigidBody::create(
                     {
-                            SphereCollider::create(0.15f, 1, Vector(-0.3f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(-0.15f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.15f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.3f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(-0.3f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(-0.15f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.15f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.3f, 0.0f, 0.0f)),
                     });
-            rightHand->setTransform(Transform(Vector(0.8f, 0, 0.35f) + position));
+            rightHand->setTransform(Transform(Vector3(0.8f, 0, 0.35f) + position));
             bodys_.push_back(rightHand);
 
             RigidBodyPtr leftHand = RigidBody::create(
                     {
-                            SphereCollider::create(0.15f, 1, Vector(-0.3f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(-0.15f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.15f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.3f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(-0.3f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(-0.15f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.15f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.3f, 0.0f, 0.0f)),
                     });
-            leftHand->setTransform(Transform(Vector(-0.8f, 0, 0.35f) + position));
+            leftHand->setTransform(Transform(Vector3(-0.8f, 0, 0.35f) + position));
             bodys_.push_back(leftHand);
 
             RigidBodyPtr rightFood = RigidBody::create(
                     {
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, -0.3f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, -0.15f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.15f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.3f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, -0.3f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, -0.15f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.15f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.3f)),
 
                             //BoxCollider::create(0.15f, 0.8f, 0.3f, 5, Vector(0.0f, 0.0f, 0.0f))
                     });
-            rightFood->setTransform(Transform(Vector(0.2f, 0, -1.1f) + position));
+            rightFood->setTransform(Transform(Vector3(0.2f, 0, -1.1f) + position));
             bodys_.push_back(rightFood);
 
             RigidBodyPtr leftFood = RigidBody::create(
                     {
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, -0.3f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, -0.15f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.0f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.15f)),
-                            SphereCollider::create(0.15f, 1, Vector(0.0f, 0.0f, 0.3f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, -0.3f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, -0.15f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.15f)),
+                            SphereCollider::create(0.15f, 1, Vector3(0.0f, 0.0f, 0.3f)),
                             //BoxCollider::create(0.15f, 0.8f, 0.3f, 5, Vector(0.0f, 0.0f, 0.0f))
                     });
-            leftFood->setTransform(Transform(Vector(-0.2f, 0, -1.1f) + position));
+            leftFood->setTransform(Transform(Vector3(-0.2f, 0, -1.1f) + position));
             bodys_.push_back(leftFood);
 
-            Vector pointRightHand(0.4f, 0, 0.35f);
-            Vector pointLeftHand(-0.4f, 0, 0.35f);
-            Vector pointRightFood(0.2f, 0, -0.625f);
-            Vector pointLeftFood(-0.2f, 0, -0.625f);
+            Vector3 pointRightHand(0.4f, 0, 0.35f);
+            Vector3 pointLeftHand(-0.4f, 0, 0.35f);
+            Vector3 pointRightFood(0.2f, 0, -0.625f);
+            Vector3 pointLeftFood(-0.2f, 0, -0.625f);
 
             joints_.emplace_back(body, leftHand, pointLeftHand + position);
             joints_.emplace_back(body, rightHand, pointRightHand + position);
@@ -93,7 +93,7 @@ namespace VE {
 
             for (auto &o:bodys_) {
                 o->setColor(Color(0.3f, 0.7f, 0.3f));
-                o->setGravity(Vector(0.0f, 0.0f, -9.8f));
+                o->setGravity(Vector3(0.0f, 0.0f, -9.8f));
             }
         }
 

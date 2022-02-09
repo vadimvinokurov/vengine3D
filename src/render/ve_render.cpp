@@ -2,13 +2,11 @@
 // Created by boris on 11/16/2021.
 //
 #include "ve_render.h"
-
-#include "ve_shader.h"
 #include "ve_uniform.h"
-//#include "ve_attribute.h"
-//
-//#include "ve_index_buffer.h"
-//#include "ve_draw.h"
+#include "ve_attribute.h"
+#include "ve_index_buffer.h"
+#include "ve_draw.h"
+
 //#include "ve_texture.h"
 
 
@@ -16,16 +14,16 @@
 
 using namespace VE;
 
-
-void drawShape(const VE::Collider &shape, const Color &color) {
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
-    for (int i = 0; i < shape.indecesSize() / 4; i++) {
-        glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
-        glDrawElements(globalParameters.polygone ? GL_POLYGON : GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
-    }
-    glDisableClientState(GL_VERTEX_ARRAY);
-};
+//
+//void drawShape(const VE::Collider &shape, const Color &color) {
+//    glEnableClientState(GL_VERTEX_ARRAY);
+//    glVertexPointer(3, GL_FLOAT, 0, shape.verticesGLFormatData());
+//    for (int i = 0; i < shape.indecesSize() / 4; i++) {
+//        glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
+//        glDrawElements(globalParameters.polygone ? GL_POLYGON : GL_LINE_LOOP, 4, GL_UNSIGNED_INT, shape.indicesGLFormatData(i * 4));
+//    }
+//    glDisableClientState(GL_VERTEX_ARRAY);
+//};
 
 
 
@@ -52,7 +50,27 @@ void Render::draw(const WorldPtr &world) {
         for (size_t colliderNumber = 0; colliderNumber < rigidBody->collidersSize(); colliderNumber++) {
             Matrix4 model = rigidBody->transform().toMatrix();
             Uniform<Matrix4>::set(shader.getUniform("model"), model);
-            drawShape(rigidBody->collider(colliderNumber), rigidBody->color());
+            Attribute<Vector3> vertexPosition;
+            vertexPosition.set(rigidBody->collider(colliderNumber).vertices());
+            Attribute<Vector3> vertexColor;
+
+            std::vector<Vector3> color(rigidBody->collider(colliderNumber).vertices().size(), rigidBody->color());
+            vertexColor.set(color);
+
+            IndexBuffer indexBuffer;
+            indexBuffer.set(rigidBody->collider(colliderNumber).indices());
+
+
+            vertexPosition.bindTo(shader.getAttribute("position"));
+            vertexColor.bindTo(shader.getAttribute("color"));
+
+            VE::draw(indexBuffer, DrawMode::Polygon);
+
+
+            vertexPosition.unBindFrom(shader.getAttribute("position"));
+            vertexColor.unBindFrom(shader.getAttribute("color"));
+
+            //drawShape(rigidBody->collider(colliderNumber), rigidBody->color());
         }
     }
     Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());

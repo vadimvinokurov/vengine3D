@@ -50,7 +50,7 @@ namespace VE {
 
         void update(ContactMainfold newContactMainfold);
     private:
-        float computeEffectiveMass(const Vector &nCrossR1, const Vector &nCrossR2);
+        float computeEffectiveMass(const Vector3 &nCrossR1, const Vector3 &nCrossR2);
 
         ContactMainfold contactMainfold_;
         VE::RigidBody &body1;

@@ -11,10 +11,10 @@
 
 namespace VE {
     namespace CameraParameters {
-        const Vector defaultCameraPosition = Vector(7.51278f, -4.72388f, 3.8431);
-        const Vector defaultCameraDirection = Vector(0, -1, 0);
-        const Vector defaultCameraUp = Vector(0, 0, 1);
-        const Vector defaultCameraRight = Vector(1, 0, 0);
+        const Vector3 defaultCameraPosition = Vector3(7.51278f, -4.72388f, 3.8431);
+        const Vector3 defaultCameraDirection = Vector3(0, -1, 0);
+        const Vector3 defaultCameraUp = Vector3(0, 0, 1);
+        const Vector3 defaultCameraRight = Vector3(1, 0, 0);
 
         const float sensitivity = 50.0f;
     }
@@ -27,10 +27,10 @@ namespace VE {
 
         void setDirection(float dPitch, float dYam);
 
-        Vector getPointAlongDirection(float length);
+        Vector3 getPointAlongDirection(float length);
 
-        const Vector &position() const;
-        const Vector &direction() const;
+        const Vector3 &position() const;
+        const Vector3 &direction() const;
         Matrix4 getViewMatrix() const;
 
         static Matrix4 perspective(float fov, float aspect, float n, float f);
@@ -40,11 +40,11 @@ namespace VE {
         static Matrix4 ortho(float left, float right, float bottom, float top, float n, float f);
     private:
 
-        Vector position_;
-        Vector direction_;
-        Vector cameraDirection_;
-        Vector cameraUp_;
-        Vector cameraRight_;
+        Vector3 position_;
+        Vector3 direction_;
+        Vector3 cameraDirection_;
+        Vector3 cameraUp_;
+        Vector3 cameraRight_;
         float pitch_ = -15.5557f;
         float yam_ = 51.3889f;
     };

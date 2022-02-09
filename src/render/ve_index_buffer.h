@@ -16,8 +16,8 @@ namespace VE {
         IndexBuffer();
         ~IndexBuffer();
 
-        void set(unsigned int *array, unsigned int arrayLength);
-        void set(std::vector<unsigned int> &input);
+        void set(const unsigned int *array, unsigned int arrayLength);
+        void set(const std::vector<unsigned int> &input);
 
         unsigned int count();
         unsigned int getHandle();

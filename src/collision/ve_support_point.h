@@ -10,12 +10,12 @@
 
 namespace VE{
     struct SupportPoint {
-        Vector point;
-        Vector collider1Vertex;
-        Vector collider2Vertex;
+        Vector3 point;
+        Vector3 collider1Vertex;
+        Vector3 collider2Vertex;
     };
 
-    inline SupportPoint getSupportPoint(const Collider &collider1, const Collider &collider2, const VE::Vector &direction) {
+    inline SupportPoint getSupportPoint(const Collider &collider1, const Collider &collider2, const VE::Vector3 &direction) {
         SupportPoint supportPoint;
 
         supportPoint.collider1Vertex = collider1.farthestVertexInDirection(direction);

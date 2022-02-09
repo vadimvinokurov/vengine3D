@@ -15,13 +15,13 @@ namespace VE {
     public:
         Quaternion() : v_(0.0f), w_(1.0f) {}
 
-        Quaternion(const Vector &v, float w) : v_(v), w_(w) {}
+        Quaternion(const Vector3 &v, float w) : v_(v), w_(w) {}
 
-        Quaternion(float w, const Vector &v) : v_(v), w_(w) {}
+        Quaternion(float w, const Vector3 &v) : v_(v), w_(w) {}
 
         Quaternion(float i, float j, float k, float w) : v_(i, j, k), w_(w) {}
 
-        Quaternion(const Vector &v) : Quaternion(v, 0.0f) {}
+        Quaternion(const Vector3 &v) : Quaternion(v, 0.0f) {}
 
         float dot(const Quaternion &b) const {
             return v_.dot(b.v_) + w_ * b.w_;
@@ -36,7 +36,7 @@ namespace VE {
         }
 
         Quaternion operator*(const Quaternion &b) const {
-            Vector vc(v_ *b.v_ + b.v_ * w_ + v_ * b.w_);
+            Vector3 vc(v_ *b.v_ + b.v_ * w_ + v_ * b.w_);
             float wc = w_ * b.w_ - v_.dot(b.v_);
             return Quaternion(vc, wc);
         }
@@ -129,11 +129,11 @@ namespace VE {
             return conjugate() / norma();
         }
 
-        Vector toAxisAngle() const {
+        Vector3 toAxisAngle() const {
             return (v_ / sqrt(1 - w_ * w_)) * (2.0 * acosf(w_));
         }
 
-        Vector getAxis() const {
+        Vector3 getAxis() const {
             return v_.getNormalized();
         }
 
@@ -141,7 +141,7 @@ namespace VE {
             return 2.0 * acosf(w_);
         }
 
-        const Vector &v() const {
+        const Vector3 &v() const {
             return v_;
         }
 
@@ -149,15 +149,15 @@ namespace VE {
             return w_;
         }
 
-        Vector rotate(const Vector &v) const {
+        Vector3 rotate(const Vector3 &v) const {
             return (*this * Quaternion(v) * this->inverse()).v();
         }
 
         Matrix4 toMatrix4() const {
             this->print();
-            Vector r = this->rotate(Vector(1, 0, 0));
-            Vector f = this->rotate(Vector(0, 1, 0));
-            Vector u = this->rotate(Vector(0, 0, 1));
+            Vector3 r = this->rotate(Vector3(1, 0, 0));
+            Vector3 f = this->rotate(Vector3(0, 1, 0));
+            Vector3 u = this->rotate(Vector3(0, 0, 1));
 
             return Matrix4(r.x, r.y, r.z, 0.0f,
                            u.x, u.y, u.z, 0.0f,
@@ -165,35 +165,35 @@ namespace VE {
                            0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        static Quaternion fromAxisAngle(const Vector &axisAngle) {
+        static Quaternion fromAxisAngle(const Vector3 &axisAngle) {
             auto[n, angle] = axisAngle.getNormalAndLen();
             return fromAxisAngle(n, angle);
         }
 
-        static Quaternion fromAxisAngle(const Vector &n, float angle) {
+        static Quaternion fromAxisAngle(const Vector3 &n, float angle) {
             return Quaternion(n * sinf(0.5f * angle),
                               cosf(0.5f * angle));
         }
 
-        static Quaternion fromTo(const Vector &from, const Vector &to) {
-            Vector f = from.getNormalized();
-            Vector t = to.getNormalized();
+        static Quaternion fromTo(const Vector3 &from, const Vector3 &to) {
+            Vector3 f = from.getNormalized();
+            Vector3 t = to.getNormalized();
 
             if (f == t) {
                 return Quaternion();
             } else if (f == t * -1.0f) {
-                Vector ortho(1, 0, 0);
+                Vector3 ortho(1, 0, 0);
                 if (fabsf(f.y) < fabsf(f.x)) {
-                    ortho = Vector(0, 1, 0);
+                    ortho = Vector3(0, 1, 0);
                 }
                 if (fabsf(f.z) < fabsf(f.y) && fabsf(f.z) < fabsf(f.x)) {
-                    ortho = Vector(0, 0, 1);
+                    ortho = Vector3(0, 0, 1);
                 }
                 return Quaternion((f * ortho).getNormalized(), 0.0f);
             }
 
-            Vector half = (f + t).getNormalized();
-            Vector axis = f * half;
+            Vector3 half = (f + t).getNormalized();
+            Vector3 axis = f * half;
             return Quaternion(axis, f.dot(half));
 
         }
@@ -206,23 +206,23 @@ namespace VE {
             return (from + (to - from) * t).getNormalized();
         }
 
-        static Quaternion lookRotation(const Vector &direction, const Vector &up) {
-            Vector f = direction.getNormalized();
-            Vector u = up.getNormalized();
-            Vector r = u * f;
+        static Quaternion lookRotation(const Vector3 &direction, const Vector3 &up) {
+            Vector3 f = direction.getNormalized();
+            Vector3 u = up.getNormalized();
+            Vector3 r = u * f;
             u = f * r;
 
-            Quaternion worldToObject = fromTo(Vector(0, 1, 0), f);
-            Vector objectUp = worldToObject.rotate(Vector(0, 0, 1));
+            Quaternion worldToObject = fromTo(Vector3(0, 1, 0), f);
+            Vector3 objectUp = worldToObject.rotate(Vector3(0, 0, 1));
             Quaternion u2u = fromTo(objectUp, u);
 
             return (worldToObject * u2u).getNormalized();
         }
 
         static Quaternion fromMatrix(const Matrix4 &m) {
-            auto up = Vector(m.up.x, m.up.y, m.up.z).getNormalized();
-            auto forward = Vector(m.forward.x, m.forward.y, m.forward.z).getNormalized();
-            Vector right = up * forward;
+            auto up = Vector3(m.up.x, m.up.y, m.up.z).getNormalized();
+            auto forward = Vector3(m.forward.x, m.forward.y, m.forward.z).getNormalized();
+            Vector3 right = up * forward;
             up = forward * right;
 
             return lookRotation(forward, up);
@@ -237,7 +237,7 @@ namespace VE {
             return v_.data();
         }
     private:
-            Vector v_;
+            Vector3 v_;
             float w_ = 0.0f;
     };
 }

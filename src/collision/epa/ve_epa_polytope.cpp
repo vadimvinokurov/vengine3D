@@ -5,8 +5,8 @@
 
 using namespace VE;
 
-EPA::Polytope::Polytope(const std::vector<Vector> &simplex) : vertices_(simplex),
-                                                              faces_{Face(0, 1, 2),
+EPA::Polytope::Polytope(const std::vector<Vector3> &simplex) : vertices_(simplex),
+                                                               faces_{Face(0, 1, 2),
                                                                      Face(1, 3, 2),
                                                                      Face(2, 3, 0),
                                                                      Face(0, 3, 1)} {
@@ -33,11 +33,11 @@ const EPA::Face &EPA::Polytope::operator[](size_t faceNumber) const {
     return faces_[faceNumber];
 }
 
-void EPA::Polytope::addVertex(const Vector &vertex) {
+void EPA::Polytope::addVertex(const Vector3 &vertex) {
     vertices_.emplace_back(vertex);
 }
 
-const Vector &EPA::Polytope::getFaceVertex(size_t faceNumber, size_t vertexNumber) const {
+const Vector3 &EPA::Polytope::getFaceVertex(size_t faceNumber, size_t vertexNumber) const {
     return vertices_[faces_[faceNumber].index[vertexNumber]];
 }
 
@@ -61,12 +61,12 @@ const EPA::Face &EPA::Polytope::getClosestFaceToOrigin() const {
 void EPA::Polytope::updateFacesData() {
     for (size_t i = 0; i < faces_.size(); i++) {
         auto &face = faces_[i];
-        const VE::Vector &A = vertices_[face.index[0]];
-        const VE::Vector &B = vertices_[face.index[1]];
-        const VE::Vector &C = vertices_[face.index[2]];
+        const VE::Vector3 &A = vertices_[face.index[0]];
+        const VE::Vector3 &B = vertices_[face.index[1]];
+        const VE::Vector3 &C = vertices_[face.index[2]];
 
-        VE::Vector BA = A - B;
-        VE::Vector BC = C - B;
+        VE::Vector3 BA = A - B;
+        VE::Vector3 BC = C - B;
         face.normal = (BC * BA).getNormalized();
         face.distance = face.normal.dot(B);
 
@@ -84,7 +84,7 @@ void EPA::Polytope::debugDraw(const Color &color) {
     }
 
     for (int i = 0; i < faces_.size(); i++) {
-        Vector polygonCenter = (vertices_[faces_[i].index[0]] + vertices_[faces_[i].index[1]] + vertices_[faces_[i].index[2]]) / 3;
+        Vector3 polygonCenter = (vertices_[faces_[i].index[0]] + vertices_[faces_[i].index[1]] + vertices_[faces_[i].index[2]]) / 3;
             faces_[i].normal.draw(polygonCenter);
     }
 

@@ -15,7 +15,8 @@ namespace VE{
         Lines,
         Triangles,
         TriangleStrip,
-        TriangleFan
+        TriangleFan,
+        Polygon
     };
 
     void draw(IndexBuffer& inIndexBuffer, DrawMode mode);

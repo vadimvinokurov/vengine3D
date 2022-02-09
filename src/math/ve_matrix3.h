@@ -141,8 +141,8 @@ namespace VE {
                     this->v[6] * b.v[2] + this->v[7] * b.v[5] + this->v[8] * b.v[8]);
         }
 
-        Vector operator*(const Vector &vector) const {
-            return Vector(
+        Vector3 operator*(const Vector3 &vector) const {
+            return Vector3(
                     this->v[0] * vector.v[0] + this->v[1] * vector.v[1] + this->v[2] * vector.v[2],
                     this->v[3] * vector.v[0] + this->v[4] * vector.v[1] + this->v[5] * vector.v[2],
                     this->v[6] * vector.v[0] + this->v[7] * vector.v[1] + this->v[8] * vector.v[2]
@@ -250,8 +250,8 @@ namespace VE {
         };
     };
 
-    inline Vector operator*(const Vector &vector, const Matrix3& m) {
-        return Vector(
+    inline Vector3 operator*(const Vector3 &vector, const Matrix3& m) {
+        return Vector3(
                 m.v[0] * vector.v[0] + m.v[3] * vector.v[1] + m.v[6] * vector.v[2],
                 m.v[1] * vector.v[0] + m.v[4] * vector.v[1] + m.v[7] * vector.v[2],
                 m.v[2] * vector.v[0] + m.v[5] * vector.v[1] + m.v[8] * vector.v[2]

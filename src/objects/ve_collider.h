@@ -23,15 +23,14 @@ namespace VE {
 
         float mass() const { return mass_; }
 
-        virtual void setLocalPosition(const Vector &localPosition) = 0;
-        virtual Vector getCenterOfMass() const = 0;
+        virtual void setLocalPosition(const Vector3 &localPosition) = 0;
+        virtual Vector3 getCenterOfMass() const = 0;
         virtual Matrix3 getInertia() const = 0;
-        virtual Vector farthestVertexInDirection(const Vector &direction) const = 0;
+        virtual Vector3 farthestVertexInDirection(const Vector3 &direction) const = 0;
         virtual void setTransform(const Transform &transform) = 0;
 
-        virtual const void *verticesGLFormatData() const = 0;
-        virtual const void *indicesGLFormatData(unsigned int offset = 0) const = 0;
-        virtual unsigned int indecesSize() const = 0;
+        virtual const std::vector<Vector3>& vertices() const = 0;
+        virtual const std::vector<unsigned int>& indices() const = 0;
 
         virtual ~Collider() {}
 

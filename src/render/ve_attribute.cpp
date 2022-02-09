@@ -30,7 +30,7 @@ VE::Attribute<T>::~Attribute() {
 }
 
 template<typename T>
-void VE::Attribute<T>::set(T *inputArray, unsigned int arrayLength) {
+void VE::Attribute<T>::set(const T *inputArray, unsigned int arrayLength) {
     count_ = arrayLength;
 
     glBindBuffer(GL_ARRAY_BUFFER, handle_);
@@ -39,22 +39,22 @@ void VE::Attribute<T>::set(T *inputArray, unsigned int arrayLength) {
 }
 
 template<typename T>
-void Attribute<T>::set(std::vector<T> &input) {
+void Attribute<T>::set(const std::vector<T> &input) {
     set(input.data(), input.size());
 }
 
 template<typename T>
 void Attribute<T>::bindTo(unsigned int slot) {
     glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glEnableVertexAttribArray(slot);
     setAttributePointer(slot);
+    glEnableVertexAttribArray(slot);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 template<typename T>
 void Attribute<T>::unBindFrom(unsigned int slot) {
     glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glEnableVertexAttribArray(slot);
+    glDisableVertexAttribArray(slot);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -70,35 +70,35 @@ unsigned int Attribute<T>::getHandle() {
 
 template<>
 void VE::Attribute<int>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 1, GL_INT, 0, (void *) 0);
+    glVertexAttribIPointer(slot, 1, GL_INT, 0, NULL);
 }
 
 template<>
 void VE::Attribute<IVector4>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 4, GL_INT, 0, (void *) 0);
+    glVertexAttribIPointer(slot, 4, GL_INT, 0, NULL);
 }
 
 template<>
 void VE::Attribute<float>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 1, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(slot, 1, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Vector2>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 2, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(slot, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Vector3>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 3, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Vector4>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 4, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Quaternion>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 4, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 }

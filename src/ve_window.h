@@ -27,11 +27,11 @@ namespace VE {
         void setCallbackFunction();
 
         void mouseButtonEvent(int button, int action, int mods);
-        void cursorChangePositionEvent(const VE::Vector &cursorPosition);
+        void cursorChangePositionEvent(const VE::Vector3 &cursorPosition);
         void keyEvent(int key, int scancode, int action, int mods);
 
-        VE::Vector screenToOpenGLCoordinate(const VE::Vector &screenCoordinate);
-        VE::Vector openGLToScreenCoordinate(const VE::Vector &openGLCoordinate);
+        VE::Vector3 screenToOpenGLCoordinate(const VE::Vector3 &screenCoordinate);
+        VE::Vector3 openGLToScreenCoordinate(const VE::Vector3 &openGLCoordinate);
 
         GLFWwindow *window_;
         float width_, height_;

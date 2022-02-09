@@ -48,7 +48,7 @@ void RigidBody::computeMass() {
         invMass_ = 1 / mass;
         centerOfMass_ *= invMass_;
         for (const auto &collider: colliders_) {
-            Vector r = centerOfMass_ - collider->getCenterOfMass();
+            Vector3 r = centerOfMass_ - collider->getCenterOfMass();
             float sqrtX = r.x * r.x;
             float sqrtY = r.y * r.y;
             float sqrtZ = r.z * r.z;
@@ -112,48 +112,48 @@ void RigidBody::updateTransform(float dt) {
     pseudoAngularVelocity_.setZero();
 }
 
-void RigidBody::addForce(const Vector &force) {
+void RigidBody::addForce(const Vector3 &force) {
     force_ += force_;
 }
 
-void RigidBody::addForce(const Vector &force, const Vector &forcePoint) {
+void RigidBody::addForce(const Vector3 &force, const Vector3 &forcePoint) {
     force_ += force;
     torque_ += (forcePoint - centerOfMass()) * force;
 }
 
-void RigidBody::setLinearVelocity(const Vector &linearVelocity) {
+void RigidBody::setLinearVelocity(const Vector3 &linearVelocity) {
     linearVelocity_ = linearVelocity;
 }
 
-void RigidBody::setAngularVelocity(const Vector &angularVelocity) {
+void RigidBody::setAngularVelocity(const Vector3 &angularVelocity) {
     angularVelocity_ = angularVelocity;
 }
 
-const Vector &RigidBody::linearVelocity() const {
+const Vector3 &RigidBody::linearVelocity() const {
     return linearVelocity_;
 }
 
-const Vector &RigidBody::angularVelocity() const {
+const Vector3 &RigidBody::angularVelocity() const {
     return angularVelocity_;
 }
 
-void RigidBody::setPseudoLinearVelocity(const Vector &pseudoLinearVelocity) {
+void RigidBody::setPseudoLinearVelocity(const Vector3 &pseudoLinearVelocity) {
     pseudoLinearVelocity_ = pseudoLinearVelocity;
 }
 
-void RigidBody::setPseudoAngularVelocity(const Vector &pseudoAngularVelocity) {
+void RigidBody::setPseudoAngularVelocity(const Vector3 &pseudoAngularVelocity) {
     pseudoAngularVelocity_ = pseudoAngularVelocity;
 }
 
-const Vector &RigidBody::pseudoLinearVelocity() const {
+const Vector3 &RigidBody::pseudoLinearVelocity() const {
     return pseudoLinearVelocity_;
 }
 
-const Vector &RigidBody::pseudoAngularVelocity() const {
+const Vector3 &RigidBody::pseudoAngularVelocity() const {
     return pseudoAngularVelocity_;
 }
 
-void RigidBody::setGravity(const Vector &gravity) {
+void RigidBody::setGravity(const Vector3 &gravity) {
     gravity_ = gravity;
 }
 
@@ -165,7 +165,7 @@ float RigidBody::restitution() const {
     return restitution_;
 }
 
-const Vector &RigidBody::centerOfMass() const {
+const Vector3 &RigidBody::centerOfMass() const {
     return transform_.position;
 }
 
@@ -173,11 +173,11 @@ const Matrix3 &RigidBody::invInertia() const {
     return invInertia_;
 }
 
-Vector RigidBody::globalToLocalPoint(const Vector &globalPoint) {
+Vector3 RigidBody::globalToLocalPoint(const Vector3 &globalPoint) {
     return transform_.getInversed().applyToPoint(globalPoint);
 }
 
-Vector RigidBody::localToGlobalPoint(const Vector &localPoint) {
+Vector3 RigidBody::localToGlobalPoint(const Vector3 &localPoint) {
     return transform_.applyToPoint(localPoint);
 }
 
@@ -189,6 +189,6 @@ void RigidBody::setRestitution(float restitution) {
     restitution_ = restitution;
 }
 
-void RigidBody::setPosition(const Vector &position) {
+void RigidBody::setPosition(const Vector3 &position) {
     transform_.position = position;
 }

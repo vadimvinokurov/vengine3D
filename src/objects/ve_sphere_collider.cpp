@@ -6,7 +6,7 @@
 
 using namespace VE;
 
-SphereCollider::SphereCollider(float radius, float mass, const Vector &localPosition) :
+SphereCollider::SphereCollider(float radius, float mass, const Vector3 &localPosition) :
         Collider(ColliderType::sphere, mass),
         radius_(radius),
         localCenter_(localPosition),
@@ -14,11 +14,11 @@ SphereCollider::SphereCollider(float radius, float mass, const Vector &localPosi
     setGlvertices();
 }
 
-ColliderPtr SphereCollider::create(float radius, float mass, const Vector &localPosition) {
+ColliderPtr SphereCollider::create(float radius, float mass, const Vector3 &localPosition) {
     return std::make_shared<SphereCollider>(radius, mass, localPosition);
 }
 
-void SphereCollider::setLocalPosition(const Vector &localPosition) {
+void SphereCollider::setLocalPosition(const Vector3 &localPosition) {
     localCenter_ += localPosition;
     globalCenter_ = localCenter_;
     setGlvertices();
@@ -33,7 +33,7 @@ Matrix3 SphereCollider::getInertia() const {
     );
 }
 
-Vector SphereCollider::farthestVertexInDirection(const Vector &direction) const {
+Vector3 SphereCollider::farthestVertexInDirection(const Vector3 &direction) const {
     return direction.getNormalized() * radius_ + globalCenter_;
 }
 
@@ -41,7 +41,7 @@ void SphereCollider::setTransform(const Transform &transform) {
     globalCenter_ = transform.applyToPoint(localCenter_);
 }
 
-Vector SphereCollider::getCenterOfMass() const {
+Vector3 SphereCollider::getCenterOfMass() const {
     return globalCenter_;
 }
 
@@ -76,18 +76,15 @@ void SphereCollider::setGlvertices() {
     }
 }
 
-const void *SphereCollider::verticesGLFormatData() const {
-    return reinterpret_cast<const void *>(glVerticesBuffer_.data());
+const std::vector<Vector3> &SphereCollider::vertices() const {
+    return glVerticesBuffer_;
 }
 
-const void *SphereCollider::indicesGLFormatData(unsigned int offset) const {
-    return reinterpret_cast<const void *>(glIndicesBuffer_.data() + offset);
-}
-
-unsigned int SphereCollider::indecesSize() const {
-    return glIndicesBuffer_.size();
+const std::vector<unsigned int> &SphereCollider::indices() const {
+    return glIndicesBuffer_;
 }
 
 float SphereCollider::getRadius() const {
     return radius_;
 }
+

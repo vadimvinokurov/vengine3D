@@ -8,11 +8,11 @@
 namespace VE {
     struct ManifoldContactPoint {
         ManifoldContactPoint() {};
-        ManifoldContactPoint(VE::Vector p, VE::Vector n, float collDepth) : point(p), normal(n), collisionDepth(collDepth) {};
-        VE::Vector point;
-        VE::Vector normal;
-        VE::Vector tangent1;
-        VE::Vector tangent2;
+        ManifoldContactPoint(VE::Vector3 p, VE::Vector3 n, float collDepth) : point(p), normal(n), collisionDepth(collDepth) {};
+        VE::Vector3 point;
+        VE::Vector3 normal;
+        VE::Vector3 tangent1;
+        VE::Vector3 tangent2;
         float collisionDepth = 0.0f;
 
         float normalImpulse = 0.0f;

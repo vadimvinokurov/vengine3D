@@ -13,7 +13,7 @@ VE::IndexBuffer::~IndexBuffer() {
     glDeleteBuffers(1, &handle_);
 }
 
-void VE::IndexBuffer::set(unsigned int *inputArray, unsigned int arrayLength) {
+void VE::IndexBuffer::set(const unsigned int *inputArray, unsigned int arrayLength) {
     count_ = arrayLength;
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle_);
@@ -21,7 +21,7 @@ void VE::IndexBuffer::set(unsigned int *inputArray, unsigned int arrayLength) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void VE::IndexBuffer::set(std::vector<unsigned int> &input) {
+void VE::IndexBuffer::set(const std::vector<unsigned int> &input) {
     set(input.data(), input.size());
 }
 

@@ -13,7 +13,7 @@ namespace VE {
             Face(unsigned int i1, unsigned int i2, unsigned int i3) : index{i1, i2, i3} {}
 
             unsigned int index[3];
-            Vector normal;
+            Vector3 normal;
             float distance = 0.0f;
             bool actualData = false;
         };

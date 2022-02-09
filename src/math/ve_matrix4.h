@@ -143,17 +143,17 @@ namespace VE {
                            this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * b.v[3]};
         }
 
-        Vector transformVector(const Vector &b) const {
-            return Vector(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * 1.0f,
+        Vector3 transformVector(const Vector3 &b) const {
+            return Vector3(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * 1.0f,
                           this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * 1.0f,
                           this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * 1.0f);
         }
 
-        Vector transformVector(const Vector &b, float &w) const {
+        Vector3 transformVector(const Vector3 &b, float &w) const {
             float tmpw = w;
             w = this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * tmpw;
 
-            return Vector(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * tmpw,
+            return Vector3(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * tmpw,
                           this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * tmpw,
                           this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * tmpw);
         }

@@ -13,10 +13,10 @@ namespace VE {
     namespace EPA {
         class PenetrationDepth{
         public:
-            PenetrationDepth(const Collider &collider1, const Collider &collider2, const std::vector<Vector> &simplex);
-            Vector getVector();
+            PenetrationDepth(const Collider &collider1, const Collider &collider2, const std::vector<Vector3> &simplex);
+            Vector3 getVector();
         private:
-            void computeNewFaces(const Vector &support);
+            void computeNewFaces(const Vector3 &support);
             const Collider &collider1_;
             const Collider &collider2_;
             Polytope polytope_;
@@ -24,8 +24,8 @@ namespace VE {
 
             struct debugInfo {
                 Polytope polytope;
-                Vector support;
-                Vector minNormal;
+                Vector3 support;
+                Vector3 minNormal;
                 std::vector<float> direction;
             };
             std::vector<debugInfo> polytopeStage;

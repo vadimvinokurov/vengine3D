@@ -6,11 +6,11 @@
 
 using namespace VE;
 
-ColliderPtr BoxCollider::create(float width, float height, float depth, float mass, const Vector &localPosition) {
+ColliderPtr BoxCollider::create(float width, float height, float depth, float mass, const Vector3 &localPosition) {
     return std::make_shared<VE::BoxCollider>(width, height, depth, mass, localPosition);
 }
 
-BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Vector &localPosition)
+BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Vector3 &localPosition)
         : Collider(ColliderType::box, mass),
           localVertices_(computeVertices(width, height, depth, localPosition)),
           localFaceNormals_(computeFaceNormals(localVertices_, indices_)),
@@ -22,41 +22,41 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
           height_(height),
           depth_(depth) {}
 
-void BoxCollider::setLocalPosition(const Vector &localPosition) {
-    std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector &v) { v += localPosition; });
+void BoxCollider::setLocalPosition(const Vector3 &localPosition) {
+    std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector3 &v) { v += localPosition; });
     globalVertices_ = localVertices_;
     localCenterOfMass_ = computeCenterOfMass(localVertices_);
     globalCenterOfMass_ = localCenterOfMass_;
 }
 
-std::array<Vector, 8> BoxCollider::computeVertices(float width, float height, float depth, const Vector &localPosition) {
+std::vector<Vector3> BoxCollider::computeVertices(float width, float height, float depth, const Vector3 &localPosition) {
     float halfWidth = width / 2;
     float halfHeight = height / 2;
     float halfDepth = depth / 2;
 
-    return {Vector(-halfWidth, -halfDepth, -halfHeight) + localPosition,
-            Vector(halfWidth, -halfDepth, -halfHeight) + localPosition,
-            Vector(halfWidth, halfDepth, -halfHeight) + localPosition,
-            Vector(-halfWidth, halfDepth, -halfHeight) + localPosition,
-            Vector(-halfWidth, -halfDepth, halfHeight) + localPosition,
-            Vector(halfWidth, -halfDepth, halfHeight) + localPosition,
-            Vector(halfWidth, halfDepth, halfHeight) + localPosition,
-            Vector(-halfWidth, halfDepth, halfHeight) + localPosition};
+    return {Vector3(-halfWidth, -halfDepth, -halfHeight) + localPosition,
+            Vector3(halfWidth, -halfDepth, -halfHeight) + localPosition,
+            Vector3(halfWidth, halfDepth, -halfHeight) + localPosition,
+            Vector3(-halfWidth, halfDepth, -halfHeight) + localPosition,
+            Vector3(-halfWidth, -halfDepth, halfHeight) + localPosition,
+            Vector3(halfWidth, -halfDepth, halfHeight) + localPosition,
+            Vector3(halfWidth, halfDepth, halfHeight) + localPosition,
+            Vector3(-halfWidth, halfDepth, halfHeight) + localPosition};
 }
 
-std::array<Vector, 6> BoxCollider::computeFaceNormals(const std::array<Vector, 8> &vertices, const std::vector<unsigned int> &indices) {
-    std::array<Vector, 6> faceNormals;
+std::vector<Vector3> BoxCollider::computeFaceNormals(const std::vector<Vector3> &vertices, const std::vector<unsigned int> &indices) {
+    std::vector<Vector3> faceNormals(6);
     for (unsigned int faceNumber = 0; faceNumber < 6; faceNumber++) {
-        Vector AB = vertices[indices[4 * faceNumber + 1]] - vertices[indices[4 * faceNumber]];
-        Vector BC = vertices[indices[4 * faceNumber + 2]] - vertices[indices[4 * faceNumber + 1]];
+        Vector3 AB = vertices[indices[4 * faceNumber + 1]] - vertices[indices[4 * faceNumber]];
+        Vector3 BC = vertices[indices[4 * faceNumber + 2]] - vertices[indices[4 * faceNumber + 1]];
 
         faceNormals[faceNumber] = (AB * BC).getNormalized();
     }
     return faceNormals;
 }
 
-Vector BoxCollider::computeCenterOfMass(const std::array<Vector, 8> &vertices) {
-    return std::accumulate(vertices.begin(), vertices.end(), Vector()) / vertices.size();
+Vector3 BoxCollider::computeCenterOfMass(const std::vector<Vector3> &vertices) {
+    return std::accumulate(vertices.begin(), vertices.end(), Vector3()) / vertices.size();
 }
 
 
@@ -73,15 +73,15 @@ Matrix3 BoxCollider::getInertia() const {
     );
 }
 
-Vector BoxCollider::getCenterOfMass() const {
+Vector3 BoxCollider::getCenterOfMass() const {
     return globalCenterOfMass_;
 }
 
-Vector BoxCollider::farthestVertexInDirection(const Vector &direction) const {
+Vector3 BoxCollider::farthestVertexInDirection(const Vector3 &direction) const {
     float l = std::numeric_limits<float>::lowest();
 
-    Vector lVertex;
-    for (const VE::Vector &vertex: globalVertices_) {
+    Vector3 lVertex;
+    for (const VE::Vector3 &vertex: globalVertices_) {
         float l_tmp = vertex.dot(direction);
         if (l_tmp > l) {
             l = l_tmp;
@@ -101,7 +101,7 @@ void BoxCollider::setTransform(const Transform &transform) {
     globalCenterOfMass_ = transform.applyToPoint(localCenterOfMass_);
 }
 
-ColliderFace BoxCollider::getFaceInDirection(const Vector &direction) const {
+ColliderFace BoxCollider::getFaceInDirection(const Vector3 &direction) const {
     float projectionMax = std::numeric_limits<float>::lowest();
     unsigned int selectedFaceNumber = std::numeric_limits<unsigned int>::max();
 
@@ -126,19 +126,13 @@ ColliderFace BoxCollider::getFace(unsigned int faceNumber) const {
                         globalFaceNormals_[faceNumber]);
 }
 
-const void *BoxCollider::verticesGLFormatData() const {
-    return reinterpret_cast<const void *>(localVertices_.data());
+const std::vector<Vector3> &BoxCollider::vertices() const {
+    return localVertices_;
 }
 
-const void *BoxCollider::indicesGLFormatData(unsigned int offset) const {
-    return reinterpret_cast<const void *>(indices_.data() + offset);
+const std::vector<unsigned int> &BoxCollider::indices() const {
+    return indices_;
 }
-
-unsigned int BoxCollider::indecesSize() const {
-    return indices_.size();
-}
-
-
 
 
 

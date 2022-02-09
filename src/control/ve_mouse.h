@@ -21,15 +21,15 @@ namespace VE {
             }
         }
 
-        const VE::Vector &position() const {
+        const VE::Vector3 &position() const {
             return position_;
         }
 
-        VE::Vector deltaPosition() const {
+        VE::Vector3 deltaPosition() const {
             return position_ - lockPosition_;
         }
 
-        void setPosition(const VE::Vector &position) {
+        void setPosition(const VE::Vector3 &position) {
             position_ = position;
         }
 
@@ -79,13 +79,13 @@ namespace VE {
             lock = false;
         }
 
-        const Vector &lockPosition() {
+        const Vector3 &lockPosition() {
             return lockPosition_;
         }
 
     private:
-        VE::Vector position_;
-        VE::Vector lockPosition_;
+        VE::Vector3 position_;
+        VE::Vector3 lockPosition_;
         KeyState keyState[8];
         bool repeatStatus[8];
         bool lock = false;

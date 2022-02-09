@@ -14,6 +14,7 @@ static GLenum drawModeToGLEnum(VE::DrawMode input){
         case VE::DrawMode::Triangles: return GL_TRIANGLES;
         case VE::DrawMode::TriangleStrip: return GL_TRIANGLE_STRIP;
         case VE::DrawMode::TriangleFan: return GL_TRIANGLE_FAN;
+        case VE::DrawMode::Polygon: return GL_POLYGON;
     }
     std::cout << "DrawModeToGLEnum unreachable code hit\n";
     return 0;

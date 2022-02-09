@@ -17,20 +17,20 @@ namespace VE {
         Attribute();
         ~Attribute();
 
-        void setAttributePointer(unsigned int slot);
-
-        void set(T *inputArray, unsigned int arrayLength);
-        void set(std::vector<T> &input);
+        void set(const T *inputArray, unsigned int arrayLength);
+        void set(const std::vector<T> &input);
 
         void bindTo(unsigned int slot);
         void unBindFrom(unsigned int slot);
 
         unsigned int count();
         unsigned int getHandle();
+    private:
+        void setAttributePointer(unsigned int slot);
 
     protected:
-        unsigned handle_;
-        unsigned count_;
+        unsigned int handle_;
+        unsigned int count_;
     };
 }
 

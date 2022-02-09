@@ -23,23 +23,23 @@ namespace VE {
         void updateVelocity(float dt);
         void updateTransform(float dt);
 
-        void setGravity(const Vector &gravity);
-        void addForce(const Vector &force);
-        void addForce(const Vector &force, const Vector &forcePoint);
+        void setGravity(const Vector3 &gravity);
+        void addForce(const Vector3 &force);
+        void addForce(const Vector3 &force, const Vector3 &forcePoint);
 
-        void setPosition(const Vector &position);
-        void setLinearVelocity(const Vector &linearVelocity);
-        void setAngularVelocity(const Vector &angularVelocity);
-        const Vector &linearVelocity() const;
-        const Vector &angularVelocity() const;
+        void setPosition(const Vector3 &position);
+        void setLinearVelocity(const Vector3 &linearVelocity);
+        void setAngularVelocity(const Vector3 &angularVelocity);
+        const Vector3 &linearVelocity() const;
+        const Vector3 &angularVelocity() const;
 
-        void setPseudoLinearVelocity(const Vector &pseudoLinearVelocity);
-        void setPseudoAngularVelocity(const Vector &pseudoAngularVelocity);
-        const Vector &pseudoLinearVelocity() const;
-        const Vector &pseudoAngularVelocity() const;
+        void setPseudoLinearVelocity(const Vector3 &pseudoLinearVelocity);
+        void setPseudoAngularVelocity(const Vector3 &pseudoAngularVelocity);
+        const Vector3 &pseudoLinearVelocity() const;
+        const Vector3 &pseudoAngularVelocity() const;
 
-        Vector globalToLocalPoint(const Vector &globalPoint);
-        Vector localToGlobalPoint(const Vector &localPoint);
+        Vector3 globalToLocalPoint(const Vector3 &globalPoint);
+        Vector3 localToGlobalPoint(const Vector3 &localPoint);
 
         float invMass() const;
         float restitution() const;
@@ -47,7 +47,7 @@ namespace VE {
 
         void setRestitution(float restitution);
 
-        const Vector &centerOfMass() const;
+        const Vector3 &centerOfMass() const;
         const Matrix3 &invInertia() const;
 
 
@@ -67,17 +67,17 @@ namespace VE {
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
         Matrix3 invInertia_;
-        Vector centerOfMass_;
+        Vector3 centerOfMass_;
         float invMass_;
 
 
-        Vector force_;
-        Vector torque_;
-        Vector gravity_ = Vector();
-        Vector linearVelocity_;
-        Vector angularVelocity_;
-        Vector pseudoLinearVelocity_;
-        Vector pseudoAngularVelocity_;
+        Vector3 force_;
+        Vector3 torque_;
+        Vector3 gravity_ = Vector3();
+        Vector3 linearVelocity_;
+        Vector3 angularVelocity_;
+        Vector3 pseudoLinearVelocity_;
+        Vector3 pseudoAngularVelocity_;
 
         float sleepEpsilont_ = 0.001f;
         float damping_ = 0.999f;

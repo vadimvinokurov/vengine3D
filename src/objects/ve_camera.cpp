@@ -22,19 +22,19 @@ void Camera::moveAlongSide(float distance) {
     position_ += cameraRight_ * distance;
 }
 
-const Vector &Camera::position() const {
+const Vector3 &Camera::position() const {
     return position_;
 }
 
-const Vector &Camera::direction() const {
+const Vector3 &Camera::direction() const {
     return direction_;
 }
 
 Matrix4 Camera::getViewMatrix() const {
-    const Vector &R = cameraRight_;
-    const Vector &U = cameraUp_;
-    const Vector &D = cameraDirection_;
-    const Vector &P = position_;
+    const Vector3 &R = cameraRight_;
+    const Vector3 &U = cameraUp_;
+    const Vector3 &D = cameraDirection_;
+    const Vector3 &P = position_;
 
     return Matrix4 (cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
                    cameraRight_.y, cameraUp_.y, cameraDirection_.y, 0,
@@ -64,7 +64,7 @@ void Camera::setDirection(float dPitch, float dYam) {
     direction_ = cameraDirection_ * -1;
 }
 
-Vector Camera::getPointAlongDirection(float length) {
+Vector3 Camera::getPointAlongDirection(float length) {
     return position_ + direction_ * length;
 }
 

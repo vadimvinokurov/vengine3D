@@ -9,43 +9,43 @@
 #include "math/ve_double_vertex_buffer.h"
 
 namespace VE {
-    inline std::vector<VE::Vector>
-    sphereSphereContactPoint(const SphereCollider &sphere1, const VE::SphereCollider &sphere2, const VE::Vector &contactNormal) {
-        Vector centerToCenter = sphere2.getCenterOfMass() - sphere1.getCenterOfMass();
+    inline std::vector<VE::Vector3>
+    sphereSphereContactPoint(const SphereCollider &sphere1, const VE::SphereCollider &sphere2, const VE::Vector3 &contactNormal) {
+        Vector3 centerToCenter = sphere2.getCenterOfMass() - sphere1.getCenterOfMass();
         return {sphere1.getCenterOfMass() + centerToCenter / 2};
     }
 
-    inline std::vector<VE::Vector>
-    boxSphereContactPoint(const BoxCollider &box, const VE::SphereCollider &sphere, const VE::Vector &contactNormal) {
+    inline std::vector<VE::Vector3>
+    boxSphereContactPoint(const BoxCollider &box, const VE::SphereCollider &sphere, const VE::Vector3 &contactNormal) {
         return {sphere.getCenterOfMass() - contactNormal * sphere.getRadius()};
     }
 
-    inline std::vector<VE::Vector>
-    boxSphereContactPoint(const VE::SphereCollider &sphere, const BoxCollider &box, const VE::Vector &contactNormal) {
+    inline std::vector<VE::Vector3>
+    boxSphereContactPoint(const VE::SphereCollider &sphere, const BoxCollider &box, const VE::Vector3 &contactNormal) {
         return {sphere.getCenterOfMass() + contactNormal * sphere.getRadius()};
     }
 
     class BoxBoxContactPoint {
     public:
-        BoxBoxContactPoint(const VE::BoxCollider &collider1, const VE::BoxCollider &collider2, const VE::Vector &contactNormal);
-        std::vector<VE::Vector> get();
+        BoxBoxContactPoint(const VE::BoxCollider &collider1, const VE::BoxCollider &collider2, const VE::Vector3 &contactNormal);
+        std::vector<VE::Vector3> get();
     private:
         struct ClipPlane {
             ClipPlane() {};
 
-            ClipPlane(const VE::Vector &n, const VE::Vector &v) : normal(n), point(v) {
+            ClipPlane(const VE::Vector3 &n, const VE::Vector3 &v) : normal(n), point(v) {
                 d = point.dot(normal);
             };
-            VE::Vector normal;
-            VE::Vector point;
+            VE::Vector3 normal;
+            VE::Vector3 point;
             float d;
         };
 
-        bool selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2, const VE::Vector &contactNormal);
+        bool selectReferenceEdge(const ColliderFace &face1, const ColliderFace &face2, const VE::Vector3 &contactNormal);
         void generateClipPlanes(const ColliderFace &referenceFace);
-        bool vertexInsidePlane(const VE::Vector &A, const ClipPlane &clipPlane);
-        VE::Vector intersectionPoint(const VE::Vector &A, const VE::Vector &B, const ClipPlane &clipPlane);
-        void deleteVertexOutsideMainFace(std::vector<VE::Vector> &vertices);
+        bool vertexInsidePlane(const VE::Vector3 &A, const ClipPlane &clipPlane);
+        VE::Vector3 intersectionPoint(const VE::Vector3 &A, const VE::Vector3 &B, const ClipPlane &clipPlane);
+        void deleteVertexOutsideMainFace(std::vector<VE::Vector3> &vertices);
 
         std::vector<ClipPlane> clipPlanes;
         ClipPlane mainPlane;
@@ -53,7 +53,7 @@ namespace VE {
         DoubleVertexBuffer doubleVertexBuffer;
     };
 
-    inline std::vector<VE::Vector> getContactsPoint(const Collider &collider1, const Collider &collider2, const VE::Vector &contactNormal) {
+    inline std::vector<VE::Vector3> getContactsPoint(const Collider &collider1, const Collider &collider2, const VE::Vector3 &contactNormal) {
         struct IntersactionType {
             IntersactionType(ColliderType a, ColliderType b) : a_(a), b_(b) {}
 

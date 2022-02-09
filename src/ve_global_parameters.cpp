@@ -6,7 +6,7 @@
 
 using namespace VE;
 
-Vector GlobalParameters::rotate;
+Vector3 GlobalParameters::rotate;
 bool GlobalParameters::polygone = false;
 bool GlobalParameters::warmstarting = true;
 int GlobalParameters::iterations = 10;

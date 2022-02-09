@@ -12,7 +12,7 @@ namespace VE {
     public:
         GJK(const Collider &collider1, const Collider &collider2);
         bool testIntersection();
-        const std::vector<VE::Vector>& getSimplex() const;
+        const std::vector<VE::Vector3>& getSimplex() const;
     private:
 
         bool nextSimplex();
@@ -22,8 +22,8 @@ namespace VE {
 
         const Collider &collider1_;
         const Collider &collider2_;
-        std::vector<VE::Vector> simplex;
-        VE::Vector direction = Vector(1, 1, 1);
+        std::vector<VE::Vector3> simplex;
+        VE::Vector3 direction = Vector3(1, 1, 1);
 
         bool originIntoTriangleFace = false;
     };

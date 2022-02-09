@@ -13,7 +13,7 @@
 namespace VE {
     inline bool getContactMainfold(const VE::RigidBody &body1, const VE::RigidBody &body2, VE::ContactMainfold &contactMainfold) {
         contactMainfold.clear();
-        Vector contactPenetration;
+        Vector3 contactPenetration;
         for (size_t i = 0; i < body1.collidersSize(); i++) {
             for (size_t j = 0; j < body2.collidersSize(); j++) {
 

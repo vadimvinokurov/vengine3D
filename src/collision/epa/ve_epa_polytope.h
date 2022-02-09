@@ -13,7 +13,7 @@ namespace VE{
     namespace EPA{
         class Polytope {
         public:
-            Polytope(const std::vector<Vector> &simplex);
+            Polytope(const std::vector<Vector3> &simplex);
             Polytope(const Polytope& polytope) = default;
             Polytope& operator=(const Polytope& polytope) = default;
 
@@ -22,8 +22,8 @@ namespace VE{
             size_t getFacesSize() const;
             const Face &operator[](size_t faceNumber) const;
 
-            void addVertex(const Vector &vertex);
-            const Vector& getFaceVertex(size_t faceNumber, size_t vertexNumber) const;
+            void addVertex(const Vector3 &vertex);
+            const Vector3& getFaceVertex(size_t faceNumber, size_t vertexNumber) const;
             size_t getVerticesSize() const;
 
             const Face &getClosestFaceToOrigin() const;
@@ -32,7 +32,7 @@ namespace VE{
         private:
             void updateFacesData();
 
-            std::vector<Vector> vertices_;
+            std::vector<Vector3> vertices_;
             std::vector<Face> faces_;
         };
     }
