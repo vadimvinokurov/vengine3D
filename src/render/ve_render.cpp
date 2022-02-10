@@ -54,5 +54,6 @@ void Render::draw(const WorldPtr &world) {
         }
     }
     Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());
+    Uniform<Vector3>::set(shader.getUniform("color"), Color(0,0,0));
 }
 

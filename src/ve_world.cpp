@@ -135,21 +135,22 @@ void World::scene4() {
 }
 
 void World::scene5() {
-    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
-    floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
-    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-    worldObjects.push_back(floor);
+//    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+//    floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
+//    floor->setColor(Color(0.3f, 0.3f, 0.3f));
+//    worldObjects.push_back(floor);
+//
+//    float s = 1.0f;
+//    float b = 0.8f;
+//    for (int i = 1; i < 2; i++) {
+//        RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
+//        stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
+//        worldObjects.push_back(stairs);
+//    }
+//
+//    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
+//    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
 
-    float s = 1.0f;
-    float b = 0.8f;
-    for (int i = 1; i < 2; i++) {
-        RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
-        stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
-        worldObjects.push_back(stairs);
-    }
-
-    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
-    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
 }
 
 void World::resetScene() {
@@ -225,21 +226,17 @@ void World::cameraControl(float dt) {
 }
 
 void VE::World::update(float dt) {
+    worldObjects.clear();
+    RigidBodyPtr stairs = RigidBody::create({SphereCollider::create(1)});
+    worldObjects.push_back(stairs);
+
+
     gui();
     hid(dt);
     prephysics(dt);
     physics(dt);
 
-    auto drawPoint = Vector3(0, 10, 0);
-    auto a = Vector3(-5, 0, 5);
-    auto ar = Vector3(-5, 0, 5);
-    auto b = Vector3(5, 0, 5);
 
-    Quaternion q = Quaternion::fromTo(a, b);
-    ar = q.rotate(ar);
-    a.draw(drawPoint);
-    b.draw(drawPoint);
-    ar.draw(drawPoint + Vector3(0, 1, 0), VE::Color(1, 0, 0));
 
 }
 
