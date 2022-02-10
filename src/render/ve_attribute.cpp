@@ -34,7 +34,7 @@ void VE::Attribute<T>::set(const T *inputArray, unsigned int arrayLength) {
     count_ = arrayLength;
 
     glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count_, inputArray, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count_, inputArray, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
