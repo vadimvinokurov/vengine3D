@@ -27,9 +27,6 @@ namespace VE {
         ColliderFace getFaceInDirection(const Vector3 &direction) const;
         ColliderFace getFace(unsigned int faceNumber) const;
 
-        virtual const std::vector<Vector3> &vertices() const override;
-        virtual const std::vector<Vector3> &normals() const override;
-        virtual const std::vector<unsigned int> &indices() const override;
     private:
         static std::vector<Vector3> computeVertices(float width, float height, float depth, const Vector3 &localPosition);
         static std::vector<Vector3> computeFaceNormals(const std::vector<Vector3> &vertices, const std::vector<unsigned int> &indices);
@@ -53,6 +50,7 @@ namespace VE {
         float height_;
         float depth_;
 
+
         const std::vector<unsigned int> renderIndices_ = {3, 2, 1,
                                                           1, 0, 3,
                                                           4, 5, 6,
@@ -65,7 +63,6 @@ namespace VE {
                                                           4, 7, 3,
                                                           1, 2, 6,
                                                           6, 5, 1};
-        std::vector<Vector3> renderNormals_;
     };
 }
 

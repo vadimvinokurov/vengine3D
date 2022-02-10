@@ -10,10 +10,18 @@ SphereCollider::SphereCollider(float radius, float mass, const Vector3 &localPos
         Collider(ColliderType::sphere, mass),
         radius_(radius),
         localCenter_(localPosition),
-        globalCenter_(localCenter_),
-        renderVertices_(getGetRenderVertices(radius_, localCenter_)),
-        renderIndices_(getGetRenderIndices()),
-        renderNormals_(getRenderNormals(renderVertices_, renderIndices_)){}
+        globalCenter_(localCenter_){
+
+
+    std::vector<Vector3> vertices = getGetRenderVertices(radius_, localCenter_);
+    vertexPosition.set(vertices);
+
+    std::vector<unsigned int> indices = getGetRenderIndices();
+    indexBuffer.set(indices);
+
+    std::vector<Vector3> normals = getRenderNormals(vertices, indices);
+    vertexNormals.set(normals);
+}
 
 ColliderPtr SphereCollider::create(float radius, float mass, const Vector3 &localPosition) {
     return std::make_shared<SphereCollider>(radius, mass, localPosition);
@@ -22,7 +30,8 @@ ColliderPtr SphereCollider::create(float radius, float mass, const Vector3 &loca
 void SphereCollider::setLocalPosition(const Vector3 &localPosition) {
     localCenter_ += localPosition;
     globalCenter_ = localCenter_;
-    renderVertices_ = getGetRenderVertices(radius_, localCenter_);
+
+    //vertexPosition.set(getGetRenderVertices(radius_, localCenter_));
 }
 
 Matrix3 SphereCollider::getInertia() const {
@@ -48,18 +57,6 @@ Vector3 SphereCollider::getCenterOfMass() const {
 
 float SphereCollider::getRadius() const {
     return radius_;
-}
-
-const std::vector<Vector3> &SphereCollider::vertices() const {
-    return renderVertices_;
-}
-
-const std::vector<unsigned int> &SphereCollider::indices() const {
-    return renderIndices_;
-}
-
-const std::vector<Vector3> &SphereCollider::normals() const {
-    return renderNormals_;
 }
 
 std::vector<Vector3> SphereCollider::getGetRenderVertices(float radius, const Vector3 &position) {

@@ -304,13 +304,6 @@ void World::physics(float dt) {
     for (auto &object: worldObjects) {
         object->updateTransform(dt);
     }
-
-    for(const auto& c: worldObjects[0]->colliders()){
-        (c->normals()[0] * 10).draw(c->vertices()[0]);
-        (c->vertices()[0]).drawPoint(12);
-
-        break;
-    }
 }
 
 void World::gui() {

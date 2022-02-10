@@ -8,6 +8,8 @@
 #include "math/ve_vector.h"
 #include "math/ve_transform.h"
 #include "math/ve_matrix3.h"
+#include "render/ve_attribute.h"
+#include "render/ve_index_buffer.h"
 
 #include <vector>
 #include <memory>
@@ -29,10 +31,6 @@ namespace VE {
         virtual Vector3 farthestVertexInDirection(const Vector3 &direction) const = 0;
         virtual void setTransform(const Transform &transform) = 0;
 
-        virtual const std::vector<Vector3>& vertices() const = 0;
-        virtual const std::vector<Vector3>& normals() const = 0;
-        virtual const std::vector<unsigned int>& indices() const = 0;
-
         static std::vector<Vector3> getRenderNormals(const std::vector<Vector3>& vertex, const std::vector<unsigned int>& index){
             std::vector<Vector3> renderNormals;
             for (unsigned int i = 0; i < index.size(); i += 3) {
@@ -46,6 +44,9 @@ namespace VE {
 
         virtual ~Collider() {}
 
+        Attribute<Vector3> vertexPosition;
+        Attribute<Vector3> vertexNormals;
+        IndexBuffer indexBuffer;
     protected:
         explicit Collider(ColliderType shapeType, float mass)
                 : shapeType_(shapeType),

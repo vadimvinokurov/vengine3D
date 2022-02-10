@@ -65,6 +65,10 @@ const VE::Transform &RigidBody::transform() const {
     return transform_;
 }
 
+std::vector<ColliderPtr> &RigidBody::colliders() {
+    return colliders_;
+}
+
 const std::vector<ColliderPtr> &RigidBody::colliders() const {
     return colliders_;
 }

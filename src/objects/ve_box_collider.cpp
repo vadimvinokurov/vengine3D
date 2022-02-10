@@ -20,14 +20,21 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
           globalCenterOfMass_(localCenterOfMass_),
           width_(width),
           height_(height),
-          depth_(depth),
-          renderNormals_(getRenderNormals(localVertices_, renderIndices_)){}
+          depth_(depth) {
+
+    vertexPosition.set(localVertices_);
+    indexBuffer.set(renderIndices_);
+    vertexNormals.set(getRenderNormals(localVertices_, renderIndices_));
+
+}
 
 void BoxCollider::setLocalPosition(const Vector3 &localPosition) {
     std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector3 &v) { v += localPosition; });
     globalVertices_ = localVertices_;
     localCenterOfMass_ = computeCenterOfMass(localVertices_);
     globalCenterOfMass_ = localCenterOfMass_;
+
+    vertexPosition.set(localVertices_);
 }
 
 std::vector<Vector3> BoxCollider::computeVertices(float width, float height, float depth, const Vector3 &localPosition) {
@@ -126,19 +133,6 @@ ColliderFace BoxCollider::getFace(unsigned int faceNumber) const {
                          globalVertices_[indices_[faceNumber * 4 + 3]]},
                         globalFaceNormals_[faceNumber]);
 }
-
-const std::vector<Vector3> &BoxCollider::vertices() const {
-    return localVertices_;
-}
-
-const std::vector<unsigned int> &BoxCollider::indices() const {
-    return renderIndices_;
-}
-
-const std::vector<Vector3> &BoxCollider::normals() const {
-    return renderNormals_;
-}
-
 
 
 
