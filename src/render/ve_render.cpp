@@ -15,45 +15,42 @@
 using namespace VE;
 
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
-    shader.load("../shaders/static.vert","../shaders/lit.frag");
+    shader.load("../shaders/static.vert", "../shaders/lit.frag");
     shader.bind();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-    glClearDepth(1.0f);
 }
 
 void Render::draw(const WorldPtr &world) {
     world_ = world;
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-
     Matrix4 projection = Camera::perspective(60.0f, windowAspectRatio_, 2, 8000);
     Matrix4 view = world_->currentCamera().getViewMatrix();
 
+    static float a = 0;
+    a += 0.01;
+    Vector3 lightPoint = 4 * Vector3(cosf(a), 0, sinf(a));
 
 
-    //Uniform<Vector3>::set(shader.getUniform("light"), Vector3(0, 10, 10));
-
+    Uniform<Vector3>::set(shader.getUniform("lightPos"), lightPoint);
     Uniform<Matrix4>::set(shader.getUniform("projection"), projection);
     Uniform<Matrix4>::set(shader.getUniform("view"), view);
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
         Matrix4 model = rigidBody->transform().toMatrix();
         Uniform<Matrix4>::set(shader.getUniform("model"), model);
-        Uniform<Vector3>::set(shader.getUniform("color"), rigidBody->color());
+        Uniform<Vector3>::set(shader.getUniform("objectColor"), rigidBody->color());
+        Uniform<Vector3>::set(shader.getUniform("lightColor"), Vector3(1, 1, 1));
 
-        for (auto& collider: rigidBody->colliders()) {
-            collider->vertexPosition.bindTo(shader.getAttribute("position"));
-            //collider->vertexNormals.bindTo(shader.getAttribute("normal"));
+        for (auto &collider: rigidBody->colliders()) {
+            collider->vertexPosition.bindTo(shader.getAttribute("aPosition"));
+            collider->vertexNormals.bindTo(shader.getAttribute("aNormal"));
 
             VE::draw(collider->indexBuffer, DrawMode::Triangles);
 
-            collider->vertexPosition.unBindFrom(shader.getAttribute("position"));
-            //collider->vertexNormals.unBindFrom(shader.getAttribute("normal"));
+            collider->vertexPosition.unBindFrom(shader.getAttribute("aPosition"));
+            collider->vertexNormals.unBindFrom(shader.getAttribute("aNormal"));
         }
     }
     Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());
-    Uniform<Vector3>::set(shader.getUniform("color"), Color(0,0,0));
+    Uniform<Vector3>::set(shader.getUniform("objectColor"), Color(0, 0, 0));
+
+    lightPoint.drawPoint(24);
 }
 

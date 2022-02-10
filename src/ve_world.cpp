@@ -151,6 +151,8 @@ void World::scene5() {
 //    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
 //    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
 
+    RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(1, 1, 1, 0)});
+    worldObjects.push_back(stairs);
 }
 
 void World::resetScene() {
@@ -226,18 +228,10 @@ void World::cameraControl(float dt) {
 }
 
 void VE::World::update(float dt) {
-    worldObjects.clear();
-    RigidBodyPtr stairs = RigidBody::create({SphereCollider::create(1)});
-    worldObjects.push_back(stairs);
-
-
     gui();
     hid(dt);
     prephysics(dt);
     physics(dt);
-
-
-
 }
 
 void World::prephysics(float dt) {

@@ -78,7 +78,15 @@ void Window::run() {
     float lableUpdateTime = 0;
     float elapsedTime = 0;
     Render render(windowAspectRatio_);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    glClearDepth(1.0f);
+
     while (!glfwWindowShouldClose(window_)) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
         glfwSetTime(0);
         glfwPollEvents();
 
@@ -86,9 +94,9 @@ void Window::run() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        render.draw(world_);
-        world_->update(dt_);
 
+        world_->update(dt_);
+        render.draw(world_);
 
         if (mouse_->isLock()) {
             Vector3 lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
