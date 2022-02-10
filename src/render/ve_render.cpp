@@ -27,8 +27,9 @@ void Render::draw(const WorldPtr &world) {
     static float a = 0;
     a += 0.01;
     Vector3 lightPoint = 4 * Vector3(cosf(a), 0, sinf(a));
-
-
+    if (globalParameters.polygone) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     Uniform<Vector3>::set(shader.getUniform("lightPos"), lightPoint);
     Uniform<Matrix4>::set(shader.getUniform("projection"), projection);
     Uniform<Matrix4>::set(shader.getUniform("view"), view);

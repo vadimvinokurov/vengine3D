@@ -24,7 +24,29 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
 
     vertexPosition.set(localVertices_);
     indexBuffer.set(renderIndices_);
-    vertexNormals.set(getRenderNormals(localVertices_, renderIndices_));
+    auto normals = getRenderNormals(localVertices_, renderIndices_);
+
+    std::vector<Vector3> n = {
+            normals[0],normals[0],normals[0],
+            normals[0],normals[0],normals[0],
+
+            normals[1],normals[1],normals[1],
+            normals[1],normals[1],normals[1],
+
+            normals[2],normals[2],normals[2],
+            normals[2],normals[2],normals[2],
+
+            normals[3],normals[3],normals[3],
+            normals[3],normals[3],normals[3],
+
+            normals[4],normals[4],normals[4],
+            normals[4],normals[4],normals[4],
+
+            normals[5],normals[5],normals[5],
+            normals[5],normals[5],normals[5]
+    };
+
+    vertexNormals.set(n);
 
 }
 
