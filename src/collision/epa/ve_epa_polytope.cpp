@@ -74,31 +74,3 @@ void EPA::Polytope::updateFacesData() {
     }
 }
 
-void EPA::Polytope::debugDraw(const Color &color) {
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices_.data());
-
-    for (int i = 0; i < faces_.size(); i++) {
-        glColor3f(color.red() + i / 100.0, color.grean() + i / 100.0, color.blue() + i / 100.0);
-        glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_INT, faces_[i].index);
-    }
-
-    for (int i = 0; i < faces_.size(); i++) {
-        Vector3 polygonCenter = (vertices_[faces_[i].index[0]] + vertices_[faces_[i].index[1]] + vertices_[faces_[i].index[2]]) / 3;
-            faces_[i].normal.draw(polygonCenter);
-    }
-
-
-    vertices_[0].drawPoint(12, Color(1, 0, 0));
-    vertices_[1].drawPoint(12, Color(0, 1, 0));
-    vertices_[2].drawPoint(12, Color(0, 0, 1));
-    for (size_t i = 3; i < vertices_.size(); i++) {
-        vertices_[i].drawPoint(12, Color(1, 1, 1));
-    }
-
-    vertices_[3].drawPoint(12, Color(1, 1, 1));
-
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-}
-

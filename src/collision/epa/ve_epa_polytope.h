@@ -27,8 +27,6 @@ namespace VE{
             size_t getVerticesSize() const;
 
             const Face &getClosestFaceToOrigin() const;
-
-            void debugDraw(const Color &color = Color(0.5f, 0.5f, 0.5f));
         private:
             void updateFacesData();
 

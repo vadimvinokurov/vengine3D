@@ -21,7 +21,7 @@ namespace VE {
 
         Vector3(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
 
-        Vector3(const Color &c) : x(c.red()), y(c.grean()), z(c.blue()) {};
+        Vector3(const Color &c) : x(c.red), y(c.green), z(c.blue) {};
 
         Vector3(const Vector3 &vector) = default;
 
@@ -186,7 +186,7 @@ namespace VE {
 
         void draw(const Vector3 &basePoint = Vector3(), const VE::Color &color = VE::Color()) const {
             glLineWidth(2);
-            glColor3f(color.red(), color.grean(), color.blue());
+            glColor3f(color.red, color.green, color.blue);
             glBegin(GL_LINES);
             glVertex3f(basePoint.x, basePoint.y, basePoint.z);
             Vector3 vector = basePoint + *this;
@@ -199,7 +199,7 @@ namespace VE {
         }
 
         void drawPoint(int size = 6, const VE::Color &color = VE::Color()) const {
-            glColor3f(color.red(), color.grean(), color.blue());
+            glColor3f(color.red, color.green, color.blue);
             glPointSize(size);
             glBegin(GL_POINTS);
             glVertex3f(this->x, this->y, this->z);
