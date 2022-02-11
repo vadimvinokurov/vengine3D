@@ -15,8 +15,15 @@ namespace VE {
 
     class RigidBody {
     public:
-        explicit RigidBody(std::vector<ColliderPtr> &&collidersPtr);
         static RigidBodyPtr create(std::vector<ColliderPtr> &&collidersPtr);
+
+        explicit RigidBody(std::vector<ColliderPtr> &&collidersPtr);
+
+        RigidBody(const RigidBody& rigidBody) = delete;
+        RigidBody(RigidBody&& rigidBody) = delete;
+        RigidBody& operator=(const RigidBody& rigidBody) = delete;
+        RigidBody& operator=(RigidBody&& rigidBody) = delete;
+
         void setTransform(const Transform &transform);
 
         void updateVelocity(float dt);
