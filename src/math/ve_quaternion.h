@@ -5,91 +5,120 @@
 #ifndef VENGINE3D_VE_QUATERNION_H
 #define VENGINE3D_VE_QUATERNION_H
 
+#include "ve_engine_settings.h"
 #include "ve_vector.h"
 #include "ve_matrix4.h"
 
 namespace VE {
 
-    class Quaternion {
-        static constexpr float EPSILON = 0.000001f;
-    public:
-        Quaternion() : v_(0.0f), w_(1.0f) {}
+    struct Quaternion {
+        Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
 
-        Quaternion(const Vector3 &v, float w) : v_(v), w_(w) {}
+        Quaternion(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_) {}
 
-        Quaternion(float w, const Vector3 &v) : v_(v), w_(w) {}
+        Quaternion(const Vector3 &v, float w_ = 0.0f) : x(v.x), y(v.y), z(v.z), w(w_) {}
 
-        Quaternion(float i, float j, float k, float w) : v_(i, j, k), w_(w) {}
+        Quaternion(const Vector4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-        Quaternion(const Vector3 &v) : Quaternion(v, 0.0f) {}
+        Quaternion(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]), w(fv[3]) {}
 
-        float dot(const Quaternion &b) const {
-            return v_.dot(b.v_) + w_ * b.w_;
+        Quaternion operator+(const Quaternion &other) const {
+            return Quaternion(this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w);
         }
 
-        Quaternion operator+(const Quaternion &qb) const {
-            return Quaternion(v_ + qb.v_, w_ + qb.w_);
+        Quaternion operator-(const Quaternion &other) const {
+            return Quaternion(this->x - other.x, this->y - other.y, this->z - other.z, this->w - other.w);
         }
 
-        Quaternion operator-(const Quaternion &qb) const {
-            return Quaternion(v_ - qb.v_, w_ - qb.w_);
+        Quaternion operator*(float f) const {
+            return Quaternion(x * f, y * f, z * f, w * f);
         }
 
-        Quaternion operator*(const Quaternion &b) const {
-            Vector3 vc(v_ *b.v_ + b.v_ * w_ + v_ * b.w_);
-            float wc = w_ * b.w_ - v_.dot(b.v_);
-            return Quaternion(vc, wc);
+        Quaternion operator/(float f) const {
+            float invf = 1.0f / f;
+            return Quaternion(x * invf, y * invf, z * invf, w * invf);
+        }
+
+        Quaternion operator*(const Quaternion &other) const {
+            return Quaternion(
+                    this->x * other.w + this->y * other.z - this->z * other.y + this->w * other.x,
+                    -this->x * other.z + this->y * other.w + this->z * other.x + this->w * other.y,
+                    this->x * other.y - this->y * other.x + this->z * other.w + this->w * other.z,
+                    -this->x * other.x - this->y * other.y - this->z * other.z + this->w * other.w
+            );
         }
 
         Quaternion operator/(const Quaternion &b) const {
             return (*this) * b.inverse();
         }
 
-        Quaternion operator*(float d) const {
-            return Quaternion(v_ * d, w_ * d);
-        }
-
-        Quaternion operator/(float d) const {
-            float invD = 1.0f / d;
-            return Quaternion(v_ * invD, w_ * invD);
-        }
-
-        Quaternion &operator+=(const Quaternion &qb) {
-            *this = *this + qb;
+        Quaternion &operator+=(const Quaternion &other) {
+            x += other.x;
+            y += other.y;
+            z += other.z;
+            w += other.w;
             return *this;
         }
 
-        Quaternion &operator-=(const Quaternion &qb) {
-            *this = *this - qb;
+        Quaternion &operator-=(const Quaternion &other) {
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
+            w -= other.w;
             return *this;
         }
 
-        Quaternion &operator*=(float d) {
-            *this = *this * d;
+        Quaternion &operator*=(float f) {
+            x *= f;
+            y *= f;
+            z *= f;
+            w *= f;
             return *this;
         }
 
-        Quaternion &operator/=(float d) {
-            *this = *this / d;
+        Quaternion &operator/=(float f) {
+            float invf = 1.0f / f;
+            x *= invf;
+            y *= invf;
+            z *= invf;
+            w *= invf;
             return *this;
         }
 
-        Quaternion &operator*=(const Quaternion &qb) {
-            *this = *this * qb;
+        Quaternion &operator*=(const Quaternion &other) {
+            *this = *this * other;
             return *this;
         }
 
-        Quaternion &operator/=(const Quaternion &qb) {
-            *this = *this / qb;
+        Quaternion &operator/=(const Quaternion &other) {
+            *this = *this / other;
             return *this;
         }
 
-        bool operator==(const Quaternion &b) {
-            return fabsf(this->w_ - b.w_) < EPSILON && this->v_ == b.v_;
+        bool operator==(const Quaternion &other) {
+            return (fabsf(this->x - other.x) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->y - other.y) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->z - other.z) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->w - other.w) < VEngineSettings::QUATERNION_EPSILON);
         }
 
-        bool operator!=(const Quaternion &b) {
-            return !(*this == b);
+        bool operator!=(const Quaternion &other) {
+            return !(*this == other);
+        }
+
+        bool sameOrientation(const Quaternion &other) {
+            return (fabsf(this->x - other.x) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->y - other.y) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->z - other.z) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->w - other.w) < VEngineSettings::QUATERNION_EPSILON) ||
+                   (fabsf(this->x + other.x) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->y + other.y) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->z + other.z) < VEngineSettings::QUATERNION_EPSILON &&
+                    fabsf(this->w + other.w) < VEngineSettings::QUATERNION_EPSILON);
+        }
+
+        float dot(const Quaternion &other) const {
+            return this->x * other.x + this->y * other.y + this->z * other.z + this->w * other.w;
         }
 
         float norma() const {
@@ -97,64 +126,52 @@ namespace VE {
         }
 
         float lenSqrt() const {
-            return v_.lenSqrt() + w_ * w_;
+            return x * x + y * y + z * z + w * w;
         }
 
         float len() const {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) return 0.0f;
+            if (lenSq < VEngineSettings::QUATERNION_EPSILON) return 0.0f;
             return sqrtf(norma());
         }
 
         Quaternion getNormalized() const {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) return *this;
+            if (lenSq < VEngineSettings::QUATERNION_EPSILON) return *this;
 
             return (*this) / sqrtf(lenSq);
         }
 
         Quaternion &normalize() {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) return *this;
+            if (lenSq < VEngineSettings::QUATERNION_EPSILON) return *this;
             (*this) /= sqrtf(lenSq);
 
             return *this;
         }
 
         Quaternion conjugate() const {
-            return Quaternion(v_ * -1, w_);
+            return Quaternion(x * -1.0f, y * -1.0f, z * -1.0f, w);
         }
 
         Quaternion inverse() const {
             return conjugate() / norma();
         }
 
-        Vector3 toAxisAngle() const {
-            return (v_ / sqrt(1 - w_ * w_)) * (2.0 * acosf(w_));
-        }
-
         Vector3 getAxis() const {
-            return v_.getNormalized();
+            return Vector3(x, y, z).getNormalized();
         }
 
         float getAngle() const {
-            return 2.0 * acosf(w_);
-        }
-
-        const Vector3 &v() const {
-            return v_;
-        }
-
-        float w() const {
-            return w_;
+            return 2.0 * acosf(w);
         }
 
         Vector3 rotate(const Vector3 &v) const {
-            return (*this * Quaternion(v) * this->inverse()).v();
+            Quaternion tmp = *this * Quaternion(v) * this->inverse();
+            return Vector3(tmp.x, tmp.y, tmp.z);
         }
 
         Matrix4 toMatrix4() const {
-            this->print();
             Vector3 r = this->rotate(Vector3(1, 0, 0));
             Vector3 f = this->rotate(Vector3(0, 1, 0));
             Vector3 u = this->rotate(Vector3(0, 0, 1));
@@ -166,12 +183,12 @@ namespace VE {
         }
 
         static Quaternion fromAxisAngle(const Vector3 &axisAngle) {
-            auto[n, angle] = axisAngle.getNormalAndLen();
-            return fromAxisAngle(n, angle);
+            auto[axis, angle] = axisAngle.getNormalAndLen();
+            return fromAxisAngle(axis, angle);
         }
 
-        static Quaternion fromAxisAngle(const Vector3 &n, float angle) {
-            return Quaternion(n * sinf(0.5f * angle),
+        static Quaternion fromAxisAngle(const Vector3 &axis, float angle) {
+            return Quaternion(axis * sinf(0.5f * angle),
                               cosf(0.5f * angle));
         }
 
@@ -229,16 +246,22 @@ namespace VE {
         }
 
         void print() const {
-            std::cout << w_ << " ";
-            v_.print();
+            std::cout << x << " " << y << " " << z << " " << w << std::endl;
         }
 
-        const float* data() const{
-            return v_.data();
+        const float *data() const {
+            return v;
         }
-    private:
-            Vector3 v_;
-            float w_ = 0.0f;
+
+        union {
+            float v[4];
+            struct {
+                float x;
+                float y;
+                float z;
+                float w;
+            };
+        };
     };
 }
 
