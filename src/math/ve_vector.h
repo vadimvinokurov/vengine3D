@@ -4,7 +4,7 @@
 
 #ifndef VOLLEYBALL_VECTOR_HPP
 #define VOLLEYBALL_VECTOR_HPP
-
+#include <stdlibraries.h>
 #include "ve_engine_settings.h"
 
 namespace VE {
