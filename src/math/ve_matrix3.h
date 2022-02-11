@@ -5,12 +5,11 @@
 #ifndef VENGINE3D_VE_MATRIX3_H
 #define VENGINE3D_VE_MATRIX3_H
 
+#include "ve_engine_settings.h"
 #include "ve_vector.h"
 
 namespace VE {
     struct Matrix3 {
-        static constexpr float EPSILON = 0.000001f;
-
         Matrix3() : _00(1), _01(0), _02(0),
                     _10(0), _11(1), _12(0),
                     _20(0), _21(0), _22(1) {}
@@ -27,44 +26,42 @@ namespace VE {
                 _10(fv[3]), _11(fv[4]), _12(fv[5]),
                 _20(fv[6]), _21(fv[7]), _22(fv[8]) {}
 
-        bool operator==(const Matrix3 &b) const {
+        bool operator==(const Matrix3 &other) const {
             for (size_t i = 0; i < 9; ++i) {
-                if (fabsf(this->v[i] - b.v[i]) > EPSILON) return false;
+                if (fabsf(this->v[i] - other.v[i]) > VEngineSettings::MATRIX_EPSILON) return false;
             }
             return true;
         }
 
-        bool operator!=(const Matrix3 &b) const {
-            return !(*this == b);
+        bool operator!=(const Matrix3 &other) const {
+            return !(*this == other);
         }
 
-        Matrix3 operator+(const Matrix3 &b) const {
-            const Matrix3 &a = *this;
+        Matrix3 operator+(const Matrix3 &other) const {
             return Matrix3(
-                    a.v[0] + b.v[0],
-                    a.v[1] + b.v[1],
-                    a.v[2] + b.v[2],
-                    a.v[3] + b.v[3],
-                    a.v[4] + b.v[4],
-                    a.v[5] + b.v[5],
-                    a.v[6] + b.v[6],
-                    a.v[7] + b.v[7],
-                    a.v[8] + b.v[8]
+                    this->v[0] + other.v[0],
+                    this->v[1] + other.v[1],
+                    this->v[2] + other.v[2],
+                    this->v[3] + other.v[3],
+                    this->v[4] + other.v[4],
+                    this->v[5] + other.v[5],
+                    this->v[6] + other.v[6],
+                    this->v[7] + other.v[7],
+                    this->v[8] + other.v[8]
             );
         }
 
-        Matrix3 operator-(const Matrix3 &b) const {
-            const Matrix3 &a = *this;
+        Matrix3 operator-(const Matrix3 &other) const {
             return Matrix3(
-                    a.v[0] - b.v[0],
-                    a.v[1] - b.v[1],
-                    a.v[2] - b.v[2],
-                    a.v[3] - b.v[3],
-                    a.v[4] - b.v[4],
-                    a.v[5] - b.v[5],
-                    a.v[6] - b.v[6],
-                    a.v[7] - b.v[7],
-                    a.v[8] - b.v[8]
+                    this->v[0] - other.v[0],
+                    this->v[1] - other.v[1],
+                    this->v[2] - other.v[2],
+                    this->v[3] - other.v[3],
+                    this->v[4] - other.v[4],
+                    this->v[5] - other.v[5],
+                    this->v[6] - other.v[6],
+                    this->v[7] - other.v[7],
+                    this->v[8] - other.v[8]
             );
         }
 
@@ -96,16 +93,16 @@ namespace VE {
             );
         }
 
-        Matrix3 &operator+=(const Matrix3 &b) {
+        Matrix3 &operator+=(const Matrix3 &other) {
             for (size_t i = 0; i < 9; ++i) {
-                this->v[i] += b.v[i];
+                this->v[i] += other.v[i];
             }
             return *this;
         }
 
-        Matrix3 &operator-=(const Matrix3 &b) {
+        Matrix3 &operator-=(const Matrix3 &other) {
             for (size_t i = 0; i < 9; ++i) {
-                this->v[i] -= b.v[i];
+                this->v[i] -= other.v[i];
             }
             return *this;
         }
@@ -125,19 +122,19 @@ namespace VE {
             return *this;
         }
 
-        Matrix3 operator*(const Matrix3 &b) const {
+        Matrix3 operator*(const Matrix3 &other) const {
             return Matrix3(
-                    this->v[0] * b.v[0] + this->v[1] * b.v[3] + this->v[2] * b.v[6],
-                    this->v[0] * b.v[1] + this->v[1] * b.v[4] + this->v[2] * b.v[7],
-                    this->v[0] * b.v[2] + this->v[1] * b.v[5] + this->v[2] * b.v[8],
+                    this->v[0] * other.v[0] + this->v[1] * other.v[3] + this->v[2] * other.v[6],
+                    this->v[0] * other.v[1] + this->v[1] * other.v[4] + this->v[2] * other.v[7],
+                    this->v[0] * other.v[2] + this->v[1] * other.v[5] + this->v[2] * other.v[8],
 
-                    this->v[3] * b.v[0] + this->v[4] * b.v[3] + this->v[5] * b.v[6],
-                    this->v[3] * b.v[1] + this->v[4] * b.v[4] + this->v[5] * b.v[7],
-                    this->v[3] * b.v[2] + this->v[4] * b.v[5] + this->v[5] * b.v[8],
+                    this->v[3] * other.v[0] + this->v[4] * other.v[3] + this->v[5] * other.v[6],
+                    this->v[3] * other.v[1] + this->v[4] * other.v[4] + this->v[5] * other.v[7],
+                    this->v[3] * other.v[2] + this->v[4] * other.v[5] + this->v[5] * other.v[8],
 
-                    this->v[6] * b.v[0] + this->v[7] * b.v[3] + this->v[8] * b.v[6],
-                    this->v[6] * b.v[1] + this->v[7] * b.v[4] + this->v[8] * b.v[7],
-                    this->v[6] * b.v[2] + this->v[7] * b.v[5] + this->v[8] * b.v[8]);
+                    this->v[6] * other.v[0] + this->v[7] * other.v[3] + this->v[8] * other.v[6],
+                    this->v[6] * other.v[1] + this->v[7] * other.v[4] + this->v[8] * other.v[7],
+                    this->v[6] * other.v[2] + this->v[7] * other.v[5] + this->v[8] * other.v[8]);
         }
 
         Vector3 operator*(const Vector3 &vector) const {
@@ -221,8 +218,8 @@ namespace VE {
             return *this;
         }
 
-        float *data() {
-            return static_cast<float *>(v);
+        const float *data() const {
+            return v;
         }
 
         void print() const {

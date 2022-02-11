@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_MATRIX4_H
 #define VENGINE3D_VE_MATRIX4_H
 
-#include <cmath>
+#include "ve_engine_settings.h"
 #include "ve_vector.h"
 
 #define M4_3X3MINOR(x, c0, c1, c2, r0, r1, r2) \
@@ -15,8 +15,6 @@
 
 namespace VE {
     struct Matrix4 {
-        static constexpr float EPSILON = 0.000001f;
-
         Matrix4() : xx(1), xy(0), xz(0), xw(0),
                     yx(0), yy(1), yz(0), yw(0),
                     zx(0), zy(0), zz(1), zw(0),
@@ -37,34 +35,32 @@ namespace VE {
                 zx(fv[8]), zy(fv[9]), zz(fv[10]), zw(fv[11]),
                 tx(fv[12]), ty(fv[13]), tz(fv[14]), tw(fv[15]) {}
 
-        bool operator==(const Matrix4 &b) const {
+        bool operator==(const Matrix4 &other) const {
             for (size_t i = 0; i < 16; ++i) {
-                if (fabsf(this->v[i] - b.v[i]) > EPSILON) return false;
+                if (fabsf(this->v[i] - other.v[i]) > VEngineSettings::MATRIX_EPSILON) return false;
             }
             return true;
         }
 
-        bool operator!=(const Matrix4 &b) const {
-            return !(*this == b);
+        bool operator!=(const Matrix4 &other) const {
+            return !(*this == other);
         }
 
-        Matrix4 operator+(const Matrix4 &b) const {
-            const Matrix4 &a = *this;
+        Matrix4 operator+(const Matrix4 &other) const {
             return Matrix4(
-                    a.xx + b.xx, a.xy + b.xy, a.xz + b.xz, a.xw + b.xw,
-                    a.yx + b.yx, a.yy + b.yy, a.yz + b.yz, a.yw + b.yw,
-                    a.zx + b.zx, a.zy + b.zy, a.zz + b.zz, a.zw + b.zw,
-                    a.tx + b.tx, a.ty + b.ty, a.tz + b.tz, a.tw + b.tw
+                    this->xx + other.xx, this->xy + other.xy, this->xz + other.xz, this->xw + other.xw,
+                    this->yx + other.yx, this->yy + other.yy, this->yz + other.yz, this->yw + other.yw,
+                    this->zx + other.zx, this->zy + other.zy, this->zz + other.zz, this->zw + other.zw,
+                    this->tx + other.tx, this->ty + other.ty, this->tz + other.tz, this->tw + other.tw
             );
         }
 
-        Matrix4 operator-(const Matrix4 &b) const {
-            const Matrix4 &a = *this;
+        Matrix4 operator-(const Matrix4 &other) const {
             return Matrix4(
-                    a.xx - b.xx, a.xy - b.xy, a.xz - b.xz, a.xw - b.xw,
-                    a.yx - b.yx, a.yy - b.yy, a.yz - b.yz, a.yw - b.yw,
-                    a.zx - b.zx, a.zy - b.zy, a.zz - b.zz, a.zw - b.zw,
-                    a.tx - b.tx, a.ty - b.ty, a.tz - b.tz, a.tw - b.tw
+                    this->xx - other.xx, this->xy - other.xy, this->xz - other.xz, this->xw - other.xw,
+                    this->yx - other.yx, this->yy - other.yy, this->yz - other.yz, this->yw - other.yw,
+                    this->zx - other.zx, this->zy - other.zy, this->zz - other.zz, this->zw - other.zw,
+                    this->tx - other.tx, this->ty - other.ty, this->tz - other.tz, this->tw - other.tw
             );
         }
 
@@ -87,16 +83,16 @@ namespace VE {
             );
         }
 
-        Matrix4 &operator+=(const Matrix4 &b) {
+        Matrix4 &operator+=(const Matrix4 &other) {
             for (size_t i = 0; i < 16; ++i) {
-                this->v[i] += b.v[i];
+                this->v[i] += other.v[i];
             }
             return *this;
         }
 
-        Matrix4 &operator-=(const Matrix4 &b) {
+        Matrix4 &operator-=(const Matrix4 &other) {
             for (size_t i = 0; i < 16; ++i) {
-                this->v[i] -= b.v[i];
+                this->v[i] -= other.v[i];
             }
             return *this;
         }
@@ -116,46 +112,46 @@ namespace VE {
             return *this;
         }
 
-        Matrix4 operator*(const Matrix4 &b) const {
+        Matrix4 operator*(const Matrix4 &other) const {
             return Matrix4(
-                    this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * b.v[3], //0
-                    this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * b.v[3], // 1
-                    this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * b.v[3], // 2
-                    this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * b.v[3], //3
-                    this->v[0] * b.v[4] + this->v[4] * b.v[5] + this->v[8] * b.v[6] + this->v[12] * b.v[7], // 4
-                    this->v[1] * b.v[4] + this->v[5] * b.v[5] + this->v[9] * b.v[6] + this->v[13] * b.v[7], // 5
-                    this->v[2] * b.v[4] + this->v[6] * b.v[5] + this->v[10] * b.v[6] + this->v[14] * b.v[7], // 6
-                    this->v[3] * b.v[4] + this->v[7] * b.v[5] + this->v[11] * b.v[6] + this->v[15] * b.v[7], // 7
-                    this->v[0] * b.v[8] + this->v[4] * b.v[9] + this->v[8] * b.v[10] + this->v[12] * b.v[11], // 8
-                    this->v[1] * b.v[8] + this->v[5] * b.v[9] + this->v[9] * b.v[10] + this->v[13] * b.v[11], // 9
-                    this->v[2] * b.v[8] + this->v[6] * b.v[9] + this->v[10] * b.v[10] + this->v[14] * b.v[11], // 10
-                    this->v[3] * b.v[8] + this->v[7] * b.v[9] + this->v[11] * b.v[10] + this->v[15] * b.v[11], // 11
-                    this->v[0] * b.v[12] + this->v[4] * b.v[13] + this->v[8] * b.v[14] + this->v[12] * b.v[15], // 12
-                    this->v[1] * b.v[12] + this->v[5] * b.v[13] + this->v[9] * b.v[14] + this->v[13] * b.v[15], // 13
-                    this->v[2] * b.v[12] + this->v[6] * b.v[13] + this->v[10] * b.v[14] + this->v[14] * b.v[15], // 14
-                    this->v[3] * b.v[12] + this->v[7] * b.v[13] + this->v[11] * b.v[14] + this->v[15] * b.v[15]); // 15
+                    this->v[0] * other.v[0] + this->v[4] * other.v[1] + this->v[8] * other.v[2] + this->v[12] * other.v[3], //0
+                    this->v[1] * other.v[0] + this->v[5] * other.v[1] + this->v[9] * other.v[2] + this->v[13] * other.v[3], // 1
+                    this->v[2] * other.v[0] + this->v[6] * other.v[1] + this->v[10] * other.v[2] + this->v[14] * other.v[3], // 2
+                    this->v[3] * other.v[0] + this->v[7] * other.v[1] + this->v[11] * other.v[2] + this->v[15] * other.v[3], //3
+                    this->v[0] * other.v[4] + this->v[4] * other.v[5] + this->v[8] * other.v[6] + this->v[12] * other.v[7], // 4
+                    this->v[1] * other.v[4] + this->v[5] * other.v[5] + this->v[9] * other.v[6] + this->v[13] * other.v[7], // 5
+                    this->v[2] * other.v[4] + this->v[6] * other.v[5] + this->v[10] * other.v[6] + this->v[14] * other.v[7], // 6
+                    this->v[3] * other.v[4] + this->v[7] * other.v[5] + this->v[11] * other.v[6] + this->v[15] * other.v[7], // 7
+                    this->v[0] * other.v[8] + this->v[4] * other.v[9] + this->v[8] * other.v[10] + this->v[12] * other.v[11], // 8
+                    this->v[1] * other.v[8] + this->v[5] * other.v[9] + this->v[9] * other.v[10] + this->v[13] * other.v[11], // 9
+                    this->v[2] * other.v[8] + this->v[6] * other.v[9] + this->v[10] * other.v[10] + this->v[14] * other.v[11], // 10
+                    this->v[3] * other.v[8] + this->v[7] * other.v[9] + this->v[11] * other.v[10] + this->v[15] * other.v[11], // 11
+                    this->v[0] * other.v[12] + this->v[4] * other.v[13] + this->v[8] * other.v[14] + this->v[12] * other.v[15], // 12
+                    this->v[1] * other.v[12] + this->v[5] * other.v[13] + this->v[9] * other.v[14] + this->v[13] * other.v[15], // 13
+                    this->v[2] * other.v[12] + this->v[6] * other.v[13] + this->v[10] * other.v[14] + this->v[14] * other.v[15], // 14
+                    this->v[3] * other.v[12] + this->v[7] * other.v[13] + this->v[11] * other.v[14] + this->v[15] * other.v[15]); // 15
         }
 
-        Vector4 operator*(const Vector4 &b) const {
-            return Vector4{this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * b.v[3],
-                           this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * b.v[3],
-                           this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * b.v[3],
-                           this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * b.v[3]};
+        Vector4 operator*(const Vector4 &other) const {
+            return Vector4{this->v[0] * other.v[0] + this->v[4] * other.v[1] + this->v[8] * other.v[2] + this->v[12] * other.v[3],
+                           this->v[1] * other.v[0] + this->v[5] * other.v[1] + this->v[9] * other.v[2] + this->v[13] * other.v[3],
+                           this->v[2] * other.v[0] + this->v[6] * other.v[1] + this->v[10] * other.v[2] + this->v[14] * other.v[3],
+                           this->v[3] * other.v[0] + this->v[7] * other.v[1] + this->v[11] * other.v[2] + this->v[15] * other.v[3]};
         }
 
-        Vector3 transformVector(const Vector3 &b) const {
-            return Vector3(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * 1.0f,
-                          this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * 1.0f,
-                          this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * 1.0f);
+        Vector3 transformVector(const Vector3 &vector) const {
+            return Vector3(this->v[0] * vector.v[0] + this->v[4] * vector.v[1] + this->v[8] * vector.v[2] + this->v[12] * 1.0f,
+                           this->v[1] * vector.v[0] + this->v[5] * vector.v[1] + this->v[9] * vector.v[2] + this->v[13] * 1.0f,
+                           this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2] + this->v[14] * 1.0f);
         }
 
-        Vector3 transformVector(const Vector3 &b, float &w) const {
+        Vector3 transformVector(const Vector3 &vector, float &w) const {
             float tmpw = w;
-            w = this->v[3] * b.v[0] + this->v[7] * b.v[1] + this->v[11] * b.v[2] + this->v[15] * tmpw;
+            w = this->v[3] * vector.v[0] + this->v[7] * vector.v[1] + this->v[11] * vector.v[2] + this->v[15] * tmpw;
 
-            return Vector3(this->v[0] * b.v[0] + this->v[4] * b.v[1] + this->v[8] * b.v[2] + this->v[12] * tmpw,
-                          this->v[1] * b.v[0] + this->v[5] * b.v[1] + this->v[9] * b.v[2] + this->v[13] * tmpw,
-                          this->v[2] * b.v[0] + this->v[6] * b.v[1] + this->v[10] * b.v[2] + this->v[14] * tmpw);
+            return Vector3(this->v[0] * vector.v[0] + this->v[4] * vector.v[1] + this->v[8] * vector.v[2] + this->v[12] * tmpw,
+                           this->v[1] * vector.v[0] + this->v[5] * vector.v[1] + this->v[9] * vector.v[2] + this->v[13] * tmpw,
+                           this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2] + this->v[14] * tmpw);
         }
 
         Matrix4 getTransposed() const {
@@ -259,8 +255,8 @@ namespace VE {
             return *this;
         }
 
-        const float* data() const{
-            return &v[0];
+        const float *data() const {
+            return v;
         }
 
         void print() const {

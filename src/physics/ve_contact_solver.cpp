@@ -84,8 +84,6 @@ void ContactSolver::preStep(float dt) {
 
         body2.setPseudoLinearVelocity(body2.pseudoLinearVelocity() + pseudoL * body2.invMass());
         body2.setPseudoAngularVelocity(body2.pseudoAngularVelocity() + body2.invInertia() * (r2 * pseudoL));
-
-        contact.point.drawPoint(6, Color(1, 0, 0));
     }
 }
 

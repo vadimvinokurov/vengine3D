@@ -89,7 +89,6 @@ void RigidBody::updateVelocity(float dt) {
 }
 
 void RigidBody::updateTransform(float dt) {
-    centerOfMass_.drawPoint(12);
     if ((linearVelocity_ + pseudoLinearVelocity_).lenSqrt() < (sleepEpsilont_ * sleepEpsilont_)) {
         linearVelocity_.setZero();
         pseudoLinearVelocity_.setZero();

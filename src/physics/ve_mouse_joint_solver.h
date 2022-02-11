@@ -36,8 +36,6 @@ namespace VE {
 
             body->setLinearVelocity(body->linearVelocity() + lymbda * body->invMass());
             body->setAngularVelocity(body->angularVelocity() + body->invInertia() * (r * lymbda));
-
-            bp.drawPoint(12);
         }
 
     private:

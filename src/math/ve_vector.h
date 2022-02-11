@@ -5,27 +5,15 @@
 #ifndef VOLLEYBALL_VECTOR_HPP
 #define VOLLEYBALL_VECTOR_HPP
 
-#include <cmath>
-#include <iostream>
-#include <GL/gl.h>
-
-#include "ve_color.h"
+#include "ve_engine_settings.h"
 
 namespace VE {
     struct Vector3 {
-        static constexpr float EPSILON = 0.000001f;
-
         Vector3(float fillValue = 0.0f) : x(fillValue), y(fillValue), z(fillValue) {};
 
         Vector3(float x_, float y_, float z_ = 0.0f) : x(x_), y(y_), z(z_) {};
 
         Vector3(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
-
-        Vector3(const Color &c) : x(c.red), y(c.green), z(c.blue) {};
-
-        Vector3(const Vector3 &vector) = default;
-
-        Vector3 &operator=(const Vector3 &vector) = default;
 
         Vector3 operator+(const Vector3 &other) const {
             return Vector3(x + other.x, y + other.y, z + other.z);
@@ -98,9 +86,7 @@ namespace VE {
         }
 
         float dot(const Vector3 &other) const {
-            const Vector3 &a = (*this);
-            const Vector3 &b = other;
-            return a.x * b.x + a.y * b.y + a.z * b.z;
+            return this->x * other.x + this->y * other.y + this->z * other.z;
         }
 
         float lenSqrt() const {
@@ -109,26 +95,26 @@ namespace VE {
 
         float len() const {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) return 0.0f;
+            if (lenSq < VEngineSettings::VECTOR_EPSILON) return 0.0f;
             return sqrtf(lenSq);
         }
 
         Vector3 getNormalized() const {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) return *this;
+            if (lenSq < VEngineSettings::VECTOR_EPSILON) return *this;
             return (*this) / sqrtf(lenSq);
         }
 
         Vector3 &normalize() {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) return *this;
+            if (lenSq < VEngineSettings::VECTOR_EPSILON) return *this;
             (*this) /= sqrtf(lenSq);
             return *this;
         }
 
         std::pair<Vector3, float> getNormalAndLen() const {
             float lenSq = lenSqrt();
-            if (lenSq < EPSILON) {
+            if (lenSq < VEngineSettings::VECTOR_EPSILON) {
                 return {*this, 0.0f};
             }
             float magnitude = sqrtf(lenSq);
@@ -136,7 +122,7 @@ namespace VE {
         }
 
         bool operator==(const Vector3 &other) const {
-            return (*this - other).lenSqrt() < EPSILON;
+            return (*this - other).lenSqrt() < VEngineSettings::VECTOR_EPSILON;
         }
 
         bool operator!=(const Vector3 &other) const {
@@ -146,7 +132,7 @@ namespace VE {
         Vector3 getProjection(const VE::Vector3 &b) const {
             float bLenSqrt = b.lenSqrt();
 
-            if (bLenSqrt < EPSILON)
+            if (bLenSqrt < VEngineSettings::VECTOR_EPSILON)
                 return Vector3();
             float scale = this->dot(b) / bLenSqrt;
             return b * scale;
@@ -159,7 +145,7 @@ namespace VE {
         Vector3 getReflection(const VE::Vector3 &b) const {
             float bLenSqrt = b.lenSqrt();
 
-            if (bLenSqrt < EPSILON)
+            if (bLenSqrt < VEngineSettings::VECTOR_EPSILON)
                 return Vector3();
             float scale = this->dot(b) / bLenSqrt;
             auto projectionX2 = b * scale * 2;
@@ -167,9 +153,11 @@ namespace VE {
         }
 
         void round(float roundSize = 10000.0f) {
-            x = static_cast<int>(x * roundSize) / roundSize;
-            y = static_cast<int>(y * roundSize) / roundSize;
-            z = static_cast<int>(z * roundSize) / roundSize;
+            float invRoundSize = 1.0f / roundSize;
+
+            x = static_cast<int>(x * roundSize) * invRoundSize;
+            y = static_cast<int>(y * roundSize) * invRoundSize;
+            z = static_cast<int>(z * roundSize) * invRoundSize;
         }
 
         void setZero() {
@@ -182,38 +170,6 @@ namespace VE {
             return v;
         }
 
-        //Debug function
-
-        void draw(const Vector3 &basePoint = Vector3(), const VE::Color &color = VE::Color()) const {
-            glLineWidth(2);
-            glColor3f(color.red, color.green, color.blue);
-            glBegin(GL_LINES);
-            glVertex3f(basePoint.x, basePoint.y, basePoint.z);
-            Vector3 vector = basePoint + *this;
-            glVertex3f(vector.x, vector.y, vector.z);
-            glEnd();
-            glPointSize(6);
-            glBegin(GL_POINTS);
-            glVertex3f(vector.x, vector.y, vector.z);
-            glEnd();
-        }
-
-        void drawPoint(int size = 6, const VE::Color &color = VE::Color()) const {
-            glColor3f(color.red, color.green, color.blue);
-            glPointSize(size);
-            glBegin(GL_POINTS);
-            glVertex3f(this->x, this->y, this->z);
-            glEnd();
-        }
-
-        void drawPoint(const VE::Color &color) const {
-            drawPoint(6, color);
-        }
-
-        void draw(const VE::Color &color) const {
-            draw(VE::Vector3(), color);
-        }
-
         void print() const {
             std::cout << x << " " << y << " " << z << std::endl;
         }
@@ -221,7 +177,7 @@ namespace VE {
         static float angle(const Vector3 &a, const Vector3 &b) {
             float aLenSqrt = a.lenSqrt();
             float bLenSqrt = b.lenSqrt();
-            if (aLenSqrt < EPSILON || bLenSqrt < EPSILON) {
+            if (aLenSqrt < VEngineSettings::VECTOR_EPSILON || bLenSqrt < VEngineSettings::VECTOR_EPSILON) {
                 return 0.0f;
             }
             return acosf(a.dot(b) / (sqrtf(aLenSqrt) * sqrtf(bLenSqrt)));
@@ -250,9 +206,9 @@ namespace VE {
         union {
             float v[3];
             struct {
-                float x = 0.0f;
-                float y = 0.0f;
-                float z = 0.0f;
+                float x;
+                float y;
+                float z;
             };
         };
 
@@ -279,15 +235,15 @@ namespace VE {
         TVector2(T *fv) : x(fv[0]), y(fv[1]) {}
 
         const T *data() const {
-            return &x;
+            return v;
         }
 
         union {
+            T v[2];
             struct {
                 T x;
                 T y;
             };
-            T v[2];
         };
     };
 
@@ -301,7 +257,7 @@ namespace VE {
                      z(static_cast<T>(0)),
                      w(static_cast<T>(0)) {}
 
-        TVector4(T x_, T y_, T z_, T w_) : x(x_),
+        TVector4(T x_, T y_, T z_, T w_ = 1.0f) : x(x_),
                                            y(y_),
                                            z(z_),
                                            w(w_) {}
@@ -311,34 +267,43 @@ namespace VE {
                           z(fv[2]),
                           w(fv[3]) {}
 
+
         const T *data() const {
-            return &x;
+            return v;
         }
 
         union {
+            T v[4];
             struct {
                 T x;
                 T y;
                 T z;
                 T w;
             };
-            T v[4];
+            struct {
+                T red;
+                T green;
+                T blue;
+                T alfa;
+            };
+
         };
     };
 
     using Vector4 = TVector4<float>;
+    using Color = TVector4<float>;
     using IVector4 = TVector4<int>;
     using UIVector4 = TVector4<unsigned int>;
 
     struct SVector4 {
         union {
+            float v[4];
             struct {
                 float x;
                 float y;
                 float z;
                 float w;
             };
-            float v[4];
         };
     };
 }

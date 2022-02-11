@@ -4,7 +4,7 @@
 
 #ifndef VENGINE3D_VE_TRANSFORM_H
 #define VENGINE3D_VE_TRANSFORM_H
-
+#include "ve_engine_settings.h"
 #include "ve_vector.h"
 #include "ve_matrix3.h"
 #include "ve_quaternion.h"
@@ -45,9 +45,9 @@ namespace VE {
 
             inv.rotation = this->rotation.inverse();
 
-            inv.scale.x = fabsf(scale.x) < EPSILON ? 0.0f : 1.0f / scale.x;
-            inv.scale.y = fabsf(scale.y) < EPSILON ? 0.0f : 1.0f / scale.y;
-            inv.scale.z = fabsf(scale.z) < EPSILON ? 0.0f : 1.0f / scale.z;
+            inv.scale.x = fabsf(scale.x) < VEngineSettings::TRANSFORM_EPSILON ? 0.0f : 1.0f / scale.x;
+            inv.scale.y = fabsf(scale.y) < VEngineSettings::TRANSFORM_EPSILON ? 0.0f : 1.0f / scale.y;
+            inv.scale.z = fabsf(scale.z) < VEngineSettings::TRANSFORM_EPSILON ? 0.0f : 1.0f / scale.z;
 
             Vector3 invTrans = position * -1.0f;
 

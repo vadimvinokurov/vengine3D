@@ -9,7 +9,7 @@ namespace VE{
     struct VEngineSettings{
         static constexpr float VECTOR_EPSILON = 0.000001f;
         static constexpr float MATRIX_EPSILON = 0.000001f;
-
+        static constexpr float TRANSFORM_EPSILON = 0.000001f;
 
     };
 }

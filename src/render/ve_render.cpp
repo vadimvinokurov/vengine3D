@@ -2,6 +2,8 @@
 // Created by boris on 11/16/2021.
 //
 #include "ve_render.h"
+#include <glad/glad.h>
+
 #include "ve_uniform.h"
 #include "ve_attribute.h"
 #include "ve_index_buffer.h"
@@ -38,7 +40,7 @@ void Render::draw(const WorldPtr &world) {
     for (VE::RigidBodyPtr rigidBody: world_->worldObjects) {
         Matrix4 model = rigidBody->transform().toMatrix();
         Uniform<Matrix4>::set(shader.getUniform("model"), model);
-        Uniform<Vector3>::set(shader.getUniform("objectColor"), rigidBody->color());
+        Uniform<Vector3>::set(shader.getUniform("objectColor"), Vector3(rigidBody->color().v));
         Uniform<Vector3>::set(shader.getUniform("lightColor"), Vector3(1, 1, 1));
 
         for (auto &collider: rigidBody->colliders()) {
@@ -52,8 +54,6 @@ void Render::draw(const WorldPtr &world) {
         }
     }
     Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());
-    Uniform<Vector3>::set(shader.getUniform("objectColor"), Color(0, 0, 0));
-
-    lightPoint.drawPoint(24);
+    Uniform<Vector3>::set(shader.getUniform("objectColor"), Vector3(Color(0, 0, 0).v));
 }
 
