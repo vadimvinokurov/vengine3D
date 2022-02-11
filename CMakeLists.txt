@@ -17,3 +17,21 @@ file(GLOB Sources "./src/*.cpp" "./src/*/*.cpp" "./src/*/*/*.cpp")
 #endif()
 add_executable(vengine3D ${Sources})
 target_link_libraries(vengine3D glfw -lopengl32)
+
+
+target_precompile_headers(vengine3D PRIVATE <iostream>
+        <string>
+        <cstdlib>
+        <cmath>
+        <vector>
+        <memory>
+        <utility>
+        <limits>
+        <algorithm>
+        <cassert>
+        <map>
+        <numeric>
+        <iterator>
+        <fstream>
+        <sstream>
+        <cstring>)

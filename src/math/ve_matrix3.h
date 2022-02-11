@@ -5,7 +5,6 @@
 #ifndef VENGINE3D_VE_MATRIX3_H
 #define VENGINE3D_VE_MATRIX3_H
 
-#include "ve_stdlibs.h"
 #include "ve_vector.h"
 
 namespace VE {
@@ -222,8 +221,8 @@ namespace VE {
             return *this;
         }
 
-        float* data(){
-            return static_cast<float*>(v);
+        float *data() {
+            return static_cast<float *>(v);
         }
 
         void print() const {
@@ -250,7 +249,7 @@ namespace VE {
         };
     };
 
-    inline Vector3 operator*(const Vector3 &vector, const Matrix3& m) {
+    inline Vector3 operator*(const Vector3 &vector, const Matrix3 &m) {
         return Vector3(
                 m.v[0] * vector.v[0] + m.v[3] * vector.v[1] + m.v[6] * vector.v[2],
                 m.v[1] * vector.v[0] + m.v[4] * vector.v[1] + m.v[7] * vector.v[2],

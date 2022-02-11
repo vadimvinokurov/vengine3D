@@ -5,8 +5,6 @@
 #ifndef VENGINE3D_VE_INDEX_BUFFER_H
 #define VENGINE3D_VE_INDEX_BUFFER_H
 
-#include "ve_stdlibs.h"
-
 namespace VE {
     class IndexBuffer {
     public:

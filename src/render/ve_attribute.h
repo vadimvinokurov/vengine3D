@@ -5,8 +5,6 @@
 #ifndef VENGINE3D_VE_ATTRIBUTE_H
 #define VENGINE3D_VE_ATTRIBUTE_H
 
-#include "ve_stdlibs.h"
-
 namespace VE {
     template<typename T>
     class Attribute {

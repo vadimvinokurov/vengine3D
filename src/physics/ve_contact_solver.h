@@ -5,7 +5,6 @@
 #ifndef VENGINE3D_VE_CONTACT_SOLVER_H
 #define VENGINE3D_VE_CONTACT_SOLVER_H
 
-#include "ve_stdlibs.h"
 #include "objects/ve_rigid_body.h"
 #include "collision/ve_collision_system.h"
 #include "ve_global_parameters.h"

@@ -4,7 +4,6 @@
 
 #ifndef VENGINE3D_WINDOW_H
 #define VENGINE3D_WINDOW_H
-#include "ve_stdlibs.h"
 #include "ve_world.h"
 #include "control/ve_keyboard.h"
 #include "control/ve_mouse.h"

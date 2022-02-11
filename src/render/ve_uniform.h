@@ -5,11 +5,6 @@
 #ifndef VENGINE3D_VE_UNIFORM_H
 #define VENGINE3D_VE_UNIFORM_H
 
-
-#include "ve_stdlibs.h"
-
-
-
 namespace VE {
     template<typename T>
     class Uniform {
