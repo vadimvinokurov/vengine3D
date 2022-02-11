@@ -135,24 +135,22 @@ void World::scene4() {
 }
 
 void World::scene5() {
-//    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
-//    floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
-//    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-//    worldObjects.push_back(floor);
-//
-//    float s = 1.0f;
-//    float b = 0.8f;
-//    for (int i = 1; i < 2; i++) {
-//        RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
-//        stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
-//        worldObjects.push_back(stairs);
-//    }
-//
-//    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
-//    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
+    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+    floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
+    floor->setColor(Color(0.3f, 0.3f, 0.3f));
+    worldObjects.push_back(floor);
 
-    RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(1, 1, 1, 0)});
-    worldObjects.push_back(stairs);
+    float s = 1.0f;
+    float b = 0.8f;
+    for (int i = 1; i < 100; i++) {
+        RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
+        stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
+        worldObjects.push_back(stairs);
+    }
+
+    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
+    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
+
 }
 
 void World::resetScene() {
@@ -303,11 +301,9 @@ void World::gui() {
     ImGui::Checkbox("polygone", &globalParameters.polygone);
     ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
 
-    static float alfa = 0, beta = 0, gamma = 0;
-    ImGui::SliderFloat("x", &alfa, 0.0f, 360.0f);
-    ImGui::SliderFloat("y", &beta, 0.0f, 360.0f);
-    ImGui::SliderFloat("z", &gamma, 0.0f, 360.0f);
-    globalParameters.rotate = Vector3(alfa, beta, gamma) / 180.0f * M_PI;
+    ImGui::SliderFloat("x", &globalParameters.ligthPosition.x, 0.0f, 500.0f);
+    ImGui::SliderFloat("y", &globalParameters.ligthPosition.y, 0.0f, 500.0f);
+    ImGui::SliderFloat("z", &globalParameters.ligthPosition.z, 0.0f, 500.0f);
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
 
     ImGui::End();

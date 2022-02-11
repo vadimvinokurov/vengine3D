@@ -32,12 +32,18 @@ namespace VE {
         virtual void setTransform(const Transform &transform) = 0;
 
         static std::vector<Vector3> getRenderNormals(const std::vector<Vector3>& vertex, const std::vector<unsigned int>& index){
-            std::vector<Vector3> renderNormals;
+            std::vector<Vector3> renderNormals(vertex.size(), Vector3());
             for (unsigned int i = 0; i < index.size(); i += 3) {
                 Vector3 AB = vertex[index[i + 1]] - vertex[index[i + 0]];
                 Vector3 BC = vertex[index[i + 2]] - vertex[index[i + 1]];
+                Vector3 normalDirection = AB * BC;
 
-                renderNormals.push_back((AB * BC).getNormalized());
+                renderNormals[index[i + 0]] += normalDirection;
+                renderNormals[index[i + 1]] += normalDirection;
+                renderNormals[index[i + 2]] += normalDirection;
+            }
+            for(auto &v: renderNormals){
+                v.normalize();
             }
             return renderNormals;
         }

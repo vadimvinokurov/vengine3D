@@ -9,7 +9,7 @@
 
 namespace VE{
     struct GlobalParameters{
-        static Vector3 rotate;
+        static Vector3 ligthPosition;
         static bool polygone;
         static bool warmstarting;
         static int iterations;

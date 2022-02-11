@@ -24,12 +24,14 @@ void Render::draw(const WorldPtr &world) {
     Matrix4 projection = Camera::perspective(60.0f, windowAspectRatio_, 2, 8000);
     Matrix4 view = world_->currentCamera().getViewMatrix();
 
-    static float a = 0;
-    a += 0.01;
-    Vector3 lightPoint = 4 * Vector3(cosf(a), 0, sinf(a));
-    if (globalParameters.polygone) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    Vector3 lightPoint = globalParameters.ligthPosition;
+
+    if (globalParameters.polygone)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     Uniform<Vector3>::set(shader.getUniform("lightPos"), lightPoint);
     Uniform<Matrix4>::set(shader.getUniform("projection"), projection);
     Uniform<Matrix4>::set(shader.getUniform("view"), view);
@@ -43,8 +45,8 @@ void Render::draw(const WorldPtr &world) {
             collider->vertexPosition.bindTo(shader.getAttribute("aPosition"));
             collider->vertexNormals.bindTo(shader.getAttribute("aNormal"));
 
-            //VE::draw(collider->indexBuffer, DrawMode::Triangles);
-            VE::draw(collider->vertexPosition.count(), DrawMode::Triangles);
+            VE::draw(collider->indexBuffer, DrawMode::Triangles);
+
             collider->vertexPosition.unBindFrom(shader.getAttribute("aPosition"));
             collider->vertexNormals.unBindFrom(shader.getAttribute("aNormal"));
         }
