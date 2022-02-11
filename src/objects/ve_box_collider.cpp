@@ -22,7 +22,13 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
           height_(height),
           depth_(depth) {
 
-    vertexPosition.set(localVertices_);
+    std::vector<Vector3> v;
+
+    for(auto i: renderIndices_){
+        v.push_back(localVertices_[i]);
+    }
+
+    vertexPosition.set(v);
     indexBuffer.set(renderIndices_);
     auto normals = getRenderNormals(localVertices_, renderIndices_);
 
@@ -30,20 +36,20 @@ BoxCollider::BoxCollider(float width, float height, float depth, float mass, con
             normals[0],normals[0],normals[0],
             normals[0],normals[0],normals[0],
 
-            normals[1],normals[1],normals[1],
-            normals[1],normals[1],normals[1],
-
             normals[2],normals[2],normals[2],
             normals[2],normals[2],normals[2],
-
-            normals[3],normals[3],normals[3],
-            normals[3],normals[3],normals[3],
 
             normals[4],normals[4],normals[4],
             normals[4],normals[4],normals[4],
 
-            normals[5],normals[5],normals[5],
-            normals[5],normals[5],normals[5]
+            normals[6],normals[6],normals[6],
+            normals[6],normals[6],normals[6],
+
+            normals[8],normals[8],normals[8],
+            normals[8],normals[8],normals[8],
+
+            normals[10],normals[10],normals[10],
+            normals[10],normals[10],normals[10]
     };
 
     vertexNormals.set(n);
@@ -56,7 +62,7 @@ void BoxCollider::setLocalPosition(const Vector3 &localPosition) {
     localCenterOfMass_ = computeCenterOfMass(localVertices_);
     globalCenterOfMass_ = localCenterOfMass_;
 
-    vertexPosition.set(localVertices_);
+    //vertexPosition.set(localVertices_);
 }
 
 std::vector<Vector3> BoxCollider::computeVertices(float width, float height, float depth, const Vector3 &localPosition) {

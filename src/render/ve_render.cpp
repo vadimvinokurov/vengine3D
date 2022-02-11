@@ -43,8 +43,8 @@ void Render::draw(const WorldPtr &world) {
             collider->vertexPosition.bindTo(shader.getAttribute("aPosition"));
             collider->vertexNormals.bindTo(shader.getAttribute("aNormal"));
 
-            VE::draw(collider->indexBuffer, DrawMode::Triangles);
-
+            //VE::draw(collider->indexBuffer, DrawMode::Triangles);
+            VE::draw(collider->vertexPosition.count(), DrawMode::Triangles);
             collider->vertexPosition.unBindFrom(shader.getAttribute("aPosition"));
             collider->vertexNormals.unBindFrom(shader.getAttribute("aNormal"));
         }
