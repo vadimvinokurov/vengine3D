@@ -24,10 +24,6 @@ SphereCollider::SphereCollider(float radius, float mass, const Vector3 &localPos
     vertexNormals.set(normals);
 }
 
-ColliderPtr SphereCollider::create(float radius, float mass, const Vector3 &localPosition) {
-    return std::make_shared<SphereCollider>(radius, mass, localPosition);
-}
-
 void SphereCollider::setLocalPosition(const Vector3 &localPosition) {
     localCenter_ += localPosition;
     globalCenter_ = localCenter_;

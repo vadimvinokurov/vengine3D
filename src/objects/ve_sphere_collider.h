@@ -10,9 +10,7 @@
 namespace VE {
     class SphereCollider : public Collider {
     public:
-        SphereCollider(float radius, float mass, const Vector3 &localPosition);
-
-        static ColliderPtr create(float radius = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
+        SphereCollider(float radius = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
 
         void setLocalPosition(const Vector3& localPosition) override;
         Vector3 farthestVertexInDirection(const Vector3 &direction) const override;
@@ -20,17 +18,16 @@ namespace VE {
         Vector3 getCenterOfMass() const override;
         Matrix3 getInertia() const override;
         float getRadius() const;
-
+    private:
         static std::vector<Vector3> getGetRenderVertices(float radius, const Vector3 &position);
         static std::vector<unsigned int> getGetRenderIndices();
+        static constexpr int nT = 10;
+        static constexpr int nF = 10;
 
-    private:
+
         Vector3 localCenter_;
         Vector3 globalCenter_;
         float radius_ = 1.0f;
-
-        static constexpr int nT = 10;
-        static constexpr int nF = 10;
     };
 }
 

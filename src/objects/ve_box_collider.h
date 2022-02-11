@@ -12,11 +12,7 @@
 namespace VE {
     class BoxCollider : public Collider {
     public:
-        BoxCollider(float width, float height, float depth, float mass, const Vector3 &localPosition);
-
-        static ColliderPtr
-        create(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
-
+        BoxCollider(float width = 1.0f, float height = 1.0f, float depth = 1.0f, float mass = 1.0f, const Vector3 &localPosition = Vector3());
 
         void setLocalPosition(const Vector3 &localPosition) override;
         Vector3 farthestVertexInDirection(const Vector3 &direction) const override;

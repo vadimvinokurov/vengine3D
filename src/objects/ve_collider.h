@@ -21,6 +21,10 @@ namespace VE {
 
     class Collider {
     public:
+        explicit Collider(ColliderType shapeType, float mass)
+                : shapeType_(shapeType),
+                  mass_(mass) {}
+
         ColliderType shapeType() const { return shapeType_; }
 
         float mass() const { return mass_; }
@@ -31,7 +35,7 @@ namespace VE {
         virtual Vector3 farthestVertexInDirection(const Vector3 &direction) const = 0;
         virtual void setTransform(const Transform &transform) = 0;
 
-        static std::vector<Vector3> getRenderNormals(const std::vector<Vector3>& vertex, const std::vector<unsigned int>& index){
+        static std::vector<Vector3> getRenderNormals(const std::vector<Vector3> &vertex, const std::vector<unsigned int> &index) {
             std::vector<Vector3> renderNormals(vertex.size(), Vector3());
             for (unsigned int i = 0; i < index.size(); i += 3) {
                 Vector3 AB = vertex[index[i + 1]] - vertex[index[i + 0]];
@@ -42,7 +46,7 @@ namespace VE {
                 renderNormals[index[i + 1]] += normalDirection;
                 renderNormals[index[i + 2]] += normalDirection;
             }
-            for(auto &v: renderNormals){
+            for (auto &v: renderNormals) {
                 v.normalize();
             }
             return renderNormals;
@@ -54,17 +58,12 @@ namespace VE {
         Attribute<Vector3> vertexNormals;
         IndexBuffer indexBuffer;
     protected:
-        explicit Collider(ColliderType shapeType, float mass)
-                : shapeType_(shapeType),
-                  mass_(mass) {}
-
         float mass_;
         const ColliderType shapeType_;
     };
 
     using ColliderPtr = std::shared_ptr<Collider>;
     using ConstColliderPtr = std::shared_ptr<const Collider>;
-    using CollidersPtrVector = std::vector<ColliderPtr>;
 }
 
 

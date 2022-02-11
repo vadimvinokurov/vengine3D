@@ -6,10 +6,6 @@
 
 using namespace VE;
 
-ColliderPtr BoxCollider::create(float width, float height, float depth, float mass, const Vector3 &localPosition) {
-    return std::make_shared<VE::BoxCollider>(width, height, depth, mass, localPosition);
-}
-
 BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Vector3 &localPosition)
         : Collider(ColliderType::box, mass),
           localVertices_(computeVertices(width, height, depth, localPosition)),

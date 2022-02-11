@@ -3,8 +3,7 @@
 //
 
 #include "ve_world.h"
-#include "objects/ve_box_collider.h"
-#include "objects/ve_sphere_collider.h"
+#include "ve_utils.h"
 #include "imgui/imgui.h"
 #include "ve_global_parameters.h"
 
@@ -16,7 +15,7 @@ World::World() {
 
 
 void World::scene1() {
-    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
         transform.position = Vector3(0, 0, -0.5f);
@@ -27,7 +26,7 @@ void World::scene1() {
 
 
     auto spawBox = [&](const Transform &transform) {
-        RigidBodyPtr body1 = RigidBody::create({BoxCollider::create(1, 1, 1, 1)});
+        RigidBodyPtr body1 = RigidBody::create({create<BoxCollider>(1, 1, 1, 1)});
         body1->setTransform(transform);
         body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
         worldObjects.push_back(body1);
@@ -42,7 +41,7 @@ void World::scene1() {
 
 void World::scene2() {
     auto spawBox = [&](const Transform &transform) {
-        auto body1 = RigidBody::create({BoxCollider::create()});
+        auto body1 = RigidBody::create({create<BoxCollider>()});
         body1->setTransform(transform);
         body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
         body1->setLinearVelocity(Vector3(0.0f, -10.0f, 0.0f));
@@ -60,7 +59,7 @@ void World::scene2() {
 }
 
 void World::scene3() {
-    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
         transform.position = Vector3(0, 0, -0.5f);
@@ -72,7 +71,7 @@ void World::scene3() {
     std::vector<VE::ColliderPtr> a;
     RigidBodyPtr body1 = RigidBody::create(
             {
-                    BoxCollider::create(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    create<BoxCollider>(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
     body1->setTransform([]() {
         Transform transform;
@@ -85,8 +84,8 @@ void World::scene3() {
 
     RigidBodyPtr body2 = RigidBody::create(
             {
-                    BoxCollider::create(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
-                    BoxCollider::create(1, 1, 1, 1, Vector3(1.0f, 0.0f, 0.0f))
+                    create<BoxCollider>(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    create<BoxCollider>(1, 1, 1, 1, Vector3(1.0f, 0.0f, 0.0f))
             });
     body2->setTransform([]() {
         Transform transform;
@@ -99,7 +98,7 @@ void World::scene3() {
 }
 
 void World::scene4() {
-    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
     floor->setTransform([]() {
         Transform transform;
         transform.position = Vector3(0, 0, -0.5f);
@@ -110,7 +109,7 @@ void World::scene4() {
 
     RigidBodyPtr body2 = RigidBody::create(
             {
-                    SphereCollider::create(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    create<SphereCollider>(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
     body2->setTransform([]() {
         Transform transform;
@@ -122,7 +121,7 @@ void World::scene4() {
 
     RigidBodyPtr body3 = RigidBody::create(
             {
-                    SphereCollider::create(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    create<SphereCollider>(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
     body3->setTransform([]() {
         Transform transform;
@@ -135,7 +134,7 @@ void World::scene4() {
 }
 
 void World::scene5() {
-    RigidBodyPtr floor = RigidBody::create({BoxCollider::create(100, 1, 100, 0)});
+    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
     floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
@@ -143,14 +142,12 @@ void World::scene5() {
     float s = 1.0f;
     float b = 0.8f;
     for (int i = 1; i < 100; i++) {
-        RigidBodyPtr stairs = RigidBody::create({BoxCollider::create(s * b, s * i, 10, 0)});
+        RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
         stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
         worldObjects.push_back(stairs);
     }
 
-    //actors_.push_back(Actor::create(Vector(100 * 0.2f, 0, 20)));
-    actors_.push_back(Actor::create(Vector3(0, 0, 20)));
-
+    actors_.push_back(create<Actor>(Vector3(0, 0, 20)));
 }
 
 void World::resetScene() {
