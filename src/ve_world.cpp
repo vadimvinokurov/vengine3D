@@ -7,6 +7,8 @@
 #include "objects/ve_ragdoll_actor.h"
 #include "objects/ve_blockjoints_actor.h"
 
+#include "math/ve_bezier.h"
+
 using namespace VE;
 
 World::World() {
@@ -147,12 +149,18 @@ void World::cameraControl(float dt) {
 }
 
 void VE::World::update(float dt) {
-    auto P1 = Vector3(-10,0,0);
-    auto C1 = Vector3(-10,0,5);
+    auto P1 = Vector3(-10, 0, 0);
+    auto C1 = Vector3(-10, 0, 5);
 
-    DebugDraw::Line(P1, C1, Color(1,0,0));
+    auto P2 = Vector3(-5, 0, 0);
+    auto C2 = Vector3(-9, 0, 5);
 
-
+    DebugDraw::Line(P1, C1);
+    DebugDraw::Line(P2, C2);
+    for (float t = 0.0f; t <= 1.0f; t += 0.01f) {
+        auto R = Bezier(P1, C1, P2, C2).interpolate(t);
+        DebugDraw::Point(R, 3, Color(0, 1, 0));
+    }
 
 
     gui();
