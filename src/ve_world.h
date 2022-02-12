@@ -24,11 +24,9 @@ namespace VE {
         void setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse);
         std::vector<VE::RigidBodyPtr> worldObjects;
     private:
-        void scene1();
-        void scene2();
-        void scene3();
-        void scene4();
-        void scene5();
+        void cubeStacking(const Vector3& position);
+        void sphereStacking(const Vector3& position);
+        void scene();
 
         void hid(float dt);
         void cameraControl(float dt);
@@ -46,6 +44,7 @@ namespace VE {
         VE::MouseJointSolverPtr mouseJointSolver_;
         VE::MouseJointSolverPtr jointSolver_;
         std::vector<ActorPtr> actors_;
+        std::vector<BallAndSocketJointSolver> jointsB;
     };
 
     using WorldPtr = std::shared_ptr<World>;

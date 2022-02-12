@@ -3,9 +3,9 @@
 //
 
 #include "ve_world.h"
-#include "ve_utils.h"
 #include "imgui/imgui.h"
-#include "ve_global_parameters.h"
+#include "objects/ve_ragdoll_actor.h"
+#include "objects/ve_blockjoints_actor.h"
 
 using namespace VE;
 
@@ -14,17 +14,7 @@ World::World() {
 }
 
 
-void World::scene1() {
-    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
-    floor->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0, -0.5f);
-        return transform;
-    }());
-    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-    worldObjects.push_back(floor);
-
-
+void World::cubeStacking(const Vector3 &position) {
     auto spawBox = [&](const Transform &transform) {
         RigidBodyPtr body1 = RigidBody::create({create<BoxCollider>(1, 1, 1, 1)});
         body1->setTransform(transform);
@@ -34,88 +24,21 @@ void World::scene1() {
 
     for (int i = 0; i < 10; i++) {
         Transform transform;
-        transform.position = Vector3(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i));
+        transform.position = Vector3(0.5f, 0.5f, 0.6f + 1.2f * static_cast<float>(i)) + position;
         spawBox(transform);
     }
 }
 
-void World::scene2() {
-    auto spawBox = [&](const Transform &transform) {
-        auto body1 = RigidBody::create({create<BoxCollider>()});
-        body1->setTransform(transform);
-        body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
-        body1->setLinearVelocity(Vector3(0.0f, -10.0f, 0.0f));
-        worldObjects.push_back(body1);
-        return body1;
-    };
-
-    Vector3 offset(10, 3, 0);
-
-    Transform transform;
-    transform.position = Vector3(0.5f, 0.5f, 0.5f) + offset;
-    auto o = spawBox(transform);
-
-    jointSolver_ = std::make_shared<VE::MouseJointSolver>(o, Vector3(0, 0, 1) + offset);
-}
-
-void World::scene3() {
-    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
-    floor->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0, -0.5f);
-        return transform;
-    }());
-    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-    worldObjects.push_back(floor);
-
-    std::vector<VE::ColliderPtr> a;
-    RigidBodyPtr body1 = RigidBody::create(
-            {
-                    create<BoxCollider>(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
-            });
-    body1->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0, 1.5f);
-        return transform;
-    }());
-    body1->setGravity(Vector3(0.0f, 0.0f, -9.8f));
-    worldObjects.push_back(body1);
-
-
-    RigidBodyPtr body2 = RigidBody::create(
-            {
-                    create<BoxCollider>(1, 1, 1, 1, Vector3(0.0f, 0.0f, 0.0f)),
-                    create<BoxCollider>(1, 1, 1, 1, Vector3(1.0f, 0.0f, 0.0f))
-            });
-    body2->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0.6f, 10.5f);
-        return transform;
-    }());
-    body2->setGravity(Vector3(0.0f, 0.0f, -9.8f));
-    worldObjects.push_back(body2);
-
-}
-
-void World::scene4() {
-    RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
-    floor->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0, -0.5f);
-        return transform;
-    }());
-    floor->setColor(Color(0.3f, 0.3f, 0.3f));
-    worldObjects.push_back(floor);
+void World::sphereStacking(const Vector3 &position) {
 
     RigidBodyPtr body2 = RigidBody::create(
             {
                     create<SphereCollider>(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
-    body2->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0, 10.5f);
-        return transform;
-    }());
+
+    Transform transform;
+    transform.position = Vector3(0, 0, 10.5f) + position;
+    body2->setTransform(transform);
     body2->setGravity(Vector3(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body2);
 
@@ -123,38 +46,39 @@ void World::scene4() {
             {
                     create<SphereCollider>(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
             });
-    body3->setTransform([]() {
-        Transform transform;
-        transform.position = Vector3(0, 0, 1.5f);
-        return transform;
-    }());
+    transform.position = Vector3(0, 0, 1.5f) + position;
+    body3->setTransform(transform);
+
     body3->setGravity(Vector3(0.0f, 0.0f, -9.8f));
     worldObjects.push_back(body3);
-
 }
 
-void World::scene5() {
+void World::scene() {
     RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
     floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
 
+    cubeStacking(Vector3(-5, 5, 0));
+    sphereStacking(Vector3(-10, 5, 0));
+
     float s = 1.0f;
     float b = 0.8f;
-    for (int i = 1; i < 100; i++) {
+    for (int i = 1; i < 50; i++) {
         RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
         stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
         worldObjects.push_back(stairs);
     }
 
-    actors_.push_back(create<Actor>(Vector3(0, 0, 20)));
+    actors_.push_back(create<RagdollActor>(Vector3(0, 0, 20)));
+    actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
 }
 
 void World::resetScene() {
     worldObjects.clear();
     contactSolvers.clear();
-
-    scene5();
+    actors_.clear();
+    scene();
     for (auto &actor: actors_) {
         std::copy(actor->getObjects().begin(), actor->getObjects().end(), std::back_inserter(worldObjects));
     }
@@ -306,6 +230,7 @@ void World::gui() {
     ImGui::End();
 
 }
+
 
 
 
