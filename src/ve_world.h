@@ -42,7 +42,6 @@ namespace VE {
         VE::MousePtr mouse_;
         VE::KeyboardPtr keyboard_;
         VE::MouseJointSolverPtr mouseJointSolver_;
-        VE::MouseJointSolverPtr jointSolver_;
         std::vector<ActorPtr> actors_;
         std::vector<BallAndSocketJointSolver> jointsB;
     };

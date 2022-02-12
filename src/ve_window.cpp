@@ -81,7 +81,8 @@ void Window::run() {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    //glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    glClearColor(0.5f, 0.7f, 0.95f, 0.0f);
     glClearDepth(1.0f);
 
     while (!glfwWindowShouldClose(window_)) {

@@ -33,7 +33,7 @@ void World::sphereStacking(const Vector3 &position) {
 
     RigidBodyPtr body2 = RigidBody::create(
             {
-                    create<SphereCollider>(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    create<SphereCollider>(1, 10, Vector3(0.0f, 0.0f, 0.0f)),
             });
 
     Transform transform;
@@ -44,7 +44,7 @@ void World::sphereStacking(const Vector3 &position) {
 
     RigidBodyPtr body3 = RigidBody::create(
             {
-                    create<SphereCollider>(1, 1, Vector3(0.0f, 0.0f, 0.0f)),
+                    create<SphereCollider>(1, 10, Vector3(0.0f, 0.0f, 0.0f)),
             });
     transform.position = Vector3(0, 0, 1.5f) + position;
     body3->setTransform(transform);
@@ -189,12 +189,16 @@ void World::physics(float dt) {
         object->updateVelocity(dt);
     }
 
-    if (mouseJointSolver_) {
-        mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        if (mouseJointSolver_) {
+            mouseJointSolver_->applyImpulse(dt, currentCamera_->getPointAlongDirection(10));
+        }
     }
 
-    if (jointSolver_) {
-        jointSolver_->applyImpulse(dt, Vector3(0, 0, 10));
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &actor:actors_) {
+            actor->update(dt);
+        }
     }
 
     for (auto &contact: contactSolvers) {
@@ -202,11 +206,13 @@ void World::physics(float dt) {
     }
 
     for (int i = 0; i < globalParameters.iterations; i++) {
-        for (auto &actor:actors_) {
-            actor->update(dt);
-        }
         for (auto &contact: contactSolvers) {
             contact.second.applyImpulse(dt);
+        }
+    }
+
+    for (int i = 0; i < globalParameters.iterations; i++) {
+        for (auto &contact: contactSolvers) {
             contact.second.applyPseudoImpulse(dt);
         }
     }
