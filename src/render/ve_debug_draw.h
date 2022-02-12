@@ -8,8 +8,13 @@
 #include "math/ve_vector.h"
 
 namespace VE {
-    void debugDrawVector(const Vector3 &vector3, const Vector3 &basePoint = Vector3(), const VE::Color &color = VE::Color());
-    void debugDrawPoint(const Vector3 &vector3, int size = 6, const VE::Color &color = VE::Color());
+    struct DebugDraw{
+        static void Vector(const Vector3 &vector3, const Vector3 &basePoint = Vector3(), const VE::Color &color = VE::Color());
+        static void Point(const Vector3 &vector3, int size = 6, const VE::Color &color = VE::Color());
+        static void Line(const Vector3 &A, const Vector3 &B, const VE::Color &color = VE::Color());
+
+        static unsigned int colorShaderSlot;
+    };
 }
 
 #endif //VENGINE3D_VE_DEBUG_DRAW_H

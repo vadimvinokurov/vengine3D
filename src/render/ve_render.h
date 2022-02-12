@@ -17,6 +17,7 @@ namespace VE {
         void draw(const WorldPtr &world);
     private:
         Shader shader;
+        Shader debugShader;
         const float windowAspectRatio_ = 1.0f;
         WorldPtr world_;
     };

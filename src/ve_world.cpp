@@ -59,8 +59,8 @@ void World::scene() {
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
 
-    cubeStacking(Vector3(-5, 5, 0));
-    sphereStacking(Vector3(-10, 5, 0));
+    //cubeStacking(Vector3(-5, 5, 0));
+    //sphereStacking(Vector3(-10, 5, 0));
 
     float s = 1.0f;
     float b = 0.8f;
@@ -147,6 +147,14 @@ void World::cameraControl(float dt) {
 }
 
 void VE::World::update(float dt) {
+    auto P1 = Vector3(-10,0,0);
+    auto C1 = Vector3(-10,0,5);
+
+    DebugDraw::Line(P1, C1, Color(1,0,0));
+
+
+
+
     gui();
     hid(dt);
     prephysics(dt);

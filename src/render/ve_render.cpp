@@ -8,20 +8,23 @@
 #include "ve_attribute.h"
 #include "ve_index_buffer.h"
 #include "ve_draw.h"
+#include "ve_debug_draw.h"
 
 //#include "ve_texture.h"
-
-
 #include <iostream>
 
 using namespace VE;
 
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
     shader.load("../shaders/static.vert", "../shaders/lit.frag");
-    shader.bind();
+    debugShader.load("../shaders/debug/static.vert", "../shaders/debug/lit.frag");
+    debugShader.bind();
+    DebugDraw::colorShaderSlot = debugShader.getUniform("objectColor");
 }
 
 void Render::draw(const WorldPtr &world) {
+    debugShader.unBind();
+    shader.bind();
     world_ = world;
     Matrix4 projection = Camera::perspective(60.0f, windowAspectRatio_, 2, 8000);
     Matrix4 view = world_->currentCamera().getViewMatrix();
@@ -53,7 +56,11 @@ void Render::draw(const WorldPtr &world) {
             collider->vertexNormals.unBindFrom(shader.getAttribute("aNormal"));
         }
     }
-    Uniform<Matrix4>::set(shader.getUniform("model"), Matrix4());
-    Uniform<Vector3>::set(shader.getUniform("objectColor"), Vector3(Color(0, 0, 0).v));
+
+    shader.unBind();
+    debugShader.bind();
+    Uniform<Matrix4>::set(debugShader.getUniform("projection"), projection);
+    Uniform<Matrix4>::set(debugShader.getUniform("view"), view);
+    Uniform<Matrix4>::set(debugShader.getUniform("model"), Matrix4());
 }
 
