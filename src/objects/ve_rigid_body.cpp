@@ -8,7 +8,7 @@ using namespace VE;
 
 
 RigidBodyPtr RigidBody::create(std::vector<ColliderPtr> &&collidersPtr) {
-    return std::make_shared<VE::RigidBody>(std::forward<std::vector<ColliderPtr>>(collidersPtr));
+    return std::make_shared<VE::RigidBody>(std::move(collidersPtr));
 }
 
 RigidBody::RigidBody(std::vector<ColliderPtr> &&collidersPtr) : colliders_(collidersPtr) {
