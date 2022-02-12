@@ -298,9 +298,9 @@ void World::gui() {
     ImGui::Checkbox("polygone", &globalParameters.polygone);
     ImGui::SliderInt("iteration", &globalParameters.iterations, 1, 200);
 
-    ImGui::SliderFloat("x", &globalParameters.ligthPosition.x, 0.0f, 500.0f);
-    ImGui::SliderFloat("y", &globalParameters.ligthPosition.y, 0.0f, 500.0f);
-    ImGui::SliderFloat("z", &globalParameters.ligthPosition.z, 0.0f, 500.0f);
+    ImGui::SliderFloat("x", &globalParameters.ligthPosition.x, -250.0f, 250.0f);
+    ImGui::SliderFloat("y", &globalParameters.ligthPosition.y, -250.0f, 250.0f);
+    ImGui::SliderFloat("z", &globalParameters.ligthPosition.z, -250.0f, 250.0f);
     ImGui::Checkbox("Warnstarting", &globalParameters.warmstarting);
 
     ImGui::End();

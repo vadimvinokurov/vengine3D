@@ -41,7 +41,7 @@ void Render::draw(const WorldPtr &world) {
         Matrix4 model = rigidBody->transform().toMatrix();
         Uniform<Matrix4>::set(shader.getUniform("model"), model);
         Uniform<Vector3>::set(shader.getUniform("objectColor"), Vector3(rigidBody->color().v));
-        Uniform<Vector3>::set(shader.getUniform("lightColor"), Vector3(1, 1, 1));
+        //Uniform<Vector3>::set(shader.getUniform("lightColor"), Vector3(1, 1, 1));
 
         for (auto &collider: rigidBody->colliders()) {
             collider->vertexPosition.bindTo(shader.getAttribute("aPosition"));

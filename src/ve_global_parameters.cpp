@@ -6,8 +6,8 @@
 
 using namespace VE;
 
-Vector3 GlobalParameters::ligthPosition(0, 0, 100);
-bool GlobalParameters::polygone = false;
+Vector3 GlobalParameters::ligthPosition(-65, 0, 40);
+bool GlobalParameters::polygone = true;
 bool GlobalParameters::warmstarting = true;
 int GlobalParameters::iterations = 10;
 
