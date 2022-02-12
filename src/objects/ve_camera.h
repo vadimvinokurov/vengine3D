@@ -10,7 +10,7 @@
 
 namespace VE {
     namespace CameraParameters {
-        const Vector3 defaultCameraPosition = Vector3(7.51278f, -4.72388f, 3.8431);
+        const Vector3 defaultCameraPosition = Vector3(-8, -10.5f, 7);
         const Vector3 defaultCameraDirection = Vector3(0, -1, 0);
         const Vector3 defaultCameraUp = Vector3(0, 0, 1);
         const Vector3 defaultCameraRight = Vector3(1, 0, 0);
