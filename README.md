@@ -6,6 +6,9 @@ Vengine3D is my first 3D physics engine to improve my programming skills and exp
 - Install [CMake](https://cmake.org/)
 - Ensure CMake is in the user `PATH`
 ```
+git clone "this repo"
+git submodule init
+git submodule update
 mkdir build
 cd build
 cmake ..
