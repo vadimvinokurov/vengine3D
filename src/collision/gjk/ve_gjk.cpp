@@ -3,9 +3,8 @@
 //
 
 #include "ve_gjk.h"
-#include "collision/epa/ve_epa.h"
-#include "collision/ve_collision_common.h"
 #include "collision/ve_support_point.h"
+#include "ve_engine_settings.h"
 
 using namespace VE;
 
@@ -19,7 +18,9 @@ bool GJK::testIntersection() {
 
     simplex.push_back(supportPoint);
     direction = (supportPoint * -1).getNormalized();
-    while (1) {
+
+    int interuptCount = 0;
+    while (true) {
         supportPoint = getSupportPoint(collider1_, collider2_, direction).point;
         if (supportPoint.dot(direction) <= 0) {
             return false;
@@ -28,6 +29,11 @@ bool GJK::testIntersection() {
 
         if (nextSimplex()) {
             return true;
+        }
+
+        if (++interuptCount > VEngineSettings::INFINITE_LOOP_INTERUPT) {
+            std::cerr << "GJK::testIntersection() infinity loop" << std::endl;
+            return false;
         }
     }
 }
