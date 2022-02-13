@@ -12,6 +12,6 @@ git submodule update
 mkdir build
 cd build
 cmake ..
-cmake --build .
+cmake --build . --config Release
 cp -R ..\shaders .
 ```
