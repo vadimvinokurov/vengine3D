@@ -7,9 +7,9 @@ Vengine3D is my first 3D physics engine to improve my programming skills and exp
 - Ensure CMake is in the user `PATH`
 ```
 git clone https://github.com/vadimvinokurov/vengine3D.git
+cd vengine3D
 git submodule init
 git submodule update
-cd vengine3D
 mkdir build
 cd build
 cmake ..
