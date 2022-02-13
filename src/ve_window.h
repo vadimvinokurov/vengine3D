@@ -33,10 +33,10 @@ namespace VE {
         VE::Vector3 openGLToScreenCoordinate(const VE::Vector3 &openGLCoordinate);
 
         GLFWwindow *window_;
-        float width_, height_;
+        int width_, height_;
         std::string label_;
         WorldPtr world_;
-        float dt_ = 1.0f / 75.0f;
+        static constexpr float deltaTime_ = 1.0f / 75.0f;
 
         float windowAspectRatio_ = 1.0f;
 
