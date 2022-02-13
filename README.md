@@ -2,7 +2,7 @@
 # vengine3D
 Vengine3D is my first 3D physics engine to improve my programming skills and explore the field of game development.
 
-## Installing using CMake
+## Build using CMake
 - Install [CMake](https://cmake.org/)
 - Ensure CMake is in the user `PATH`
 ```
