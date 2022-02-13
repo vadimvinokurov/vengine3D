@@ -4,7 +4,7 @@
 
 #ifndef VENGINE3D_STDLIBRARIES_H
 #define VENGINE3D_STDLIBRARIES_H
-
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <string>
 #include <cstdlib>
