@@ -16,9 +16,7 @@ template
 class VE::Track<Quaternion, 4>;
 
 template<typename T, unsigned int N>
-Track<T, N>::Track() {
-    interpolation_ = Interpolation::Linear;
-}
+Track<T, N>::Track() : interpolation_(Interpolation::Linear) {}
 
 template<typename T, unsigned int N>
 float Track<T, N>::getStartTime() {
@@ -70,17 +68,22 @@ void Track<T, N>::setInterpolation(Interpolation interpolation) {
 }
 
 template<typename T, unsigned int N>
-T Track<T, N>::hermite(float t, const T &p1, const T &s1, const T &p2_, const T &s2) {
-    T p2 = p2_;
-    TrackHelpers::neighborhood(p1, p2);
-    T result = Spline::Hermite(t, p1, s1, p2, s2);
-    return TrackHelpers::adjustHermiteResult(result);
+T Track<T, N>::hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) {
+    if constexpr (std::is_same<T, Quaternion>::value) {
+        if (p1.dot(p2) < 0) {
+            return Spline::Hermite(t, p1, s1, p2 * -1.0f, s2).getNormalized();
+        } else {
+            return Spline::Hermite(t, p1, s1, p2, s2).getNormalized();
+        }
+    } else {
+        return Spline::Hermite(t, p1, s1, p2, s2);
+    }
 }
 
 template<typename T, unsigned int N>
 int Track<T, N>::frameIndex(float time, bool looping) {
     auto size = frames_.size();
-    if (size <= 1) {
+    if (size < 2) {
         return -1;
     }
 
@@ -95,18 +98,26 @@ int Track<T, N>::frameIndex(float time, bool looping) {
         }
     }
 
-    for (auto i = size - 1; i >= 0; --i) {
-        if (time >= frames_[i].time) {
-            return static_cast<int>(i);
-        }
+    auto res = std::upper_bound(begin(frames_), end(frames_), time, [](float val, const Frame<N> &frame) {
+        return val < frame.time;
+    });
+    if(res == frames_.begin() || (res == frames_.end() && frames_.back().time > time)) {
+        return -1;
     }
-    return -1;
+    return std::distance(frames_.begin(), res) - 1;
+
+//    for (auto i = size - 1; i >= 0; --i) {
+//        if (time >= frames_[i].time) {
+//            return static_cast<int>(i);
+//        }
+//    }
+//    return -1;
 }
 
 template<typename T, unsigned int N>
 float Track<T, N>::adjustTimeToFitTrack(float time, bool looping) {
     auto size = frames_.size();
-    if (size <= 1) {
+    if (size < 2) {
         return 0.0f;
     }
 
@@ -115,7 +126,7 @@ float Track<T, N>::adjustTimeToFitTrack(float time, bool looping) {
     if (endTime - startTime <= 0.0f) {
         return 0.0f;
     }
-    return looping ? Track::loopclamp(time, startTime, endTime) : std::clamp(time, startTime, endTime);
+    return looping ? loopclamp(time, startTime, endTime) : std::clamp(time, startTime, endTime);
 }
 
 template<typename T, unsigned int N>
@@ -144,7 +155,7 @@ T Track<T, N>::sampleLinear(float time, bool looping) {
     float t = (trackTime - thisTime) / frameDelta;
     T p1 = cast(frames_[thisFrame].value);
     T p2 = cast(frames_[nextFrame].value);
-    return TrackHelpers::interpolate(p1, p2, t);
+    return linearInterpolate(p1, p2, t);
 }
 
 template<typename T, unsigned int N>
@@ -188,5 +199,3 @@ template<>
 Quaternion Track<Quaternion, 4>::cast(const float *value) {
     return Quaternion(value).normalize();
 }
-
-

@@ -9,13 +9,6 @@ namespace VE {
     struct Spline {
         template<typename T>
         static T Bezier(float t, const T &P1, const T &C1, const T &P2, const T &C2) {
-//            auto A = T::lerp(P1, C1, t);
-//            auto C = T::lerp(C1, C2, t);
-//            auto B = T::lerp(C2, P2, t);
-//            auto E = T::lerp(A, C, t);
-//            auto F = T::lerp(C, B, t);
-//            auto R = T::lerp(E, F, t);
-//            return R;
             return P1 * ((1 - t) * (1 - t) * (1 - t)) +
                    C1 * (3.0f * ((1 - t) * (1 - t)) * t) +
                    C2 * (3.0f * (1 - t) * (t * t)) +
