@@ -21,5 +21,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
+#include <chrono>
+#include <thread>
 
 #endif //VENGINE3D_STDLIBRARIES_H
