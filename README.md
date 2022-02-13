@@ -9,6 +9,7 @@ Vengine3D is my first 3D physics engine to improve my programming skills and exp
 git clone https://github.com/vadimvinokurov/vengine3D.git
 git submodule init
 git submodule update
+cd vengine3D
 mkdir build
 cd build
 cmake ..
