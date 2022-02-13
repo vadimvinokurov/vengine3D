@@ -29,7 +29,7 @@ namespace VE {
                 zx(_20), zy(_21), zz(_22), zw(_23),
                 tx(_30), ty(_31), tz(_32), tw(_33) {}
 
-        Matrix4(float *fv) :
+        Matrix4(const float *fv) :
                 xx(fv[0]), xy(fv[1]), xz(fv[2]), xw(fv[3]),
                 yx(fv[4]), yy(fv[5]), yz(fv[6]), yw(fv[7]),
                 zx(fv[8]), zy(fv[9]), zz(fv[10]), zw(fv[11]),

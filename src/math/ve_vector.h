@@ -13,7 +13,7 @@ namespace VE {
 
         Vector3(float x_, float y_, float z_ = 0.0f) : x(x_), y(y_), z(z_) {};
 
-        Vector3(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
+        Vector3(const float *fv) : x(fv[0]), y(fv[1]), z(fv[2]) {};
 
         Vector3 operator+(const Vector3 &other) const {
             return Vector3(x + other.x, y + other.y, z + other.z);
@@ -232,7 +232,7 @@ namespace VE {
 
         TVector2(T x_, T y_) : x(x_), y(y_) {}
 
-        TVector2(T *fv) : x(fv[0]), y(fv[1]) {}
+        TVector2(const T *fv) : x(fv[0]), y(fv[1]) {}
 
         const T *data() const {
             return v;
@@ -262,7 +262,7 @@ namespace VE {
                                            z(z_),
                                            w(w_) {}
 
-        TVector4(T *fv) : x(fv[0]),
+        TVector4(const T *fv) : x(fv[0]),
                           y(fv[1]),
                           z(fv[2]),
                           w(fv[3]) {}

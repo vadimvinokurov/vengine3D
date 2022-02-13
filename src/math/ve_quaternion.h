@@ -20,7 +20,7 @@ namespace VE {
 
         Quaternion(const Vector4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-        Quaternion(float *fv) : x(fv[0]), y(fv[1]), z(fv[2]), w(fv[3]) {}
+        Quaternion(const float *fv) : x(fv[0]), y(fv[1]), z(fv[2]), w(fv[3]) {}
 
         Quaternion operator+(const Quaternion &other) const {
             return Quaternion(this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w);

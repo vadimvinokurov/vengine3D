@@ -4,7 +4,7 @@
 
 #include "ve_epa.h"
 #include "collision/ve_support_point.h"
-#include "ve_global_parameters.h"
+#include "ve_engine_settings.h"
 
 using namespace VE;
 
@@ -15,6 +15,7 @@ EPA::PenetrationDepth::PenetrationDepth(const Collider &collider1, const Collide
 }
 
 Vector3 EPA::PenetrationDepth::getVector() {
+	int interuptCount = 0;
     while(true){
         const Face &closestFaceToOrigin = polytope_.getClosestFaceToOrigin();
         Vector3 extendVertex = getSupportPoint(collider1_, collider2_, closestFaceToOrigin.normal).point;
@@ -24,6 +25,11 @@ Vector3 EPA::PenetrationDepth::getVector() {
         } else {
             return closestFaceToOrigin.normal * (closestFaceToOrigin.distance + Collision::tolerance);
         }
+		
+		if(++interuptCount > VEngineSettings::INFINITE_LOOP_INTERUPT){
+            std::cerr << "Vector3 EPA::PenetrationDepth::getVector() infinity loop" << std::endl;
+			return Vector3(0,0,1);
+		}
     }
 }
 

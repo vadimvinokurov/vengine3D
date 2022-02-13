@@ -117,7 +117,6 @@ void Window::run() {
 
         auto startRenderTime = chrono::steady_clock::now();
         render.draw(world_);
-        chrono::duration<double> renderTime = chrono::steady_clock::now() - startRenderTime;
 
         if (mouse_->isLock()) {
             Vector3 lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
@@ -128,23 +127,26 @@ void Window::run() {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window_);
-
-//        auto t2 = chrono::steady_clock::now();
-//        chrono::duration<double> target(deltaTime_);
-//        chrono::duration<double> timeUsed = t2 - t1;
-//        chrono::duration<double> sleepTime = target - timeUsed + sleepAdjust;
-//
-//        if (sleepTime > chrono::duration<double>(0)) {
-//            this_thread::sleep_for(sleepTime);
-//        }
+        chrono::duration<double> renderTime = chrono::steady_clock::now() - startRenderTime;
 
         chrono::duration<double> target(deltaTime_);
         chrono::duration<double> timeUsed = chrono::steady_clock::now() - t1;
-        while (chrono::steady_clock::now() - t1 < target) {
-            this_thread::yield();
+        if (chrono::steady_clock::now() - t1 < target) {
+            while (chrono::steady_clock::now() - t1 < target) {
+                this_thread::yield();
+            }
+        } else {
+            frameTime = chrono::steady_clock::now() - t1;
+            std::string info = "Freez info: " +
+                               to_string(int(1 / frameTime.count())) + " (" + to_string(frameTime.count() * 1000.0f) + ")" + " FPS | " +
+                               to_string(timeUsed.count() * 1000.0f) + " ms time used | " +
+                               to_string(worldUpdateTime.count() * 1000.0f) + " ms world update | " +
+                               to_string(renderTime.count() * 1000.0f) + " ms render | ";
+            std::cout << info << std::endl;
         }
 
-        lableUpdateTime += (chrono::steady_clock::now() - t1);
+        frameTime = chrono::steady_clock::now() - t1;
+        lableUpdateTime += frameTime;
         if (lableUpdateTime > chrono::duration<double>(0.2)) {
             lableUpdateTime = chrono::duration<double>(0);
             glfwSetWindowTitle(window_, (label_ + " | " +
@@ -154,11 +156,6 @@ void Window::run() {
                                          to_string(renderTime.count() * 1000.0f) + " ms render | ").c_str());
 
         }
-        chrono::steady_clock::time_point t3 = chrono::steady_clock::now();
-        frameTime = t3 - t1;
-
-        // Compute the sleep adjustment using a low pass filter
-        //sleepAdjust = 0.9 * sleepAdjust + 0.1 * (target - frameTime);
     }
 }
 
