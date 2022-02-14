@@ -4,6 +4,8 @@
 
 #include "ve_transform_track.h"
 
+using namespace VE;
+
 VE::TransformTrack::TransformTrack() {
     id_ = 0;
 }
@@ -17,15 +19,15 @@ unsigned int VE::TransformTrack::getId() {
     return id_;
 }
 
-VE::VectorTrack &VE::TransformTrack::getPositionTrack() {
+VE::Track<Vector3> &VE::TransformTrack::getPositionTrack() {
     return position_;
 }
 
-VE::QuaternionTrack &VE::TransformTrack::getRotationTrack() {
+VE::Track<Quaternion> &VE::TransformTrack::getRotationTrack() {
     return rotation_;
 }
 
-VE::VectorTrack &VE::TransformTrack::getScaleTrack() {
+VE::Track<Vector3> &VE::TransformTrack::getScaleTrack() {
     return scale_;
 }
 

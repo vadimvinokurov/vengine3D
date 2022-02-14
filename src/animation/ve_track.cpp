@@ -7,29 +7,29 @@
 using namespace VE;
 
 template
-class VE::Track<float, 1>;
+class VE::Track<float>;
 
 template
-class VE::Track<Vector3, 3>;
+class VE::Track<Vector3>;
 
 template
-class VE::Track<Quaternion, 4>;
+class VE::Track<Quaternion>;
 
-template<typename T, unsigned int N>
-Track<T, N>::Track() : interpolation_(Interpolation::Linear) {}
+template<typename T>
+Track<T>::Track() : interpolation_(Interpolation::Linear) {}
 
-template<typename T, unsigned int N>
-float Track<T, N>::getStartTime() {
+template<typename T>
+float Track<T>::getStartTime() {
     return frames_.front().time;
 }
 
-template<typename T, unsigned int N>
-float Track<T, N>::getEndTime() {
+template<typename T>
+float Track<T>::getEndTime() {
     return frames_.back().time;
 }
 
-template<typename T, unsigned int N>
-T Track<T, N>::sample(float time, bool looping) {
+template<typename T>
+T Track<T>::sample(float time, bool looping) {
     switch (interpolation_) {
         case Interpolation::Constant:
             return sampleConstant(time, looping);
@@ -42,33 +42,33 @@ T Track<T, N>::sample(float time, bool looping) {
     }
 }
 
-template<typename T, unsigned int N>
-Frame<N> &Track<T, N>::operator[](unsigned int index) {
+template<typename T>
+Frame<T> &Track<T>::operator[](unsigned int index) {
     return frames_[index];
 }
 
-template<typename T, unsigned int N>
-void Track<T, N>::resize(unsigned int size) {
+template<typename T>
+void Track<T>::resize(unsigned int size) {
     frames_.resize(size);
 }
 
-template<typename T, unsigned int N>
-unsigned int Track<T, N>::size() {
+template<typename T>
+unsigned int Track<T>::size() {
     return frames_.size();
 }
 
-template<typename T, unsigned int N>
-Interpolation Track<T, N>::getInterpolation() {
+template<typename T>
+Interpolation Track<T>::getInterpolation() {
     return interpolation_;
 }
 
-template<typename T, unsigned int N>
-void Track<T, N>::setInterpolation(Interpolation interpolation) {
+template<typename T>
+void Track<T>::setInterpolation(Interpolation interpolation) {
     interpolation_ = interpolation;
 }
 
-template<typename T, unsigned int N>
-T Track<T, N>::hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) {
+template<typename T>
+T Track<T>::hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) {
     if constexpr (std::is_same<T, Quaternion>::value) {
         if (p1.dot(p2) < 0) {
             return Spline::Hermite(t, p1, s1, p2 * -1.0f, s2).getNormalized();
@@ -80,8 +80,8 @@ T Track<T, N>::hermite(float t, const T &p1, const T &s1, const T &p2, const T &
     }
 }
 
-template<typename T, unsigned int N>
-int Track<T, N>::frameIndex(float time, bool looping) {
+template<typename T>
+int Track<T>::frameIndex(float time, bool looping) {
     auto size = frames_.size();
     if (size < 2) {
         return -1;
@@ -98,10 +98,10 @@ int Track<T, N>::frameIndex(float time, bool looping) {
         }
     }
 
-    auto res = std::upper_bound(begin(frames_), end(frames_), time, [](float val, const Frame<N> &frame) {
+    auto res = std::upper_bound(begin(frames_), end(frames_), time, [](float val, const Frame<T> &frame) {
         return val < frame.time;
     });
-    if(res == frames_.begin() || (res == frames_.end() && frames_.back().time > time)) {
+    if (res == frames_.begin() || (res == frames_.end() && frames_.back().time > time)) {
         return -1;
     }
     return std::distance(frames_.begin(), res) - 1;
@@ -114,8 +114,8 @@ int Track<T, N>::frameIndex(float time, bool looping) {
 //    return -1;
 }
 
-template<typename T, unsigned int N>
-float Track<T, N>::adjustTimeToFitTrack(float time, bool looping) {
+template<typename T>
+float Track<T>::adjustTimeToFitTrack(float time, bool looping) {
     auto size = frames_.size();
     if (size < 2) {
         return 0.0f;
@@ -129,8 +129,8 @@ float Track<T, N>::adjustTimeToFitTrack(float time, bool looping) {
     return looping ? loopclamp(time, startTime, endTime) : std::clamp(time, startTime, endTime);
 }
 
-template<typename T, unsigned int N>
-T Track<T, N>::sampleConstant(float time, bool looping) {
+template<typename T>
+T Track<T>::sampleConstant(float time, bool looping) {
     int frame = frameIndex(time, looping);
     if (frame < 0 || frame >= static_cast<int>(frames_.size())) {
         return T();
@@ -138,8 +138,8 @@ T Track<T, N>::sampleConstant(float time, bool looping) {
     return cast(frames_[frame].value);
 }
 
-template<typename T, unsigned int N>
-T Track<T, N>::sampleLinear(float time, bool looping) {
+template<typename T>
+T Track<T>::sampleLinear(float time, bool looping) {
     int thisFrame = frameIndex(time, looping);
     if (thisFrame < 0 || thisFrame >= static_cast<int>(frames_.size() - 1)) {
         return T();
@@ -158,8 +158,8 @@ T Track<T, N>::sampleLinear(float time, bool looping) {
     return linearInterpolate(p1, p2, t);
 }
 
-template<typename T, unsigned int N>
-T Track<T, N>::sampleCubic(float time, bool looping) {
+template<typename T>
+T Track<T>::sampleCubic(float time, bool looping) {
     int thisFrame = frameIndex(time, looping);
     if (thisFrame < 0 || thisFrame >= static_cast<int>(frames_.size() - 1)) {
         return T();
@@ -175,27 +175,39 @@ T Track<T, N>::sampleCubic(float time, bool looping) {
     float t = (trackTime - thisTime) / frameDelta;
 
     T p1 = cast(frames_[thisFrame].value);
-    T s1;
-    memcpy(&s1, frames_[thisFrame].out, N * sizeof(float));
-    s1 *= frameDelta;
     T p2 = cast(frames_[nextFrame].value);
-    T s2;
-    memcpy(&s2, frames_[nextFrame].in, N * sizeof(float));
-    s2 *= frameDelta;
+    T s1 = toT(frames_[thisFrame].out) * frameDelta;
+    T s2 = toT(frames_[nextFrame].in) * frameDelta;
+
     return hermite(t, p1, s1, p2, s2);
 }
 
 template<>
-float Track<float, 1>::cast(const float *value) {
+float Track<float>::cast(const float *value) {
     return value[0];
 }
 
 template<>
-Vector3 Track<Vector3, 3>::cast(const float *value) {
+Vector3 Track<Vector3>::cast(const float *value) {
     return Vector3(value);
 }
 
 template<>
-Quaternion Track<Quaternion, 4>::cast(const float *value) {
+Quaternion Track<Quaternion>::cast(const float *value) {
     return Quaternion(value).normalize();
+}
+
+template<>
+float Track<float>::toT(const float *value) {
+    return value[0];
+}
+
+template<>
+Vector3 Track<Vector3>::toT(const float *value) {
+    return Vector3(value);;
+}
+
+template<>
+Quaternion Track<Quaternion>::toT(const float *value) {
+    return Quaternion(value);
 }

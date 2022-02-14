@@ -11,14 +11,14 @@
 #include "math/ve_quaternion.h"
 #include "math/ve_math_utility.h"
 namespace VE {
-    template<typename T, unsigned int N>
+    template<typename T>
     class Track {
     public:
         Track();
         float getStartTime();
         float getEndTime();
         T sample(float time, bool looping);
-        Frame<N> &operator[](unsigned int index);
+        Frame<T> &operator[](unsigned int index);
         void resize(unsigned int size);
         unsigned int size();
         Interpolation getInterpolation();
@@ -33,14 +33,11 @@ namespace VE {
         T sampleCubic(float time, bool looping);
 
         T cast(const float *value);
+        T toT(const float *value);
 
-        std::vector<Frame<N>> frames_;
+        std::vector<Frame<T>> frames_;
         Interpolation interpolation_;
     };
-
-    using ScalarTrack = Track<float, 1>;
-    using VectorTrack = Track<Vector3, 3>;
-    using QuaternionTrack = Track<Quaternion, 4>;
 }
 
 

@@ -64,8 +64,8 @@ namespace VE {
         static std::vector<Clip> loadAnimationClips(cgltf_data *data);
         static Pose loadRestPose(cgltf_data* data);
 
-        template<typename T, int N>
-        static void trackFromChannel(Track<T, N> &result, const cgltf_animation_channel &channel);
+        template<typename T>
+        static void trackFromChannel(Track<T> &result, const cgltf_animation_channel &channel);
 
     private:
 

@@ -14,18 +14,18 @@ namespace VE {
         TransformTrack();
         void setId(unsigned int id);
         unsigned int getId();
-        VectorTrack & getPositionTrack();
-        QuaternionTrack& getRotationTrack();
-        VectorTrack& getScaleTrack();
+        Track<Vector3> & getPositionTrack();
+        Track<Quaternion>& getRotationTrack();
+        Track<Vector3>& getScaleTrack();
         float getStartTime();
         float getEndTime();
         bool isValid();
         Transform sample(const Transform& ref, float time, bool looping);
     protected:
         unsigned int id_;
-        VectorTrack position_;
-        QuaternionTrack rotation_;
-        VectorTrack scale_;
+        Track<Vector3> position_;
+        Track<Quaternion> rotation_;
+        Track<Vector3> scale_;
     };
 }
 

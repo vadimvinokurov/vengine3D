@@ -55,8 +55,8 @@ std::vector<std::string> VE::GLTFFile::loadJointNames(cgltf_data *data) {
     return result;
 }
 
-template<typename T, int N>
-void VE::GLTFFile::trackFromChannel(VE::Track<T, N> &result, const cgltf_animation_channel &channel) {
+template<typename T>
+void VE::GLTFFile::trackFromChannel(VE::Track<T> &result, const cgltf_animation_channel &channel) {
     cgltf_animation_sampler &sampler = *channel.sampler;
     Interpolation interpolation = Interpolation::Constant;
     if (sampler.interpolation == cgltf_interpolation_type_linear) {
@@ -69,23 +69,23 @@ void VE::GLTFFile::trackFromChannel(VE::Track<T, N> &result, const cgltf_animati
     std::vector<float> time; // times
     getScalarValues(time, 1, *sampler.input);
     std::vector<float> val; // values
-    getScalarValues(val, N, *sampler.output);
+    getScalarValues(val, Frame<T>::N, *sampler.output);
 
     unsigned int numFrames = sampler.input->count;
     unsigned int compCount = val.size() / time.size();
     result.resize(numFrames);
     for (unsigned int i = 0; i < numFrames; ++i) {
         int baseIndex = i * compCount;
-        Frame<N> &frame = result[i];
+        Frame<T> &frame = result[i];
         int offset = 0;
         frame.time = time[i];
-        for (int comp = 0; comp < N; ++comp) {
+        for (int comp = 0; comp < Frame<T>::N; ++comp) {
             frame.in[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
         }
-        for (int comp = 0; comp < N; ++comp) {
+        for (int comp = 0; comp < Frame<T>::N; ++comp) {
             frame.value[comp] = val[baseIndex + offset++];
         }
-        for (int comp = 0; comp < N; ++comp) {
+        for (int comp = 0; comp < Frame<T>::N; ++comp) {
             frame.out[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
         }
     }
@@ -104,14 +104,14 @@ std::vector<VE::Clip> VE::GLTFFile::loadAnimationClips(cgltf_data *data) {
             cgltf_node *target = channel.target_node;
             int nodeId = getNodeIndex(target, data->nodes, numNodes);
             if (channel.target_path == cgltf_animation_path_type_translation) {
-                VectorTrack &track = result[i][nodeId].getPositionTrack();
-                trackFromChannel<Vector3, 3>(track, channel);
+                VE::Track<Vector3> &track = result[i][nodeId].getPositionTrack();
+                trackFromChannel<Vector3>(track, channel);
             } else if (channel.target_path == cgltf_animation_path_type_scale) {
-                VectorTrack &track = result[i][nodeId].getScaleTrack();
-                trackFromChannel<Vector3, 3>(track, channel);
+                VE::Track<Vector3> &track = result[i][nodeId].getScaleTrack();
+                trackFromChannel<Vector3>(track, channel);
             } else if (channel.target_path == cgltf_animation_path_type_rotation) {
-                QuaternionTrack &track = result[i][nodeId].getRotationTrack();
-                trackFromChannel<Quaternion, 4>(track, channel);
+                VE::Track<Quaternion> &track = result[i][nodeId].getRotationTrack();
+                trackFromChannel<Quaternion>(track, channel);
             }
         }
         result[i].recalculateDuration();

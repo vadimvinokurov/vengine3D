@@ -6,17 +6,14 @@
 #define VENGINE3D_VE_FRAME_H
 
 namespace VE{
-    template<unsigned int N>
+    template<typename T>
     struct Frame {
+        static constexpr unsigned int N = sizeof(T) / sizeof(float);
         float value[N];
         float in[N];
         float out[N];
         float time;
     };
-
-    using ScalarFrame = Frame<1>;
-    using VectorFrame = Frame<3>;
-    using QuaternionFrame = Frame<4>;
 }
 
 
