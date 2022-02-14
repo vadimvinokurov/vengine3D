@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_TRANSFORM_TRACK_H
 #define VENGINE3D_VE_TRANSFORM_TRACK_H
 
-#include "ve_tarck.h"
+#include "ve_track.h"
 #include "math/ve_transform.h"
 
 namespace VE {
@@ -14,9 +14,9 @@ namespace VE {
         TransformTrack();
         void setId(unsigned int id);
         unsigned int getId();
-        const VectorTrack & getPositionTrack();
-        const QuaternionTrack& getRotationTrack();
-        const VectorTrack& getScaleTrack();
+        VectorTrack & getPositionTrack();
+        QuaternionTrack& getRotationTrack();
+        VectorTrack& getScaleTrack();
         float getStartTime();
         float getEndTime();
         bool isValid();

@@ -5,8 +5,11 @@
 #ifndef VENGINE3D_VE_GLTFLOADER_H
 #define VENGINE3D_VE_GLTFLOADER_H
 
-#include "cgltf.h"
 #include "stdlibraries.h"
+#include "cgltf.h"
+#include "math/ve_transform.h"
+#include "ve_track.h"
+#include "ve_clip.h"
 
 namespace VE {
     class GLTFFile {
@@ -40,13 +43,13 @@ namespace VE {
         };
 
         ~GLTFFile() {
-            if(data_ != NULL) {
+            if (data_ != NULL) {
                 cgltf_free(data_);
                 data_ = NULL;
             }
         }
 
-        bool good(){
+        bool good() {
             return data_ != NULL;
         }
 
@@ -54,9 +57,21 @@ namespace VE {
             return data_;
         }
 
-    private:
-        cgltf_data *data_;
-    };
+        static void getScalarValues(std::vector<float> &out, unsigned int compCount, const cgltf_accessor &inAccessor);
+        static Transform getLocalTransform(cgltf_node &n);
+        static int getNodeIndex(cgltf_node *target, cgltf_node *allNodes, unsigned int numNodes);
+        static std::vector<std::string> loadJointNames(cgltf_data *data);
+        static std::vector<Clip> loadAnimationClips(cgltf_data *data);
+        static Pose loadRestPose(cgltf_data* data);
 
+        template<typename T, int N>
+        static void trackFromChannel(Track<T, N> &result, const cgltf_animation_channel &channel);
+
+    private:
+
+
+        cgltf_data *data_;
+
+    };
 }
 #endif //VENGINE3D_VE_GLTFLOADER_H

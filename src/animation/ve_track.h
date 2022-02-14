@@ -2,8 +2,8 @@
 // Created by boris on 2/13/2022.
 //
 
-#ifndef VENGINE3D_VE_TARCK_H
-#define VENGINE3D_VE_TARCK_H
+#ifndef VENGINE3D_VE_TRACK_H
+#define VENGINE3D_VE_TRACK_H
 
 #include "stdlibraries.h"
 #include "ve_frame.h"
@@ -44,4 +44,4 @@ namespace VE {
 }
 
 
-#endif //VENGINE3D_VE_TARCK_H
+#endif //VENGINE3D_VE_TRACK_H

@@ -6,8 +6,8 @@
 #include "imgui/imgui.h"
 #include "objects/ve_ragdoll_actor.h"
 #include "objects/ve_blockjoints_actor.h"
-
 #include "math/ve_splines.h"
+#include "animation/ve_gltfloader.h"
 
 using namespace VE;
 
@@ -84,6 +84,19 @@ void World::resetScene() {
     for (auto &actor: actors_) {
         std::copy(actor->getObjects().begin(), actor->getObjects().end(), std::back_inserter(worldObjects));
     }
+
+    GLTFFile gltf = GLTFFile("../assets/woman/Woman.gltf");
+    mRestPose = GLTFFile::loadRestPose(gltf.data());
+    mClips = GLTFFile::loadAnimationClips(gltf.data());
+    mCurrentClip = 0;
+    mCurrentPose = mRestPose;
+    unsigned int numUIClips = (unsigned int) mClips.size();
+    for (unsigned int i = 0; i < numUIClips; ++i) {
+        if (mClips[i].getName() == "Walking") {
+            mCurrentClip = i;
+            break;
+        }
+    }
 }
 
 const Camera &World::currentCamera() {
@@ -149,24 +162,34 @@ void World::cameraControl(float dt) {
 }
 
 void VE::World::update(float dt) {
-    auto P1 = Vector3(-10, 0, 5);
-    auto S1 = Vector3(-10, 0, 10);
+    mPlaybackTime = mClips[mCurrentClip].sample(mCurrentPose, mPlaybackTime + dt);
 
-    auto P2 = Vector3(-5, 0, 5);
-    auto S2 = Vector3(-5, 0, 0);
 
-    DebugDraw::Line(P2, S2);
-    DebugDraw::Line(P1, S1);
+    unsigned int requiredVerts = 0;
+    unsigned int numJoints = mCurrentPose.size();
+    for (unsigned int i = 0; i < numJoints; ++i) {
+        if (mCurrentPose.getParent(i) < 0) {
+            continue;
+        }
+        requiredVerts += 2;
+    }
+    std::vector<Vector3> points(requiredVerts);
+    for (unsigned int i = 0; i < numJoints; ++i) {
+        if (mCurrentPose.getParent(i) < 0) {
+            continue;
+        }
 
-    DebugDraw::Point(P1, 12);
-    DebugDraw::Point(P2, 12);
+        points.push_back(mCurrentPose.getGlobalTransform(i).position);
+        points.push_back(mCurrentPose.getGlobalTransform(mCurrentPose.getParent(i)).position);
+    }
 
-    DebugDraw::Point(S1, 12, Color(1, 0, 0));
-    DebugDraw::Point(S2, 12, Color(0, 1, 0));
+    for (auto &&p: points) {
+        p *= 0.01;
+        p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10,0,0);
+    }
 
-    for (float t = 0.0f; t <= 1.0f; t += 0.01f) {
-        auto R = Spline::Hermite(t, P1, S1 - P1, P2, S2 - P2);
-        DebugDraw::Point(R, 3, Color(0, 1, 0));
+    for (int i = 0; i < points.size() - 1; i+=2) {
+        DebugDraw::Line(points[i], points[i + 1]);
     }
 
 
@@ -174,6 +197,8 @@ void VE::World::update(float dt) {
     hid(dt);
     prephysics(dt);
     physics(dt);
+
+
 }
 
 void World::prephysics(float dt) {

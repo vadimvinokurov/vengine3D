@@ -13,6 +13,8 @@
 #include "control/ve_keyboard.h"
 #include "control/ve_mouse.h"
 #include "objects/ve_actor.h"
+#include "animation/ve_pose.h"
+#include "animation/ve_clip.h"
 
 namespace VE {
     class World {
@@ -43,7 +45,13 @@ namespace VE {
         VE::KeyboardPtr keyboard_;
         VE::MouseJointSolverPtr mouseJointSolver_;
         std::vector<ActorPtr> actors_;
-        std::vector<BallAndSocketJointSolver> jointsB;
+
+
+        Pose mRestPose;
+        Pose mCurrentPose;
+        std::vector<Clip> mClips;
+        unsigned int mCurrentClip;
+        float mPlaybackTime;
     };
 
     using WorldPtr = std::shared_ptr<World>;

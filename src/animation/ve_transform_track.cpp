@@ -17,15 +17,15 @@ unsigned int VE::TransformTrack::getId() {
     return id_;
 }
 
-const VE::VectorTrack &VE::TransformTrack::getPositionTrack() {
+VE::VectorTrack &VE::TransformTrack::getPositionTrack() {
     return position_;
 }
 
-const VE::QuaternionTrack &VE::TransformTrack::getRotationTrack() {
+VE::QuaternionTrack &VE::TransformTrack::getRotationTrack() {
     return rotation_;
 }
 
-const VE::VectorTrack &VE::TransformTrack::getScaleTrack() {
+VE::VectorTrack &VE::TransformTrack::getScaleTrack() {
     return scale_;
 }
 
