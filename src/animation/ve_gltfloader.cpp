@@ -80,13 +80,13 @@ void VE::GLTFFile::trackFromChannel(VE::Track<T> &result, const cgltf_animation_
         int offset = 0;
         frame.time = time[i];
         for (int comp = 0; comp < Frame<T>::N; ++comp) {
-            frame.in[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
+            frame.in.v[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
         }
         for (int comp = 0; comp < Frame<T>::N; ++comp) {
-            frame.value[comp] = val[baseIndex + offset++];
+            frame.value.v[comp] = val[baseIndex + offset++];
         }
         for (int comp = 0; comp < Frame<T>::N; ++comp) {
-            frame.out[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
+            frame.out.v[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
         }
     }
 }
