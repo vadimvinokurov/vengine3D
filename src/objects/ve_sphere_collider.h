@@ -24,9 +24,7 @@ namespace VE {
         static constexpr int nT = 10;
         static constexpr int nF = 10;
 
-
-        Vector3 localCenter_;
-        Vector3 globalCenter_;
+        Vector3 center_;
         float radius_ = 1.0f;
     };
 }

@@ -61,8 +61,8 @@ void World::scene() {
     floor->setColor(Color(0.3f, 0.3f, 0.3f));
     worldObjects.push_back(floor);
 
-    //cubeStacking(Vector3(-5, 5, 0));
-    //sphereStacking(Vector3(-10, 5, 0));
+    cubeStacking(Vector3(-5, -15, 0));
+    sphereStacking(Vector3(-10, -15, 0));
 
     float s = 1.0f;
     float b = 0.8f;

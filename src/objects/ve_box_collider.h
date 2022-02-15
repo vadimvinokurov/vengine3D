@@ -36,12 +36,9 @@ namespace VE {
                                                     3, 0, 4, 7,
                                                     1, 2, 6, 5};
 
-        std::vector<Vector3> localVertices_;
-        std::vector<Vector3> localFaceNormals_;
-        std::vector<Vector3> globalVertices_;
-        std::vector<Vector3> globalFaceNormals_;
-        Vector3 localCenterOfMass_;
-        Vector3 globalCenterOfMass_;
+        std::vector<Vector3> vertices_;
+        std::vector<Vector3> faceNormals_;
+        Vector3 centerOfMass_;
         float width_;
         float height_;
         float depth_;

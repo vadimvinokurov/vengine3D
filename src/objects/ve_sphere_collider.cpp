@@ -10,11 +10,10 @@ using namespace VE;
 SphereCollider::SphereCollider(float radius, float mass, const Vector3 &localPosition) :
         Collider(ColliderType::sphere, mass),
         radius_(radius),
-        localCenter_(localPosition),
-        globalCenter_(localCenter_) {
+        center_(localPosition) {
 
 
-    std::vector<Vector3> vertices = getGetRenderVertices(radius_, localCenter_);
+    std::vector<Vector3> vertices = getGetRenderVertices(radius_, center_);
     vertexPosition.set(vertices);
 
     std::vector<unsigned int> indices = getGetRenderIndices();
@@ -25,10 +24,9 @@ SphereCollider::SphereCollider(float radius, float mass, const Vector3 &localPos
 }
 
 void SphereCollider::setLocalPosition(const Vector3 &localPosition) {
-    localCenter_ += localPosition;
-    globalCenter_ = localCenter_;
+    center_ += localPosition;
 
-    vertexPosition.set(getGetRenderVertices(radius_, localCenter_));
+    vertexPosition.set(getGetRenderVertices(radius_, center_));
 }
 
 Matrix3 SphereCollider::getInertia() const {
@@ -41,15 +39,15 @@ Matrix3 SphereCollider::getInertia() const {
 }
 
 Vector3 SphereCollider::farthestVertexInDirection(const Vector3 &direction) const {
-    return direction.getNormalized() * radius_ + globalCenter_;
+    return direction.getNormalized() * radius_ + center_;
 }
 
 void SphereCollider::setTransform(const Transform &transform) {
-    globalCenter_ = transform.applyToPoint(localCenter_);
+    center_ = transform.applyToPoint(center_);
 }
 
 Vector3 SphereCollider::getCenterOfMass() const {
-    return globalCenter_;
+    return center_;
 }
 
 float SphereCollider::getRadius() const {

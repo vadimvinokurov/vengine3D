@@ -72,6 +72,7 @@ namespace VE {
 
         std::vector<ColliderPtr> colliders_;
         Transform transform_;
+        Transform invtransform_;
         Matrix3 invInertia_;
         Vector3 centerOfMass_;
         float invMass_;

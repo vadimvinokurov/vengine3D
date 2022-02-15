@@ -74,10 +74,12 @@ const std::vector<ColliderPtr> &RigidBody::colliders() const {
 }
 
 void RigidBody::setTransform(const Transform &transform) {
-    transform_ = transform;
+    Transform t = Transform::combine(transform, invtransform_);
     for (auto &collider: colliders_) {
-        collider->setTransform(transform_);
+        collider->setTransform(t);
     }
+    transform_ = transform;
+    invtransform_ = transform.getInversed();
 }
 
 void RigidBody::updateVelocity(float dt) {

@@ -8,30 +8,25 @@ using namespace VE;
 
 BoxCollider::BoxCollider(float width, float height, float depth, float mass, const Vector3 &localPosition)
         : Collider(ColliderType::box, mass),
-          localVertices_(computeVertices(width, height, depth, localPosition)),
-          localFaceNormals_(computeFaceNormals(localVertices_, indices_)),
-          globalVertices_(localVertices_),
-          globalFaceNormals_(localFaceNormals_),
-          localCenterOfMass_(computeCenterOfMass(localVertices_)),
-          globalCenterOfMass_(localCenterOfMass_),
+          vertices_(computeVertices(width, height, depth, localPosition)),
+          faceNormals_(computeFaceNormals(vertices_, indices_)),
+          centerOfMass_(computeCenterOfMass(vertices_)),
           width_(width),
           height_(height),
           depth_(depth) {
 
-    vertexPosition.set(localVertices_);
+    vertexPosition.set(vertices_);
     indexBuffer.set(renderIndices_);
-    auto normals = getRenderNormals(localVertices_, renderIndices_);
+    auto normals = getRenderNormals(vertices_, renderIndices_);
     vertexNormals.set(normals);
 
 }
 
 void BoxCollider::setLocalPosition(const Vector3 &localPosition) {
-    std::for_each(localVertices_.begin(), localVertices_.end(), [&localPosition](Vector3 &v) { v += localPosition; });
-    globalVertices_ = localVertices_;
-    localCenterOfMass_ = computeCenterOfMass(localVertices_);
-    globalCenterOfMass_ = localCenterOfMass_;
+    std::for_each(vertices_.begin(), vertices_.end(), [&localPosition](Vector3 &v) { v += localPosition; });
+    centerOfMass_ = computeCenterOfMass(vertices_);
 
-    vertexPosition.set(localVertices_);
+    vertexPosition.set(vertices_);
 }
 
 std::vector<Vector3> BoxCollider::computeVertices(float width, float height, float depth, const Vector3 &localPosition) {
@@ -79,14 +74,14 @@ Matrix3 BoxCollider::getInertia() const {
 }
 
 Vector3 BoxCollider::getCenterOfMass() const {
-    return globalCenterOfMass_;
+    return centerOfMass_;
 }
 
 Vector3 BoxCollider::farthestVertexInDirection(const Vector3 &direction) const {
     float l = std::numeric_limits<float>::lowest();
 
     Vector3 lVertex;
-    for (const VE::Vector3 &vertex: globalVertices_) {
+    for (const VE::Vector3 &vertex: vertices_) {
         float l_tmp = vertex.dot(direction);
         if (l_tmp > l) {
             l = l_tmp;
@@ -97,13 +92,13 @@ Vector3 BoxCollider::farthestVertexInDirection(const Vector3 &direction) const {
 }
 
 void BoxCollider::setTransform(const Transform &transform) {
-    for (size_t i = 0; i < localVertices_.size(); i++) {
-        globalVertices_[i] = transform.applyToPoint(localVertices_[i]);
+    for (size_t i = 0; i < vertices_.size(); i++) {
+        vertices_[i] = transform.applyToPoint(vertices_[i]);
     }
-    for (size_t i = 0; i < localFaceNormals_.size(); i++) {
-        globalFaceNormals_[i] = transform.applyToVector(localFaceNormals_[i]);
+    for (size_t i = 0; i < faceNormals_.size(); i++) {
+        faceNormals_[i] = transform.applyToVector(faceNormals_[i]);
     }
-    globalCenterOfMass_ = transform.applyToPoint(localCenterOfMass_);
+    centerOfMass_ = transform.applyToPoint(centerOfMass_);
 }
 
 ColliderFace BoxCollider::getFaceInDirection(const Vector3 &direction) const {
@@ -111,7 +106,7 @@ ColliderFace BoxCollider::getFaceInDirection(const Vector3 &direction) const {
     unsigned int selectedFaceNumber = std::numeric_limits<unsigned int>::max();
 
     for (unsigned int faceNumber = 0; faceNumber < 6; faceNumber++) {
-        float projection = direction.dot(globalFaceNormals_[faceNumber]);
+        float projection = direction.dot(faceNormals_[faceNumber]);
         if (projection > projectionMax) {
             projectionMax = projection;
             selectedFaceNumber = faceNumber;
@@ -124,11 +119,11 @@ ColliderFace BoxCollider::getFaceInDirection(const Vector3 &direction) const {
 
 ColliderFace BoxCollider::getFace(unsigned int faceNumber) const {
     assert((faceNumber * 4 + 3) < indices_.size());
-    return ColliderFace({globalVertices_[indices_[faceNumber * 4 + 0]],
-                         globalVertices_[indices_[faceNumber * 4 + 1]],
-                         globalVertices_[indices_[faceNumber * 4 + 2]],
-                         globalVertices_[indices_[faceNumber * 4 + 3]]},
-                        globalFaceNormals_[faceNumber]);
+    return ColliderFace({vertices_[indices_[faceNumber * 4 + 0]],
+                         vertices_[indices_[faceNumber * 4 + 1]],
+                         vertices_[indices_[faceNumber * 4 + 2]],
+                         vertices_[indices_[faceNumber * 4 + 3]]},
+                        faceNormals_[faceNumber]);
 }
 
 
