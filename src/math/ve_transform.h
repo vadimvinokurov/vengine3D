@@ -101,7 +101,7 @@ namespace VE {
         static Transform combine(const Transform &a, const Transform &b) {
             Transform out;
             out.scale = multiply(a.scale, b.scale);
-            out.rotation = b.rotation * a.rotation;
+            out.rotation = a.rotation * b.rotation;
 
             out.position = a.rotation.rotate(multiply(a.scale, b.position));
             out.position += a.position;
