@@ -104,14 +104,11 @@ std::vector<VE::Clip> VE::GLTFFile::loadAnimationClips(cgltf_data *data) {
             cgltf_node *target = channel.target_node;
             int nodeId = getNodeIndex(target, data->nodes, numNodes);
             if (channel.target_path == cgltf_animation_path_type_translation) {
-                VE::Track<Vector3> &track = result[i][nodeId].getPositionTrack();
-                trackFromChannel<Vector3>(track, channel);
+                trackFromChannel<Vector3>(result[i][nodeId].position, channel);
             } else if (channel.target_path == cgltf_animation_path_type_scale) {
-                VE::Track<Vector3> &track = result[i][nodeId].getScaleTrack();
-                trackFromChannel<Vector3>(track, channel);
+                trackFromChannel<Vector3>( result[i][nodeId].scale, channel);
             } else if (channel.target_path == cgltf_animation_path_type_rotation) {
-                VE::Track<Quaternion> &track = result[i][nodeId].getRotationTrack();
-                trackFromChannel<Quaternion>(track, channel);
+                trackFromChannel<Quaternion>( result[i][nodeId].rotation, channel);
             }
         }
         result[i].recalculateDuration();

@@ -10,41 +10,28 @@ VE::TransformTrack::TransformTrack() {
     id_ = 0;
 }
 
-
 void VE::TransformTrack::setId(unsigned int id) {
     id_ = id;
 }
 
-unsigned int VE::TransformTrack::getId() {
+unsigned int VE::TransformTrack::getId() const {
     return id_;
 }
 
-VE::Track<Vector3> &VE::TransformTrack::getPositionTrack() {
-    return position_;
-}
-
-VE::Track<Quaternion> &VE::TransformTrack::getRotationTrack() {
-    return rotation_;
-}
-
-VE::Track<Vector3> &VE::TransformTrack::getScaleTrack() {
-    return scale_;
-}
-
-float VE::TransformTrack::getStartTime() {
+float VE::TransformTrack::getStartTime() const {
     float result = 0.0f;
     bool isSet = false;
-    if (position_.size() > 1) {
-        result = position_.getStartTime();
+    if (position.size() > 1) {
+        result = position.getStartTime();
         isSet = true;
     }
-    if (float rotationStart = rotation_.getStartTime(); rotation_.size() > 1) {
+    if (float rotationStart = rotation.getStartTime(); rotation.size() > 1) {
         if (rotationStart < result || !isSet) {
             result = rotationStart;
             isSet = true;
         }
     }
-    if (float scaleStart = scale_.getStartTime(); scale_.size() > 1) {
+    if (float scaleStart = scale.getStartTime(); scale.size() > 1) {
         if (scaleStart < result || !isSet) {
             result = scaleStart;
         }
@@ -52,20 +39,20 @@ float VE::TransformTrack::getStartTime() {
     return result;
 }
 
-float VE::TransformTrack::getEndTime() {
+float VE::TransformTrack::getEndTime() const {
     float result = 0.0f;
     bool isSet = false;
-    if (position_.size() > 1) {
-        result = position_.getEndTime();
+    if (position.size() > 1) {
+        result = position.getEndTime();
         isSet = true;
     }
-    if (float rotationEnd = rotation_.getEndTime(); rotation_.size() > 1) {
+    if (float rotationEnd = rotation.getEndTime(); rotation.size() > 1) {
         if (rotationEnd > result || !isSet) {
             result = rotationEnd;
             isSet = true;
         }
     }
-    if (float scaleEnd = scale_.getEndTime(); scale_.size() > 1) {
+    if (float scaleEnd = scale.getEndTime(); scale.size() > 1) {
         if (scaleEnd > result || !isSet) {
             result = scaleEnd;
         }
@@ -73,20 +60,20 @@ float VE::TransformTrack::getEndTime() {
     return result;
 }
 
-bool VE::TransformTrack::isValid() {
-    return position_.size() > 1 || rotation_.size() > 1 || scale_.size() > 1;
+bool VE::TransformTrack::isValid() const {
+    return position.size() > 1 || rotation.size() > 1 || scale.size() > 1;
 }
 
-VE::Transform VE::TransformTrack::sample(const VE::Transform &ref, float time, bool looping) {
+VE::Transform VE::TransformTrack::sample(const VE::Transform &ref, float time, bool looping) const {
     Transform result = ref;
-    if (position_.size() > 1) {
-        result.position = position_.sample(time, looping);
+    if (position.size() > 1) {
+        result.position = position.sample(time, looping);
     }
-    if (rotation_.size() > 1) {
-        result.rotation = rotation_.sample(time, looping);
+    if (rotation.size() > 1) {
+        result.rotation = rotation.sample(time, looping);
     }
-    if (scale_.size() > 1) {
-        result.scale = scale_.sample(time, looping);
+    if (scale.size() > 1) {
+        result.scale = scale.sample(time, looping);
     }
     return result;
 }
