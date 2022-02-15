@@ -74,6 +74,20 @@ void World::scene() {
 
     actors_.push_back(create<RagdollActor>(Vector3(0, 0, 20)));
     actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
+
+
+    GLTFFile gltf = GLTFFile("../assets/woman/Woman.gltf");
+    restPose = GLTFFile::loadRestPose(gltf.data());
+    clips = GLTFFile::loadAnimationClips(gltf.data());
+    currentClipNumber = 0;
+    currentPose = restPose;
+
+    for (std::size_t i = 0; i < clips.size(); ++i) {
+        if (clips[i].getName() == "Walking") {
+            currentClipNumber = i;
+            break;
+        }
+    }
 }
 
 void World::resetScene() {
@@ -83,19 +97,6 @@ void World::resetScene() {
     scene();
     for (auto &actor: actors_) {
         std::copy(actor->getObjects().begin(), actor->getObjects().end(), std::back_inserter(worldObjects));
-    }
-
-    GLTFFile gltf = GLTFFile("../assets/woman/Woman.gltf");
-    mRestPose = GLTFFile::loadRestPose(gltf.data());
-    mClips = GLTFFile::loadAnimationClips(gltf.data());
-    mCurrentClip = 0;
-    mCurrentPose = mRestPose;
-    unsigned int numUIClips = (unsigned int) mClips.size();
-    for (unsigned int i = 0; i < numUIClips; ++i) {
-        if (mClips[i].getName() == "Walking") {
-            mCurrentClip = i;
-            break;
-        }
     }
 }
 
@@ -161,18 +162,19 @@ void World::cameraControl(float dt) {
     }
 }
 
-void VE::World::update(float dt) {
-    mPlaybackTime = mClips[mCurrentClip].sample(mCurrentPose, mPlaybackTime + dt);
+
+void World::animation(float dt) {
+    playbackTime = clips[currentClipNumber].sample(currentPose, playbackTime + dt);
 
 
     std::vector<Vector3> points;
-    for (unsigned int i = 0; i < mCurrentPose.jointCount(); ++i) {
-        if (mCurrentPose.getParent(i) < 0) {
+    for (unsigned int i = 0; i < currentPose.jointCount(); ++i) {
+        if (currentPose.getParent(i) < 0) {
             continue;
         }
 
-        points.push_back(mCurrentPose.getGlobalTransform(i).position);
-        points.push_back(mCurrentPose.getGlobalTransform(mCurrentPose.getParent(i)).position);
+        points.push_back(currentPose.getGlobalTransform(i).position);
+        points.push_back(currentPose.getGlobalTransform(currentPose.getParent(i)).position);
     }
 
     for (auto &&p: points) {
@@ -183,14 +185,15 @@ void VE::World::update(float dt) {
     for (int i = 0; i < points.size() - 1; i+=2) {
         DebugDraw::Line(points[i], points[i + 1]);
     }
+}
 
 
+void VE::World::update(float dt) {
     gui();
     hid(dt);
     prephysics(dt);
     physics(dt);
-
-
+    animation(dt);
 }
 
 void World::prephysics(float dt) {

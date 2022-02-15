@@ -37,6 +37,8 @@ namespace VE {
         void prephysics(float dt);
         void physics(float dt);
 
+        void animation(float dt);
+
         void resetScene();
         CameraPtr currentCamera_ = std::make_shared<Camera>();
         std::map<VE::ContactKey, VE::ContactSolver> contactSolvers;
@@ -47,11 +49,11 @@ namespace VE {
         std::vector<ActorPtr> actors_;
 
 
-        Pose mRestPose;
-        Pose mCurrentPose;
-        std::vector<Clip> mClips;
-        unsigned int mCurrentClip;
-        float mPlaybackTime;
+        Pose restPose;
+        Pose currentPose;
+        std::vector<Clip> clips;
+        unsigned int currentClipNumber;
+        float playbackTime;
     };
 
     using WorldPtr = std::shared_ptr<World>;
