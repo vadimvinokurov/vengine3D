@@ -38,15 +38,13 @@ float VE::TransformTrack::getStartTime() {
         result = position_.getStartTime();
         isSet = true;
     }
-    if (rotation_.size() > 1) {
-        float rotationStart = rotation_.getStartTime();
+    if (float rotationStart = rotation_.getStartTime(); rotation_.size() > 1) {
         if (rotationStart < result || !isSet) {
             result = rotationStart;
             isSet = true;
         }
     }
-    if (scale_.size() > 1) {
-        float scaleStart = scale_.getStartTime();
+    if (float scaleStart = scale_.getStartTime(); scale_.size() > 1) {
         if (scaleStart < result || !isSet) {
             result = scaleStart;
         }
@@ -61,15 +59,13 @@ float VE::TransformTrack::getEndTime() {
         result = position_.getEndTime();
         isSet = true;
     }
-    if (rotation_.size() > 1) {
-        float rotationEnd = rotation_.getEndTime();
+    if (float rotationEnd = rotation_.getEndTime(); rotation_.size() > 1) {
         if (rotationEnd > result || !isSet) {
             result = rotationEnd;
             isSet = true;
         }
     }
-    if (scale_.size() > 1) {
-        float scaleEnd = scale_.getEndTime();
+    if (float scaleEnd = scale_.getEndTime(); scale_.size() > 1) {
         if (scaleEnd > result || !isSet) {
             result = scaleEnd;
         }
@@ -78,9 +74,7 @@ float VE::TransformTrack::getEndTime() {
 }
 
 bool VE::TransformTrack::isValid() {
-    return position_.size() > 1 ||
-           rotation_.size() > 1 ||
-           scale_.size() > 1;
+    return position_.size() > 1 || rotation_.size() > 1 || scale_.size() > 1;
 }
 
 VE::Transform VE::TransformTrack::sample(const VE::Transform &ref, float time, bool looping) {
