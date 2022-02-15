@@ -76,7 +76,8 @@ void World::scene() {
     actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
 
 
-    GLTFFile gltf = GLTFFile("../assets/woman/Woman.gltf");
+    // GLTFFile gltf = GLTFFile("../assets/woman/Woman.gltf");
+    GLTFFile gltf = GLTFFile("../assets/stormtrooper/scene.gltf");
     restPose = GLTFFile::loadRestPose(gltf.data());
     clips = GLTFFile::loadAnimationClips(gltf.data());
     currentClipNumber = 0;
@@ -178,11 +179,12 @@ void World::animation(float dt) {
     }
 
     for (auto &&p: points) {
-        p *= 0.01;
-        p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10,0,0);
+        //p *= 0.01;
+        //p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10,0,0);
+        p = p * -1.0f + Vector3(-10, 0, 0);
     }
 
-    for (int i = 0; i < points.size() - 1; i+=2) {
+    for (int i = 0; i < points.size() - 1; i += 2) {
         DebugDraw::Line(points[i], points[i + 1]);
     }
 }
