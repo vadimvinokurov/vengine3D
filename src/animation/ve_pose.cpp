@@ -30,76 +30,44 @@ void VE::Pose::resize(unsigned int size) {
     parents_.resize(size);
 }
 
-unsigned int VE::Pose::size() {
+unsigned int VE::Pose::jointCount() {
     return joints_.size();
 }
 
-int VE::Pose::getParent(unsigned int index) {
-    return parents_[index];
+int VE::Pose::getParent(unsigned int jointIndex) {
+    return parents_[jointIndex];
 }
 
-void VE::Pose::setParent(unsigned int index, int parent) {
-    parents_[index] = parent;
+void VE::Pose::setParent(unsigned int jointIndex, int parent) {
+    parents_[jointIndex] = parent;
 }
 
-VE::Transform VE::Pose::getLocalTransform(unsigned int index) {
-    return joints_[index];
+VE::Transform VE::Pose::getLocalTransform(unsigned int jointIndex) {
+    return joints_[jointIndex];
 }
 
-void VE::Pose::setLocalTransform(unsigned int index, const VE::Transform &transform) {
-    joints_[index] = transform;
+void VE::Pose::setLocalTransform(unsigned int jointIndex, const VE::Transform &transform) {
+    joints_[jointIndex] = transform;
 }
 
-VE::Transform VE::Pose::getGlobalTransform(unsigned int index) {
-    Transform result = joints_[index];
-    for (int p = parents_[index]; p >= 0; p = parents_[p]) {
+VE::Transform VE::Pose::getGlobalTransform(unsigned int jointIndex) {
+    Transform result = joints_[jointIndex];
+    for (int p = parents_[jointIndex]; p >= 0; p = parents_[p]) {
         result = Transform::combine(joints_[p], result);
     }
     return result;
 }
 
-VE::Transform VE::Pose::operator=(unsigned int index) {
-    return getGlobalTransform(index);
+VE::Transform VE::Pose::operator[](unsigned int jointIndex) {
+    return getGlobalTransform(jointIndex);
 }
 
 void VE::Pose::getMatrixPalette(std::vector<VE::Matrix4> &out) {
-    if (out.size() != this->size()) {
-        out.resize(this->size());
+    if (out.size() != this->jointCount()) {
+        out.resize(this->jointCount());
     }
 
-    for (unsigned int i = 0; i < this->size(); ++i) {
+    for (unsigned int i = 0; i < this->jointCount(); ++i) {
         out[i] = getGlobalTransform(i).toMatrix();
     }
-}
-
-bool VE::Pose::operator==(const VE::Pose &other) {
-    if (joints_.size() != other.joints_.size()) {
-        return false;
-    }
-    if (parents_.size() != other.parents_.size()) {
-        return false;
-    }
-
-    for (size_t i = 0; i < joints_.size(); ++i) {
-        Transform thisLocal = joints_[i];
-        Transform otherLocal = other.joints_[i];
-
-        if (parents_[i] != other.parents_[i]) {
-            return false;
-        }
-        if (thisLocal.position != otherLocal.position) {
-            return false;
-        }
-        if (thisLocal.rotation != otherLocal.rotation) {
-            return false;
-        }
-        if (thisLocal.scale != otherLocal.scale) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool VE::Pose::operator!=(const VE::Pose &other) {
-    return !(*this == other);
 }

@@ -165,16 +165,8 @@ void VE::World::update(float dt) {
     mPlaybackTime = mClips[mCurrentClip].sample(mCurrentPose, mPlaybackTime + dt);
 
 
-    unsigned int requiredVerts = 0;
-    unsigned int numJoints = mCurrentPose.size();
-    for (unsigned int i = 0; i < numJoints; ++i) {
-        if (mCurrentPose.getParent(i) < 0) {
-            continue;
-        }
-        requiredVerts += 2;
-    }
-    std::vector<Vector3> points(requiredVerts);
-    for (unsigned int i = 0; i < numJoints; ++i) {
+    std::vector<Vector3> points;
+    for (unsigned int i = 0; i < mCurrentPose.jointCount(); ++i) {
         if (mCurrentPose.getParent(i) < 0) {
             continue;
         }
