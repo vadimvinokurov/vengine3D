@@ -5,7 +5,7 @@
 #include "ve_clip.h"
 
 VE::Clip::Clip() {
-    name_ = "No name given";
+    name_ = "No name";
     startTime_ = 0.0f;
     endTime_ = 0.0f;
     looping_ = true;
@@ -18,10 +18,10 @@ float VE::Clip::sample(VE::Pose &outPose, float time) {
     time = agjustTimeToFitRange(time);
 
     for(size_t i = 0; i < tracks_.size(); ++i) {
-        size_t  j = tracks_[i].getId();
-        Transform local = outPose.getLocalTransform(j);
+        size_t  jointIndex = tracks_[i].getId();
+        Transform local = outPose.getLocalTransform(jointIndex);
         Transform animated = tracks_[i].sample(local, time, looping_);
-        outPose.setLocalTransform(j, animated);
+        outPose.setLocalTransform(jointIndex, animated);
     }
     return time;
 }
