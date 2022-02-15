@@ -16,22 +16,22 @@ namespace VE {
     class Track {
     public:
         Track();
-        T sample(float time, bool looping);
         Frame<T> &operator[](std::size_t index);
         void resize(std::size_t size);
         void setInterpolation(Interpolation interpolation);
-        Interpolation getInterpolation();
-        float getStartTime();
-        float getEndTime();
-        std::size_t size();
+        T sample(float time, bool looping) const;
+        Interpolation getInterpolation() const;
+        float getStartTime() const;
+        float getEndTime() const;
+        std::size_t size() const;
     private:
-        T sampleConstant(float time, bool looping);
-        T sampleLinear(float time, bool looping);
-        T sampleCubic(float time, bool looping);
-        std::size_t frameIndex(float time, bool looping);
-        float adjustTimeToFitTrack(float time, bool looping);
-        T hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2);
-        T normalize_if_quaternion(const T &value);
+        T sampleConstant(float time, bool looping) const;
+        T sampleLinear(float time, bool looping) const;
+        T sampleCubic(float time, bool looping) const;
+        std::size_t frameIndex(float time, bool looping) const;
+        float adjustTimeToFitTrack(float time, bool looping) const;
+        T hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) const;
+        T normalize_if_quaternion(const T &value) const;
 
         std::vector<Frame<T>> frames_;
         Interpolation interpolation_;

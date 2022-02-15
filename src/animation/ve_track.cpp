@@ -16,7 +16,22 @@ template<typename T>
 Track<T>::Track() : interpolation_(Interpolation::Linear) {}
 
 template<typename T>
-T Track<T>::sample(float time, bool looping) {
+Frame<T> &Track<T>::operator[](std::size_t index) {
+    return frames_[index];
+}
+
+template<typename T>
+void Track<T>::setInterpolation(Interpolation interpolation) {
+    interpolation_ = interpolation;
+}
+
+template<typename T>
+void Track<T>::resize(std::size_t size) {
+    frames_.resize(size);
+}
+
+template<typename T>
+T Track<T>::sample(float time, bool looping) const {
     switch (interpolation_) {
         case Interpolation::Constant:
             return sampleConstant(time, looping);
@@ -30,42 +45,27 @@ T Track<T>::sample(float time, bool looping) {
 }
 
 template<typename T>
-void Track<T>::resize(std::size_t size) {
-    frames_.resize(size);
-}
-
-template<typename T>
-float Track<T>::getStartTime() {
+float Track<T>::getStartTime() const {
     return frames_.empty() ? 0.0f : frames_.front().time;
 }
 
 template<typename T>
-float Track<T>::getEndTime() {
+float Track<T>::getEndTime() const {
     return frames_.empty() ? 0.0f : frames_.back().time;
 }
 
 template<typename T>
-Frame<T> &Track<T>::operator[](std::size_t index) {
-    return frames_[index];
-}
-
-template<typename T>
-std::size_t Track<T>::size() {
+std::size_t Track<T>::size() const {
     return frames_.size();
 }
 
 template<typename T>
-Interpolation Track<T>::getInterpolation() {
+Interpolation Track<T>::getInterpolation() const {
     return interpolation_;
 }
 
 template<typename T>
-void Track<T>::setInterpolation(Interpolation interpolation) {
-    interpolation_ = interpolation;
-}
-
-template<typename T>
-T Track<T>::sampleConstant(float time, bool looping) {
+T Track<T>::sampleConstant(float time, bool looping) const {
     auto frame = frameIndex(time, looping);
     if (frame >= frames_.size()) {
         return T();
@@ -74,7 +74,7 @@ T Track<T>::sampleConstant(float time, bool looping) {
 }
 
 template<typename T>
-T Track<T>::sampleLinear(float time, bool looping) {
+T Track<T>::sampleLinear(float time, bool looping) const {
     auto thisFrame = frameIndex(time, looping);
     if (frames_.empty() || thisFrame >= frames_.size() - 1) {
         return T();
@@ -95,7 +95,7 @@ T Track<T>::sampleLinear(float time, bool looping) {
 }
 
 template<typename T>
-T Track<T>::sampleCubic(float time, bool looping) {
+T Track<T>::sampleCubic(float time, bool looping) const {
     auto thisFrame = frameIndex(time, looping);
     if (frames_.empty() || thisFrame >= frames_.size() - 1) {
         return T();
@@ -118,7 +118,7 @@ T Track<T>::sampleCubic(float time, bool looping) {
 }
 
 template<typename T>
-std::size_t Track<T>::frameIndex(float time, bool looping) {
+std::size_t Track<T>::frameIndex(float time, bool looping) const {
     auto size = frames_.size();
     if (size < 2) {
         return size;
@@ -143,7 +143,7 @@ std::size_t Track<T>::frameIndex(float time, bool looping) {
 }
 
 template<typename T>
-float Track<T>::adjustTimeToFitTrack(float time, bool looping) {
+float Track<T>::adjustTimeToFitTrack(float time, bool looping) const {
     auto size = frames_.size();
     if (size < 2) {
         return 0.0f;
@@ -158,12 +158,12 @@ float Track<T>::adjustTimeToFitTrack(float time, bool looping) {
 }
 
 template<typename T>
-T Track<T>::hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) {
+T Track<T>::hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) const {
     return Spline::Hermite(t, p1, s1, p2, s2);
 }
 
 template<>
-Quaternion Track<Quaternion>::hermite(float t, const Quaternion &p1, const Quaternion &s1, const Quaternion &p2, const Quaternion &s2) {
+Quaternion Track<Quaternion>::hermite(float t, const Quaternion &p1, const Quaternion &s1, const Quaternion &p2, const Quaternion &s2) const {
     if (p1.dot(p2) < 0) {
         return Spline::Hermite(t, p1, s1, p2 * -1.0f, s2).getNormalized();
     } else {
@@ -172,11 +172,11 @@ Quaternion Track<Quaternion>::hermite(float t, const Quaternion &p1, const Quate
 }
 
 template<typename T>
-T Track<T>::normalize_if_quaternion(const T &value) {
+T Track<T>::normalize_if_quaternion(const T &value) const {
     return value;
 }
 
 template<>
-Quaternion Track<Quaternion>::normalize_if_quaternion(const Quaternion &value) {
+Quaternion Track<Quaternion>::normalize_if_quaternion(const Quaternion &value) const {
     return value.getNormalized();
 }

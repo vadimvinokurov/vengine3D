@@ -4,6 +4,7 @@
 
 #ifndef VENGINE3D_VE_TRANSFORM_H
 #define VENGINE3D_VE_TRANSFORM_H
+
 #include "ve_engine_settings.h"
 #include "ve_vector.h"
 #include "ve_matrix3.h"
@@ -40,7 +41,7 @@ namespace VE {
             return rotation.rotate(multiply(localPoint, scale));
         }
 
-        Transform getInversed() {
+        Transform getInversed() const {
             Transform inv;
 
             inv.rotation = this->rotation.inverse();

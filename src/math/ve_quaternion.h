@@ -95,18 +95,18 @@ namespace VE {
             return *this;
         }
 
-        bool operator==(const Quaternion &other) {
+        bool operator==(const Quaternion &other) const {
             return (fabsf(this->x - other.x) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->y - other.y) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->z - other.z) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->w - other.w) < VEngineSettings::QUATERNION_EPSILON);
         }
 
-        bool operator!=(const Quaternion &other) {
+        bool operator!=(const Quaternion &other) const {
             return !(*this == other);
         }
 
-        bool sameOrientation(const Quaternion &other) {
+        bool sameOrientation(const Quaternion &other) const {
             return (fabsf(this->x - other.x) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->y - other.y) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->z - other.z) < VEngineSettings::QUATERNION_EPSILON &&
