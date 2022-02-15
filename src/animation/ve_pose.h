@@ -16,14 +16,13 @@ namespace VE {
         Pose(const Pose &other);
         Pose &operator=(const Pose &other);
         void resize(unsigned int size);
-        unsigned int jointCount();
-        int getParent(unsigned int jointIndex);
         void setParent(unsigned int jointIndex, int parent);
-        Transform getLocalTransform(unsigned int jointIndex);
         void setLocalTransform(unsigned int jointIndex, const Transform &transform);
 
-        Transform getGlobalTransform(unsigned int jointIndex);
-        Transform operator[](unsigned int jointIndex);
+        unsigned int jointCount() const;
+        int getParent(unsigned int jointIndex) const ;
+        const Transform& getLocalTransform(unsigned int jointIndex) const;
+        Transform getGlobalTransform(unsigned int jointIndex) const;
         void getMatrixPalette(std::vector<Matrix4> &out);
     private:
         std::vector<Transform> joints_;
