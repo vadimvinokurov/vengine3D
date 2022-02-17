@@ -12,9 +12,9 @@
 #include "ve_clip.h"
 
 namespace VE {
-    class GLTFFile {
+    class GLTF {
     public:
-        GLTFFile(const char *path) {
+        GLTF(const char *path) {
             cgltf_options options{};
             data_ = NULL;
             cgltf_result result = cgltf_parse_file(&options, path, &data_);
@@ -42,7 +42,7 @@ namespace VE {
             }
         };
 
-        ~GLTFFile() {
+        ~GLTF() {
             if (data_ != NULL) {
                 cgltf_free(data_);
                 data_ = NULL;
@@ -57,12 +57,16 @@ namespace VE {
             return data_;
         }
 
-        static void getScalarValues(std::vector<float> &out, unsigned int compCount, const cgltf_accessor &inAccessor);
-        static Transform getLocalTransform(cgltf_node &n);
+        std::vector<Clip> loadAnimationClips();
+        Pose loadRestPose();
+        static Transform getLocalTransform(const cgltf_node &node);
         static int getNodeIndex(cgltf_node *target, cgltf_node *allNodes, unsigned int numNodes);
+
+        static void getScalarValues(std::vector<float> &out, unsigned int compCount, const cgltf_accessor &inAccessor);
+
+
         static std::vector<std::string> loadJointNames(cgltf_data *data);
-        static std::vector<Clip> loadAnimationClips(cgltf_data *data);
-        static Pose loadRestPose(cgltf_data* data);
+
 
         template<typename T>
         static void trackFromChannel(Track<T> &result, const cgltf_animation_channel &channel);

@@ -76,19 +76,22 @@ void World::scene() {
     actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
 
 
-     GLTFFile gltf = GLTFFile("../assets/woman/Woman.gltf");
+    GLTF gltf = GLTF("../assets/woman/Woman.gltf");
     //GLTFFile gltf = GLTFFile("../assets/stormtrooper/scene.gltf");
-    restPose = GLTFFile::loadRestPose(gltf.data());
-    clips = GLTFFile::loadAnimationClips(gltf.data());
-    currentClipNumber = 0;
-    currentPose = restPose;
+    if (gltf.good()) {
+        restPose = gltf.loadRestPose();
+        clips = gltf.loadAnimationClips();
+        currentClipNumber = 0;
+        currentPose = restPose;
 
-    for (std::size_t i = 0; i < clips.size(); ++i) {
-        if (clips[i].getName() == "Walking") {
-            currentClipNumber = i;
-            break;
+        for (std::size_t i = 0; i < clips.size(); ++i) {
+            if (clips[i].getName() == "Walking") {
+                currentClipNumber = i;
+                break;
+            }
         }
     }
+
 }
 
 void World::resetScene() {
@@ -165,6 +168,8 @@ void World::cameraControl(float dt) {
 
 
 void World::animation(float dt) {
+    if (clips.empty()) return;
+
     playbackTime = clips[currentClipNumber].sample(currentPose, playbackTime + dt);
 
 
@@ -180,7 +185,7 @@ void World::animation(float dt) {
 
     for (auto &&p: points) {
         p *= 0.01;
-        p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10,0,0);
+        p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10, 0, 0);
         //p = p * -1.0f + Vector3(-10, 0, 0);
     }
 

@@ -115,17 +115,15 @@ void Window::run() {
         world_->update(deltaTime_);
         chrono::duration<double> worldUpdateTime = chrono::steady_clock::now() - startWorldUpdateTime;
 
-        auto startRenderTime = chrono::steady_clock::now();
-        render.draw(world_);
-
         if (mouse_->isLock()) {
             Vector3 lockScreenPosition = openGLToScreenCoordinate(mouse_->lockPosition());
             glfwSetCursorPos(window_, lockScreenPosition.x, lockScreenPosition.y);
         }
 
+        auto startRenderTime = chrono::steady_clock::now();
+        render.draw(world_);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         glfwSwapBuffers(window_);
         chrono::duration<double> renderTime = chrono::steady_clock::now() - startRenderTime;
 
@@ -137,7 +135,7 @@ void Window::run() {
             }
         } else {
             frameTime = chrono::steady_clock::now() - t1;
-            std::string info = "Freez info: " +
+            std::string info = "Freeze info: " +
                                to_string(int(1 / frameTime.count())) + " (" + to_string(frameTime.count() * 1000.0f) + ")" + " FPS | " +
                                to_string(timeUsed.count() * 1000.0f) + " ms time used | " +
                                to_string(worldUpdateTime.count() * 1000.0f) + " ms world update | " +
@@ -159,8 +157,8 @@ void Window::run() {
     }
 }
 
-void Window::setWorld(const WorldPtr &shownWorld) {
-    world_ = shownWorld;
+void Window::setWorld(const WorldPtr &world) {
+    world_ = world;
 }
 
 void Window::setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse) {
