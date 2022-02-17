@@ -5,6 +5,8 @@
 #ifndef VENGINE3D_VE_FRAME_H
 #define VENGINE3D_VE_FRAME_H
 
+#include "ve_core.h"
+
 namespace VE {
     template<typename T>
     struct Frame {

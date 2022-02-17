@@ -5,7 +5,8 @@
 #ifndef VENGINE3D_VE_TRACK_H
 #define VENGINE3D_VE_TRACK_H
 
-#include "stdlibraries.h"
+#include "ve_core.h"
+
 #include "ve_frame.h"
 #include "math/ve_vector.h"
 #include "math/ve_quaternion.h"

@@ -5,7 +5,8 @@
 #ifndef VENGINE3D_VE_GLTFLOADER_H
 #define VENGINE3D_VE_GLTFLOADER_H
 
-#include "stdlibraries.h"
+#include "ve_core.h"
+
 #include "cgltf.h"
 #include "math/ve_transform.h"
 #include "ve_track.h"

@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_POSE_H
 #define VENGINE3D_VE_POSE_H
 
-#include "stdlibraries.h"
+#include "ve_core.h"
 #include "math\ve_transform.h"
 
 namespace VE {

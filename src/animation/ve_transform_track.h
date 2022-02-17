@@ -5,6 +5,8 @@
 #ifndef VENGINE3D_VE_TRANSFORM_TRACK_H
 #define VENGINE3D_VE_TRANSFORM_TRACK_H
 
+#include "ve_core.h"
+
 #include "ve_track.h"
 #include "math/ve_transform.h"
 

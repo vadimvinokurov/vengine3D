@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_VE_CLIP_H
 #define VENGINE3D_VE_CLIP_H
 
-#include <stdlibraries.h>
+#include "ve_core.h"
 #include "ve_transform_track.h"
 #include "ve_pose.h"
 
