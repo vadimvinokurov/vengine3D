@@ -19,27 +19,27 @@ VE::Pose VE::GLTF::loadRestPose() {
 
 std::vector<VE::Clip> VE::GLTF::loadAnimationClips() {
     std::size_t numClips = data_->animations_count;
-    std::size_t numNodes = data_->nodes_count;
 
-    std::vector<Clip> result(numClips);
+    std::vector<Clip> clips(numClips);
     for (std::size_t i = 0; i < numClips; ++i) {
-        result[i].setName(data_->animations[i].name);
+        clips[i].setName(data_->animations[i].name);
         std::size_t numChannels = data_->animations[i].channels_count;
 
         for (std::size_t j = 0; j < numChannels; ++j) {
             cgltf_animation_channel &channel = data_->animations[i].channels[j];
-            int nodeId = getNodeIndex(channel.target_node, data_->nodes, numNodes);
+            std::size_t nodeId = getNodeIndex(channel.target_node, data_->nodes, data_->nodes_count);
+
             if (channel.target_path == cgltf_animation_path_type_translation) {
-                trackFromChannel<Vector3>(result[i][nodeId].position, channel);
+                trackFromChannel<Vector3>(clips[i][nodeId].position, channel);
             } else if (channel.target_path == cgltf_animation_path_type_scale) {
-                trackFromChannel<Vector3>(result[i][nodeId].scale, channel);
+                trackFromChannel<Vector3>(clips[i][nodeId].scale, channel);
             } else if (channel.target_path == cgltf_animation_path_type_rotation) {
-                trackFromChannel<Quaternion>(result[i][nodeId].rotation, channel);
+                trackFromChannel<Quaternion>(clips[i][nodeId].rotation, channel);
             }
         }
-        result[i].recalculateDuration();
+        clips[i].recalculateDuration();
     }
-    return result;
+    return clips;
 }
 
 VE::Transform VE::GLTF::getLocalTransform(const cgltf_node &node) {
@@ -68,29 +68,8 @@ std::size_t VE::GLTF::getNodeIndex(cgltf_node *target, cgltf_node *allNodes, std
     return Joint::hasNoParent;
 }
 
-void VE::GLTF::getScalarValues(std::vector<float> &out, unsigned int compCount, const cgltf_accessor &inAccessor) {
-    out.resize(inAccessor.count * compCount);
-    for (cgltf_size i = 0; i < inAccessor.count; ++i) {
-        cgltf_accessor_read_float(&inAccessor, i, &out[i * compCount], compCount);
-    }
-}
-
-std::vector<std::string> VE::GLTF::loadJointNames(cgltf_data *data) {
-    unsigned int boneCount = static_cast<unsigned int>(data->nodes_count);
-    std::vector<std::string> result(boneCount, "Not Set");
-    for (unsigned int i = 0; i < boneCount; ++i) {
-        cgltf_node *node = &(data->nodes[i]);
-        if (node->name == 0) {
-            result[i] = "EMPTY NODE";
-        } else {
-            result[i] = node->name;
-        }
-    }
-    return result;
-}
-
 template<typename T>
-void VE::GLTF::trackFromChannel(VE::Track<T> &result, const cgltf_animation_channel &channel) {
+void VE::GLTF::trackFromChannel(VE::Track<T> &track, const cgltf_animation_channel &channel) {
     cgltf_animation_sampler &sampler = *channel.sampler;
     Interpolation interpolation = Interpolation::Constant;
     if (sampler.interpolation == cgltf_interpolation_type_linear) {
@@ -98,19 +77,19 @@ void VE::GLTF::trackFromChannel(VE::Track<T> &result, const cgltf_animation_chan
     } else if (sampler.interpolation == cgltf_interpolation_type_cubic_spline) {
         interpolation = Interpolation::Cubic;
     }
-    bool isSamplerCubic = interpolation == Interpolation::Cubic;
-    result.setInterpolation(interpolation);
-    std::vector<float> time; // times
-    getScalarValues(time, 1, *sampler.input);
-    std::vector<float> val; // values
-    getScalarValues(val, Frame<T>::N, *sampler.output);
+    track.setInterpolation(interpolation);
 
-    unsigned int numFrames = sampler.input->count;
-    unsigned int compCount = val.size() / time.size();
-    result.resize(numFrames);
-    for (unsigned int i = 0; i < numFrames; ++i) {
+    bool isSamplerCubic = interpolation == Interpolation::Cubic;
+
+    std::vector<float> time = getScalarValues(1, *sampler.input);
+    std::vector<float> val = getScalarValues(Frame<T>::N, *sampler.output);
+
+    std::size_t numFrames = sampler.input->count;
+    std::size_t compCount = val.size() / time.size();
+    track.resize(numFrames);
+    for (std::size_t i = 0; i < numFrames; ++i) {
         int baseIndex = i * compCount;
-        Frame<T> &frame = result[i];
+        Frame<T> &frame = track[i];
         int offset = 0;
         frame.time = time[i];
         for (int comp = 0; comp < Frame<T>::N; ++comp) {
@@ -123,6 +102,28 @@ void VE::GLTF::trackFromChannel(VE::Track<T> &result, const cgltf_animation_chan
             frame.out.v[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
         }
     }
+}
+
+std::vector<float> VE::GLTF::getScalarValues(unsigned int compCount, const cgltf_accessor &inAccessor) {
+    std::vector<float> out(inAccessor.count * compCount);
+    for (cgltf_size i = 0; i < inAccessor.count; ++i) {
+        cgltf_accessor_read_float(&inAccessor, i, &out[i * compCount], compCount);
+    }
+    return out;
+}
+
+std::vector<std::string> VE::GLTF::loadJointNames(cgltf_data *data) {
+    std::size_t jointCount = data->nodes_count;
+    std::vector<std::string> result(jointCount, "Not Set");
+    for (std::size_t i = 0; i < jointCount; ++i) {
+        cgltf_node *node = &(data->nodes[i]);
+        if (node->name == 0) {
+            result[i] = "EMPTY NODE";
+        } else {
+            result[i] = node->name;
+        }
+    }
+    return result;
 }
 
 
