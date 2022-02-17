@@ -74,7 +74,7 @@ const std::vector<ColliderPtr> &RigidBody::colliders() const {
 }
 
 void RigidBody::setTransform(const Transform &transform) {
-    Transform t = Transform::combine(transform, invtransform_);
+    Transform t = transform * invtransform_;
     for (auto &collider: colliders_) {
         collider->setTransform(t);
     }

@@ -53,7 +53,7 @@ const VE::Transform &VE::Pose::getLocalTransform(unsigned int jointIndex) const 
 VE::Transform VE::Pose::getGlobalTransform(unsigned int jointIndex) const {
     Transform result = joints_[jointIndex];
     for (int p = parents_[jointIndex]; p >= 0; p = parents_[p]) {
-        result = Transform::combine(joints_[p], result);
+        result = joints_[p] * result;
     }
     return result;
 }

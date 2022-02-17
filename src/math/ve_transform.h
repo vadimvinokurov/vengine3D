@@ -33,6 +33,17 @@ namespace VE {
                 rotation(_rotation),
                 scale(1, 1, 1) {}
 
+        Transform operator*(const Transform &other) const {
+            Transform out;
+            out.scale = multiply(this->scale, other.scale);
+            out.rotation = this->rotation * other.rotation;
+
+            out.position = this->rotation.rotate(multiply(this->scale, other.position));
+            out.position += this->position;
+
+            return out;
+        }
+
         Vector3 applyToPoint(const Vector3 &localPoint) const {
             return rotation.rotate(multiply(localPoint, scale)) + position;
         }
@@ -94,17 +105,6 @@ namespace VE {
             out.scale.x = scaleSkewMatrix.v[0];
             out.scale.y = scaleSkewMatrix.v[5];
             out.scale.z = scaleSkewMatrix.v[10];
-
-            return out;
-        }
-
-        static Transform combine(const Transform &a, const Transform &b) {
-            Transform out;
-            out.scale = multiply(a.scale, b.scale);
-            out.rotation = a.rotation * b.rotation;
-
-            out.position = a.rotation.rotate(multiply(a.scale, b.position));
-            out.position += a.position;
 
             return out;
         }
