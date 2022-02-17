@@ -6,6 +6,7 @@
 #define VENGINE3D_VE_CLIP_H
 
 #include "ve_core.h"
+
 #include "ve_transform_track.h"
 #include "ve_pose.h"
 
@@ -15,11 +16,11 @@ namespace VE {
         Clip();
         float sample(Pose &outPose, float time);
         void recalculateDuration();
-        TransformTrack &operator[](unsigned int jointId);
+        TransformTrack &operator[](std::size_t jointIndex);
 
-        unsigned int size();
-        unsigned int getIdAtIndex(unsigned int index);
-        void setIdAtIndex(unsigned int index, unsigned int jointId);
+        std::size_t size();
+        std::size_t getJointIdAtTrack(std::size_t trackIndex);
+        void setJointIdAtTrack(std::size_t trackIndex, std::size_t jointIndex);
         std::string &getName();
         void setName(const std::string name);
         float getDuration();

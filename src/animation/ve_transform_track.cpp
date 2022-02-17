@@ -6,16 +6,12 @@
 
 using namespace VE;
 
-VE::TransformTrack::TransformTrack() {
-    jointId_ = 0;
+void VE::TransformTrack::setJointIndex(std::size_t jointIndex) {
+    jointIndex_ = jointIndex;
 }
 
-void VE::TransformTrack::setJointId(unsigned int jointId) {
-    jointId_ = jointId;
-}
-
-unsigned int VE::TransformTrack::getJointId() const {
-    return jointId_;
+std::size_t VE::TransformTrack::getJointIndex() const {
+    return jointIndex_;
 }
 
 float VE::TransformTrack::getStartTime() const {

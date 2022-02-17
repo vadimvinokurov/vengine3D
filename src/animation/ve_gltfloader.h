@@ -61,14 +61,9 @@ namespace VE {
         std::vector<Clip> loadAnimationClips();
         Pose loadRestPose();
         static Transform getLocalTransform(const cgltf_node &node);
-        static int getNodeIndex(cgltf_node *target, cgltf_node *allNodes, unsigned int numNodes);
-
+        static std::size_t getNodeIndex(cgltf_node *target, cgltf_node *allNodes, std::size_t numNodes);
         static void getScalarValues(std::vector<float> &out, unsigned int compCount, const cgltf_accessor &inAccessor);
-
-
         static std::vector<std::string> loadJointNames(cgltf_data *data);
-
-
         template<typename T>
         static void trackFromChannel(Track<T> &result, const cgltf_animation_channel &channel);
 

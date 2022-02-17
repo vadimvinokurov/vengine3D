@@ -5,30 +5,30 @@
 #include "ve_gltfloader.h"
 
 VE::Pose VE::GLTF::loadRestPose() {
-    unsigned int boneCount = data_->nodes_count;
-    Pose result(boneCount);
-    for (unsigned int i = 0; i < boneCount; ++i) {
+    std::size_t jointCount = data_->nodes_count;
+    Pose result(jointCount);
+    for (std::size_t i = 0; i < jointCount; ++i) {
         const cgltf_node &joint = data_->nodes[i];
         Transform transform = getLocalTransform(joint);
         result.setLocalTransform(i, transform);
-        int parent = getNodeIndex(joint.parent, data_->nodes, boneCount);
+        int parent = getNodeIndex(joint.parent, data_->nodes, jointCount);
         result.setParent(i, parent);
     }
     return result;
 }
 
 std::vector<VE::Clip> VE::GLTF::loadAnimationClips() {
-    unsigned int numClips = data_->animations_count;
-    unsigned int numNodes = data_->nodes_count;
+    std::size_t numClips = data_->animations_count;
+    std::size_t numNodes = data_->nodes_count;
 
     std::vector<Clip> result(numClips);
-    for (unsigned int i = 0; i < numClips; ++i) {
+    for (std::size_t i = 0; i < numClips; ++i) {
         result[i].setName(data_->animations[i].name);
-        unsigned int numChannels = data_->animations[i].channels_count;
-        for (unsigned int j = 0; j < numChannels; ++j) {
+        std::size_t numChannels = data_->animations[i].channels_count;
+
+        for (std::size_t j = 0; j < numChannels; ++j) {
             cgltf_animation_channel &channel = data_->animations[i].channels[j];
-            cgltf_node *target = channel.target_node;
-            int nodeId = getNodeIndex(target, data_->nodes, numNodes);
+            int nodeId = getNodeIndex(channel.target_node, data_->nodes, numNodes);
             if (channel.target_path == cgltf_animation_path_type_translation) {
                 trackFromChannel<Vector3>(result[i][nodeId].position, channel);
             } else if (channel.target_path == cgltf_animation_path_type_scale) {
@@ -56,16 +56,16 @@ VE::Transform VE::GLTF::getLocalTransform(const cgltf_node &node) {
     return result;
 }
 
-int VE::GLTF::getNodeIndex(cgltf_node *target, cgltf_node *allNodes, unsigned int numNodes) {
+std::size_t VE::GLTF::getNodeIndex(cgltf_node *target, cgltf_node *allNodes, std::size_t numNodes) {
     if (target == 0) {
-        return -1;
+        return Joint::hasNoParent;
     }
-    for (unsigned int i = 0; i < numNodes; ++i) {
+    for (std::size_t i = 0; i < numNodes; ++i) {
         if (target == &allNodes[i]) {
-            return static_cast<int>(i);
+            return i;
         }
     }
-    return -1;
+    return Joint::hasNoParent;
 }
 
 void VE::GLTF::getScalarValues(std::vector<float> &out, unsigned int compCount, const cgltf_accessor &inAccessor) {

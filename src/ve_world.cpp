@@ -77,7 +77,7 @@ void World::scene() {
 
 
     GLTF gltf = GLTF("../assets/woman/Woman.gltf");
-    //GLTFFile gltf = GLTFFile("../assets/stormtrooper/scene.gltf");
+    //GLTF gltf = GLTF("../assets/stormtrooper/scene.gltf");
     if (gltf.good()) {
         restPose = gltf.loadRestPose();
         clips = gltf.loadAnimationClips();
@@ -174,19 +174,19 @@ void World::animation(float dt) {
 
 
     std::vector<Vector3> points;
-    for (unsigned int i = 0; i < currentPose.jointCount(); ++i) {
-        if (currentPose.getParent(i) < 0) {
+    for (std::size_t i = 0; i < currentPose.jointCount(); ++i) {
+        if (currentPose.getParentIndex(i) == Joint::hasNoParent) {
             continue;
         }
 
         points.push_back(currentPose.getGlobalTransform(i).position);
-        points.push_back(currentPose.getGlobalTransform(currentPose.getParent(i)).position);
+        points.push_back(currentPose.getGlobalTransform(currentPose.getParentIndex(i)).position);
     }
 
     for (auto &&p: points) {
         p *= 0.01;
         p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10, 0, 0);
-        //p = p * -1.0f + Vector3(-10, 0, 0);
+//        p = p * -1.0f + Vector3(-10, 0, 0);
     }
 
     for (int i = 0; i < points.size() - 1; i += 2) {
