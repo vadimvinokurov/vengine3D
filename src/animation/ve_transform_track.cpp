@@ -7,15 +7,15 @@
 using namespace VE;
 
 VE::TransformTrack::TransformTrack() {
-    id_ = 0;
+    jointId_ = 0;
 }
 
-void VE::TransformTrack::setId(unsigned int id) {
-    id_ = id;
+void VE::TransformTrack::setJointId(unsigned int jointId) {
+    jointId_ = jointId;
 }
 
-unsigned int VE::TransformTrack::getId() const {
-    return id_;
+unsigned int VE::TransformTrack::getJointId() const {
+    return jointId_;
 }
 
 float VE::TransformTrack::getStartTime() const {

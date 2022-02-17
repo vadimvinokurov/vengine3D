@@ -12,8 +12,8 @@ namespace VE {
     class TransformTrack {
     public:
         TransformTrack();
-        void setId(unsigned int id);
-        unsigned int getId() const;
+        void setJointId(unsigned int jointId);
+        unsigned int getJointId() const;
         float getStartTime() const;
         float getEndTime() const;
         bool isValid() const;
@@ -23,7 +23,7 @@ namespace VE {
         Track<Quaternion> rotation;
         Track<Vector3> scale;
     protected:
-        unsigned int id_;
+        unsigned int jointId_;
 
     };
 }

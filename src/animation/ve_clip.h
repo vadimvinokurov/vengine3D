@@ -15,11 +15,11 @@ namespace VE {
         Clip();
         float sample(Pose &outPose, float time);
         void recalculateDuration();
-        TransformTrack &operator[](unsigned int index);
+        TransformTrack &operator[](unsigned int jointId);
 
         unsigned int size();
-        unsigned int getIdAtIndex(unsigned int joint);
-        void setIdAtIndex(unsigned int index, unsigned int id);
+        unsigned int getIdAtIndex(unsigned int index);
+        void setIdAtIndex(unsigned int index, unsigned int jointId);
         std::string &getName();
         void setName(const std::string name);
         float getDuration();

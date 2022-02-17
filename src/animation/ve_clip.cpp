@@ -12,15 +12,15 @@ VE::Clip::Clip() {
 }
 
 float VE::Clip::sample(VE::Pose &outPose, float time) {
-    if(getDuration() == 0.0f) {
+    if (getDuration() == 0.0f) {
         return 0.0f;
     }
     time = agjustTimeToFitRange(time);
 
-    for(size_t i = 0; i < tracks_.size(); ++i) {
-        size_t  jointIndex = tracks_[i].getId();
+    for (const auto &track: tracks_) {
+        size_t jointIndex = track.getJointId();
         Transform local = outPose.getLocalTransform(jointIndex);
-        Transform animated = tracks_[i].sample(local, time, looping_);
+        Transform animated = track.sample(local, time, looping_);
         outPose.setLocalTransform(jointIndex, animated);
     }
     return time;
@@ -31,17 +31,17 @@ void VE::Clip::recalculateDuration() {
     endTime_ = 0.0f;
     bool startSet = false;
     bool endSet = false;
-    for(size_t i = 0; i < tracks_.size(); ++i){
-        if(tracks_[i].isValid()) {
-            float startTime = tracks_[i].getStartTime();
-            float endTime = tracks_[i].getEndTime();
+    for (const auto &track: tracks_) {
+        if (track.isValid()) {
+            float startTime = track.getStartTime();
+            float endTime = track.getEndTime();
 
-            if(startTime < startTime_ || !startSet) {
+            if (startTime < startTime_ || !startSet) {
                 startTime_ = startTime;
                 startSet = true;
             }
 
-            if(endTime > endTime_ || !endSet) {
+            if (endTime > endTime_ || !endSet) {
                 endTime_ = endTime;
                 endSet = true;
             }
@@ -49,14 +49,14 @@ void VE::Clip::recalculateDuration() {
     }
 }
 
-VE::TransformTrack &VE::Clip::operator[](unsigned int joint) {
-    for (int i = 0, s = tracks_.size(); i < s; ++i) {
-        if (tracks_[i].getId() == joint) {
-            return tracks_[i];
+VE::TransformTrack &VE::Clip::operator[](unsigned int jointId) {
+    for (auto &track: tracks_) {
+        if (track.getJointId() == jointId) {
+            return track;
         }
     }
     tracks_.push_back(TransformTrack());
-    tracks_.back().setId(joint);
+    tracks_.back().setJointId(jointId);
     return tracks_.back();
 }
 
@@ -65,11 +65,11 @@ unsigned int VE::Clip::size() {
 }
 
 unsigned int VE::Clip::getIdAtIndex(unsigned int index) {
-    return tracks_[index].getId();
+    return tracks_[index].getJointId();
 }
 
-void VE::Clip::setIdAtIndex(unsigned int index, unsigned int id) {
-    tracks_[index].setId(id);
+void VE::Clip::setIdAtIndex(unsigned int index, unsigned int jointId) {
+    tracks_[index].setJointId(jointId);
 }
 
 std::string &VE::Clip::getName() {
