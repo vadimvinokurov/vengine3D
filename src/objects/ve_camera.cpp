@@ -36,13 +36,15 @@ Matrix4 Camera::getViewMatrix() const {
     const Vector3 &D = cameraDirection_;
     const Vector3 &P = position_;
 
-    return Matrix4 (cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
-                   cameraRight_.y, cameraUp_.y, cameraDirection_.y, 0,
-                   cameraRight_.z, cameraUp_.z, cameraDirection_.z, 0,
-                   -R.x * P.x - R.y * P.y - R.z * P.z,
-                   -U.x * P.x - U.y * P.y - U.z * P.z,
-                   -D.x * P.x - D.y * P.y - D.z * P.z,
-                   1);
+    return Matrix4(R.x, R.y, R.z, 0,
+                   U.x, U.y, U.z, 0,
+                   D.x, D.y, D.z, 0,
+                   P.x, P.y, P.z, 1).getInversed();
+
+//    return Matrix4(cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
+//                   cameraRight_.y, cameraUp_.y, cameraDirection_.y, 0,
+//                   cameraRight_.z, cameraUp_.z, cameraDirection_.z, 0,
+//                   -R.dot(P), -U.dot(P), -D.dot(P), 1);
 }
 
 void Camera::setDirection(float dPitch, float dYam) {
@@ -50,13 +52,13 @@ void Camera::setDirection(float dPitch, float dYam) {
     yam_ += dYam * CameraParameters::sensitivity;
     float alfa = pitch_ * static_cast<float>(M_PI) / 180.0f;
     VE::Matrix3 rx(1, 0, 0,
-                    0, cosf(alfa), -sinf(alfa),
-                    0, sinf(alfa), cosf(alfa));
+                   0, cosf(alfa), -sinf(alfa),
+                   0, sinf(alfa), cosf(alfa));
 
     float beta = yam_ * static_cast<float>(M_PI) / 180.0f;
     VE::Matrix3 rz(cosf(beta), -sinf(beta), 0,
-                    sinf(beta), cosf(beta), 0,
-                    0, 0, 1);
+                   sinf(beta), cosf(beta), 0,
+                   0, 0, 1);
 
     cameraDirection_ = rz * rx * CameraParameters::defaultCameraDirection;
     cameraUp_ = rz * rx * CameraParameters::defaultCameraUp;
