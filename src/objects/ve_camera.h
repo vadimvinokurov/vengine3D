@@ -10,7 +10,7 @@
 
 namespace VE {
     namespace CameraParameters {
-        const Vector3 defaultCameraPosition = Vector3(-8, -10.5f, 7);
+        const Vector3 defaultCameraPosition = Vector3(-0.37, 15.0f, 6.5f);
         const Vector3 defaultCameraDirection = Vector3(0, -1, 0);
         const Vector3 defaultCameraUp = Vector3(0, 0, 1);
         const Vector3 defaultCameraRight = Vector3(1, 0, 0);
@@ -44,8 +44,8 @@ namespace VE {
         Vector3 cameraDirection_;
         Vector3 cameraUp_;
         Vector3 cameraRight_;
-        float pitch_ = -15.5557f;
-        float yam_ = 51.3889f;
+        float pitch_ = -13.0f;
+        float yam_ = 160.0f;
     };
 
     using CameraPtr = std::shared_ptr<VE::Camera>;
