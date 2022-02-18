@@ -81,33 +81,38 @@ void VE::GLTF::trackFromChannel(VE::Track<T> &track, const cgltf_animation_chann
 
     bool isSamplerCubic = interpolation == Interpolation::Cubic;
 
-    std::vector<float> time = getScalarValues(1, *sampler.input);
-    std::vector<float> val = getScalarValues(Frame<T>::N, *sampler.output);
+    std::vector<float> time = getValues<float>(*sampler.input);
+    std::vector<T> values = getValues<T>(*sampler.output);
 
     std::size_t numFrames = sampler.input->count;
-    std::size_t compCount = val.size() / time.size();
+    std::size_t numberOfValuesPerFrame = values.size() / time.size();
     track.resize(numFrames);
     for (std::size_t i = 0; i < numFrames; ++i) {
-        int baseIndex = i * compCount;
+        std::size_t baseIndex = i * numberOfValuesPerFrame;
         Frame<T> &frame = track[i];
-        int offset = 0;
         frame.time = time[i];
-        for (int comp = 0; comp < Frame<T>::N; ++comp) {
-            frame.in.v[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
-        }
-        for (int comp = 0; comp < Frame<T>::N; ++comp) {
-            frame.value.v[comp] = val[baseIndex + offset++];
-        }
-        for (int comp = 0; comp < Frame<T>::N; ++comp) {
-            frame.out.v[comp] = isSamplerCubic ? val[baseIndex + offset++] : 0.0f;
-        }
+        frame.in = isSamplerCubic ? values[baseIndex++] : T(0.0f);
+        frame.value = values[baseIndex++];
+        frame.out = isSamplerCubic ? values[baseIndex] : T(0.0f);
     }
 }
 
-std::vector<float> VE::GLTF::getScalarValues(unsigned int compCount, const cgltf_accessor &inAccessor) {
-    std::vector<float> out(inAccessor.count * compCount);
+template<typename T>
+std::vector<T> VE::GLTF::getValues(const cgltf_accessor &inAccessor) {
+    std::vector<T> out(inAccessor.count);
+
     for (cgltf_size i = 0; i < inAccessor.count; ++i) {
-        cgltf_accessor_read_float(&inAccessor, i, &out[i * compCount], compCount);
+        cgltf_accessor_read_float(&inAccessor, i, out[i].data(), T::size());
+    }
+    return out;
+}
+
+template<>
+std::vector<float> VE::GLTF::getValues(const cgltf_accessor &inAccessor) {
+    std::vector<float> out(inAccessor.count);
+
+    for (cgltf_size i = 0; i < inAccessor.count; ++i) {
+        cgltf_accessor_read_float(&inAccessor, i, &out[i], 1);
     }
     return out;
 }

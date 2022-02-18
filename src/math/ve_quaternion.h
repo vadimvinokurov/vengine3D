@@ -16,6 +16,8 @@ namespace VE {
 
         Quaternion(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_) {}
 
+        Quaternion(float fillValue) : x(fillValue), y(fillValue), z(fillValue), w(fillValue) {}
+
         Quaternion(const Vector3 &v, float w_ = 0.0f) : x(v.x), y(v.y), z(v.z), w(w_) {}
 
         Quaternion(const Vector4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}

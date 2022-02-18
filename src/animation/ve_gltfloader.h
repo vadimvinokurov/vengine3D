@@ -64,7 +64,8 @@ namespace VE {
         static std::size_t getNodeIndex(cgltf_node *target, cgltf_node *allNodes, std::size_t numNodes);
         template<typename T>
         static void trackFromChannel(Track<T> &track, const cgltf_animation_channel &channel);
-        static std::vector<float> getScalarValues(unsigned int compCount, const cgltf_accessor &inAccessor);
+        template<typename T>
+        static std::vector<T> getValues(const cgltf_accessor &inAccessor);
         static std::vector<std::string> loadJointNames(cgltf_data *data);
 
     private:
