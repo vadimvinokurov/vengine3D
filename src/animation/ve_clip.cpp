@@ -17,10 +17,10 @@ float VE::Clip::sample(VE::Pose &outPose, float time) {
     }
     time = agjustTimeToFitRange(time);
 
-    for (const auto &track: tracks_) {
-        size_t jointIndex = track.getJointIndex();
+    for (const auto &transformTrack: transformTracks_) {
+        size_t jointIndex = transformTrack.getJointIndex();
         Transform local = outPose.getLocalTransform(jointIndex);
-        Transform animated = track.sample(local, time, looping_);
+        Transform animated = transformTrack.sample(local, time, looping_);
         outPose.setLocalTransform(jointIndex, animated);
     }
     return time;
@@ -31,7 +31,7 @@ void VE::Clip::recalculateDuration() {
     endTime_ = 0.0f;
     bool startSet = false;
     bool endSet = false;
-    for (const auto &track: tracks_) {
+    for (const auto &track: transformTracks_) {
         if (track.isValid()) {
             float startTime = track.getStartTime();
             float endTime = track.getEndTime();
@@ -50,26 +50,26 @@ void VE::Clip::recalculateDuration() {
 }
 
 VE::TransformTrack &VE::Clip::operator[](std::size_t jointIndex) {
-    for (auto &track: tracks_) {
+    for (auto &track: transformTracks_) {
         if (track.getJointIndex() == jointIndex) {
             return track;
         }
     }
-    tracks_.push_back(TransformTrack());
-    tracks_.back().setJointIndex(jointIndex);
-    return tracks_.back();
+    transformTracks_.push_back(TransformTrack());
+    transformTracks_.back().setJointIndex(jointIndex);
+    return transformTracks_.back();
 }
 
 std::size_t VE::Clip::size() {
-    return tracks_.size();
+    return transformTracks_.size();
 }
 
-std::size_t VE::Clip::getJointIdAtTrack(std::size_t trackIndex) {
-    return tracks_[trackIndex].getJointIndex();
+std::size_t VE::Clip::getJointIndexAtTrack(std::size_t trackIndex) {
+    return transformTracks_[trackIndex].getJointIndex();
 }
 
-void VE::Clip::setJointIdAtTrack(std::size_t trackIndex, std::size_t jointIndex) {
-    tracks_[trackIndex].setJointIndex(jointIndex);
+void VE::Clip::setJointIndexAtTrack(std::size_t trackIndex, std::size_t jointIndex) {
+    transformTracks_[trackIndex].setJointIndex(jointIndex);
 }
 
 std::string &VE::Clip::getName() {

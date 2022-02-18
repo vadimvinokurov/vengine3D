@@ -10,7 +10,6 @@
 namespace VE {
     template<typename T>
     struct Frame {
-        static constexpr unsigned int N = sizeof(T) / sizeof(float);
         T value;
         T in;
         T out;

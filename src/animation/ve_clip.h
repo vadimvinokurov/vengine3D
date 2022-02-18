@@ -16,11 +16,11 @@ namespace VE {
         Clip();
         float sample(Pose &outPose, float time);
         void recalculateDuration();
-        TransformTrack &operator[](std::size_t jointIndex);
 
+        TransformTrack &operator[](std::size_t jointIndex);
         std::size_t size();
-        std::size_t getJointIdAtTrack(std::size_t trackIndex);
-        void setJointIdAtTrack(std::size_t trackIndex, std::size_t jointIndex);
+        std::size_t getJointIndexAtTrack(std::size_t trackIndex);
+        void setJointIndexAtTrack(std::size_t trackIndex, std::size_t jointIndex);
         std::string &getName();
         void setName(const std::string name);
         float getDuration();
@@ -31,7 +31,7 @@ namespace VE {
     private:
         float agjustTimeToFitRange(float time);
 
-        std::vector<TransformTrack> tracks_;
+        std::vector<TransformTrack> transformTracks_;
         std::string name_;
         float startTime_;
         float endTime_;
