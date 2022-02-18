@@ -259,6 +259,14 @@ namespace VE {
             return v;
         }
 
+        float *data() {
+            return v;
+        }
+
+        static constexpr std::size_t size(){
+            return 16;
+        }
+
         void print() const {
             std::cout << std::endl;
             std::cout << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << v[3] << std::endl;
@@ -277,6 +285,24 @@ namespace VE {
                 SVector4 position;
             };
             struct {
+                float _00;
+                float _10;
+                float _20;
+                float _30;
+                float _01;
+                float _11;
+                float _21;
+                float _31;
+                float _02;
+                float _12;
+                float _22;
+                float _32;
+                float _03;
+                float _13;
+                float _23;
+                float _33;
+            };
+            struct {
                 float xx;
                 float xy;
                 float xz;
@@ -293,42 +319,6 @@ namespace VE {
                 float ty;
                 float tz;
                 float tw;
-            };
-            struct {//column-row notation
-                float c0r0;
-                float c0r1;
-                float c0r2;
-                float c0r3;
-                float c1r0;
-                float c1r1;
-                float c1r2;
-                float c1r3;
-                float c2r0;
-                float c2r1;
-                float c2r2;
-                float c2r3;
-                float c3r0;
-                float c3r1;
-                float c3r2;
-                float c3r3;
-            };
-            struct {//row-column notation
-                float r0c0;
-                float r1c0;
-                float r2c0;
-                float r3c0;
-                float r0c1;
-                float r1c1;
-                float r2c1;
-                float r3c1;
-                float r0c2;
-                float r1c2;
-                float r2c2;
-                float r3c2;
-                float r0c3;
-                float r1c3;
-                float r2c3;
-                float r3c3;
             };
         };
     };

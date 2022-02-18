@@ -170,6 +170,10 @@ namespace VE {
             return v;
         }
 
+        float *data() {
+            return v;
+        }
+
         void print() const {
             std::cout << x << " " << y << " " << z << std::endl;
         }
@@ -201,6 +205,10 @@ namespace VE {
             float a = sinf((1.0f - t) * theta) / sinTheta;
             float b = sinf(t * theta) / sinTheta;
             return s * a + e * b;
+        }
+
+        static constexpr std::size_t size(){
+            return 3;
         }
 
         union {
@@ -238,6 +246,14 @@ namespace VE {
             return v;
         }
 
+        T *data() {
+            return v;
+        }
+
+        static constexpr std::size_t size(){
+            return 2;
+        }
+
         union {
             T v[2];
             struct {
@@ -270,6 +286,14 @@ namespace VE {
 
         const T *data() const {
             return v;
+        }
+
+        T *data() {
+            return v;
+        }
+
+        static constexpr std::size_t size(){
+            return 4;
         }
 
         union {

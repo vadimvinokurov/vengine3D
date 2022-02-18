@@ -253,6 +253,14 @@ namespace VE {
             return v;
         }
 
+        float *data() {
+            return v;
+        }
+
+        static constexpr std::size_t size(){
+            return 4;
+        }
+
         union {
             float v[4];
             struct {

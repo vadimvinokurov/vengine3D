@@ -222,6 +222,14 @@ namespace VE {
             return v;
         }
 
+        float *data() {
+            return v;
+        }
+
+        static constexpr std::size_t size(){
+            return 9;
+        }
+
         void print() const {
             std::cout << std::endl;
             std::cout << v[0] << "\t" << v[1] << "\t" << v[2] << std::endl;
