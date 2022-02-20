@@ -283,8 +283,15 @@ namespace VE {
                           z(fv[2]),
                           w(fv[3]) {}
 
+        TVector4 &operator+=(float other) {
+            x += other;
+            y += other;
+            z += other;
+            w += other;
+            return *this;
+		}
 
-        const T *data() const {
+		const T *data() const {
             return v;
         }
 

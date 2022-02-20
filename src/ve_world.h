@@ -15,7 +15,7 @@
 #include "objects/ve_actor.h"
 #include "animation/ve_pose.h"
 #include "animation/ve_clip.h"
-
+#include "animation/ve_mesh.h"
 namespace VE {
     class World {
     public:
@@ -25,6 +25,7 @@ namespace VE {
         const Camera &currentCamera();
         void setHid(const VE::KeyboardPtr &keyboard, const VE::MousePtr &mouse);
         std::vector<VE::RigidBodyPtr> worldObjects;
+		std::vector<VE::Mesh> meshes;
     private:
         void cubeStacking(const Vector3& position);
         void sphereStacking(const Vector3& position);
@@ -47,6 +48,9 @@ namespace VE {
         VE::KeyboardPtr keyboard_;
         VE::MouseJointSolverPtr mouseJointSolver_;
         std::vector<ActorPtr> actors_;
+
+
+
 
 
         Pose restPose;

@@ -30,7 +30,7 @@ VE::Attribute<T>::~Attribute() {
 }
 
 template<typename T>
-void VE::Attribute<T>::set(const T *inputArray, unsigned int arrayLength) {
+void VE::Attribute<T>::set(const T* inputArray, unsigned int arrayLength) {
     count_ = arrayLength;
 
     glBindBuffer(GL_ARRAY_BUFFER, handle_);
@@ -39,7 +39,8 @@ void VE::Attribute<T>::set(const T *inputArray, unsigned int arrayLength) {
 }
 
 template<typename T>
-void Attribute<T>::set(const std::vector<T> &input) {
+void Attribute<T>::set(const std::vector<T>& input) {
+    if (input.empty()) return;
     set(input.data(), input.size());
 }
 
