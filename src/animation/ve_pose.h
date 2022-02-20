@@ -7,7 +7,7 @@
 
 #include "ve_core.h"
 
-#include "math\ve_transform.h"
+#include "math/ve_transform.h"
 
 namespace VE {
     struct Joint{

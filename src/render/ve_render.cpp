@@ -16,8 +16,8 @@
 using namespace VE;
 
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
-    shader.load("../shaders/static.vert", "../shaders/lit.frag");
-    debugShader.load("../shaders/debug/static.vert", "../shaders/debug/lit.frag");
+    shader.load("../contents/shaders/static.vert", "../contents/shaders/lit.frag");
+    debugShader.load("../contents/shaders/debug/static.vert", "../contents/shaders/debug/lit.frag");
     debugShader.bind();
     DebugDraw::colorShaderSlot = debugShader.getUniform("objectColor");
 }

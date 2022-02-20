@@ -14,5 +14,6 @@ mkdir build
 cd build
 cmake ..
 cmake --build . --config Release
-cp -R ..\shaders .
+cp -R ..\contents .
 ```
+- The "contents" folder must be located one level down in the filesystem than the executable file.

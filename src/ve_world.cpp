@@ -76,8 +76,8 @@ void World::scene() {
     actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
 
 
-    GLTF gltf = GLTF("../assets/woman/Woman.gltf");
-    //GLTF gltf = GLTF("../assets/stormtrooper/scene.gltf");
+    GLTF gltf = GLTF("../contents/assets/woman/Woman.gltf");
+    //GLTF gltf = GLTF("../contents/assets/stormtrooper/scene.gltf");
     if (gltf.good()) {
         restPose = gltf.loadRestPose();
         clips = gltf.loadAnimationClips();
