@@ -27,7 +27,7 @@ namespace VE {
         void setParent(std::size_t jointIndex, std::size_t parentIndex);
         void setLocalTransform(std::size_t jointIndex, const Transform &transform);
 
-        std::size_t jointCount() const;
+        std::size_t jointsCount() const;
         std::size_t getParentIndex(std::size_t jointIndex) const;
         const Transform &getLocalTransform(std::size_t jointIndex) const;
         Transform getGlobalTransform(std::size_t jointIndex) const;

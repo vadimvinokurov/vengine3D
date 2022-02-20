@@ -36,7 +36,7 @@ void VE::Pose::setLocalTransform(std::size_t jointIndex, const VE::Transform &tr
     joints_[jointIndex].transform = transform;
 }
 
-std::size_t VE::Pose::jointCount() const {
+std::size_t VE::Pose::jointsCount() const {
     return joints_.size();
 }
 
@@ -57,9 +57,9 @@ VE::Transform VE::Pose::getGlobalTransform(std::size_t jointIndex) const {
 }
 
 std::vector<VE::Matrix4> VE::Pose::getMatrixPalette() {
-    std::vector<VE::Matrix4> out(this->jointCount());
+    std::vector<VE::Matrix4> out(this->jointsCount());
 
-    for (std::size_t i = 0; i < this->jointCount(); ++i) {
+    for (std::size_t i = 0; i < this->jointsCount(); ++i) {
         out[i] = getGlobalTransform(i).toMatrix();
     }
 

@@ -4,6 +4,10 @@
 
 #include "ve_gltfloader.h"
 
+VE::Skeleton VE::GLTF::loadSkeleton() {
+    return VE::Skeleton(loadRestPose(), loadBindPose(), loadJointNames());
+}
+
 VE::Pose VE::GLTF::loadRestPose() {
     std::size_t jointCount = data_->nodes_count;
     Pose result(jointCount);
@@ -11,8 +15,55 @@ VE::Pose VE::GLTF::loadRestPose() {
         const cgltf_node &joint = data_->nodes[i];
         Transform transform = getLocalTransform(joint);
         result.setLocalTransform(i, transform);
-        int parent = getNodeIndex(joint.parent, data_->nodes, jointCount);
-        result.setParent(i, parent);
+        auto parentIndex = getNodeIndex(joint.parent, data_->nodes, jointCount);
+        result.setParent(i, parentIndex);
+    }
+    return result;
+}
+
+VE::Pose VE::GLTF::loadBindPose() {
+    Pose restPose = loadRestPose();
+    auto numJoints = restPose.jointsCount();
+    std::vector<Transform> worldBindPose(numJoints);
+
+    for(std::size_t i = 0; i < numJoints; ++i) {
+        worldBindPose[i] = restPose.getGlobalTransform(i);
+    }
+
+    auto numSkins = data_->skins_count;
+    for(std::size_t i = 0; i < numSkins; ++i){
+        const cgltf_skin& skin = data_->skins[i];
+        auto invBindMatrix = getValues<Matrix4>(*skin.inverse_bind_matrices);
+        auto numSkinJoints = skin.joints_count;
+        for(std::size_t j = 0; j < numSkinJoints; ++j) {
+            auto jointIndex = getNodeIndex(skin.joints[j], data_->nodes, numJoints);
+            worldBindPose[jointIndex] = Transform::fromMatrix(invBindMatrix[j].getInversed());;
+        }
+    }
+
+    Pose bindPose = restPose;
+    for(std::size_t i = 0; i < numJoints; ++i) {
+        Transform currentTransform = worldBindPose[i];
+        auto parentIndex = bindPose.getParentIndex(i);
+        if(parentIndex != Joint::hasNoParent) {
+            Transform parentTransform = worldBindPose[parentIndex];
+            currentTransform = parentTransform.getInversed() * currentTransform;
+        }
+        bindPose.setLocalTransform(i, currentTransform);
+    }
+    return bindPose;
+}
+
+std::vector<std::string> VE::GLTF::loadJointNames() {
+    std::size_t jointCount = data_->nodes_count;
+    std::vector<std::string> result(jointCount, "Not Set");
+    for (std::size_t i = 0; i < jointCount; ++i) {
+        cgltf_node *node = &(data_->nodes[i]);
+        if (node->name == 0) {
+            result[i] = "EMPTY NODE";
+        } else {
+            result[i] = node->name;
+        }
     }
     return result;
 }
@@ -116,19 +167,4 @@ std::vector<float> VE::GLTF::getValues(const cgltf_accessor &inAccessor) {
     }
     return out;
 }
-
-std::vector<std::string> VE::GLTF::loadJointNames(cgltf_data *data) {
-    std::size_t jointCount = data->nodes_count;
-    std::vector<std::string> result(jointCount, "Not Set");
-    for (std::size_t i = 0; i < jointCount; ++i) {
-        cgltf_node *node = &(data->nodes[i]);
-        if (node->name == 0) {
-            result[i] = "EMPTY NODE";
-        } else {
-            result[i] = node->name;
-        }
-    }
-    return result;
-}
-
 

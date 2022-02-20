@@ -11,6 +11,7 @@
 #include "math/ve_transform.h"
 #include "ve_track.h"
 #include "ve_clip.h"
+#include "ve_skeleton.h"
 
 namespace VE {
     class GLTF {
@@ -60,15 +61,18 @@ namespace VE {
 
         std::vector<Clip> loadAnimationClips();
         Pose loadRestPose();
+        Pose loadBindPose();
+        std::vector<std::string> loadJointNames();
+        Skeleton loadSkeleton();
+    private:
+
+
         static Transform getLocalTransform(const cgltf_node &node);
         static std::size_t getNodeIndex(cgltf_node *target, cgltf_node *allNodes, std::size_t numNodes);
         template<typename T>
         static void trackFromChannel(Track<T> &track, const cgltf_animation_channel &channel);
         template<typename T>
         static std::vector<T> getValues(const cgltf_accessor &inAccessor);
-        static std::vector<std::string> loadJointNames(cgltf_data *data);
-
-    private:
 
 
         cgltf_data *data_;

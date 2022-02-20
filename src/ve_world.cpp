@@ -174,7 +174,7 @@ void World::animation(float dt) {
 
 
     std::vector<Vector3> points;
-    for (std::size_t i = 0; i < currentPose.jointCount(); ++i) {
+    for (std::size_t i = 0; i < currentPose.jointsCount(); ++i) {
         if (currentPose.getParentIndex(i) == Joint::hasNoParent) {
             continue;
         }
