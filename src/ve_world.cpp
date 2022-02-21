@@ -89,13 +89,6 @@ void World::scene() {
 			}
 		}
 		meshes = gltf.loadMeshes();
-		for (auto&& mesh : meshes) {
-			for (auto&& p : mesh.positions) {
-				Transform t(Vector3(-5, 0, 0), Quaternion::fromAxisAngle(Vector3(1, 0, 0), M_PI / 2), Vector3(1, 1, 1));
-				p = t.applyToPoint(p);
-			}
-			mesh.updateOpenGLBuffers();
-		}
 	}
 }
 
@@ -171,11 +164,6 @@ void World::animation(float dt) {
 	}
 
 	for (int i = 0; i < points.size() - 1; i += 2) { DebugDraw::Line(points[i], points[i + 1]); }
-
-
-	for (auto&& mesh : meshes) {
-		for (auto&& p : mesh.positions) { DebugDraw::Point(p, 3); }
-	}
 }
 
 

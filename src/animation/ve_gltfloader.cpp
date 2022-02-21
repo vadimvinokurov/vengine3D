@@ -29,7 +29,7 @@ std::vector<VE::Mesh> VE::GLTF::loadMeshes() {
 			if (primitive.indices != 0) {
 				std::size_t indicesCount = primitive.indices->count;
 				mesh.indices.resize(indicesCount);
-				for (std::size_t k = 0; k < indicesCount; ++k) { mesh.indices[i] = cgltf_accessor_read_index(primitive.indices, k); }
+				for (std::size_t k = 0; k < indicesCount; ++k) { mesh.indices[k] = cgltf_accessor_read_index(primitive.indices, k); }
 			}
 			mesh.updateOpenGLBuffers();
 		}

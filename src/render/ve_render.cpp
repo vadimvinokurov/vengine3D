@@ -39,6 +39,7 @@ void Render::draw(const WorldPtr& world) {
 	Uniform<Vector3>::set(shader.getUniform("lightPos"), lightPoint);
 	Uniform<Matrix4>::set(shader.getUniform("projection"), projection);
 	Uniform<Matrix4>::set(shader.getUniform("view"), view);
+
 	for (VE::RigidBodyPtr rigidBody : world_->worldObjects) {
 		Matrix4 model = rigidBody->transform().toMatrix();
 		Uniform<Matrix4>::set(shader.getUniform("model"), model);
@@ -55,13 +56,18 @@ void Render::draw(const WorldPtr& world) {
 			collider->vertexNormals.unBindFrom(shader.getAttribute("aNormal"));
 		}
 	}
-	Uniform<Matrix4>::set(debugShader.getUniform("model"), Matrix4());
+
+	Transform t1(Quaternion::fromAxisAngle(Vector3(1, 0, 0), M_PI / 2));
+	Transform t2(Quaternion::fromAxisAngle(Vector3(0, 0, 1), M_PI / 2));
+	Transform t3(Vector3(-5, 0, 0));
+	Uniform<Matrix4>::set(shader.getUniform("model"), (t3 * t2 * t1).toMatrix());
 
 	for (auto&& mesh : world_->meshes) {
 		mesh.positionsGPU.bindTo(shader.getAttribute("aPosition"));
 		mesh.normalsGPU.bindTo(shader.getAttribute("aNormal"));
-		std::cout << mesh.indicesGPU.count() << std::endl;
+
 		VE::draw(mesh.indicesGPU, DrawMode::Triangles);
+		//VE::draw(mesh.positions.size(), DrawMode::Triangles);
 
 		mesh.positionsGPU.unBindFrom(shader.getAttribute("aPosition"));
 		mesh.normalsGPU.unBindFrom(shader.getAttribute("aNormal"));
