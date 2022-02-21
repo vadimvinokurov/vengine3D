@@ -16,6 +16,7 @@
 using namespace VE;
 
 Render::Render(float windowAspectRatio) : windowAspectRatio_(windowAspectRatio) {
+	//texture_.load("../contents/assets/stormtrooper/textures/Stormtroopermat_baseColor.png");
 	texture_.load("../contents/assets/woman/Woman.png");
 	rigidShader.load("../contents/shaders/rigid/static.vert", "../contents/shaders/rigid/lit.frag");
 	meshShader.load("../contents/shaders/mesh/static.vert", "../contents/shaders/mesh/lit.frag");
@@ -64,11 +65,12 @@ void Render::draw(const WorldPtr& world) {
 	Uniform<Vector3>::set(meshShader.getUniform("lightPos"), lightPoint);
 	Uniform<Matrix4>::set(meshShader.getUniform("projection"), projection);
 	Uniform<Matrix4>::set(meshShader.getUniform("view"), view);
-
+	Transform t0;
+	t0.scale = Vector3(0.01f, 0.01f, 0.01f);
 	Transform t1(Quaternion::fromAxisAngle(Vector3(1, 0, 0), M_PI / 2));
 	Transform t2(Quaternion::fromAxisAngle(Vector3(0, 0, 1), M_PI / 2));
 	Transform t3(Vector3(-5, 0, 0));
-	Uniform<Matrix4>::set(meshShader.getUniform("model"), (t3 * t2 * t1).toMatrix());
+	Uniform<Matrix4>::set(meshShader.getUniform("model"), (t3 * t2 * t1 * t0).toMatrix());
 
 	for (auto&& mesh : world_->meshes) {
 		mesh.positionsGPU.bindTo(meshShader.getAttribute("aPosition"));

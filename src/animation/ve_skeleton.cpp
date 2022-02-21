@@ -14,6 +14,8 @@ void VE::Skeleton::set(const VE::Pose& rest, const VE::Pose& bind, const std::ve
     restPose_ = rest;
     bindPose_ = bind;
     jointNames_ = names;
+
+	updateInvBindPose();
 }
 
 const VE::Pose& VE::Skeleton::getBindPose() const {

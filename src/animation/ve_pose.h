@@ -31,7 +31,7 @@ namespace VE {
         std::size_t getParentIndex(std::size_t jointIndex) const;
         const Transform &getLocalTransform(std::size_t jointIndex) const;
         Transform getGlobalTransform(std::size_t jointIndex) const;
-        std::vector<VE::Matrix4> getMatrixPalette();
+        std::vector<VE::Matrix4> getMatrixPalette() const;
     private:
         std::vector<Joint> joints_;
     };

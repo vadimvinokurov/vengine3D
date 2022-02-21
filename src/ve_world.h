@@ -55,6 +55,7 @@ namespace VE {
 
         Pose restPose;
         Pose currentPose;
+		Skeleton skeleton_;
         std::vector<Clip> clips;
         unsigned int currentClipNumber;
         float playbackTime;

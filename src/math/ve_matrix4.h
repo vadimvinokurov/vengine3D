@@ -139,11 +139,17 @@ namespace VE {
                            this->v[3] * other.v[0] + this->v[7] * other.v[1] + this->v[11] * other.v[2] + this->v[15] * other.v[3]};
         }
 
-        Vector3 transformVector(const Vector3 &vector) const {
+        Vector3 transformPoint(const Vector3 &vector) const {
             return Vector3(this->v[0] * vector.v[0] + this->v[4] * vector.v[1] + this->v[8] * vector.v[2] + this->v[12] * 1.0f,
                            this->v[1] * vector.v[0] + this->v[5] * vector.v[1] + this->v[9] * vector.v[2] + this->v[13] * 1.0f,
                            this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2] + this->v[14] * 1.0f);
         }
+
+      Vector3 transformVector(const Vector3 &vector) const {
+        return Vector3(this->v[0] * vector.v[0] + this->v[4] * vector.v[1] + this->v[8] * vector.v[2],
+                       this->v[1] * vector.v[0] + this->v[5] * vector.v[1] + this->v[9] * vector.v[2],
+                       this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2]);
+      }
 
         Vector3 transformVector(const Vector3 &vector, float &w) const {
             float tmpw = w;

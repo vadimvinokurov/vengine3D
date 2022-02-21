@@ -79,6 +79,7 @@ void World::scene() {
 	if (gltf.good()) {
 		restPose = gltf.loadRestPose();
 		clips = gltf.loadAnimationClips();
+		skeleton_ = gltf.loadSkeleton();
 		currentClipNumber = 0;
 		currentPose = restPose;
 
@@ -148,22 +149,23 @@ void World::animation(float dt) {
 
 	playbackTime = clips[currentClipNumber].sample(currentPose, playbackTime + dt);
 
+	meshes[0].skin(skeleton_, currentPose);
 
-	std::vector<Vector3> points;
-	for (std::size_t i = 0; i < currentPose.jointsCount(); ++i) {
-		if (currentPose.getParentIndex(i) == Joint::hasNoParent) { continue; }
-
-		points.push_back(currentPose.getGlobalTransform(i).position);
-		points.push_back(currentPose.getGlobalTransform(currentPose.getParentIndex(i)).position);
-	}
-
-	for (auto&& p : points) {
-		p *= 0.01;
-		p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10, 0, 0);
-		//        p = p * -1.0f + Vector3(-10, 0, 0);
-	}
-
-	for (int i = 0; i < points.size() - 1; i += 2) { DebugDraw::Line(points[i], points[i + 1]); }
+//	std::vector<Vector3> points;
+//	for (std::size_t i = 0; i < currentPose.jointsCount(); ++i) {
+//		if (currentPose.getParentIndex(i) == Joint::hasNoParent) { continue; }
+//
+//		points.push_back(currentPose.getGlobalTransform(i).position);
+//		points.push_back(currentPose.getGlobalTransform(currentPose.getParentIndex(i)).position);
+//	}
+//
+//	for (auto&& p : points) {
+//		p *= 0.01;
+//		p = Vector3(p.x * -1, p.z, p.y) + Vector3(-10, 0, 0);
+//		//        p = p * -1.0f + Vector3(-10, 0, 0);
+//	}
+//
+//	for (int i = 0; i < points.size() - 1; i += 2) { DebugDraw::Line(points[i], points[i + 1]); }
 }
 
 
