@@ -19,8 +19,8 @@ std::vector<VE::Mesh> VE::GLTF::loadMeshes() {
 			meshes.emplace_back();
 			Mesh& mesh = meshes.back();
 
-			std::size_t attributeCount = primitive.attributes_count;
-			for (std::size_t k = 0; k < attributeCount; ++k) {
+			std::size_t attributesCount = primitive.attributes_count;
+			for (std::size_t k = 0; k < attributesCount; ++k) {
 				const cgltf_attribute& attribute = primitive.attributes[k];
 
 				meshFromAttribute(mesh, attribute, node.skin, data_->nodes, nodesCount);
@@ -36,61 +36,6 @@ std::vector<VE::Mesh> VE::GLTF::loadMeshes() {
 	}
 	return meshes;
 }
-
-void VE::GLTF::meshFromAttribute(VE::Mesh& mesh, const cgltf_attribute& attribute, cgltf_skin* skin, cgltf_node* nodes, std::size_t nodeCount) {
-	cgltf_attribute_type attributeType = attribute.type;
-	cgltf_accessor& accessor = *attribute.data;
-
-	switch (attributeType) {
-		case cgltf_attribute_type_position: {
-			mesh.positions = getAccessorValues<Vector3>(accessor);
-			return;
-		}
-		case cgltf_attribute_type_normal: {
-			mesh.normals = getAccessorValues<Vector3>(accessor);
-			for (auto&& normal : mesh.normals) {
-				if (normal.lenSqrt() < VEngineSettings::VECTOR_EPSILON) {
-					normal = Vector3(0, 0, 1);
-				} else {
-					normal.normalize();
-				}
-			}
-			return;
-		}
-		case cgltf_attribute_type_texcoord: {
-			mesh.textureCoordinates = getAccessorValues<Vector2>(accessor);
-			return;
-		}
-		case cgltf_attribute_type_weights: {
-			mesh.jointsInfluencesWeights = getAccessorValues<Vector4>(accessor);
-			return;
-		}
-		case cgltf_attribute_type_joints: {
-			auto jointsIndexFloat = getAccessorValues<Vector4>(accessor);
-			mesh.jointsInfluences.resize(jointsIndexFloat.size());
-			for (std::size_t i = 0; i < jointsIndexFloat.size(); i++) {
-				IVector4 joint(jointsIndexFloat[i].x + 0.5f, jointsIndexFloat[i].y + 0.5f, jointsIndexFloat[i].z + 0.5f, jointsIndexFloat[i].w + 0.5f);
-				joint.x = getNodeIndex(skin->joints[joint.x], nodes, nodeCount);
-				joint.y = getNodeIndex(skin->joints[joint.y], nodes, nodeCount);
-				joint.z = getNodeIndex(skin->joints[joint.z], nodes, nodeCount);
-				joint.w = getNodeIndex(skin->joints[joint.w], nodes, nodeCount);
-
-				joint.x = std::max(0, joint.x);
-				joint.y = std::max(0, joint.y);
-				joint.z = std::max(0, joint.z);
-				joint.w = std::max(0, joint.w);
-
-				mesh.jointsInfluences[i] = joint;
-			}
-			return;
-		}
-		case cgltf_attribute_type_invalid: return;
-		case cgltf_attribute_type_tangent: return;
-		case cgltf_attribute_type_color: return;
-	}
-	return;
-}
-
 
 VE::Skeleton VE::GLTF::loadSkeleton() {
 	return VE::Skeleton(loadRestPose(), loadBindPose(), loadJointNames());
@@ -222,6 +167,56 @@ void VE::GLTF::trackFromChannel(VE::Track<T>& track, const cgltf_animation_chann
 		frame.value = values[baseIndex++];
 		frame.out = isSamplerCubic ? values[baseIndex] : T(0.0f);
 	}
+}
+
+void VE::GLTF::meshFromAttribute(VE::Mesh& mesh, const cgltf_attribute& attribute, cgltf_skin* skin, cgltf_node* allNodes, std::size_t nodesCount) {
+	cgltf_attribute_type attributeType = attribute.type;
+	cgltf_accessor& accessor = *attribute.data;
+
+	switch (attributeType) {
+		case cgltf_attribute_type_position: {
+			mesh.positions = getAccessorValues<Vector3>(accessor);
+			return;
+		}
+		case cgltf_attribute_type_normal: {
+			mesh.normals = getAccessorValues<Vector3>(accessor);
+			for (auto&& normal : mesh.normals) {
+				if (normal.lenSqrt() < VEngineSettings::VECTOR_EPSILON) {
+					normal = Vector3(0, 0, 1);
+				} else {
+					normal.normalize();
+				}
+			}
+			return;
+		}
+		case cgltf_attribute_type_texcoord: {
+			mesh.textureCoordinates = getAccessorValues<Vector2>(accessor);
+			return;
+		}
+		case cgltf_attribute_type_weights: {
+			mesh.jointsInfluencesWeights = getAccessorValues<Vector4>(accessor);
+			return;
+		}
+		case cgltf_attribute_type_joints: {
+			auto jointsIndexFloat = getAccessorValues<Vector4>(accessor);
+			mesh.jointsInfluences.resize(jointsIndexFloat.size());
+			for (std::size_t i = 0; i < jointsIndexFloat.size(); i++) {
+				IVector4 joint(jointsIndexFloat[i].x + 0.5f, jointsIndexFloat[i].y + 0.5f, jointsIndexFloat[i].z + 0.5f, jointsIndexFloat[i].w + 0.5f);
+
+				joint.x = std::max<int>(0, getNodeIndex(skin->joints[joint.x], allNodes, nodesCount));
+				joint.y = std::max<int>(0, getNodeIndex(skin->joints[joint.y], allNodes, nodesCount));
+				joint.z = std::max<int>(0, getNodeIndex(skin->joints[joint.z], allNodes, nodesCount));
+				joint.w = std::max<int>(0, getNodeIndex(skin->joints[joint.w], allNodes, nodesCount));
+
+				mesh.jointsInfluences[i] = joint;
+			}
+			return;
+		}
+		case cgltf_attribute_type_invalid: return;
+		case cgltf_attribute_type_tangent: return;
+		case cgltf_attribute_type_color: return;
+	}
+	return;
 }
 
 template<typename T>

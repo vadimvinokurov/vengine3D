@@ -64,7 +64,7 @@ namespace VE {
         std::vector<Mesh> loadMeshes();
 
     private:
-        static void meshFromAttribute(Mesh& mesh, const cgltf_attribute& attribute, cgltf_skin* skin, cgltf_node* nodes, std::size_t nodeCount);
+        static void meshFromAttribute(Mesh& mesh, const cgltf_attribute& attribute, cgltf_skin* skin, cgltf_node* allNodes, std::size_t nodesCount);
         static Transform getLocalTransform(const cgltf_node& node);
         static std::size_t getNodeIndex(cgltf_node* target, cgltf_node* allNodes, std::size_t numNodes);
         template<typename T>
