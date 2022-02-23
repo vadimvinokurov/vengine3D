@@ -55,27 +55,27 @@ void World::sphereStacking(const Vector3& position) {
 
 void World::scene() {
 	RigidBodyPtr floor = RigidBody::create({create<BoxCollider>(100, 1, 100, 0)});
-	floor->setTransform(Transform(Vector3(0, 0, -10.5f)));
+	floor->setTransform(Transform(Vector3(0, 0, -0.5f)));
 	floor->setColor(Color(0.3f, 0.3f, 0.3f));
 	worldObjects.push_back(floor);
-//
-//	cubeStacking(Vector3(-5, -15, 0));
-//	sphereStacking(Vector3(-10, -15, 0));
-//
-//	float s = 1.0f;
-//	float b = 0.8f;
-//	for (int i = 1; i < 50; i++) {
-//		RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
-//		stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
-//		worldObjects.push_back(stairs);
-//	}
-//
-//	actors_.push_back(create<RagdollActor>(Vector3(0, 0, 20)));
-//	actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
+
+	cubeStacking(Vector3(-5, -15, 0));
+	sphereStacking(Vector3(-10, -15, 0));
+
+	float s = 1.0f;
+	float b = 0.8f;
+	for (int i = 1; i < 50; i++) {
+		RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
+		stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
+		worldObjects.push_back(stairs);
+	}
+
+	actors_.push_back(create<RagdollActor>(Vector3(0, 0, 20)));
+	actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
 
 
-	GLTF gltf = GLTF("../contents/assets/woman/Woman.gltf");
-	//GLTF gltf = GLTF("../contents/assets/stormtrooper/scene.gltf");
+	//GLTF gltf = GLTF("../contents/assets/woman/Woman.gltf");
+	GLTF gltf = GLTF("../contents/assets/stormtrooper/scene.gltf");
 	if (gltf.good()) {
 		restPose = gltf.loadRestPose();
 		clips = gltf.loadAnimationClips();
@@ -148,17 +148,7 @@ void World::animation(float dt) {
 	if (clips.empty()) return;
 
 	playbackTime = clips[currentClipNumber].sample(currentPose, playbackTime + dt);
-	currentPose = skeleton_.getBindPose();
 	meshes[0].skin(skeleton_, currentPose);
-
-	std::vector<Vector3> points;
-	for (std::size_t i = 0; i < currentPose.jointsCount(); ++i) {
-		if (currentPose.getParentIndex(i) == Joint::hasNoParent) { continue; }
-
-		points.push_back(currentPose.getGlobalTransform(i).position);
-		points.push_back(currentPose.getGlobalTransform(currentPose.getParentIndex(i)).position);
-	}
-	for (int i = 0; i < points.size() - 1; i += 2) { DebugDraw::Line(points[i], points[i + 1]); }
 }
 
 

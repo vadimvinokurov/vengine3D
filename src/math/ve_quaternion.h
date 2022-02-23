@@ -235,7 +235,7 @@ namespace VE {
             Vector3 objectUp = worldToObject.rotate(Vector3(0, 0, 1));
             Quaternion u2u = fromTo(objectUp, u);
 
-            return (worldToObject * u2u).getNormalized();
+            return (u2u * worldToObject).getNormalized();
         }
 
         static Quaternion fromMatrix(const Matrix4 &m) {
