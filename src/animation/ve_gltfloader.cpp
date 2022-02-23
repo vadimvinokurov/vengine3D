@@ -131,6 +131,7 @@ VE::Transform VE::GLTF::getLocalTransform(const cgltf_node& node) {
 	if (node.has_matrix) { result = Transform::fromMatrix(Matrix4(node.matrix)); }
 	if (node.has_translation) { result.position = Vector3(node.translation); }
 	if (node.has_rotation) { result.rotation = Quaternion(node.rotation); }
+	if (node.has_scale) { result.scale = Vector3(node.scale); }
 	return result;
 }
 
