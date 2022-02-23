@@ -179,8 +179,8 @@ namespace VE {
             Vector3 u = this->rotate(Vector3(0, 0, 1));
 
             return Matrix4(r.x, r.y, r.z, 0.0f,
-                           u.x, u.y, u.z, 0.0f,
                            f.x, f.y, f.z, 0.0f,
+						   u.x, u.y, u.z, 0.0f,
                            0.0f, 0.0f, 0.0f, 1.0f);
         }
 

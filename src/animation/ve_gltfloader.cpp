@@ -80,7 +80,7 @@ VE::Pose VE::GLTF::loadBindPose() {
 		auto parentIndex = bindPose.getParentIndex(i);
 		if (parentIndex != Joint::hasNoParent) {
 			Transform parentTransform = worldBindPose[parentIndex];
-			currentTransform = currentTransform * parentTransform.getInversed();
+			currentTransform = parentTransform.getInversed() * currentTransform;
 		}
 		bindPose.setLocalTransform(i, currentTransform);
 	}
