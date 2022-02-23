@@ -286,10 +286,16 @@ namespace VE {
             float v[16] = {0};
             struct {
                 SVector4 right;
-                SVector4 forward;
 				SVector4 up;
+                SVector4 forward;
                 SVector4 position;
             };
+			struct {
+				SVector4 modelRight;
+				SVector4 modelForward;
+				SVector4 modelUp;
+				SVector4 mpdelPosition;
+			};
             struct {
                 float _00;
                 float _10;

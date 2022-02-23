@@ -174,13 +174,13 @@ namespace VE {
         }
 
         Matrix4 toMatrix4() const {
-            Vector3 r = this->rotate(Vector3(1, 0, 0));
-            Vector3 f = this->rotate(Vector3(0, 1, 0));
-            Vector3 u = this->rotate(Vector3(0, 0, 1));
+            Vector3 nx = this->rotate(Vector3(1, 0, 0));
+            Vector3 ny = this->rotate(Vector3(0, 1, 0));
+            Vector3 nz = this->rotate(Vector3(0, 0, 1));
 
-            return Matrix4(r.x, r.y, r.z, 0.0f,
-                           f.x, f.y, f.z, 0.0f,
-						   u.x, u.y, u.z, 0.0f,
+            return Matrix4(nx.x, nx.y, nx.z, 0.0f,
+						   ny.x, ny.y, ny.z, 0.0f,
+						   nz.x, nz.y, nz.z, 0.0f,
                            0.0f, 0.0f, 0.0f, 1.0f);
         }
 
@@ -225,11 +225,11 @@ namespace VE {
             return (from + (to - from) * t).getNormalized();
         }
 
-        static Quaternion lookRotation(const Vector3 &direction, const Vector3 &up) {
-            Vector3 f = direction.getNormalized();
+        static Quaternion lookRotation(const Vector3 &forward, const Vector3 &up) {
+            Vector3 f = forward.getNormalized();
             Vector3 u = up.getNormalized();
-            Vector3 r = u * f;
-            u = f * r;
+            Vector3 r = f * u;
+            u = r * f ;
 
             Quaternion worldToObject = fromTo(Vector3(0, 1, 0), f);
             Vector3 objectUp = worldToObject.rotate(Vector3(0, 0, 1));
@@ -239,10 +239,10 @@ namespace VE {
         }
 
         static Quaternion fromMatrix(const Matrix4 &m) {
-            auto up = Vector3(m.up.x, m.up.y, m.up.z).getNormalized();
-            auto forward = Vector3(m.forward.x, m.forward.y, m.forward.z).getNormalized();
-            Vector3 right = up * forward;
-            up = forward * right;
+            auto up = Vector3(m.modelUp.x, m.modelUp.y, m.modelUp.z).getNormalized();
+            auto forward = Vector3(m.modelForward.x, m.modelForward.y, m.modelForward.z).getNormalized();
+            Vector3 right = forward * up;
+            up = right * forward;
 
             return lookRotation(forward, up);
         }
