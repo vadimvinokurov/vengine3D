@@ -15,38 +15,38 @@
 
 namespace VE {
     struct Matrix4 {
-        Matrix4() : xx(1), xy(0), xz(0), xw(0),
+        __forceinline Matrix4() noexcept : xx(1), xy(0), xz(0), xw(0),
                     yx(0), yy(1), yz(0), yw(0),
                     zx(0), zy(0), zz(1), zw(0),
                     tx(0), ty(0), tz(0), tw(1) {}
 
-        Matrix4(float _00, float _01, float _02, float _03,
+        __forceinline Matrix4(float _00, float _01, float _02, float _03,
                 float _10, float _11, float _12, float _13,
                 float _20, float _21, float _22, float _23,
-                float _30, float _31, float _32, float _33) :
+                float _30, float _31, float _32, float _33) noexcept :
                 xx(_00), xy(_01), xz(_02), xw(_03),
                 yx(_10), yy(_11), yz(_12), yw(_13),
                 zx(_20), zy(_21), zz(_22), zw(_23),
                 tx(_30), ty(_31), tz(_32), tw(_33) {}
 
-        Matrix4(const float *fv) :
+        __forceinline Matrix4(const float *fv) noexcept :
                 xx(fv[0]), xy(fv[1]), xz(fv[2]), xw(fv[3]),
                 yx(fv[4]), yy(fv[5]), yz(fv[6]), yw(fv[7]),
                 zx(fv[8]), zy(fv[9]), zz(fv[10]), zw(fv[11]),
                 tx(fv[12]), ty(fv[13]), tz(fv[14]), tw(fv[15]) {}
 
-        bool operator==(const Matrix4 &other) const {
+        __forceinline bool operator==(const Matrix4 &other) const noexcept {
             for (size_t i = 0; i < 16; ++i) {
                 if (fabsf(this->v[i] - other.v[i]) > VEngineSettings::MATRIX_EPSILON) return false;
             }
             return true;
         }
 
-        bool operator!=(const Matrix4 &other) const {
+        __forceinline bool operator!=(const Matrix4 &other) const noexcept {
             return !(*this == other);
         }
 
-        Matrix4 operator+(const Matrix4 &other) const {
+        __forceinline Matrix4 operator+(const Matrix4 &other) const noexcept {
             return Matrix4(
                     this->xx + other.xx, this->xy + other.xy, this->xz + other.xz, this->xw + other.xw,
                     this->yx + other.yx, this->yy + other.yy, this->yz + other.yz, this->yw + other.yw,
@@ -55,7 +55,7 @@ namespace VE {
             );
         }
 
-        Matrix4 operator-(const Matrix4 &other) const {
+        __forceinline Matrix4 operator-(const Matrix4 &other) const noexcept {
             return Matrix4(
                     this->xx - other.xx, this->xy - other.xy, this->xz - other.xz, this->xw - other.xw,
                     this->yx - other.yx, this->yy - other.yy, this->yz - other.yz, this->yw - other.yw,
@@ -64,7 +64,7 @@ namespace VE {
             );
         }
 
-        Matrix4 operator*(float f) const {
+        __forceinline Matrix4 operator*(float f) const noexcept {
             return Matrix4(
                     xx * f, xy * f, xz * f, xw * f,
                     yx * f, yy * f, yz * f, yw * f,
@@ -73,7 +73,7 @@ namespace VE {
             );
         }
 
-        Matrix4 operator/(float f) const {
+        __forceinline Matrix4 operator/(float f) const noexcept {
             f = 1.0f / f;
             return Matrix4(
                     xx * f, xy * f, xz * f, xw * f,
@@ -83,28 +83,28 @@ namespace VE {
             );
         }
 
-        Matrix4 &operator+=(const Matrix4 &other) {
+        __forceinline Matrix4 &operator+=(const Matrix4 &other) noexcept {
             for (size_t i = 0; i < 16; ++i) {
                 this->v[i] += other.v[i];
             }
             return *this;
         }
 
-        Matrix4 &operator-=(const Matrix4 &other) {
+        __forceinline Matrix4 &operator-=(const Matrix4 &other) noexcept {
             for (size_t i = 0; i < 16; ++i) {
                 this->v[i] -= other.v[i];
             }
             return *this;
         }
 
-        Matrix4 &operator*=(float f) {
+        __forceinline Matrix4 &operator*=(float f) noexcept {
             for (size_t i = 0; i < 16; ++i) {
                 this->v[i] *= f;
             }
             return *this;
         }
 
-        Matrix4 &operator/=(float f) {
+        __forceinline Matrix4 &operator/=(float f) noexcept {
             f = 1.0f / f;
             for (size_t i = 0; i < 16; ++i) {
                 this->v[i] *= f;
@@ -112,7 +112,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix4 operator*(const Matrix4 &other) const {
+        __forceinline Matrix4 operator*(const Matrix4 &other) const noexcept {
             return Matrix4(
                     this->v[0] * other.v[0] + this->v[4] * other.v[1] + this->v[8] * other.v[2] + this->v[12] * other.v[3], //0
                     this->v[1] * other.v[0] + this->v[5] * other.v[1] + this->v[9] * other.v[2] + this->v[13] * other.v[3], // 1
@@ -132,26 +132,26 @@ namespace VE {
                     this->v[3] * other.v[12] + this->v[7] * other.v[13] + this->v[11] * other.v[14] + this->v[15] * other.v[15]); // 15
         }
 
-        Vector4 operator*(const Vector4 &other) const {
+        __forceinline Vector4 operator*(const Vector4 &other) const noexcept {
             return Vector4{this->v[0] * other.v[0] + this->v[4] * other.v[1] + this->v[8] * other.v[2] + this->v[12] * other.v[3],
                            this->v[1] * other.v[0] + this->v[5] * other.v[1] + this->v[9] * other.v[2] + this->v[13] * other.v[3],
                            this->v[2] * other.v[0] + this->v[6] * other.v[1] + this->v[10] * other.v[2] + this->v[14] * other.v[3],
                            this->v[3] * other.v[0] + this->v[7] * other.v[1] + this->v[11] * other.v[2] + this->v[15] * other.v[3]};
         }
 
-        Vector3 transformPoint(const Vector3 &vector) const {
+        __forceinline Vector3 transformPoint(const Vector3 &vector) const noexcept {
             return Vector3(this->v[0] * vector.v[0] + this->v[4] * vector.v[1] + this->v[8] * vector.v[2] + this->v[12] * 1.0f,
                            this->v[1] * vector.v[0] + this->v[5] * vector.v[1] + this->v[9] * vector.v[2] + this->v[13] * 1.0f,
                            this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2] + this->v[14] * 1.0f);
         }
 
-      Vector3 transformVector(const Vector3 &vector) const {
+        __forceinline Vector3 transformVector(const Vector3 &vector) const noexcept {
         return Vector3(this->v[0] * vector.v[0] + this->v[4] * vector.v[1] + this->v[8] * vector.v[2],
                        this->v[1] * vector.v[0] + this->v[5] * vector.v[1] + this->v[9] * vector.v[2],
                        this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2]);
       }
 
-        Vector3 transformVector(const Vector3 &vector, float &w) const {
+        __forceinline Vector3 transformVector(const Vector3 &vector, float &w) const noexcept {
             float tmpw = w;
             w = this->v[3] * vector.v[0] + this->v[7] * vector.v[1] + this->v[11] * vector.v[2] + this->v[15] * tmpw;
 
@@ -160,14 +160,14 @@ namespace VE {
                            this->v[2] * vector.v[0] + this->v[6] * vector.v[1] + this->v[10] * vector.v[2] + this->v[14] * tmpw);
         }
 
-        Matrix4 getTransposed() const {
+        __forceinline Matrix4 getTransposed() const noexcept {
             return Matrix4(xx, yx, zx, tx,
                            xy, yy, zy, ty,
                            xz, yz, zz, tz,
                            xw, yw, zw, tw);
         }
 
-        Matrix4 &transpose() {
+        __forceinline Matrix4 &transpose() noexcept {
             std::swap(yx, xy);
             std::swap(zx, xz);
             std::swap(tx, xw);
@@ -178,14 +178,14 @@ namespace VE {
             return *this;
         }
 
-        float determinant() const {
+        __forceinline float determinant() const noexcept {
             return this->v[0] * M4_3X3MINOR(this->v, 1, 2, 3, 1, 2, 3)
                    - this->v[4] * M4_3X3MINOR(this->v, 0, 2, 3, 1, 2, 3)
                    + this->v[8] * M4_3X3MINOR(this->v, 0, 1, 3, 1, 2, 3)
                    - this->v[12] * M4_3X3MINOR(this->v, 0, 1, 2, 1, 2, 3);
         }
 
-        Matrix4 getInversed() const {
+        __forceinline Matrix4 getInversed() const noexcept {
             float det = this->determinant();
             if (det == 0.0f) {
                 return Matrix4();
@@ -216,12 +216,12 @@ namespace VE {
             return cofactor * (1.0f / det);
         }
 
-        Matrix4 &inverse() {
+        __forceinline Matrix4 &inverse() noexcept {
             *this = this->getInversed();
             return *this;
         }
 
-        Matrix4 &setZero() {
+        __forceinline Matrix4 &setZero() noexcept {
             v[0] = 0;
             v[1] = 0;
             v[2] = 0;
@@ -241,7 +241,7 @@ namespace VE {
             return *this;
         }
 
-        Matrix4 &setIdentity() {
+        __forceinline Matrix4 &setIdentity() noexcept {
             v[0] = 1;
             v[1] = 0;
             v[2] = 0;
@@ -261,19 +261,19 @@ namespace VE {
             return *this;
         }
 
-        const float *data() const {
+        __forceinline const float *data() const noexcept {
             return v;
         }
 
-        float *data() {
+        __forceinline float *data() {
             return v;
         }
 
-        static constexpr std::size_t size(){
+        __forceinline static constexpr std::size_t size() noexcept{
             return 16;
         }
 
-        void print() const {
+        __forceinline void print() const noexcept {
             std::cout << std::endl;
             std::cout << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << v[3] << std::endl;
             std::cout << v[4] << "\t" << v[5] << "\t" << v[6] << "\t" << v[7] << std::endl;

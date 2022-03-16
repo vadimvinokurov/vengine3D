@@ -14,15 +14,15 @@ namespace VE{
         Cubic
     };
 
-    inline float linearInterpolate(float a, float b, float t) {
+    __forceinline float linearInterpolate(float a, float b, float t) noexcept {
         return a + (b - a) * t;
     }
 
-    inline Vector3 linearInterpolate(const Vector3 &a, const Vector3 &b, float t) {
+    __forceinline Vector3 linearInterpolate(const Vector3 &a, const Vector3 &b, float t) noexcept {
         return Vector3::lerp(a, b, t);
     }
 
-    inline Quaternion linearInterpolate(const Quaternion &a, const Quaternion &b, float t) {
+    __forceinline Quaternion linearInterpolate(const Quaternion &a, const Quaternion &b, float t) noexcept {
         if (a.dot(b) < 0.0f) {
             return Quaternion::mix(a, b * -1.0f, t).normalize();
         } else {
@@ -30,7 +30,7 @@ namespace VE{
         }
     }
 
-    inline float loopclamp(float val, float lo, float hi) {
+    __forceinline float loopclamp(float val, float lo, float hi) noexcept{
         val = fmodf(val - lo, hi - lo);
         return val < 0.0f ? val + hi : val + lo;
     };

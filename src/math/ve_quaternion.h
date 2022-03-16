@@ -12,36 +12,36 @@
 namespace VE {
 
     struct Quaternion {
-        Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
+        __forceinline Quaternion() noexcept : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
 
-        Quaternion(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_) {}
+        __forceinline Quaternion(float x_, float y_, float z_, float w_) noexcept : x(x_), y(y_), z(z_), w(w_) {}
 
-        Quaternion(float fillValue) : x(fillValue), y(fillValue), z(fillValue), w(fillValue) {}
+        __forceinline Quaternion(float fillValue) noexcept : x(fillValue), y(fillValue), z(fillValue), w(fillValue) {}
 
-        Quaternion(const Vector3 &v, float w_ = 0.0f) : x(v.x), y(v.y), z(v.z), w(w_) {}
+        __forceinline Quaternion(const Vector3 &v, float w_ = 0.0f) noexcept : x(v.x), y(v.y), z(v.z), w(w_) {}
 
-        Quaternion(const Vector4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
+        __forceinline Quaternion(const Vector4 &v) noexcept : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-        Quaternion(const float *fv) : x(fv[0]), y(fv[1]), z(fv[2]), w(fv[3]) {}
+        __forceinline Quaternion(const float *fv) noexcept : x(fv[0]), y(fv[1]), z(fv[2]), w(fv[3]) {}
 
-        Quaternion operator+(const Quaternion &other) const {
+        __forceinline Quaternion operator+(const Quaternion &other) const noexcept {
             return Quaternion(this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w);
         }
 
-        Quaternion operator-(const Quaternion &other) const {
+        __forceinline Quaternion operator-(const Quaternion &other) const noexcept {
             return Quaternion(this->x - other.x, this->y - other.y, this->z - other.z, this->w - other.w);
         }
 
-        Quaternion operator*(float f) const {
+        __forceinline Quaternion operator*(float f) const noexcept {
             return Quaternion(x * f, y * f, z * f, w * f);
         }
 
-        Quaternion operator/(float f) const {
+        __forceinline Quaternion operator/(float f) const noexcept {
             float invf = 1.0f / f;
             return Quaternion(x * invf, y * invf, z * invf, w * invf);
         }
 
-        Quaternion operator*(const Quaternion &other) const {
+        __forceinline Quaternion operator*(const Quaternion &other) const noexcept {
             return Quaternion(
                     this->x * other.w + this->y * other.z - this->z * other.y + this->w * other.x,
                     -this->x * other.z + this->y * other.w + this->z * other.x + this->w * other.y,
@@ -50,11 +50,11 @@ namespace VE {
             );
         }
 
-        Quaternion operator/(const Quaternion &b) const {
+        __forceinline Quaternion operator/(const Quaternion &b) const noexcept {
             return (*this) * b.inverse();
         }
 
-        Quaternion &operator+=(const Quaternion &other) {
+        __forceinline Quaternion &operator+=(const Quaternion &other) noexcept {
             x += other.x;
             y += other.y;
             z += other.z;
@@ -62,7 +62,7 @@ namespace VE {
             return *this;
         }
 
-        Quaternion &operator-=(const Quaternion &other) {
+        __forceinline Quaternion &operator-=(const Quaternion &other) noexcept {
             x -= other.x;
             y -= other.y;
             z -= other.z;
@@ -70,7 +70,7 @@ namespace VE {
             return *this;
         }
 
-        Quaternion &operator*=(float f) {
+        __forceinline Quaternion &operator*=(float f) noexcept {
             x *= f;
             y *= f;
             z *= f;
@@ -78,7 +78,7 @@ namespace VE {
             return *this;
         }
 
-        Quaternion &operator/=(float f) {
+        __forceinline Quaternion &operator/=(float f) noexcept {
             float invf = 1.0f / f;
             x *= invf;
             y *= invf;
@@ -87,28 +87,28 @@ namespace VE {
             return *this;
         }
 
-        Quaternion &operator*=(const Quaternion &other) {
+        __forceinline Quaternion &operator*=(const Quaternion &other) noexcept {
             *this = *this * other;
             return *this;
         }
 
-        Quaternion &operator/=(const Quaternion &other) {
+        __forceinline Quaternion &operator/=(const Quaternion &other) noexcept {
             *this = *this / other;
             return *this;
         }
 
-        bool operator==(const Quaternion &other) const {
+        __forceinline bool operator==(const Quaternion &other) const noexcept {
             return (fabsf(this->x - other.x) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->y - other.y) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->z - other.z) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->w - other.w) < VEngineSettings::QUATERNION_EPSILON);
         }
 
-        bool operator!=(const Quaternion &other) const {
+        __forceinline bool operator!=(const Quaternion &other) const noexcept {
             return !(*this == other);
         }
 
-        bool sameOrientation(const Quaternion &other) const {
+        __forceinline bool sameOrientation(const Quaternion &other) const noexcept {
             return (fabsf(this->x - other.x) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->y - other.y) < VEngineSettings::QUATERNION_EPSILON &&
                     fabsf(this->z - other.z) < VEngineSettings::QUATERNION_EPSILON &&
@@ -119,32 +119,32 @@ namespace VE {
                     fabsf(this->w + other.w) < VEngineSettings::QUATERNION_EPSILON);
         }
 
-        float dot(const Quaternion &other) const {
+        __forceinline float dot(const Quaternion &other) const noexcept {
             return this->x * other.x + this->y * other.y + this->z * other.z + this->w * other.w;
         }
 
-        float norma() const {
+        __forceinline float norma() const noexcept {
             return (*this).dot(*this);
         }
 
-        float lenSqrt() const {
+        __forceinline float lenSqrt() const {
             return x * x + y * y + z * z + w * w;
         }
 
-        float len() const {
+        __forceinline float len() const noexcept {
             float lenSq = lenSqrt();
             if (lenSq < VEngineSettings::QUATERNION_EPSILON) return 0.0f;
             return sqrtf(norma());
         }
 
-        Quaternion getNormalized() const {
+        __forceinline Quaternion getNormalized() const noexcept {
             float lenSq = lenSqrt();
             if (lenSq < VEngineSettings::QUATERNION_EPSILON) return *this;
 
             return (*this) / sqrtf(lenSq);
         }
 
-        Quaternion &normalize() {
+        __forceinline Quaternion &normalize() noexcept {
             float lenSq = lenSqrt();
             if (lenSq < VEngineSettings::QUATERNION_EPSILON) return *this;
             (*this) /= sqrtf(lenSq);
@@ -152,28 +152,28 @@ namespace VE {
             return *this;
         }
 
-        Quaternion conjugate() const {
+        __forceinline Quaternion conjugate() const noexcept {
             return Quaternion(x * -1.0f, y * -1.0f, z * -1.0f, w);
         }
 
-        Quaternion inverse() const {
+        __forceinline Quaternion inverse() const noexcept {
             return conjugate() / norma();
         }
 
-        Vector3 getAxis() const {
+        __forceinline Vector3 getAxis() const noexcept {
             return Vector3(x, y, z).getNormalized();
         }
 
-        float getAngle() const {
+        __forceinline float getAngle() const noexcept {
             return 2.0 * acosf(w);
         }
 
-        Vector3 rotate(const Vector3 &v) const {
+        __forceinline Vector3 rotate(const Vector3 &v) const noexcept {
             Quaternion tmp = *this * Quaternion(v) * this->inverse();
             return Vector3(tmp.x, tmp.y, tmp.z);
         }
 
-        Matrix4 toMatrix4() const {
+        __forceinline Matrix4 toMatrix4() const noexcept {
             Vector3 nx = this->rotate(Vector3(1, 0, 0));
             Vector3 ny = this->rotate(Vector3(0, 1, 0));
             Vector3 nz = this->rotate(Vector3(0, 0, 1));
@@ -184,17 +184,17 @@ namespace VE {
                            0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        static Quaternion fromAxisAngle(const Vector3 &axisAngle) {
+        __forceinline static Quaternion fromAxisAngle(const Vector3 &axisAngle) noexcept {
             auto[axis, angle] = axisAngle.getNormalAndLen();
             return fromAxisAngle(axis, angle);
         }
 
-        static Quaternion fromAxisAngle(const Vector3 &axis, float angle) {
+        __forceinline static Quaternion fromAxisAngle(const Vector3 &axis, float angle) noexcept {
             return Quaternion(axis * sinf(0.5f * angle),
                               cosf(0.5f * angle));
         }
 
-        static Quaternion fromTo(const Vector3 &from, const Vector3 &to) {
+        __forceinline static Quaternion fromTo(const Vector3 &from, const Vector3 &to) noexcept {
             Vector3 f = from.getNormalized();
             Vector3 t = to.getNormalized();
 
@@ -217,15 +217,15 @@ namespace VE {
 
         }
 
-        static Quaternion mix(const Quaternion &from, const Quaternion &to, float t) {
+        __forceinline static Quaternion mix(const Quaternion &from, const Quaternion &to, float t) noexcept {
             return from * (1.0f - t) + to * t;
         }
 
-        static Quaternion nlerp(const Quaternion &from, const Quaternion &to, float t) {
+        __forceinline static Quaternion nlerp(const Quaternion &from, const Quaternion &to, float t) noexcept {
             return (from + (to - from) * t).getNormalized();
         }
 
-        static Quaternion lookRotation(const Vector3 &forward, const Vector3 &up) {
+        __forceinline static Quaternion lookRotation(const Vector3 &forward, const Vector3 &up) noexcept {
             Vector3 f = forward.getNormalized();
             Vector3 u = up.getNormalized();
             Vector3 r = f * u;
@@ -238,7 +238,7 @@ namespace VE {
             return (u2u * worldToObject).getNormalized();
         }
 
-        static Quaternion fromMatrix(const Matrix4 &m) {
+        __forceinline static Quaternion fromMatrix(const Matrix4 &m) noexcept {
             auto up = Vector3(m.modelUp.x, m.modelUp.y, m.modelUp.z).getNormalized();
             auto forward = Vector3(m.modelForward.x, m.modelForward.y, m.modelForward.z).getNormalized();
             Vector3 right = forward * up;
@@ -247,19 +247,19 @@ namespace VE {
             return lookRotation(forward, up);
         }
 
-        void print() const {
+        __forceinline void print() const noexcept {
             std::cout << x << " " << y << " " << z << " " << w << std::endl;
         }
 
-        const float *data() const {
+        __forceinline const float *data() const noexcept {
             return v;
         }
 
-        float *data() {
+        __forceinline float *data() noexcept {
             return v;
         }
 
-        static constexpr std::size_t size(){
+        __forceinline static constexpr std::size_t size() noexcept {
             return 4;
         }
 
