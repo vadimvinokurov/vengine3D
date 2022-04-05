@@ -17,3 +17,15 @@ cmake --build . --config Release
 cp -R ..\contents .
 ```
 - The "contents" folder must be located one level down in the filesystem than the executable file.
+
+## Features
+Physics engine implemented as:
+- OpenGL with GLFW
+- Implemented OOP Abstraction layer for OpenGL
+- GUI base on ImGUI
+- Collision system based on GJK algorithm and use convex shape and sphere, multiple shapes per body.
+- Collision system give contact point and depth vector
+- Physics engine use constraints physics (collision constraints solver with сontact, friction, and restitution, joint constraints)
+- Physics engine stable stacking with a linear-time solver (base on warmstarting and accumulating)
+- Load mesh and animation clips from glft file
+- Play animation
