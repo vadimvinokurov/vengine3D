@@ -29,3 +29,6 @@ Physics engine implemented as:
 - Physics engine stable stacking with a linear-time solver (base on warmstarting and accumulating)
 - Load mesh and animation clips from glft file
 - Play animation
+
+## Demo video
+https://youtu.be/vOq01VPtOe8
