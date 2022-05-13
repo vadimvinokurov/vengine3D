@@ -64,11 +64,11 @@ void World::scene() {
 
 	float s = 1.0f;
 	float b = 0.8f;
-	for (int i = 1; i < 50; i++) {
-		RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
-		stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
-		worldObjects.push_back(stairs);
-	}
+//	for (int i = 1; i < 50; i++) {
+//		RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
+//		stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
+//		worldObjects.push_back(stairs);
+//	}
 
 	actors_.push_back(create<RagdollActor>(Vector3(0, 0, 20)));
 	actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));
@@ -77,6 +77,7 @@ void World::scene() {
 	//GLTF gltf = GLTF("../contents/assets/woman/Woman.gltf");
 	GLTF gltf = GLTF("../contents/assets/stormtrooper/scene.gltf");
 	if (gltf.good()) {
+        meshes = gltf.loadMeshes();
 		restPose = gltf.loadRestPose();
 		clips = gltf.loadAnimationClips();
 		skeleton_ = gltf.loadSkeleton();
@@ -89,7 +90,7 @@ void World::scene() {
 				break;
 			}
 		}
-		meshes = gltf.loadMeshes();
+
 	}
 }
 
@@ -149,6 +150,11 @@ void World::animation(float dt) {
 
 	playbackTime = clips[currentClipNumber].sample(currentPose, playbackTime + dt);
 	meshes[0].skin(skeleton_, currentPose);
+
+    Vector3 p(0,0,0.1);
+    DebugDraw::Vector(Vector3(1,0,0), p, VE::Color(1,0,0));
+    DebugDraw::Vector(Vector3(0,1,0), p, VE::Color(0,1,0));
+    DebugDraw::Vector(Vector3(0,0,1), p, VE::Color(0,0,1));
 }
 
 

@@ -39,10 +39,10 @@ void Mesh::skin(const Skeleton& skeleton, const Pose& pose) {
 
 		auto skinMatrix = m0 + m1 + m2 + m3;
 
-        Transform t1(Quaternion::fromAxisAngle(Vector3(1, 0, 0), M_PI / 2));
-        Transform t2(Quaternion::fromAxisAngle(Vector3(0, 0, 1), M_PI ));
-        skinMatrix = (t2*t1).toMatrix() * skinMatrix;
-
+        skinMatrix = Matrix4(-1,0,0,0,
+                             0,0,1,0,
+                             0,1,0,0,
+                             -5,0,0,1) * skinMatrix;
 		skinnedPosition_[i] = skinMatrix.transformPoint(positions[i]);
 		skinnedNormals_[i] = skinMatrix.transformVector(normals[i]);
 	}
