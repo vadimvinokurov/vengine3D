@@ -286,8 +286,8 @@ namespace VE {
             float v[16] = {0};
             struct {
                 SVector4 right;
-				SVector4 up;
                 SVector4 forward;
+                SVector4 up;
                 SVector4 position;
             };
             struct {

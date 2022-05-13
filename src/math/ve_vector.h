@@ -4,18 +4,19 @@
 
 #ifndef VOLLEYBALL_VECTOR_HPP
 #define VOLLEYBALL_VECTOR_HPP
+
 #include <stdlibraries.h>
 #include "ve_engine_settings.h"
 
 namespace VE {
     struct Vector3 {
-        __forceinline Vector3(float fillValue = 0.0f) noexcept : x(fillValue), y(fillValue), z(fillValue) {};
+        __forceinline Vector3(float fillValue = 0.0f) noexcept: x(fillValue), y(fillValue), z(fillValue) {};
 
-        __forceinline Vector3(float x_, float y_, float z_ = 0.0f) noexcept : x(x_), y(y_), z(z_) {};
+        __forceinline Vector3(float x_, float y_, float z_ = 0.0f) noexcept: x(x_), y(y_), z(z_) {};
 
-        __forceinline Vector3(const float *fv) noexcept : x(fv[0]), y(fv[1]), z(fv[2]) {};
+        __forceinline Vector3(const float *fv) noexcept: x(fv[0]), y(fv[1]), z(fv[2]) {};
 
-        __forceinline Vector3 operator+(const Vector3 &other)  const noexcept {
+        __forceinline Vector3 operator+(const Vector3 &other) const noexcept {
             return Vector3(x + other.x, y + other.y, z + other.z);
         }
 
@@ -207,7 +208,7 @@ namespace VE {
             return s * a + e * b;
         }
 
-        __forceinline static constexpr std::size_t size() noexcept{
+        __forceinline static constexpr std::size_t size() noexcept {
             return 3;
         }
 
@@ -250,7 +251,7 @@ namespace VE {
             return v;
         }
 
-        static constexpr std::size_t size(){
+        static constexpr std::size_t size() {
             return 2;
         }
 
@@ -274,14 +275,14 @@ namespace VE {
                      w(static_cast<T>(0)) {}
 
         TVector4(T x_, T y_, T z_, T w_ = 1.0f) : x(x_),
-                                           y(y_),
-                                           z(z_),
-                                           w(w_) {}
+                                                  y(y_),
+                                                  z(z_),
+                                                  w(w_) {}
 
         TVector4(const T *fv) : x(fv[0]),
-                          y(fv[1]),
-                          z(fv[2]),
-                          w(fv[3]) {}
+                                y(fv[1]),
+                                z(fv[2]),
+                                w(fv[3]) {}
 
         TVector4 &operator+=(float other) {
             x += other;
@@ -289,9 +290,9 @@ namespace VE {
             z += other;
             w += other;
             return *this;
-		}
+        }
 
-		const T *data() const {
+        const T *data() const {
             return v;
         }
 
@@ -299,7 +300,7 @@ namespace VE {
             return v;
         }
 
-        static constexpr std::size_t size(){
+        static constexpr std::size_t size() {
             return 4;
         }
 
@@ -337,6 +338,10 @@ namespace VE {
             };
         };
     };
+
+    inline auto toVector(const SVector4 &v4) {
+        return Vector3(v4.x, v4.y, v4.z);
+    }
 }
 
 
