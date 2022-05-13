@@ -66,10 +66,8 @@ void Render::draw(const WorldPtr& world) {
 	Uniform<Matrix4>::set(meshShader.getUniform("projection"), projection);
 	Uniform<Matrix4>::set(meshShader.getUniform("view"), view);
 
-	Transform t1(Quaternion::fromAxisAngle(Vector3(1, 0, 0), M_PI / 2));
-	Transform t2(Quaternion::fromAxisAngle(Vector3(0, 0, 1), M_PI ));
-	Transform t3(Vector3(-5, 0, 0));
-	Uniform<Matrix4>::set(meshShader.getUniform("model"), (t3 * t2 * t1).toMatrix());
+
+	Uniform<Matrix4>::set(meshShader.getUniform("model"), (Transform()).toMatrix());
 
 	for (auto&& mesh : world_->meshes) {
 		mesh.positionsGPU.bindTo(meshShader.getAttribute("aPosition"));
