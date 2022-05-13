@@ -290,12 +290,6 @@ namespace VE {
                 SVector4 forward;
                 SVector4 position;
             };
-			struct {
-				SVector4 modelRight;
-				SVector4 modelForward;
-				SVector4 modelUp;
-				SVector4 mpdelPosition;
-			};
             struct {
                 float _00;
                 float _10;

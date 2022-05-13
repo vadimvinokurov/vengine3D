@@ -228,19 +228,19 @@ namespace VE {
         __forceinline static Quaternion lookRotation(const Vector3 &forward, const Vector3 &up) noexcept {
             Vector3 f = forward.getNormalized();
             Vector3 u = up.getNormalized();
-            Vector3 r = f * u;
-            u = r * f ;
+            Vector3 r = u * f;
+            u = f * r;
 
-            Quaternion worldToObject = fromTo(Vector3(0, 1, 0), f);
-            Vector3 objectUp = worldToObject.rotate(Vector3(0, 0, 1));
+            Quaternion worldToObject = fromTo(Vector3(0, 0, 1), f);
+            Vector3 objectUp = worldToObject.rotate(Vector3(0, 1, 0));
             Quaternion u2u = fromTo(objectUp, u);
 
             return (u2u * worldToObject).getNormalized();
         }
 
         __forceinline static Quaternion fromMatrix(const Matrix4 &m) noexcept {
-            auto up = Vector3(m.modelUp.x, m.modelUp.y, m.modelUp.z).getNormalized();
-            auto forward = Vector3(m.modelForward.x, m.modelForward.y, m.modelForward.z).getNormalized();
+            auto up = Vector3(m.up.x, m.up.y, m.up.z).getNormalized();
+            auto forward = Vector3(m.forward.x, m.forward.y, m.forward.z).getNormalized();
             Vector3 right = forward * up;
             up = right * forward;
 
