@@ -8,13 +8,13 @@
 #include "ve_core.h"
 
 namespace VE {
-    template<typename T>
-    struct Frame {
-        T value;
-        T in;
-        T out;
-        float time;
-    };
-}
+	template<typename T>
+	struct Frame {
+		T value;
+		T in;
+		T out;
+		float time;
+	};
+}  // namespace VE
 
-#endif //VENGINE3D_VE_FRAME_H
+#endif	//VENGINE3D_VE_FRAME_H

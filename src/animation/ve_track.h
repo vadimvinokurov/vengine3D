@@ -13,31 +13,32 @@
 #include "math/ve_math_utility.h"
 
 namespace VE {
-    template<typename T>
-    class Track {
-    public:
-        Track();
-        Frame<T> &operator[](std::size_t index);
-        void resize(std::size_t size);
-        void setInterpolation(Interpolation interpolation);
-        T sample(float time, bool looping) const;
-        Interpolation getInterpolation() const;
-        float getStartTime() const;
-        float getEndTime() const;
-        std::size_t size() const;
-    private:
-        T sampleConstant(float time, bool looping) const;
-        T sampleLinear(float time, bool looping) const;
-        T sampleCubic(float time, bool looping) const;
-        std::size_t frameIndex(float time, bool looping) const;
-        float adjustTimeToFitTrack(float time, bool looping) const;
-        T hermite(float t, const T &p1, const T &s1, const T &p2, const T &s2) const;
-        T normalize_if_quaternion(const T &value) const;
+	template<typename T>
+	class Track {
+	public:
+		Track();
+		Frame<T>& operator[](std::size_t index);
+		void resize(std::size_t size);
+		void setInterpolation(Interpolation interpolation);
+		T sample(float time, bool looping) const;
+		Interpolation getInterpolation() const;
+		float getStartTime() const;
+		float getEndTime() const;
+		std::size_t size() const;
 
-        std::vector<Frame<T>> frames_;
-        Interpolation interpolation_;
-    };
-}
+	private:
+		T sampleConstant(float time, bool looping) const;
+		T sampleLinear(float time, bool looping) const;
+		T sampleCubic(float time, bool looping) const;
+		std::size_t frameIndex(float time, bool looping) const;
+		float adjustTimeToFitTrack(float time, bool looping) const;
+		T hermite(float t, const T& p1, const T& s1, const T& p2, const T& s2) const;
+		T normalize_if_quaternion(const T& value) const;
+
+		std::vector<Frame<T>> frames_;
+		Interpolation interpolation_ = Interpolation::Linear;
+	};
+}  // namespace VE
 
 
-#endif //VENGINE3D_VE_TRACK_H
+#endif	//VENGINE3D_VE_TRACK_H
