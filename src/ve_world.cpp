@@ -78,12 +78,10 @@ void World::scene() {
 	GLTF gltf = GLTF("../contents/assets/stormtrooper/scene.gltf");
 	if (gltf.good()) {
         meshes = gltf.loadMeshes();
-		restPose = gltf.loadRestPose();
 		clips = gltf.loadAnimationClips();
 		skeleton_ = gltf.loadSkeleton();
-		currentClipNumber = 0;
-		currentPose = restPose;
 
+		currentClipNumber = 0;
 		for (std::size_t i = 0; i < clips.size(); ++i) {
 			if (clips[i].getName() == "Walking") {
 				currentClipNumber = i;
@@ -148,8 +146,8 @@ void World::cameraControl(float dt) {
 void World::animation(float dt) {
 	if (clips.empty()) return;
 
-	playbackTime = clips[currentClipNumber].sample(currentPose, playbackTime + dt);
-	meshes[0].skin(skeleton_, currentPose);
+	playbackTime = clips[currentClipNumber].sample(skeleton_.pose(), playbackTime + dt);
+	meshes[0].skin(skeleton_);
 
     Vector3 p(0,0,0.1);
     DebugDraw::Vector(Vector3(1,0,0), p, VE::Color(1,0,0));

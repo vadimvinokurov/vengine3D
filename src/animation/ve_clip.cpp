@@ -11,7 +11,7 @@ VE::Clip::Clip() {
     looping_ = true;
 }
 
-float VE::Clip::sample(VE::Pose &outPose, float time) {
+float VE::Clip::sample(VE::Pose &animatingPose, float time) {
     if (getDuration() == 0.0f) {
         return 0.0f;
     }
@@ -19,9 +19,7 @@ float VE::Clip::sample(VE::Pose &outPose, float time) {
 
     for (const auto &transformTrack: transformTracks_) {
         size_t jointIndex = transformTrack.getJointIndex();
-        Transform local = outPose.getLocalTransform(jointIndex);
-        Transform animated = transformTrack.sample(local, time, looping_);
-        outPose.setLocalTransform(jointIndex, animated);
+        transformTrack.sample(animatingPose[jointIndex], time, looping_);
     }
     return time;
 }

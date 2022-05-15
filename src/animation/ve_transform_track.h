@@ -14,12 +14,18 @@ namespace VE {
     class TransformTrack {
     public:
         TransformTrack() = default;
+		TransformTrack(const TransformTrack& tack) = default;
+		TransformTrack(TransformTrack&& tack) = default;
+		TransformTrack& operator=(const TransformTrack& tack) = default;
+		TransformTrack& operator=(TransformTrack&& tack) = default;
+		~TransformTrack() = default;
+
         void setJointIndex(std::size_t jointIndex);
         std::size_t getJointIndex() const;
         float getStartTime() const;
         float getEndTime() const;
         bool isValid() const;
-        Transform sample(const Transform &ref, float time, bool looping) const;
+        void sample(Transform &transform, float time, bool looping) const;
 
         Track<Vector3> position;
         Track<Quaternion> rotation;

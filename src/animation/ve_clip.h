@@ -14,7 +14,13 @@ namespace VE {
     class Clip {
     public:
         Clip();
-        float sample(Pose &outPose, float time);
+		Clip(const Clip& other) = default;
+		Clip(Clip&& other) = default;
+		Clip& operator=(const Clip& other) = default;
+		Clip& operator=(Clip&& other) = default;
+		~Clip() = default;
+
+        float sample(Pose &animatingPose, float time);
         void recalculateDuration();
 
         TransformTrack &operator[](std::size_t jointIndex);

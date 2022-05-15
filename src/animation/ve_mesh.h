@@ -21,7 +21,7 @@ namespace VE {
 
         Mesh& operator=(const Mesh& other);
 
-        void skin(const Skeleton& skeleton, const Pose& pose);
+        void skin(const Skeleton& skeleton);
 
         void updateOpenGLBuffers();
 

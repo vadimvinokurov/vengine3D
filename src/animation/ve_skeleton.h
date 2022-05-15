@@ -15,7 +15,8 @@ namespace VE {
         void set(const Pose& rest, const Pose& bind, const std::vector<std::string>& names);
 
         const Pose& getBindPose() const;
-        const Pose& getRestPose() const;
+		Pose& pose();
+		const Pose& pose() const;
 
         const std::vector<Matrix4>& getInvBindPose() const;
         const std::vector<std::string>& getJointNames() const;
@@ -24,7 +25,7 @@ namespace VE {
     private:
         void updateInvBindPose();
 
-        Pose restPose_;
+        Pose pose_;
         Pose bindPose_;
         std::vector<Matrix4> invBindPose_;
         std::vector<std::string> jointNames_;

@@ -60,17 +60,15 @@ bool VE::TransformTrack::isValid() const {
     return position.size() > 1 || rotation.size() > 1 || scale.size() > 1;
 }
 
-VE::Transform VE::TransformTrack::sample(const VE::Transform &ref, float time, bool looping) const {
-    Transform result = ref;
+void VE::TransformTrack::sample(VE::Transform &transform, float time, bool looping) const {
     if (position.size() > 1) {
-        result.position = position.sample(time, looping);
+		transform.position = position.sample(time, looping);
     }
     if (rotation.size() > 1) {
-        result.rotation = rotation.sample(time, looping);
+		transform.rotation = rotation.sample(time, looping);
     }
     if (scale.size() > 1) {
-        result.scale = scale.sample(time, looping);
+		transform.scale = scale.sample(time, looping);
     }
-    return result;
 }
 

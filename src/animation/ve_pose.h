@@ -10,32 +10,33 @@
 #include "math/ve_transform.h"
 
 namespace VE {
-    struct Joint{
-        static constexpr std::size_t hasNoParent = -1;
+	struct Joint {
+		static constexpr std::size_t hasNoParent = -1;
+		Transform transform;
+		std::size_t parentIndex;
+	};
 
-        Transform transform;
-        std::size_t parentIndex;
-    };
+	class Pose {
+	public:
+		Pose() = default;
+		Pose(const Pose& other) = default;
+		Pose(Pose&& other) = default;
+		Pose& operator=(const Pose& other) = default;
+		Pose& operator=(Pose&& other) = default;
+		~Pose() = default;
 
-    class Pose {
-    public:
-        Pose();
-        Pose(std::size_t numJoints);
-        Pose(const Pose &other);
-        Pose &operator=(const Pose &other);
-        void resize(std::size_t size);
-        void setParent(std::size_t jointIndex, std::size_t parentIndex);
-        void setLocalTransform(std::size_t jointIndex, const Transform &transform);
+		void addJoint(std::size_t jointIndex, const Transform& transform, size_t parentIndex = Joint::hasNoParent);
+		std::size_t jointsCount() const;
+		Transform& operator[](std::size_t jointIndex);
+		const Transform& operator[](std::size_t jointIndex) const;
+		std::size_t getParentIndex(std::size_t jointIndex) const;
+		Transform getGlobalTransform(std::size_t jointIndex) const;
+		std::vector<Matrix4> getMatrixPalette() const;
 
-        std::size_t jointsCount() const;
-        std::size_t getParentIndex(std::size_t jointIndex) const;
-        const Transform &getLocalTransform(std::size_t jointIndex) const;
-        Transform getGlobalTransform(std::size_t jointIndex) const;
-        std::vector<VE::Matrix4> getMatrixPalette() const;
-    private:
-        std::vector<Joint> joints_;
-    };
-}
+	private:
+		std::vector<Joint> joints_;
+	};
+}  // namespace VE
 
 
-#endif //VENGINE3D_VE_POSE_H
+#endif	//VENGINE3D_VE_POSE_H

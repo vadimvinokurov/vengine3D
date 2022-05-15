@@ -11,7 +11,7 @@ VE::Skeleton::Skeleton(const VE::Pose& rest, const VE::Pose& bind, const std::ve
 }
 
 void VE::Skeleton::set(const VE::Pose& rest, const VE::Pose& bind, const std::vector<std::string>& names) {
-    restPose_ = rest;
+	pose_ = rest;
     bindPose_ = bind;
     jointNames_ = names;
 
@@ -22,8 +22,12 @@ const VE::Pose& VE::Skeleton::getBindPose() const {
     return bindPose_;
 }
 
-const VE::Pose& VE::Skeleton::getRestPose() const {
-    return restPose_;
+Pose& VE::Skeleton::pose() {
+    return pose_;
+}
+
+const Pose& Skeleton::pose() const {
+	return pose_;
 }
 
 const std::vector<Matrix4>& VE::Skeleton::getInvBindPose() const {
@@ -43,6 +47,4 @@ void VE::Skeleton::updateInvBindPose() {
     for(std::size_t i = 0; i < jointCount; ++i){
         invBindPose_[i] = bindPose_.getGlobalTransform(i).getInversed().toMatrix();
     }
-
 }
-

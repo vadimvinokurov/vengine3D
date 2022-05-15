@@ -20,12 +20,12 @@ void Mesh::updateOpenGLBuffers() {
 	indicesGPU.set(indices);
 }
 
-void Mesh::skin(const Skeleton& skeleton, const Pose& pose) {
+void Mesh::skin(const Skeleton& skeleton) {
 	if (positions.empty()) return;
 	skinnedPosition_.resize(positions.size());
 	skinnedNormals_.resize(positions.size());
 
-	auto posePalette = pose.getMatrixPalette();
+	auto posePalette = skeleton.pose().getMatrixPalette();
 	auto invPosePalette = skeleton.getInvBindPose();
 
 	for (std::size_t i = 0; i < positions.size(); ++i) {

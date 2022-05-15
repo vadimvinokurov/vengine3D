@@ -4,56 +4,35 @@
 
 #include "ve_pose.h"
 
-VE::Pose::Pose() {}
-
-VE::Pose::Pose(std::size_t numJoints) {
-	resize(numJoints);
+void VE::Pose::addJoint(std::size_t jointIndex, const VE::Transform& transform, size_t parentIndex) {
+	if(jointIndex >= joints_.size()) joints_.resize(jointIndex + 1);
+	joints_[jointIndex] = Joint{transform, parentIndex};
 }
 
-VE::Pose::Pose(const VE::Pose& other) {
-	*this = other;
+VE::Transform& VE::Pose::operator[](std::size_t jointIndex) {
+	return joints_.at(jointIndex).transform;
 }
 
-VE::Pose& VE::Pose::operator=(const VE::Pose& other) {
-	if (&other == this) { return *this; }
-	joints_ = other.joints_;
-	return *this;
-}
-
-void VE::Pose::resize(std::size_t size) {
-	joints_.resize(size);
-}
-
-void VE::Pose::setParent(std::size_t jointIndex, std::size_t parentIndex) {
-	joints_[jointIndex].parentIndex = parentIndex;
-}
-
-void VE::Pose::setLocalTransform(std::size_t jointIndex, const VE::Transform& transform) {
-	joints_[jointIndex].transform = transform;
-}
-
-std::size_t VE::Pose::jointsCount() const {
-	return joints_.size();
+const VE::Transform& VE::Pose::operator[](std::size_t jointIndex) const {
+	return joints_.at(jointIndex).transform;
 }
 
 std::size_t VE::Pose::getParentIndex(std::size_t jointIndex) const {
-	return joints_[jointIndex].parentIndex;
-}
-
-const VE::Transform& VE::Pose::getLocalTransform(std::size_t jointIndex) const {
-	return joints_[jointIndex].transform;
+	return joints_.at(jointIndex).parentIndex;
 }
 
 VE::Transform VE::Pose::getGlobalTransform(std::size_t jointIndex) const {
-	Transform result = joints_[jointIndex].transform;
-	for (std::size_t p = joints_[jointIndex].parentIndex; p != Joint::hasNoParent; p = joints_[p].parentIndex) { result = joints_[p].transform * result; }
+	Transform result = joints_.at(jointIndex).transform;
+	for (std::size_t p = joints_.at(jointIndex).parentIndex; p != Joint::hasNoParent; p = joints_.at(p).parentIndex) { result = joints_.at(p).transform * result; }
 	return result;
 }
 
 std::vector<VE::Matrix4> VE::Pose::getMatrixPalette() const {
-	std::vector<VE::Matrix4> out(this->jointsCount());
-
-	for (std::size_t i = 0; i < this->jointsCount(); ++i) { out[i] = getGlobalTransform(i).toMatrix(); }
-
+	std::vector<VE::Matrix4> out(joints_.size());
+	for (std::size_t i = 0; i < joints_.size(); ++i) { out[i] = getGlobalTransform(i).toMatrix(); }
 	return out;
+}
+
+std::size_t VE::Pose::jointsCount() const {
+	return joints_.size();
 }

@@ -79,60 +79,43 @@ VE::Skeleton VE::GLTF::loadSkeleton() {
 }
 
 VE::Pose VE::GLTF::loadRestPose() {
-	std::size_t jointCount = data_->nodes_count;
-	Pose result(jointCount);
-	for (std::size_t i = 0; i < jointCount; ++i) {
-		const cgltf_node& joint = data_->nodes[i];
-		Transform transform = getLocalTransform(joint);
-		result.setLocalTransform(i, transform);
-		auto parentIndex = getNodeIndex(joint.parent);
-		result.setParent(i, parentIndex);
-	}
-	return result;
+	Pose pose;
+	for (std::size_t i = 0; i < nodes.size(); ++i) { pose.addJoint(i, getLocalTransform(nodes[i]), getNodeIndex(nodes[i].parent)); }
+	return pose;
 }
 
 VE::Pose VE::GLTF::loadBindPose() {
 	Pose restPose = loadRestPose();
-	auto jointsCount = restPose.jointsCount();
-	std::vector<Transform> worldBindPose(jointsCount);
+	std::vector<Transform> worldBindPose(restPose.jointsCount());
 
-	for (std::size_t i = 0; i < jointsCount; ++i) { worldBindPose[i] = restPose.getGlobalTransform(i); }
+	for (std::size_t i = 0; i < restPose.jointsCount(); ++i) { worldBindPose[i] = restPose.getGlobalTransform(i); }
 
-	auto skinsCount = data_->skins_count;
-	for (std::size_t i = 0; i < skinsCount; ++i) {
-		const cgltf_skin& skin = data_->skins[i];
+	tcb::span skins(data_->skins, data_->skins_count);
+	for (const auto& skin: skins) {
 		auto invBindMatrix = getAccessorValues<Matrix4>(*skin.inverse_bind_matrices);
-		auto numSkinJoints = skin.joints_count;
-		for (std::size_t j = 0; j < numSkinJoints; ++j) {
+		for (std::size_t j = 0; j < skin.joints_count; ++j) {
 			auto jointIndex = getNodeIndex(skin.joints[j]);
 			worldBindPose[jointIndex] = Transform::fromMatrix(invBindMatrix[j].getInversed());
 		}
 	}
 
-	Pose bindPose = restPose;
-	for (std::size_t i = 0; i < jointsCount; ++i) {
+	Pose bindPose = std::move(restPose);
+	for (std::size_t i = 0; i < bindPose.jointsCount(); ++i) {
 		Transform currentTransform = worldBindPose[i];
 		auto parentIndex = bindPose.getParentIndex(i);
 		if (parentIndex != Joint::hasNoParent) {
 			Transform parentTransform = worldBindPose[parentIndex];
 			currentTransform = parentTransform.getInversed() * currentTransform;
 		}
-		bindPose.setLocalTransform(i, currentTransform);
+		bindPose[i] = currentTransform;
 	}
 	return bindPose;
 }
 
+
 std::vector<std::string> VE::GLTF::loadJointNames() {
-	std::size_t jointCount = data_->nodes_count;
-	std::vector<std::string> result(jointCount, "Not Set");
-	for (std::size_t i = 0; i < jointCount; ++i) {
-		cgltf_node* node = &(data_->nodes[i]);
-		if (node->name == 0) {
-			result[i] = "EMPTY NODE";
-		} else {
-			result[i] = node->name;
-		}
-	}
+	std::vector<std::string> result;
+	for (const auto& node : nodes) { result.emplace_back(node.name ? node.name : "no name"); }
 	return result;
 }
 
