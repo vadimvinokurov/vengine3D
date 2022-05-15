@@ -16,9 +16,16 @@ namespace VE {
 	template<typename T>
 	class Track {
 	public:
-		Track();
+		Track(Interpolation interpolation = Interpolation::Linear);
+		Track(std::vector<Frame<T>> frames, Interpolation interpolation = Interpolation::Linear);
+
+		Track(const Track& tack) = default;
+		Track(Track&& tack) = default;
+		Track& operator=(const Track& tack) = default;
+		Track& operator=(Track&& tack) = default;
+		~Track() = default;
+
 		Frame<T>& operator[](std::size_t index);
-		void resize(std::size_t size);
 		void setInterpolation(Interpolation interpolation);
 		T sample(float time, bool looping) const;
 		Interpolation getInterpolation() const;
@@ -36,7 +43,7 @@ namespace VE {
 		T normalize_if_quaternion(const T& value) const;
 
 		std::vector<Frame<T>> frames_;
-		Interpolation interpolation_ = Interpolation::Linear;
+		Interpolation interpolation_;
 	};
 }  // namespace VE
 

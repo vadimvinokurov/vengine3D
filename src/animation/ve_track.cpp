@@ -10,7 +10,11 @@ template class VE::Track<Vector3>;
 template class VE::Track<Quaternion>;
 
 template<typename T>
-Track<T>::Track() {}
+Track<T>::Track(Interpolation interpolation) : interpolation_(interpolation) {}
+
+template<typename T>
+Track<T>::Track(std::vector<Frame<T>> frames, Interpolation interpolation) : frames_(std::move(frames)),
+																			 interpolation_(interpolation) {}
 
 template<typename T>
 Frame<T>& Track<T>::operator[](std::size_t index) {
@@ -20,11 +24,6 @@ Frame<T>& Track<T>::operator[](std::size_t index) {
 template<typename T>
 void Track<T>::setInterpolation(Interpolation interpolation) {
 	interpolation_ = interpolation;
-}
-
-template<typename T>
-void Track<T>::resize(std::size_t size) {
-	frames_.resize(size);
 }
 
 template<typename T>

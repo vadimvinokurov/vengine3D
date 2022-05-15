@@ -34,7 +34,7 @@ namespace VE {
 		Transform getLocalTransform(const cgltf_node& node);
 		std::size_t getNodeIndex(const cgltf_node* target);
 		template<typename T>
-		void trackFromChannel(Track<T>& track, const cgltf_animation_channel& channel);
+		VE::Track<T> trackFromChannel(const cgltf_animation_sampler& sampler);
 		template<typename T>
 		std::vector<T> getAccessorValues(const cgltf_accessor& inAccessor);
 

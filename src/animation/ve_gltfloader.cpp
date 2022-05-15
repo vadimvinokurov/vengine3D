@@ -137,25 +137,21 @@ std::vector<std::string> VE::GLTF::loadJointNames() {
 }
 
 std::vector<VE::Clip> VE::GLTF::loadAnimationClips() {
-	std::size_t numClips = data_->animations_count;
-
-	std::vector<Clip> clips(numClips);
-	for (std::size_t i = 0; i < numClips; ++i) {
+	std::vector<Clip> clips(data_->animations_count);
+	for (std::size_t i = 0; i < clips.size(); ++i) {
 		clips[i].setName(data_->animations[i].name);
-		std::size_t numChannels = data_->animations[i].channels_count;
+		tcb::span animationChannels(data_->animations[i].channels, data_->animations[i].channels_count);
+		for (const auto& channel : animationChannels) {
+			std::size_t nodeIndex = getNodeIndex(channel.target_node);
 
-		for (std::size_t j = 0; j < numChannels; ++j) {
-			cgltf_animation_channel& channel = data_->animations[i].channels[j];
-			std::size_t nodeId = getNodeIndex(channel.target_node);
-
-			if (channel.target_path == cgltf_animation_path_type_translation) {
-				trackFromChannel<Vector3>(clips[i][nodeId].position, channel);
-			} else if (channel.target_path == cgltf_animation_path_type_scale) {
-				trackFromChannel<Vector3>(clips[i][nodeId].scale, channel);
-			} else if (channel.target_path == cgltf_animation_path_type_rotation) {
-				trackFromChannel<Quaternion>(clips[i][nodeId].rotation, channel);
+			switch (channel.target_path) {
+				case cgltf_animation_path_type_translation: clips[i][nodeIndex].position = trackFromChannel<Vector3>(*channel.sampler); break;
+				case cgltf_animation_path_type_scale: clips[i][nodeIndex].scale = trackFromChannel<Vector3>(*channel.sampler); break;
+				case cgltf_animation_path_type_rotation: clips[i][nodeIndex].rotation = trackFromChannel<Quaternion>(*channel.sampler); break;
+				default: break;
 			}
 		}
+
 		clips[i].recalculateDuration();
 	}
 	return clips;
@@ -163,25 +159,10 @@ std::vector<VE::Clip> VE::GLTF::loadAnimationClips() {
 
 VE::Transform VE::GLTF::getLocalTransform(const cgltf_node& node) {
 	Transform result;
-	bool f = false;
-	if (node.has_matrix) {
-		result = Transform::fromMatrix(Matrix4(node.matrix));
-		f = true;
-	}
-	if (node.has_translation) {
-		result.position = Vector3(node.translation);
-		f = true;
-	}
-	if (node.has_rotation) {
-		result.rotation = Quaternion(node.rotation);
-		f = true;
-	}
-	if (node.has_scale) {
-		result.scale = Vector3(node.scale);
-		f = true;
-	}
-
-	//if (!false) { std::cout << "Not visited getLocalTransform" << std::endl; }
+	if (node.has_matrix) { result = Transform::fromMatrix(Matrix4(node.matrix)); }
+	if (node.has_translation) { result.position = Vector3(node.translation); }
+	if (node.has_rotation) { result.rotation = Quaternion(node.rotation); }
+	if (node.has_scale) { result.scale = Vector3(node.scale); }
 	return result;
 }
 
@@ -190,32 +171,29 @@ std::size_t VE::GLTF::getNodeIndex(const cgltf_node* target) {
 }
 
 template<typename T>
-void VE::GLTF::trackFromChannel(VE::Track<T>& track, const cgltf_animation_channel& channel) {
-	cgltf_animation_sampler& sampler = *channel.sampler;
+VE::Track<T> VE::GLTF::trackFromChannel(const cgltf_animation_sampler& sampler) {
+
 	Interpolation interpolation = Interpolation::Constant;
 	if (sampler.interpolation == cgltf_interpolation_type_linear) {
 		interpolation = Interpolation::Linear;
 	} else if (sampler.interpolation == cgltf_interpolation_type_cubic_spline) {
 		interpolation = Interpolation::Cubic;
 	}
-	track.setInterpolation(interpolation);
-
 	bool isSamplerCubic = interpolation == Interpolation::Cubic;
 
 	std::vector<float> time = getAccessorValues<float>(*sampler.input);
 	std::vector<T> values = getAccessorValues<T>(*sampler.output);
-
-	std::size_t numFrames = sampler.input->count;
 	std::size_t numberOfValuesPerFrame = values.size() / time.size();
-	track.resize(numFrames);
-	for (std::size_t i = 0; i < numFrames; ++i) {
+
+	std::vector<Frame<T>> frames(sampler.input->count);
+	for (std::size_t i = 0; i < frames.size(); ++i) {
 		std::size_t baseIndex = i * numberOfValuesPerFrame;
-		Frame<T>& frame = track[i];
-		frame.time = time[i];
-		frame.in = isSamplerCubic ? values[baseIndex++] : T(0.0f);
-		frame.value = values[baseIndex++];
-		frame.out = isSamplerCubic ? values[baseIndex] : T(0.0f);
+		frames[i].time = time[i];
+		frames[i].in = isSamplerCubic ? values[baseIndex++] : T();
+		frames[i].value = values[baseIndex++];
+		frames[i].out = isSamplerCubic ? values[baseIndex] : T();
 	}
+	return Track(std::move(frames), interpolation);
 }
 
 void VE::GLTF::meshFromAttribute(VE::Mesh& mesh, const cgltf_attribute& attribute, cgltf_skin* skin) {
