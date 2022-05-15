@@ -23,5 +23,5 @@
 #include <cstring>
 #include <chrono>
 #include <thread>
-
+#include <unordered_map>
 #endif //VENGINE3D_STDLIBRARIES_H
