@@ -7,23 +7,21 @@
 
 using namespace VE;
 
-Camera::Camera() : position_(CameraParameters::defaultCameraPosition),
-                   cameraDirection_(CameraParameters::defaultCameraDirection),
-                   cameraUp_(CameraParameters::defaultCameraUp),
-                   cameraRight_(CameraParameters::defaultCameraRight) {
-    setDirection(0, 0);
+Camera::Camera() {
+	transform.position = Vector3(-0.37, 15.0f, 5.5f);
+    setDirection(0, 90);
 }
 
 void Camera::moveAlongDirection(float distance) {
-    position_ += cameraDirection_ * distance * -1;
+    transform.position += direction_ * distance * -1;
 }
 
 void Camera::moveAlongSide(float distance) {
-    position_ += cameraRight_ * distance;
+	transform.position += right_ * distance;
 }
 
 const Vector3 &Camera::position() const {
-    return position_;
+    return transform.position;
 }
 
 const Vector3 &Camera::direction() const {
@@ -31,43 +29,33 @@ const Vector3 &Camera::direction() const {
 }
 
 Matrix4 Camera::getViewMatrix() const {
-    const Vector3 &R = cameraRight_;
-    const Vector3 &U = cameraUp_;
-    const Vector3 &D = cameraDirection_;
-    const Vector3 &P = position_;
+    const Vector3 &R = right_;
+    const Vector3 &U = up_;
+    const Vector3 &D = direction_;
+    const Vector3 &P = transform.position;
 
     return Matrix4(R.x, R.y, R.z, 0,
                    U.x, U.y, U.z, 0,
                    D.x, D.y, D.z, 0,
                    P.x, P.y, P.z, 1).getInversed();
-
-//    return Matrix4(cameraRight_.x, cameraUp_.x, cameraDirection_.x, 0,
-//                   cameraRight_.y, cameraUp_.y, cameraDirection_.y, 0,
-//                   cameraRight_.z, cameraUp_.z, cameraDirection_.z, 0,
-//                   -R.dot(P), -U.dot(P), -D.dot(P), 1);
 }
 
 void Camera::setDirection(float dPitch, float dYam) {
-    pitch_ += dPitch * CameraParameters::sensitivity;
-    yam_ += dYam * CameraParameters::sensitivity;
-    float alfa = pitch_ * static_cast<float>(M_PI) / 180.0f;
-    VE::Matrix3 rx(1, 0, 0,
-                   0, cosf(alfa), -sinf(alfa),
-                   0, sinf(alfa), cosf(alfa));
+	auto rx = Quaternion::fromAxisAngle(right_, dPitch);
+	auto rz = Quaternion::fromAxisAngle(Vector3(0,0,1), dYam);
+	auto tinv = transform.getInversed();
 
-    float beta = yam_ * static_cast<float>(M_PI) / 180.0f;
-    VE::Matrix3 rz(cosf(beta), -sinf(beta), 0,
-                   sinf(beta), cosf(beta), 0,
-                   0, 0, 1);
+	transform.rotation = rz * rx * transform.rotation;
+	transform.rotation.normalize();
+	auto t = transform * tinv;
 
-    cameraDirection_ = rz * rx * CameraParameters::defaultCameraDirection;
-    cameraUp_ = rz * rx * CameraParameters::defaultCameraUp;
-    cameraRight_ = rz * rx * CameraParameters::defaultCameraRight;
-    direction_ = cameraDirection_ * -1;
+	direction_ = t.applyToVector(direction_);
+	up_ = t.applyToVector(up_);
+	right_ = t.applyToVector(right_);
 }
 
 Vector3 Camera::getPointAlongDirection(float length) {
-    return position_ + direction_ * length;
+    return transform.position + direction_ * -1 * length;
 }
 
 Matrix4 Camera::perspective(float fov, float aspect, float n, float f) {
