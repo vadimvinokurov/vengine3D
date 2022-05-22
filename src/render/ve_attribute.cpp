@@ -20,86 +20,106 @@ template class VE::Attribute<Quaternion>;
 
 template<typename T>
 VE::Attribute<T>::Attribute() {
-    glGenBuffers(1, &handle_);
-    count_ = 0;
+	glGenBuffers(1, &handle_);
+	count_ = 0;
 }
 
 template<typename T>
 VE::Attribute<T>::~Attribute() {
-    glDeleteBuffers(1, &handle_);
+	if (handle_ == -1) return;
+	glDeleteBuffers(1, &handle_);
+}
+
+template<typename T>
+Attribute<T>::Attribute(Attribute&& other) {
+	count_ = other.count_;
+	handle_ = other.handle_;
+
+	other.count_ = 0;
+	other.handle_ = -1;
+}
+
+template<typename T>
+Attribute<T>& Attribute<T>::operator=(Attribute&& other) {
+	count_ = other.count_;
+	handle_ = other.handle_;
+
+	other.count_ = 0;
+	other.handle_ = -1;
+	return *this;
 }
 
 template<typename T>
 void VE::Attribute<T>::set(const T* inputArray, unsigned int arrayLength) {
-    count_ = arrayLength;
+	count_ = arrayLength;
 
-    glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count_, inputArray, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, handle_);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count_, inputArray, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 template<typename T>
 void Attribute<T>::set(const std::vector<T>& input) {
-    if (input.empty()) return;
-    set(input.data(), input.size());
+	if (input.empty()) return;
+	set(input.data(), input.size());
 }
 
 template<typename T>
 void Attribute<T>::bindTo(unsigned int slot) {
-    glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    setAttributePointer(slot);
-    glEnableVertexAttribArray(slot);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, handle_);
+	setAttributePointer(slot);
+	glEnableVertexAttribArray(slot);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 template<typename T>
 void Attribute<T>::unBindFrom(unsigned int slot) {
-    glBindBuffer(GL_ARRAY_BUFFER, handle_);
-    glDisableVertexAttribArray(slot);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, handle_);
+	glDisableVertexAttribArray(slot);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 template<typename T>
 unsigned int Attribute<T>::count() {
-    return count_;
+	return count_;
 }
 
 template<typename T>
 unsigned int Attribute<T>::getHandle() {
-    return handle_;
+	return handle_;
 }
 
 template<>
 void VE::Attribute<int>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 1, GL_INT, 0, NULL);
+	glVertexAttribIPointer(slot, 1, GL_INT, 0, NULL);
 }
 
 template<>
 void VE::Attribute<IVector4>::setAttributePointer(unsigned int slot) {
-    glVertexAttribIPointer(slot, 4, GL_INT, 0, NULL);
+	glVertexAttribIPointer(slot, 4, GL_INT, 0, NULL);
 }
 
 template<>
 void VE::Attribute<float>::setAttributePointer(unsigned int slot) {
-    glVertexAttribPointer(slot, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(slot, 1, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Vector2>::setAttributePointer(unsigned int slot) {
-    glVertexAttribPointer(slot, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(slot, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Vector3>::setAttributePointer(unsigned int slot) {
-    glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Vector4>::setAttributePointer(unsigned int slot) {
-    glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template<>
 void VE::Attribute<Quaternion>::setAttributePointer(unsigned int slot) {
-    glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 }

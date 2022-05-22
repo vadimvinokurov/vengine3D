@@ -5,12 +5,6 @@
 #include "ve_mesh.h"
 using namespace VE;
 
-Mesh::Mesh(const Mesh& other) {}
-
-Mesh& Mesh::operator=(const Mesh& other) {
-	return *this;
-}
-
 void Mesh::updateOpenGLBuffers() {
 	positionsGPU.set(positions);
 	normalsGPU.set(normals);

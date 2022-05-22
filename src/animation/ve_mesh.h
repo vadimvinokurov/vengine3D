@@ -13,14 +13,6 @@
 namespace VE {
     class Mesh {
     public:
-        Mesh() = default;
-
-        ~Mesh() = default;
-
-        Mesh(const Mesh& other);
-
-        Mesh& operator=(const Mesh& other);
-
         void skin(const Skeleton& skeleton);
 
         void updateOpenGLBuffers();

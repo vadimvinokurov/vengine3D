@@ -14,6 +14,9 @@ namespace VE {
         Attribute(const Attribute &other) = delete;
         Attribute &operator=(const Attribute &other) = delete;
 
+		Attribute(Attribute &&other);
+		Attribute &operator=(Attribute &&other);
+
         Attribute();
         ~Attribute();
 
