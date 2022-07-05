@@ -64,11 +64,11 @@ void World::scene() {
 
 	float s = 1.0f;
 	float b = 0.8f;
-//	for (int i = 1; i < 50; i++) {
-//		RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
-//		stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
-//		worldObjects.push_back(stairs);
-//	}
+	for (int i = 1; i < 50; i++) {
+		RigidBodyPtr stairs = RigidBody::create({create<BoxCollider>(s * b, s * i, 10, 0)});
+		stairs->setTransform(Transform(Vector3(s * b * i, 0, s * i / 2)));
+		worldObjects.push_back(stairs);
+	}
 
 	actors_.push_back(create<RagdollActor>(Vector3(0, 0, 20)));
 	actors_.push_back(create<BlockJoints>(Vector3(-15, 7, 10)));

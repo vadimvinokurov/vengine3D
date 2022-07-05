@@ -127,8 +127,8 @@ float Track<T>::adjustTimeToFitTrack(float time, bool looping) const {
 	return looping ? loopclamp(time, startTime, endTime) : std::clamp(time, startTime, endTime);
 }
 
-template<typename T>
-T Track<T>::hermite(float t, const T& p1, const T& s1, const T& p2, const T& s2) const {
+template<>
+Vector3 Track<Vector3>::hermite(float t, const Vector3& p1, const Vector3& s1, const Vector3& p2, const Vector3& s2) const {
 	return Spline::Hermite(t, p1, s1, p2, s2);
 }
 
@@ -142,8 +142,8 @@ Quaternion Track<Quaternion>::hermite(float t, const Quaternion& p1, const Quate
 	}
 }
 
-template<typename T>
-T Track<T>::normalize_if_quaternion(const T& value) const {
+template<>
+Vector3 Track<Vector3>::normalize_if_quaternion(const Vector3& value) const {
 	return value;
 }
 
