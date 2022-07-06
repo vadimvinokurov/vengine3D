@@ -1,22 +1,47 @@
 cmake_minimum_required(VERSION 3.16)
 project(vengine3D)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(glfw)
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else ()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif ()
 
-include_directories("./src")
-include_directories("./glfw/include")
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+            "${CMAKE_BINARY_DIR}/conan.cmake")
+endif ()
 
-file(GLOB Sources "./src/*.cpp" "./src/*/*.cpp" "./src/*/*/*.cpp")
+include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-#if (MSVC)
-#    add_compile_options(/W4 /WX)
-#else()
-#    add_compile_options(-Wall -Wextra -pedantic -Werror)
-#endif()
-add_executable(vengine3D ${Sources})
-find_package(OpenGL REQUIRED)
-include_directories( ${OPENGL_INCLUDE_DIRS} )
-target_link_libraries(vengine3D glfw ${OPENGL_LIBRARIES})
-target_precompile_headers(vengine3D PUBLIC src/stdlibraries.h)
+conan_cmake_configure(
+        REQUIRES
+        physx/4.1.1
+        glfw/3.3.7
+        imgui/1.88
+        glad/0.1.36
+        GENERATORS
+        cmake_find_package
+        CMakeDeps
+        CMakeToolchain
+)
+conan_cmake_autodetect(settings)
+conan_cmake_install(
+        PATH_OR_REFERENCE .
+        BUILD missing
+        REMOTE conancenter
+        SETTINGS ${settings}
+)
+
+find_package(glad)
+find_package(glfw3)
+find_package(imgui)
+
+
+file(GLOB Sources "./sources/*.cpp")
+include_directories()
+add_executable(${PROJECT_NAME} ${Sources})
+target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad)
