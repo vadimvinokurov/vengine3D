@@ -1,23 +1,24 @@
 //
 // Created by boris on 7/6/2022.
 //
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include "Window.h"
 #include <iostream>
-
+//#include <glad/glad.h>
 int main() {
-	glfwInit();
-	GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwMakeContextCurrent(window);
+
+	auto w1 = VECore::Window(1280, 720, "w1");
+	auto w2 = VECore::Window(1280, 720, "w2");
+	//w1.makeContextCurrent();
 	gladLoadGL();
-	printf("OpenGL version supported by this platform (%s): \n",
-		   glGetString(GL_VERSION));
-	std::cout << "Hello World" << std::endl;
-	while(!glfwWindowShouldClose(window)){
-		glfwPollEvents();
+	while (!w1.shouldClose() && ! w2.shouldClose()) {
+		VECore::Window::poolEvents();
+		glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		glClearColor(0.9f, 0.2f, 0.2f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		w1.swapBuffer();
+		w2.swapBuffer();
 	}
 	return 0;
 }

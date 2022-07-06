@@ -23,6 +23,7 @@ conan_cmake_configure(
         glfw/3.3.7
         imgui/1.88
         glad/0.1.36
+        spdlog/1.10.0
         GENERATORS
         cmake_find_package
         CMakeDeps
@@ -39,9 +40,9 @@ conan_cmake_install(
 find_package(glad)
 find_package(glfw3)
 find_package(imgui)
-
+find_package(spdlog)
 
 file(GLOB Sources "./sources/*.cpp")
-include_directories()
+include_directories("./sources/")
 add_executable(${PROJECT_NAME} ${Sources})
-target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad)
+target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad spdlog::spdlog)
