@@ -5,12 +5,13 @@
 #ifndef VENGINE3D_RENDERENGINE_H
 #define VENGINE3D_RENDERENGINE_H
 
-class Window;
+#include "EngineCore.h"
+
 class RenderEngine {
 public:
-	RenderEngine(const Window& window){};
-
-private:
+	RenderEngine();
+	void clear();
+	void resize(int32 width, int32 height);
 };
 
 

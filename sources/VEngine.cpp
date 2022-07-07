@@ -4,21 +4,39 @@
 
 #include "VEngine.h"
 #include "Window.h"
-#include <glad/glad.h>
-void VEngine::run() {
-	auto w1 = Window(1280, 720, "w1");
-	gladLoadGL();
-	w1.OnWindowResizeDelegate.connect(this, &VEngine::resize);
-	while (!w1.shouldClose()) {
-		Window::poolEvents();
-		glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+#include "RenderEngine.h"
 
-		glClearColor(0.9f, 0.2f, 0.2f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		w1.swapBuffer();
+VEngine::VEngine() {
+	window_ = std::make_unique<Window>(1280, 720);
+	window_->makeContextCurrent();
+	renderEngine_ = std::make_unique<RenderEngine>();
+	window_->OnWindowResizeDelegate.connect(renderEngine_.get(), &RenderEngine::resize);
+	deltaTime_ = 1.0f / 60;
+}
+
+void VEngine::run() {
+	onCreate();
+
+	while (!window_->shouldClose()) {
+		auto frameStart = std::chrono::steady_clock::now();
+
+		Window::poolEvents();
+		onUpdate();
+		window_->swapBuffer();
+
+		std::chrono::duration<double> target(deltaTime_);
+		while (std::chrono::steady_clock::now() - frameStart < target) {
+			std::this_thread::yield();
+		}
 	}
+	onQuite();
 }
-void VEngine::resize(int32 w, int32 h) {
-	spdlog::warn("Windows has been resize {:08d} {:08d}", w, h);
+VEngine::~VEngine() {}
+
+void VEngine::onCreate() {}
+
+void VEngine::onUpdate() {
+	renderEngine_->clear();
 }
+
+void VEngine::onQuite() {}

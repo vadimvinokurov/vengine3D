@@ -7,11 +7,24 @@
 
 #include "EngineCore.h"
 
+class RenderEngine;
+class Window;
+
 class VEngine {
 public:
-	void run();
-	void resize(int32 w, int32 h);
+	VEngine();
+	~VEngine();
 
+	virtual void onCreate();
+	virtual void onUpdate();
+	virtual void onQuite();
+
+	void run();
+
+protected:
+	std::unique_ptr<Window> window_;
+	std::unique_ptr<RenderEngine> renderEngine_;
+	float32 deltaTime_;
 };
 
 

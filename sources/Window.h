@@ -20,10 +20,11 @@ public:
 	float32 getRation() const;
 	bool shouldClose() const;
 	void swapBuffer();
+	void setTitle(const std::string& title);
 	static void poolEvents();
 
 
-	Delegate<int, int> OnWindowResizeDelegate;
+	Delegate<int32, int32> OnWindowResizeDelegate;
 
 	~Window();
 

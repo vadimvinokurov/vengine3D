@@ -15,9 +15,10 @@ Window::Window(int32 width, int32 height, const char* title) {
 		glfwTerminate();
 		throw std::runtime_error("glfw window is not initialized");
 	}
+	makeContextCurrent();
+	glfwSwapInterval(0);
 	glfwSetWindowUserPointer(window, this);
 	glfwCallbackInitialization();
-	makeContextCurrent();
 }
 
 Window::~Window() {
@@ -55,4 +56,7 @@ void Window::glfwCallbackInitialization() {
 		auto this_ptr = static_cast<Window*>(glfwGetWindowUserPointer(window));
 		this_ptr->OnWindowResizeDelegate.call(width, height);
 	});
+}
+void Window::setTitle(const std::string& title) {
+	glfwSetWindowTitle(window, title.c_str());
 }
