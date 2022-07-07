@@ -4,8 +4,6 @@
 #include <stdexcept>
 #include "Window.h"
 
-using namespace VECore;
-
 Window::Window(int32 width, int32 height, const char* title) {
 	if (!glfwInit()) {
 		throw std::runtime_error("Glfw library is not initialized");
@@ -17,6 +15,8 @@ Window::Window(int32 width, int32 height, const char* title) {
 		glfwTerminate();
 		throw std::runtime_error("glfw window is not initialized");
 	}
+	glfwSetWindowUserPointer(window, this);
+	glfwCallbackInitialization();
 	makeContextCurrent();
 }
 
@@ -49,4 +49,10 @@ bool Window::shouldClose() const {
 
 void Window::swapBuffer() {
 	glfwSwapBuffers(window);
+}
+void Window::glfwCallbackInitialization() {
+	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+		auto this_ptr = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		this_ptr->OnWindowResizeDelegate.call(width, height);
+	});
 }
