@@ -42,7 +42,8 @@ find_package(glfw3)
 find_package(imgui)
 find_package(spdlog)
 
-file(GLOB Sources "./sources/*.cpp")
+file(GLOB Sources "./sources/*.cpp"
+        "./sources/Rendering/*.cpp")
 include_directories("./sources/")
 add_executable(${PROJECT_NAME} ${Sources})
 target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad spdlog::spdlog)

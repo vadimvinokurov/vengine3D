@@ -22,9 +22,14 @@ public:
 	void run();
 
 protected:
+	constexpr static auto windowDefaultWidth_ = 1280;
+	constexpr static auto windowDefaultHeight_ = 720;
+	constexpr static auto windowDefaultFps_ = 60;
+	constexpr static float deltaTime_ = 1.0f / windowDefaultFps_;
+
 	std::unique_ptr<Window> window_;
 	std::unique_ptr<RenderEngine> renderEngine_;
-	float32 deltaTime_;
+
 };
 
 

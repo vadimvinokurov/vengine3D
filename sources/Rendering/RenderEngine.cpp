@@ -15,5 +15,5 @@ void RenderEngine::clear() {
 }
 
 void RenderEngine::resize(int32 width, int32 height) {
-	spdlog::warn("Windows has been resize {:08d} {:08d}", width, height);
+	glViewport(0, 0, width, height);
 }

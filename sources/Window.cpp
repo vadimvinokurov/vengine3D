@@ -1,8 +1,11 @@
 //
 // Created by boris on 7/6/2022.
 //
-#include <stdexcept>
 #include "Window.h"
+
+#include <stdexcept>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
 Window::Window(int32 width, int32 height, const char* title) {
 	if (!glfwInit()) {
@@ -10,7 +13,8 @@ Window::Window(int32 width, int32 height, const char* title) {
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	window = glfwCreateWindow(width, height, title, NULL, NULL);
+	glfwWindowHint(GLFW_OPENGL_COMPAT_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (!window) {
 		glfwTerminate();
 		throw std::runtime_error("glfw window is not initialized");
@@ -35,9 +39,9 @@ std::pair<int32, int32> Window::getSize() const {
 	return {width, height};
 }
 
-float32 Window::getRation() const {
+float Window::getRation() const {
 	auto [width, height] = getSize();
-	return width / static_cast<float32>(height);
+	return width / static_cast<float>(height);
 }
 
 void Window::poolEvents() {

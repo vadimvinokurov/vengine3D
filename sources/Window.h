@@ -6,18 +6,16 @@
 #define VENGINE3D_WINDOW_H
 
 #include "EngineCore.h"
-
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #include <Delegate.h>
+
+struct GLFWwindow;
 
 class Window {
 public:
 	Window(int32 width = 1280, int32 height = 720, const char* title = "VEngine");
 	void makeContextCurrent();
 	std::pair<int32, int32> getSize() const;
-	float32 getRation() const;
+	float getRation() const;
 	bool shouldClose() const;
 	void swapBuffer();
 	void setTitle(const std::string& title);

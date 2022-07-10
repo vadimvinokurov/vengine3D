@@ -4,14 +4,14 @@
 
 #include "VEngine.h"
 #include "Window.h"
-#include "RenderEngine.h"
+#include "Rendering/RenderEngine.h"
 
 VEngine::VEngine() {
-	window_ = std::make_unique<Window>(1280, 720);
+	window_ = CreateUniqueObject<Window>(windowDefaultWidth_, windowDefaultHeight_);
 	window_->makeContextCurrent();
-	renderEngine_ = std::make_unique<RenderEngine>();
+	renderEngine_ = CreateUniqueObject<RenderEngine>();
+	renderEngine_->resize(windowDefaultWidth_, windowDefaultHeight_);
 	window_->OnWindowResizeDelegate.connect(renderEngine_.get(), &RenderEngine::resize);
-	deltaTime_ = 1.0f / 60;
 }
 
 void VEngine::run() {
