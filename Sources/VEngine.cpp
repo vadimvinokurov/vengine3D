@@ -36,6 +36,7 @@ void VEngine::onCreate() {}
 
 void VEngine::onUpdate() {
 	renderEngine_->clear();
+	renderEngine_->update();
 }
 
 void VEngine::onQuite() {}

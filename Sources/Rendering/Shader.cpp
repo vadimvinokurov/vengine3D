@@ -7,7 +7,7 @@
 static auto ShaderTypeToOGL(ShaderType shaderType) {
 	switch (shaderType) {
 		case ShaderType::Vertex: return GL_VERTEX_SHADER;
-		case ShaderType::Fragment: return GL_VERTEX_SHADER;
+		case ShaderType::Fragment: return GL_FRAGMENT_SHADER;
 		default: return GL_VERTEX_SHADER;
 	}
 }
@@ -154,7 +154,7 @@ uint32 Shader::compileShade(const std::string& shaderCode, ShaderType shaderType
 		char infoLog[512];
 		glGetShaderInfoLog(shaderHandle, 512, NULL, infoLog);
 		glDeleteShader(shaderHandle);
-		spdlog::critical("Fragment compilation failed. " + std::string(infoLog));
+		spdlog::critical("Shader compilation failed. " + std::string(infoLog));
 		std::exit(1);
 	}
 	return shaderHandle;

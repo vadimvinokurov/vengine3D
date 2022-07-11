@@ -7,12 +7,10 @@
 
 #include "EngineCore.h"
 
-enum class ShaderType : uint8_t {
-	Vertex,
-	Fragment
-};
+enum class ShaderType : uint8_t { Vertex, Fragment };
 
 struct ShaderSource {
+	ShaderSource(const std::string& _sourceFile, ShaderType _type) : sourceFile(_sourceFile), type(_type) {}
 	std::string sourceFile;
 	ShaderType type;
 };
@@ -45,6 +43,8 @@ private:
 	std::map<std::string, unsigned int> attributes_;
 	std::map<std::string, unsigned int> uniforms_;
 };
+
+using ShaderPtr = std::shared_ptr<Shader>;
 
 
 #endif	//VENGINE3D_VE_SHADER_H

@@ -242,7 +242,7 @@ RECENT REVISION HISTORY:
 //
 // I/O callbacks
 //
-// I/O callbacks allow you to read from arbitrary sources, like packaged
+// I/O callbacks allow you to read from arbitrary Sources, like packaged
 // files or some other source. Data read from callbacks are processed
 // through a small internal buffer (currently 128 bytes) to try to reduce
 // overhead.

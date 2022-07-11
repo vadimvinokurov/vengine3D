@@ -45,11 +45,11 @@ else ()
 endif ()
 
 
-file(GLOB Sources "./sources/*.cpp"
-        "./sources/Rendering/*.cpp"
-        "./sources/External/*.cpp")
+file(GLOB Sources "Sources/*.cpp"
+        "Sources/Rendering/*.cpp"
+        "Sources/External/*.cpp")
 
 include_directories("External/stb_image")
-include_directories("sources")
+include_directories("Sources")
 add_executable(${PROJECT_NAME} ${Sources})
 target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad spdlog::spdlog stb_image)
