@@ -19,13 +19,13 @@ Texture::~Texture() {
 }
 
 void Texture::load(const char* path) {
-	glBindTexture(GL_TEXTURE_2D, handle_);
-	int width, height, channels;
+	int32 width, height, channels;
 	unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
 	if (!data) {
-		spdlog::warn("Can't load texture {:%s}: ", path);
-		return;
+		spdlog::critical("Can't load texture {:%s}: ", path);
+		std::exit(1);
 	}
+	glBindTexture(GL_TEXTURE_2D, handle_);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(data);
@@ -33,8 +33,8 @@ void Texture::load(const char* path) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -43,13 +43,13 @@ void Texture::load(const char* path) {
 	channels_ = channels;
 }
 
-void Texture::set(uint32 uniformIndex, uint32 textureIndex) {
+void Texture::bind(uint32 uniformIndex, uint32 textureIndex) {
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, handle_);
 	glUniform1i(uniformIndex, textureIndex);
 }
 
-void Texture::unSet(uint32 textureIndex) {
+void Texture::unBind(uint32 textureIndex) {
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE0);

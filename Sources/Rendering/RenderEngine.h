@@ -7,6 +7,7 @@
 
 #include "EngineCore.h"
 #include "Shader.h"
+#include "Texture.h"
 
 class RenderEngine {
 public:
@@ -15,6 +16,7 @@ public:
 	void resize(int32 width, int32 height);
 	void update();
 	Shader* defaultShader;
+	Texture* texture;
 };
 
 

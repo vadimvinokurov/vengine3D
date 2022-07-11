@@ -17,8 +17,8 @@ public:
 	~Texture();
 
 	void load(const char* path);
-	void set(uint32 uniformIndex, uint32 textureIndex);
-	void unSet(uint32 textureIndex);
+	void bind(uint32 uniformIndex, uint32 textureIndex);
+	void unBind(uint32 textureIndex);
 	uint32 getHandle();
 
 protected:

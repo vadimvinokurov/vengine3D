@@ -52,7 +52,7 @@ unsigned int Shader::getAttribute(const std::string& name) {
 	auto it = attributes_.find(name);
 	if (it == attributes_.end()) {
 		spdlog::error("Bad attribute index: " + name);
-		return 0;
+		std::exit(1);
 	}
 	return it->second;
 }
@@ -61,7 +61,7 @@ unsigned int Shader::getUniform(const std::string& name) {
 	auto it = uniforms_.find(name);
 	if (it == uniforms_.end()) {
 		spdlog::error("Bad uniforms index: " + name);
-		return 0;
+		std::exit(1);
 	}
 	return it->second;
 }
