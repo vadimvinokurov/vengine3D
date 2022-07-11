@@ -13,6 +13,8 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <fstream>
+#include <sstream>
 
 
 #endif	//VENGINE3D_STDLIBS_H

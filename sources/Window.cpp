@@ -6,6 +6,7 @@
 #include <stdexcept>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 Window::Window(int32 width, int32 height, const char* title) {
 	if (!glfwInit()) {

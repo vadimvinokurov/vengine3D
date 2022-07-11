@@ -19,7 +19,6 @@ void VEngine::run() {
 
 	while (!window_->shouldClose()) {
 		auto frameStart = std::chrono::steady_clock::now();
-
 		Window::poolEvents();
 		onUpdate();
 		window_->swapBuffer();
