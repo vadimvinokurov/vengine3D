@@ -38,16 +38,17 @@ find_package(spdlog)
 
 add_subdirectory(External/stb_image)
 
-if (MSVC)
-    add_compile_options(/W4 /WX)
-else ()
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
-endif ()
+#if (MSVC)
+#    add_compile_options(/W4 /WX)
+#else ()
+#    add_compile_options(-Wall -Wextra -pedantic -Werror)
+#endif ()
 
 
 file(GLOB Sources "Sources/*.cpp"
         "Sources/Rendering/*.cpp"
-        "Sources/External/*.cpp")
+        "Sources/ECS/*.cpp"
+        "Sources/ECS/Memory/*.cpp")
 
 include_directories("External/stb_image")
 include_directories("Sources")

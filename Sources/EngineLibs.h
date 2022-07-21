@@ -15,6 +15,7 @@
 #include <thread>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 
 #endif	//VENGINE3D_STDLIBS_H
