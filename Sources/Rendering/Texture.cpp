@@ -6,22 +6,27 @@
 #include "glad/glad.h"
 #include "stb_image.h"
 
-Texture::Texture() : width_(0), height_(0), channels_(0) {
+Texture::Texture() : width_(0), height_(0), channels_(0)
+{
 	glGenTextures(1, &handle_);
 }
 
-Texture::Texture(const char* path) : Texture() {
+Texture::Texture(const char *path) : Texture()
+{
 	load(path);
 }
 
-Texture::~Texture() {
+Texture::~Texture()
+{
 	glDeleteTextures(1, &handle_);
 }
 
-void Texture::load(const char* path) {
+void Texture::load(const char *path)
+{
 	int32 width, height, channels;
-	unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
-	if (!data) {
+	unsigned char *data = stbi_load(path, &width, &height, &channels, 4);
+	if (!data)
+	{
 		spdlog::critical("Can't load texture {:%s}: ", path);
 		std::exit(1);
 	}
@@ -43,18 +48,21 @@ void Texture::load(const char* path) {
 	channels_ = channels;
 }
 
-void Texture::bind(uint32 uniformIndex, uint32 textureIndex) {
+void Texture::bind(uint32 uniformIndex, uint32 textureIndex)
+{
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, handle_);
 	glUniform1i(uniformIndex, textureIndex);
 }
 
-void Texture::unBind(uint32 textureIndex) {
+void Texture::unBind(uint32 textureIndex)
+{
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE0);
 }
 
-uint32 Texture::getHandle() {
+uint32 Texture::getHandle()
+{
 	return handle_;
 }

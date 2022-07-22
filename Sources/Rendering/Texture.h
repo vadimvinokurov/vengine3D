@@ -7,16 +7,17 @@
 
 #include "EngineCore.h"
 
-class Texture {
+class Texture
+{
 public:
 	Texture();
-	Texture(const char* path);
-	Texture(const Texture& other) = delete;
-	Texture& operator=(const Texture& other) = delete;
+	Texture(const char *path);
+	Texture(const Texture &other) = delete;
+	Texture &operator=(const Texture &other) = delete;
 
 	~Texture();
 
-	void load(const char* path);
+	void load(const char *path);
 	void bind(uint32 uniformIndex, uint32 textureIndex);
 	void unBind(uint32 textureIndex);
 	uint32 getHandle();
@@ -28,5 +29,4 @@ protected:
 	uint32 handle_;
 };
 
-
-#endif	//VENGINE3D_VE_TEXTURE_H
+#endif // VENGINE3D_VE_TEXTURE_H

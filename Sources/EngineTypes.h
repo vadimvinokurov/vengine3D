@@ -15,4 +15,4 @@ using int8 = int8_t;
 using uint8 = uint8_t;
 using uptr = uintptr_t;
 
-#endif	//VENGINE3D_ENGINETYPES_H
+#endif // VENGINE3D_ENGINETYPES_H

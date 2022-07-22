@@ -6,7 +6,8 @@
 
 #include <glad/glad.h>
 
-RenderEngine::RenderEngine() {
+RenderEngine::RenderEngine()
+{
 	gladLoadGL();
 
 	glEnable(GL_DEPTH_TEST);
@@ -22,15 +23,18 @@ RenderEngine::RenderEngine() {
 	defaultShader = new Shader({frag, vert});
 }
 
-void RenderEngine::clear() {
+void RenderEngine::clear()
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void RenderEngine::resize(int32 width, int32 height) {
+void RenderEngine::resize(int32 width, int32 height)
+{
 	glViewport(0, 0, width, height);
 }
 
-void RenderEngine::update() {
+void RenderEngine::update()
+{
 	// clang-format off
 	float vertices[] = {
 			1.0f,1.0f,0.0f,
@@ -69,7 +73,6 @@ void RenderEngine::update() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(textCoord), textCoord, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -83,15 +86,13 @@ void RenderEngine::update() {
 	glEnableVertexAttribArray(texCoordAttrib);
 	glBindVertexArray(0);
 
-
 	defaultShader->bind();
 
 	texture->bind(tex0Uniform, 0);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	texture->unBind( 0);
+	texture->unBind(0);
 
 	defaultShader->unBind();
-
 }

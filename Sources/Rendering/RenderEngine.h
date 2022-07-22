@@ -9,15 +9,15 @@
 #include "Shader.h"
 #include "Texture.h"
 
-class RenderEngine {
+class RenderEngine
+{
 public:
 	RenderEngine();
 	void clear();
 	void resize(int32 width, int32 height);
 	void update();
-	Shader* defaultShader;
-	Texture* texture;
+	Shader *defaultShader;
+	Texture *texture;
 };
 
-
-#endif	//VENGINE3D_RENDERENGINE_H
+#endif // VENGINE3D_RENDERENGINE_H

@@ -17,5 +17,4 @@
 #include <sstream>
 #include <algorithm>
 
-
-#endif	//VENGINE3D_STDLIBS_H
+#endif // VENGINE3D_STDLIBS_H

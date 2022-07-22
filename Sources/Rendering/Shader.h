@@ -7,34 +7,42 @@
 
 #include "EngineCore.h"
 
-enum class ShaderType : uint8_t { Vertex, Fragment };
+enum class ShaderType : uint8_t
+{
+	Vertex,
+	Fragment
+};
 
-struct ShaderSource {
-	ShaderSource(const std::string& _sourceFile, ShaderType _type) : sourceFile(_sourceFile), type(_type) {}
+struct ShaderSource
+{
+	ShaderSource(const std::string &_sourceFile, ShaderType _type) : sourceFile(_sourceFile), type(_type)
+	{
+	}
 	std::string sourceFile;
 	ShaderType type;
 };
 
-class Shader {
+class Shader
+{
 public:
-	Shader(const Shader&) = delete;
-	Shader& operator=(const Shader&) = delete;
+	Shader(const Shader &) = delete;
+	Shader &operator=(const Shader &) = delete;
 	Shader();
 	~Shader();
-	Shader(const std::vector<ShaderSource>& shaders);
-	void load(const std::vector<ShaderSource>& shaders);
+	Shader(const std::vector<ShaderSource> &shaders);
+	void load(const std::vector<ShaderSource> &shaders);
 
 	void bind();
 	void unBind();
 
-	uint32 getAttribute(const std::string& name);
-	uint32 getUniform(const std::string& name);
+	uint32 getAttribute(const std::string &name);
+	uint32 getUniform(const std::string &name);
 	uint32 getHandle();
 
 private:
-	std::string readFile(const std::string& path);
-	uint32 compileShade(const std::string& shaderCode, ShaderType shaderType);
-	bool linkShaders(const std::vector<uint32>& shaderHandlers);
+	std::string readFile(const std::string &path);
+	uint32 compileShade(const std::string &shaderCode, ShaderType shaderType);
+	bool linkShaders(const std::vector<uint32> &shaderHandlers);
 
 	void populateAttributes();
 	void populateUniforms();
@@ -46,5 +54,4 @@ private:
 
 using ShaderPtr = std::shared_ptr<Shader>;
 
-
-#endif	//VENGINE3D_VE_SHADER_H
+#endif // VENGINE3D_VE_SHADER_H

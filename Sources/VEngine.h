@@ -7,10 +7,12 @@
 
 #include "EngineCore.h"
 
+class MemoryManager;
 class RenderEngine;
 class Window;
 
-class VEngine {
+class VEngine
+{
 public:
 	VEngine();
 	~VEngine();
@@ -22,6 +24,7 @@ public:
 	void run();
 
 protected:
+	constexpr static auto MemoryDefaultChuck = 256 * 1024 * 1024ull;
 	constexpr static auto windowDefaultWidth_ = 1280;
 	constexpr static auto windowDefaultHeight_ = 720;
 	constexpr static auto windowDefaultFps_ = 60;
@@ -29,8 +32,7 @@ protected:
 
 	std::unique_ptr<Window> window_;
 	std::unique_ptr<RenderEngine> renderEngine_;
-
+	std::unique_ptr<MemoryManager> memoryManager_;
 };
 
-
-#endif	//VENGINE3D_VENGINE_H
+#endif // VENGINE3D_VENGINE_H

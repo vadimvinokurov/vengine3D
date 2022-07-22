@@ -7,21 +7,19 @@
 
 #include "IAllocator.h"
 
-class StackAllocator : public IAllocator {
+class StackAllocator : public IAllocator
+{
 private:
-	struct MetaInfo {
+	struct MetaInfo
+	{
 		uint8 adjustment;
 	};
 
 public:
-	StackAllocator(void* memory, size_t size);
-	void* allocate(size_t size, uint8 alignment) override;
-	void deallocate(void* ptr) override;
+	StackAllocator(void *memory, size_t size);
+	void *allocate(size_t size, uint8 alignment) override;
+	void deallocate(void *ptr) override;
 	void clear() override;
-
-private:
-
 };
 
-
-#endif	//VENGINE3D_STACKALLOCATOR_H
+#endif // VENGINE3D_STACKALLOCATOR_H

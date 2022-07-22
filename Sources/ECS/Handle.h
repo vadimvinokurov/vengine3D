@@ -3,10 +3,13 @@
 #include "EngineCore.h"
 
 #pragma warning(disable : 4201)
-namespace ECS {
-	template<typename ValueType, size_t NUM_VERSION_BITS, size_t NUM_INDEX_BITS>
-	struct Handle {
-		static_assert(sizeof(ValueType) * CHAR_BIT == NUM_VERSION_BITS + NUM_INDEX_BITS, "Incorretct NumVersionBits and NumIndexBits.");
+namespace ECS
+{
+	template <typename ValueType, size_t NUM_VERSION_BITS, size_t NUM_INDEX_BITS>
+	struct Handle
+	{
+		static_assert(sizeof(ValueType) * CHAR_BIT == NUM_VERSION_BITS + NUM_INDEX_BITS,
+					  "Incorretct NumVersionBits and NumIndexBits.");
 
 		using value_type = ValueType;
 		static constexpr ValueType MIN_VERSION = 0u;
@@ -14,14 +17,22 @@ namespace ECS {
 		static constexpr ValueType MAX_INDEX = (1ull << NUM_INDEX_BITS) - 2u;
 		static constexpr ValueType INCORRECT_ID = std::numeric_limits<ValueType>::max();
 
-		Handle() : value(0) {}
-		Handle(ValueType value) : value(value) {}
-		Handle(ValueType index, ValueType version) : index(index), version(version) {}
-		operator ValueType() const {
+		Handle() : value(0)
+		{
+		}
+		Handle(ValueType value) : value(value)
+		{
+		}
+		Handle(ValueType index, ValueType version) : index(index), version(version)
+		{
+		}
+		operator ValueType() const
+		{
 			return value;
 		}
 		union {
-			struct {
+			struct
+			{
 				ValueType index : NUM_INDEX_BITS;
 				ValueType version : NUM_VERSION_BITS;
 			};
@@ -31,23 +42,29 @@ namespace ECS {
 
 	using Handle64 = Handle<uint64, 24, 40>;
 
-	template<typename T, typename Handle, size_t GROW = 1024>
-	class HandleTable {
+	template <typename T, typename Handle, size_t GROW = 1024>
+	class HandleTable
+	{
 	private:
-		struct TableData {
+		struct TableData
+		{
 			typename Handle::value_type version = Handle::MIN_VERSION;
-			T* objectPtr = nullptr;
+			T *objectPtr = nullptr;
 		};
 
 	public:
 		HandleTable() : table_(GROW){};
-		Handle AcquiredHandle(T* objectPtr) {
+		Handle AcquiredHandle(T *objectPtr)
+		{
 			size_t i = 0;
-			for (; i < table_.size(); ++i) {
-				if (table_[i].objectPtr == nullptr) {
+			for (; i < table_.size(); ++i)
+			{
+				if (table_[i].objectPtr == nullptr)
+				{
 					table_[i].objectPtr = objectPtr;
 					table_[i].version = table_[i].version + 1;
-					if (table_[i].version > Handle::MAX_VERSION) {
+					if (table_[i].version > Handle::MAX_VERSION)
+					{
 						table_[i].version = Handle::MIN_VERSION;
 					}
 					return Handle(i, table_[i].version);
@@ -58,12 +75,14 @@ namespace ECS {
 			return Handle(i, table_[i].version);
 		};
 
-		void ReleaseHandle(Handle id) {
+		void ReleaseHandle(Handle id)
+		{
 			assert(id.index < table_.size() && id.version == table_[id.index].version && "Invalid ID");
 			table_[id.index].objectPtr = nullptr;
 		}
 
-		T* operator[](Handle id) {
+		T *operator[](Handle id)
+		{
 			assert(id.index < table_.size() && id.version == table_[id.index].version && "Invalid ID");
 			return table_[id.index].objectPtr;
 		}
@@ -72,4 +91,4 @@ namespace ECS {
 		std::vector<TableData> table_;
 	};
 
-}  // namespace ECS
+} // namespace ECS

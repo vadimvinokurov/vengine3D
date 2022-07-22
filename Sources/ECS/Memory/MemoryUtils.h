@@ -7,17 +7,21 @@
 
 #include "EngineTypes.h"
 
-namespace MemoryUtils {
-	inline uint8 AlignAdjustment(void* address, uint8 alignment) {
+namespace MemoryUtils
+{
+	inline uint8 AlignAdjustment(void *address, uint8 alignment)
+	{
 		uint8_t adjustment = alignment - (reinterpret_cast<uintptr_t>(address) & static_cast<uintptr_t>(alignment - 1));
 		return adjustment == alignment ? 0 : adjustment;
 	}
 
-	inline uint8 AlignAdjustment(void* address, uint8 alignment, uint8 extra) {
+	inline uint8 AlignAdjustment(void *address, uint8 alignment, uint8 extra)
+	{
 		uint8 adjustment = AlignAdjustment(address, alignment);
 		uint8 neededSpace = extra;
 
-		if (adjustment < neededSpace) {
+		if (adjustment < neededSpace)
+		{
 			neededSpace -= adjustment;
 
 			adjustment += alignment * (neededSpace / alignment);
@@ -28,6 +32,6 @@ namespace MemoryUtils {
 
 		return adjustment;
 	}
-}  // namespace MemoryUtils
+} // namespace MemoryUtils
 
-#endif	//VENGINE3D_MEMORYUTILS_H
+#endif // VENGINE3D_MEMORYUTILS_H

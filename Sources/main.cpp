@@ -4,7 +4,8 @@
 
 #include <VEngine.h>
 
-int main() {
+int main()
+{
 	VEngine vengine;
 	vengine.run();
 	return 0;

@@ -9,5 +9,4 @@
 #include <EngineTypes.h>
 #include <EngineUtils.h>
 
-
-#endif	//VENGINE3D_ENGINECORE_H
+#endif // VENGINE3D_ENGINECORE_H
