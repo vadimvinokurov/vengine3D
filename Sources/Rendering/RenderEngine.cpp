@@ -17,9 +17,9 @@ RenderEngine::RenderEngine()
 	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 	glClearDepth(1.0f);
 
-	auto frag = ShaderSource("E:/Work/vengine3D/Content/Shaders/default.frag", ShaderType::Fragment);
-	auto vert = ShaderSource("E:/Work/vengine3D/Content/Shaders/default.vert", ShaderType::Vertex);
-	texture = new Texture("E:/Work/vengine3D/Content/Texture/test.png");
+	auto frag = ShaderSource("../Content/Shaders/default.frag", ShaderType::Fragment);
+	auto vert = ShaderSource("../Content/Shaders/default.vert", ShaderType::Vertex);
+	texture = new Texture("../Content/Texture/test.png");
 	defaultShader = new Shader({frag, vert});
 }
 

@@ -27,7 +27,7 @@ void Texture::load(const char *path)
 	unsigned char *data = stbi_load(path, &width, &height, &channels, 4);
 	if (!data)
 	{
-		spdlog::critical("Can't load texture {:%s}: ", path);
+		spdlog::critical("Can't load texture {:s}!", path);
 		std::exit(1);
 	}
 	glBindTexture(GL_TEXTURE_2D, handle_);
