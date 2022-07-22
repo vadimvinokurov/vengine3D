@@ -30,6 +30,11 @@ void *PoolAllocator::allocate(size_t size, uint8 alignment)
 
 void PoolAllocator::deallocate(void *ptr)
 {
+	if (!ptr)
+	{
+		return;
+	}
+
 	assert(usedMemory_ > 0 && "Memory already free.");
 
 	*((void **)ptr) = nextFreeBlock;
