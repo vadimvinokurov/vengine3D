@@ -21,6 +21,11 @@ public:
 	virtual void deallocate(void *ptr) = 0;
 	virtual void clear() = 0;
 
+	void *getBaseAddress()
+	{
+		return baseAddress_;
+	}
+
 protected:
 	void *const baseAddress_;
 	const size_t maxSize_;

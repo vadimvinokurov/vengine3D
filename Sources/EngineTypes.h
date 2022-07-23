@@ -14,5 +14,6 @@ using uint64 = uint64_t;
 using int8 = int8_t;
 using uint8 = uint8_t;
 using uptr = uintptr_t;
+using byte = uint8_t;
 
 #endif // VENGINE3D_ENGINETYPES_H

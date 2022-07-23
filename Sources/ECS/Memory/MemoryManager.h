@@ -20,13 +20,15 @@ private:
 
 		MemoryChunk(const MemoryChunk &other) = delete;
 		MemoryChunk &operator=(const MemoryChunk &other) = delete;
+		MemoryChunk(MemoryChunk &&other) = delete;
+		MemoryChunk &operator=(MemoryChunk &&other) = delete;
 
 		~MemoryChunk()
 		{
-			delete[] memory_;
+			delete[] (uint8 *)memory_;
 		}
 
-		uint8 *memory_;
+		void *memory_;
 		StackAllocator allocator;
 	};
 

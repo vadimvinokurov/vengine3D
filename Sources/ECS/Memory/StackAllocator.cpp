@@ -85,7 +85,7 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 	meta->adjustment = adjustment;
 
 	usedMemory_ += size + adjustment;
-	memset(asVoid, 0xFF, size);
+	//memset(asVoid, 0xFF, size);
 	return asVoid;
 }
 
@@ -105,5 +105,5 @@ void StackAllocator::deallocate_memory(void *ptr)
 	auto freedMemorySize = ((uptr)baseAddress_ + usedMemory_) - asUptr;
 	usedMemory_ -= freedMemorySize;
 
-	memset(asVoid, 0x00, freedMemorySize);
+	//memset(asVoid, 0x00, freedMemorySize);
 }
