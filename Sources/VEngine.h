@@ -24,7 +24,6 @@ public:
 	void run();
 
 protected:
-	constexpr static auto MemoryDefaultChuck = 256 * 1024 * 1024ull;
 	constexpr static auto windowDefaultWidth_ = 1280;
 	constexpr static auto windowDefaultHeight_ = 720;
 	constexpr static auto windowDefaultFps_ = 60;

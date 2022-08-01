@@ -12,12 +12,12 @@
 class MemoryManager
 {
 public:
-	MemoryManager(size_t chunkSize);
+	MemoryManager();
 	void *allocate(size_t size, const std::string &tag);
 	void deallocate(void *ptr);
 
 private:
-	const size_t CHUNK_SIZE;
+	static constexpr size_t CHUNK_SIZE = 256 * 1024 * 1024ull;
 	std::list<StackAllocator> memoryChunks_;
 };
 

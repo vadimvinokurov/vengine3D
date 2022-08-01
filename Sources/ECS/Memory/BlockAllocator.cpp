@@ -1,18 +1,18 @@
 //
 // Created by boris on 7/22/2022.
 //
-#include "PoolAllocator.h"
+#include "BlockAllocator.h"
 #include "EngineLibs.h"
 #include "MemoryUtils.h"
 
-PoolAllocator::PoolAllocator(MemoryPool &&memoryPool, size_t objectSize, uint8 objectAlignment)
+BlockAllocator::BlockAllocator(MemoryPool &&memoryPool, size_t objectSize, uint8 objectAlignment)
 	: memoryPool_(std::move(memoryPool)), OBJECT_SIZE(objectSize), OBJECT_ALIGNMENT(objectAlignment)
 {
 	assert(objectSize > 0 && "Object size = 0");
 	clear();
 }
 
-void *PoolAllocator::allocate(size_t, uint8)
+void *BlockAllocator::allocate(size_t, uint8)
 {
 	if (nextFreeBlock == nullptr)
 	{
@@ -25,7 +25,7 @@ void *PoolAllocator::allocate(size_t, uint8)
 	return p;
 }
 
-void PoolAllocator::free(void *ptr)
+void BlockAllocator::free(void *ptr)
 {
 	if (!ptr)
 	{
@@ -39,7 +39,7 @@ void PoolAllocator::free(void *ptr)
 	memoryPool_.used -= OBJECT_SIZE;
 }
 
-void PoolAllocator::clear()
+void BlockAllocator::clear()
 {
 	uint8 adjustment = MemoryUtils::AlignAdjustment(memoryPool_.address, OBJECT_ALIGNMENT);
 	assert(adjustment < memoryPool_.size && OBJECT_SIZE && "Can't do alignment adjustment. adjustment < maxSize_");
@@ -65,7 +65,7 @@ void PoolAllocator::clear()
 	}
 	*p = nullptr;
 }
-bool PoolAllocator::own(void *ptr) const
+bool BlockAllocator::own(void *ptr) const
 {
 	return memoryPool_.own(ptr);
 }

@@ -5,7 +5,7 @@
 #include "MemoryManager.h"
 #include <cassert>
 
-MemoryManager::MemoryManager(size_t chunkSize) : CHUNK_SIZE(chunkSize)
+MemoryManager::MemoryManager()
 {
 	memoryChunks_.emplace_back(CHUNK_SIZE);
 }

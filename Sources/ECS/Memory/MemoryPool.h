@@ -6,6 +6,7 @@
 #define VENGINE3D_MEMORYPOOL_H
 
 #include <memory>
+#include <iostream>
 #include <EngineTypes.h>
 #include "SystemAllocator.h"
 struct MemoryPool
@@ -16,7 +17,8 @@ struct MemoryPool
 		address = allocator->allocate(size, 1);
 	};
 
-	bool own(void *ptr) const {
+	bool own(void *ptr) const
+	{
 		return (uptr)ptr >= addressUptr && (uptr)ptr < addressUptr + size;
 	}
 
@@ -48,7 +50,11 @@ struct MemoryPool
 
 	~MemoryPool()
 	{
-		allocator->free(address);
+		if (address)
+		{
+			allocator->free(address);
+		}
+
 		size = 0;
 		used = 0;
 		address = nullptr;
