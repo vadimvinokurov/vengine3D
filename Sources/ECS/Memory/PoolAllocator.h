@@ -6,19 +6,21 @@
 #define VENGINE3D_POOLALLOCATOR_H
 
 #include "IAllocator.h"
+#include "MemoryPool.h"
 
 class PoolAllocator : public IAllocator
 {
 public:
-	PoolAllocator(void *memory, size_t size, size_t objectSize, uint8 objectAlignment);
-	void *allocate(size_t size, uint8 alignment) override;
-	void deallocate(void *ptr) override;
-	void clear() override;
+	PoolAllocator(MemoryPool&& memoryPool, size_t objectSize, uint8 objectAlignment);
+	void *allocate(size_t = 1, uint8 = 1) override;
+	void free(void *ptr) override;
+	bool own(void *ptr) const override;
 
 private:
+	void clear();
 	const size_t OBJECT_SIZE;
 	const size_t OBJECT_ALIGNMENT;
-
+	MemoryPool&& memoryPool_;
 	void **nextFreeBlock = nullptr;
 };
 

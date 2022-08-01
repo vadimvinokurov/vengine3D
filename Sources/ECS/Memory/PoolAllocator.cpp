@@ -5,59 +5,56 @@
 #include "EngineLibs.h"
 #include "MemoryUtils.h"
 
-PoolAllocator::PoolAllocator(void *memory, size_t size, size_t objectSize, uint8 objectAlignment)
-	: IAllocator(memory, size), OBJECT_SIZE(objectSize), OBJECT_ALIGNMENT(objectAlignment)
+PoolAllocator::PoolAllocator(MemoryPool &&memoryPool, size_t objectSize, uint8 objectAlignment)
+	: memoryPool_(std::move(memoryPool)), OBJECT_SIZE(objectSize), OBJECT_ALIGNMENT(objectAlignment)
 {
 	assert(objectSize > 0 && "Object size = 0");
 	clear();
 }
 
-void *PoolAllocator::allocate(size_t size, uint8 alignment)
+void *PoolAllocator::allocate(size_t, uint8)
 {
-	assert(size > 0 && "allocate called with memSize = 0.");
-	assert(size == OBJECT_SIZE && alignment == OBJECT_ALIGNMENT);
-
 	if (nextFreeBlock == nullptr)
 	{
 		return nullptr;
 	}
 	void *p = nextFreeBlock;
 	nextFreeBlock = (void **)*nextFreeBlock;
-	usedMemory_ += OBJECT_SIZE;
+	memoryPool_.used += OBJECT_SIZE;
 
 	return p;
 }
 
-void PoolAllocator::deallocate(void *ptr)
+void PoolAllocator::free(void *ptr)
 {
 	if (!ptr)
 	{
 		return;
 	}
 
-	assert(usedMemory_ > 0 && "Memory already free.");
+	assert(memoryPool_.used > 0 && "Memory already free.");
 
 	*((void **)ptr) = nextFreeBlock;
 	nextFreeBlock = (void **)ptr;
-	usedMemory_ -= OBJECT_SIZE;
+	memoryPool_.used -= OBJECT_SIZE;
 }
 
 void PoolAllocator::clear()
 {
-	uint8 adjustment = MemoryUtils::AlignAdjustment(baseAddress_, OBJECT_ALIGNMENT);
-	assert(adjustment < maxSize_ && OBJECT_SIZE && "Can't do alignment adjustment. adjustment < maxSize_");
+	uint8 adjustment = MemoryUtils::AlignAdjustment(memoryPool_.address, OBJECT_ALIGNMENT);
+	assert(adjustment < memoryPool_.size && OBJECT_SIZE && "Can't do alignment adjustment. adjustment < maxSize_");
 
-	size_t numObjects = static_cast<size_t>(std::floor((maxSize_ - adjustment) / OBJECT_SIZE));
+	size_t numObjects = static_cast<size_t>(std::floor((memoryPool_.size - adjustment) / OBJECT_SIZE));
 	assert(numObjects > 0 && "Pool allocator can't allocate any object. Not enough memory to one object");
 
 	union {
 		void *asVoid;
 		uptr *asUptr;
 	};
-	asVoid = baseAddress_;
+	asVoid = memoryPool_.address;
 	asUptr += adjustment;
 
-	usedMemory_ = 0;
+	memoryPool_.used = 0;
 	nextFreeBlock = (void **)asVoid;
 
 	void **p = nextFreeBlock;
@@ -67,4 +64,8 @@ void PoolAllocator::clear()
 		p = (void **)*p;
 	}
 	*p = nullptr;
+}
+bool PoolAllocator::own(void *ptr) const
+{
+	return memoryPool_.own(ptr);
 }

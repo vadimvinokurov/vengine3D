@@ -11,27 +11,6 @@
 
 class MemoryManager
 {
-private:
-	struct MemoryChunk final
-	{
-		MemoryChunk(size_t size) : memory_(new uint8[size]), allocator(memory_, size)
-		{
-		}
-
-		MemoryChunk(const MemoryChunk &other) = delete;
-		MemoryChunk &operator=(const MemoryChunk &other) = delete;
-		MemoryChunk(MemoryChunk &&other) = delete;
-		MemoryChunk &operator=(MemoryChunk &&other) = delete;
-
-		~MemoryChunk()
-		{
-			delete[] (uint8 *)memory_;
-		}
-
-		void *memory_;
-		StackAllocator allocator;
-	};
-
 public:
 	MemoryManager(size_t chunkSize);
 	void *allocate(size_t size, const std::string &tag);
@@ -39,7 +18,7 @@ public:
 
 private:
 	const size_t CHUNK_SIZE;
-	std::list<MemoryChunk> memoryChunks_;
+	std::list<StackAllocator> memoryChunks_;
 };
 
 #endif // VENGINE3D_MEMORYMANAGER_H

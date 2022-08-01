@@ -12,26 +12,25 @@ MemoryManager::MemoryManager(size_t chunkSize) : CHUNK_SIZE(chunkSize)
 
 void *MemoryManager::allocate(size_t size, const std::string &tag)
 {
-	for (auto &chunk : memoryChunks_)
+	for (auto &allocator : memoryChunks_)
 	{
-		auto ptr = chunk.allocator.allocate(size, alignof(uint8));
+		auto ptr = allocator.allocate(size, alignof(uint8));
 		if (ptr)
 		{
 			return ptr;
 		}
 	}
 	memoryChunks_.emplace_back(CHUNK_SIZE);
-	return memoryChunks_.back().allocator.allocate(size, alignof(uint8));
+	return memoryChunks_.back().allocate(size, alignof(uint8));
 }
 
 void MemoryManager::deallocate(void *ptr)
 {
+
 	auto chunkIt = std::find_if(memoryChunks_.begin(), memoryChunks_.end(),
-								[ptr, chunkSize = CHUNK_SIZE](const MemoryChunk &chunk) {
-									auto diff = (byte *)ptr - (byte *)chunk.memory_;
-									return diff >= 0 & diff < chunkSize;
-								});
+								[ptr](const StackAllocator &allocator) { return allocator.own(ptr); });
 	assert(chunkIt != memoryChunks_.end());
-	if(chunkIt == memoryChunks_.end()) return;
-	chunkIt->allocator.deallocate(ptr);
+	if (chunkIt == memoryChunks_.end())
+		return;
+	chunkIt->free(ptr);
 }

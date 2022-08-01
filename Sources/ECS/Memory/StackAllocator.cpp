@@ -5,7 +5,7 @@
 #include "EngineLibs.h"
 #include "MemoryUtils.h"
 
-StackAllocator::StackAllocator(void *memory, size_t size) : IAllocator(memory, size)
+StackAllocator::StackAllocator(MemoryPool &&memoryPool) : memoryPool_(std::move(memoryPool))
 {
 	issuedMemory_.reserve(10);
 	freedMemory_.reserve(10);
@@ -22,7 +22,7 @@ void *StackAllocator::allocate(size_t size, uint8 alignment)
 	return ptr;
 }
 
-void StackAllocator::deallocate(void *ptr)
+void StackAllocator::free(void *ptr)
 {
 	if (!ptr)
 	{
@@ -60,7 +60,7 @@ void StackAllocator::deallocate(void *ptr)
 
 void StackAllocator::clear()
 {
-	usedMemory_ = 0;
+	memoryPool_.used = 0;
 }
 
 void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
@@ -71,11 +71,11 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 		void *asVoid;
 		uptr asUptr;
 	};
-	asVoid = baseAddress_;
-	asUptr += usedMemory_;
+	asVoid = memoryPool_.address;
+	asUptr += memoryPool_.used;
 
 	auto adjustment = MemoryUtils::AlignAdjustment(asVoid, alignment, sizeof(MetaInfo));
-	if (usedMemory_ + size + adjustment > maxSize_)
+	if (memoryPool_.used + size + adjustment > memoryPool_.size)
 	{
 		return nullptr;
 	}
@@ -84,14 +84,14 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 	MetaInfo *meta = (MetaInfo *)(asUptr - sizeof(MetaInfo));
 	meta->adjustment = adjustment;
 
-	usedMemory_ += size + adjustment;
+	memoryPool_.used += size + adjustment;
 	//memset(asVoid, 0xFF, size);
 	return asVoid;
 }
 
 void StackAllocator::deallocate_memory(void *ptr)
 {
-	assert(usedMemory_ > 0 && "Memory already free.");
+	assert(memoryPool_.used > 0 && "Memory already free.");
 
 	union {
 		void *asVoid;
@@ -102,8 +102,12 @@ void StackAllocator::deallocate_memory(void *ptr)
 
 	asUptr -= meta->adjustment;
 
-	auto freedMemorySize = ((uptr)baseAddress_ + usedMemory_) - asUptr;
-	usedMemory_ -= freedMemorySize;
+	auto freedMemorySize = (memoryPool_.addressUptr + memoryPool_.used) - asUptr;
+	memoryPool_.used -= freedMemorySize;
 
 	//memset(asVoid, 0x00, freedMemorySize);
+}
+bool StackAllocator::own(void *ptr) const
+{
+	return memoryPool_.own(ptr);
 }
