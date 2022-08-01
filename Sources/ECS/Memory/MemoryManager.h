@@ -9,12 +9,13 @@
 #include <list>
 #include <string>
 
-class MemoryManager
+class MemoryManager: public IAllocator
 {
 public:
 	MemoryManager();
-	void *allocate(size_t size, const std::string &tag);
-	void deallocate(void *ptr);
+	void *allocate(size_t size, uint8 = 0) override;
+	void free(void *ptr) override;
+	virtual bool own(void *ptr) const override;
 
 private:
 	static constexpr size_t CHUNK_SIZE = 256 * 1024 * 1024ull;
