@@ -31,7 +31,6 @@ protected:
 
 	std::unique_ptr<Window> window_;
 	std::unique_ptr<RenderEngine> renderEngine_;
-	std::unique_ptr<MemoryManager> memoryManager_;
 };
 
 #endif // VENGINE3D_VENGINE_H

@@ -5,9 +5,7 @@
 #include "VEngine.h"
 #include "Window.h"
 #include "Rendering/RenderEngine.h"
-#include "ECS/Memory/MemoryManager.h"
-
-#include "ECS/Memory/Allocator/BlockAllocator.h"
+#include "ECS/Memory/GlobalMemoryManager.h"
 
 VEngine::VEngine()
 {
@@ -16,7 +14,6 @@ VEngine::VEngine()
 	renderEngine_ = CreateUniqueObject<RenderEngine>();
 	renderEngine_->resize(windowDefaultWidth_, windowDefaultHeight_);
 	window_->OnWindowResizeDelegate.connect(renderEngine_.get(), &RenderEngine::resize);
-	memoryManager_ = CreateUniqueObject<MemoryManager>();
 
 	return;
 }
