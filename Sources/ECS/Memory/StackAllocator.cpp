@@ -5,7 +5,7 @@
 #include "EngineLibs.h"
 #include "MemoryUtils.h"
 
-StackAllocator::StackAllocator(MemoryPool &&memoryPool) : memoryPool_(std::move(memoryPool))
+StackAllocator::StackAllocator(const std::shared_ptr<MemoryPool> &memoryPool) : memoryPool_(memoryPool)
 {
 	issuedMemory_.reserve(10);
 	freedMemory_.reserve(10);
@@ -60,7 +60,7 @@ void StackAllocator::free(void *ptr)
 
 void StackAllocator::clear()
 {
-	memoryPool_.used = 0;
+	memoryPool_->used = 0;
 }
 
 void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
@@ -71,11 +71,11 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 		void *asVoid;
 		uptr asUptr;
 	};
-	asVoid = memoryPool_.address;
-	asUptr += memoryPool_.used;
+	asVoid = memoryPool_->address;
+	asUptr += memoryPool_->used;
 
 	auto adjustment = MemoryUtils::AlignAdjustment(asVoid, alignment, sizeof(MetaInfo));
-	if (memoryPool_.used + size + adjustment > memoryPool_.size)
+	if (memoryPool_->used + size + adjustment > memoryPool_->size)
 	{
 		return nullptr;
 	}
@@ -84,14 +84,14 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 	MetaInfo *meta = (MetaInfo *)(asUptr - sizeof(MetaInfo));
 	meta->adjustment = adjustment;
 
-	memoryPool_.used += size + adjustment;
+	memoryPool_->used += size + adjustment;
 	//memset(asVoid, 0xFF, size);
 	return asVoid;
 }
 
 void StackAllocator::deallocate_memory(void *ptr)
 {
-	assert(memoryPool_.used > 0 && "Memory already free.");
+	assert(memoryPool_->used > 0 && "Memory already free.");
 
 	union {
 		void *asVoid;
@@ -102,12 +102,12 @@ void StackAllocator::deallocate_memory(void *ptr)
 
 	asUptr -= meta->adjustment;
 
-	auto freedMemorySize = (memoryPool_.addressUptr + memoryPool_.used) - asUptr;
-	memoryPool_.used -= freedMemorySize;
+	auto freedMemorySize = (memoryPool_->addressUptr + memoryPool_->used) - asUptr;
+	memoryPool_->used -= freedMemorySize;
 
 	//memset(asVoid, 0x00, freedMemorySize);
 }
 bool StackAllocator::own(void *ptr) const
 {
-	return memoryPool_.own(ptr);
+	return memoryPool_->own(ptr);
 }

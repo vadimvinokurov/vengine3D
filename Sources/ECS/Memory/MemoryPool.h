@@ -24,40 +24,12 @@ struct MemoryPool
 
 	MemoryPool(const MemoryPool &other) = delete;
 	MemoryPool &operator=(const MemoryPool &other) = delete;
-
-	MemoryPool(MemoryPool &&other)
-	{
-		allocator = other.allocator;
-		size = other.size;
-		used = other.used;
-		address = other.address;
-
-		other.size = 0;
-		other.used = 0;
-		other.address = nullptr;
-	}
-	MemoryPool &operator=(MemoryPool &&other)
-	{
-		allocator = other.allocator;
-		size = other.size;
-		used = other.used;
-		address = other.address;
-
-		other.size = 0;
-		other.used = 0;
-		other.address = nullptr;
-	}
+	MemoryPool(MemoryPool &&other) = delete;
+	MemoryPool &operator=(MemoryPool &&other) = delete;
 
 	~MemoryPool()
 	{
-		if (address)
-		{
-			allocator->free(address);
-		}
-
-		size = 0;
-		used = 0;
-		address = nullptr;
+		allocator->free(address);
 	}
 
 	void set(uint8 value)

@@ -7,7 +7,8 @@
 
 MemoryManager::MemoryManager()
 {
-	memoryChunks_.emplace_back(CHUNK_SIZE);
+
+	memoryChunks_.emplace_back(std::make_shared<MemoryPool>(CHUNK_SIZE));
 }
 
 void *MemoryManager::allocate(size_t size, uint8)
@@ -20,7 +21,7 @@ void *MemoryManager::allocate(size_t size, uint8)
 			return ptr;
 		}
 	}
-	memoryChunks_.emplace_back(CHUNK_SIZE);
+	memoryChunks_.emplace_back(std::make_shared<MemoryPool>(CHUNK_SIZE));
 	return memoryChunks_.back().allocate(size, alignof(uint8));
 }
 

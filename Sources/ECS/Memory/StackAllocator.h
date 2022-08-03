@@ -19,7 +19,7 @@ private:
 	};
 
 public:
-	StackAllocator(MemoryPool &&memoryPool);
+	StackAllocator(const std::shared_ptr<MemoryPool> &memoryPool);
 	void *allocate(size_t size, uint8 alignment) override;
 	void free(void *ptr) override;
 	bool own(void *ptr) const override;
@@ -29,7 +29,7 @@ private:
 	void *allocate_memory(size_t size, uint8 alignment);
 	void deallocate_memory(void *ptr);
 
-	MemoryPool memoryPool_;
+	std::shared_ptr<MemoryPool> memoryPool_;
 	std::vector<void *> issuedMemory_;
 	std::vector<void *> freedMemory_;
 };
