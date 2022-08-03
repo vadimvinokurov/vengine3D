@@ -57,14 +57,13 @@ void StackAllocator::free(void *ptr)
 	}
 }
 
-void StackAllocator::clear()
-{
-	memoryPool_->used = 0;
-}
-
 void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 {
-	assert(size > 0 && "allocate called with memSize = 0.");
+	assert(size > 0 && alignment > 0 && "Allocate called with size = 0 or alignment = 0.");
+	if (size == 0 || alignment == 0)
+	{
+		return nullptr;
+	}
 
 	union {
 		void *asVoid;
@@ -94,6 +93,10 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 void StackAllocator::deallocate_memory(void *ptr)
 {
 	assert(memoryPool_->used > 0 && "Memory already free.");
+	if (memoryPool_->used == 0)
+	{
+		return;
+	}
 
 	union {
 		void *asVoid;

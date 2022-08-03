@@ -7,24 +7,55 @@
 
 void *MemoryManager::allocate(size_t size)
 {
-	for (auto &allocator : memoryChunks_)
+	return allocate_implementation(size).first;
+}
+
+std::shared_ptr<MemoryPool> MemoryManager::allocateMemoryPool(size_t size)
+{
+	auto [ptr, allocator] = allocate_implementation(size);
+	allocator->free(ptr);
+	//auto p = new MemoryPool(ptr, size, allocator);
+	//return std::shared_ptr<MemoryPool>(p);
+	//return std::make_shared<MemoryPool>(ptr, size, allocator);
+	return {};
+}
+
+std::pair<void *, const std::shared_ptr<MemoryManager::Allocator> &> MemoryManager::allocate_implementation(size_t size)
+{
+	for (const auto &allocator : chunks_)
 	{
-		auto ptr = allocator.allocate(size, alignof(uint8));
+		auto ptr = allocator->allocate(size, alignof(uint8));
 		if (ptr)
 		{
-			return ptr;
+			return {ptr, allocator};
 		}
 	}
-	memoryChunks_.emplace_back(std::make_shared<MemoryPool>(CHUNK_SIZE));
-	return memoryChunks_.back().allocate(size, alignof(uint8));
+	auto mpool = std::make_shared<MemoryPool>(std::max(size, CHUNK_SIZE));
+	auto allocator = std::make_shared<Allocator>(mpool);
+	auto ptr = allocator->allocate(size, alignof(uint8));
+	assert(ptr != nullptr && "Bad alloc in memory manager");
+	chunks_.push_back(allocator);
+	return {ptr, allocator};
 }
 
 void MemoryManager::free(void *ptr)
 {
-	auto chunkIt = std::find_if(memoryChunks_.begin(), memoryChunks_.end(),
-								[ptr](const StackAllocator &allocator) { return allocator.own(ptr); });
-	assert(chunkIt != memoryChunks_.end());
-	if (chunkIt == memoryChunks_.end())
+	auto allocator = getAllocator(ptr);
+	if (allocator.get() == nullptr)
+	{
 		return;
-	chunkIt->free(ptr);
+	}
+	allocator->free(ptr);
+}
+std::shared_ptr<MemoryManager::Allocator> MemoryManager::getAllocator(void *ptr)
+{
+	for (const auto &allocator : chunks_)
+	{
+		if (allocator->own(ptr))
+		{
+			return allocator;
+		}
+	}
+	assert(false && "MemoryManager has not this ptr");
+	return {};
 }

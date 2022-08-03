@@ -25,7 +25,6 @@ public:
 	bool own(void *ptr) const override;
 
 private:
-	void clear();
 	void *allocate_memory(size_t size, uint8 alignment);
 	void deallocate_memory(void *ptr);
 

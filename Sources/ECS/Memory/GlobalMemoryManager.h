@@ -7,13 +7,18 @@
 
 #include "MemoryManager.h"
 
-class GlobalMemoryManager
+struct GlobalMemoryManager
 {
-public:
+	static std::shared_ptr<MemoryPool> allocateMemoryPool(size_t size)
+	{
+		return memoryManager.allocateMemoryPool(size);
+	}
+
 	static void *allocate(size_t size)
 	{
 		return memoryManager.allocate(size);
 	}
+
 	static void free(void *ptr)
 	{
 		memoryManager.free(ptr);
