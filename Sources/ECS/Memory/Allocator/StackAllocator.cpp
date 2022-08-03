@@ -3,7 +3,7 @@
 //
 #include "StackAllocator.h"
 #include "EngineLibs.h"
-#include "MemoryUtils.h"
+#include "ECS/Memory/MemoryUtils.h"
 
 StackAllocator::StackAllocator(const std::shared_ptr<MemoryPool> &memoryPool) : memoryPool_(memoryPool)
 {

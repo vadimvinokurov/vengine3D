@@ -3,7 +3,7 @@
 //
 #include "BlockAllocator.h"
 #include "EngineLibs.h"
-#include "MemoryUtils.h"
+#include "ECS/Memory/MemoryUtils.h"
 
 BlockAllocator::BlockAllocator(const std::shared_ptr<MemoryPool> &memoryPool, size_t blockSize, uint8 alignment)
 	: memoryPool_(memoryPool), BLOCK_SIZE(blockSize), ALIGNMENT(alignment)

@@ -48,7 +48,8 @@ add_subdirectory(External/stb_image)
 file(GLOB Sources "Sources/*.cpp"
         "Sources/Rendering/*.cpp"
         "Sources/ECS/*.cpp"
-        "Sources/ECS/Memory/*.cpp")
+        "Sources/ECS/Memory/*.cpp"
+        "Sources/ECS/Memory/Allocator/*.cpp")
 
 include_directories("External/stb_image")
 include_directories("Sources")

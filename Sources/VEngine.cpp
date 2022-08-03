@@ -7,7 +7,7 @@
 #include "Rendering/RenderEngine.h"
 #include "ECS/Memory/MemoryManager.h"
 
-#include "ECS/Memory/BlockAllocator.h"
+#include "ECS/Memory/Allocator/BlockAllocator.h"
 
 VEngine::VEngine()
 {
