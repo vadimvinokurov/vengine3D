@@ -9,12 +9,17 @@
 #include <iostream>
 #include <EngineTypes.h>
 #include "SystemAllocator.h"
+#include "spdlog/spdlog.h"
 struct MemoryPool
 {
 	MemoryPool(size_t sz, const std::shared_ptr<IAllocator> &alloc = std::make_shared<SystemAllocator>())
 		: allocator(alloc), size(sz), used(0)
 	{
 		address = allocator->allocate(size, 1);
+		if(!address) {
+			spdlog::critical("Can't allocate memory pool");
+			throw std::bad_alloc();
+		}
 	};
 
 	bool own(void *ptr) const
@@ -30,11 +35,6 @@ struct MemoryPool
 	~MemoryPool()
 	{
 		allocator->free(address);
-	}
-
-	void set(uint8 value)
-	{
-		std::memset(address, value, size);
 	}
 
 	std::shared_ptr<IAllocator> allocator;
