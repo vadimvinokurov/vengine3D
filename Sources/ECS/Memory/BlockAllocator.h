@@ -11,15 +11,15 @@
 class BlockAllocator : public IAllocator
 {
 public:
-	BlockAllocator(const std::shared_ptr<MemoryPool> &memoryPool, size_t objectSize, uint8 objectAlignment);
+	BlockAllocator(const std::shared_ptr<MemoryPool> &memoryPool, size_t blockSize, uint8 alignment);
 	void *allocate(size_t = 1, uint8 = 1) override;
 	void free(void *ptr) override;
 	bool own(void *ptr) const override;
 
 private:
 	void clear();
-	const size_t OBJECT_SIZE;
-	const size_t OBJECT_ALIGNMENT;
+	const size_t BLOCK_SIZE;
+	const size_t ALIGNMENT;
 	std::shared_ptr<MemoryPool> memoryPool_;
 	void **nextFreeBlock = nullptr;
 };

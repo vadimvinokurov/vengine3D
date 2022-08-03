@@ -13,7 +13,7 @@ class MemoryManager: public IAllocator
 {
 public:
 	MemoryManager();
-	void *allocate(size_t size, uint8 = 0) override;
+	void *allocate(size_t size, uint8 = 1) override;
 	void free(void *ptr) override;
 	virtual bool own(void *ptr) const override;
 

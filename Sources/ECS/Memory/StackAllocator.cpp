@@ -18,7 +18,6 @@ void *StackAllocator::allocate(size_t size, uint8 alignment)
 	{
 		issuedMemory_.push_back(ptr);
 	}
-
 	return ptr;
 }
 
@@ -85,7 +84,10 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 	meta->adjustment = adjustment;
 
 	memoryPool_->used += size + adjustment;
-	//memset(asVoid, 0xFF, size);
+#ifdef DEBUG_ALLOCATOR
+	memset(asVoid, 0xFF, size);
+	debug_allocate(asVoid);
+#endif
 	return asVoid;
 }
 
@@ -105,7 +107,10 @@ void StackAllocator::deallocate_memory(void *ptr)
 	auto freedMemorySize = (memoryPool_->addressUptr + memoryPool_->used) - asUptr;
 	memoryPool_->used -= freedMemorySize;
 
-	//memset(asVoid, 0x00, freedMemorySize);
+#ifdef DEBUG_ALLOCATOR
+	memset(asVoid, 0x00, freedMemorySize);
+	debug_free(ptr);
+#endif
 }
 bool StackAllocator::own(void *ptr) const
 {
