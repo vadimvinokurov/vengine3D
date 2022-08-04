@@ -71,7 +71,7 @@ private:
 
 		union {
 			void *asVoid;
-			uptr *asUptr;
+			uptr asUptr;
 		};
 		asVoid = memoryPool_->address;
 		asUptr += adjustment;
