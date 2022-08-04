@@ -29,7 +29,7 @@ std::pair<void *, std::shared_ptr<MemoryManager::Allocator>> MemoryManager::allo
 	auto mpool = std::make_shared<MemoryPool>(std::max(size, CHUNK_SIZE));
 	auto allocator = std::make_shared<Allocator>(mpool);
 	auto ptr = allocator->allocate(size, alignof(uint8));
-	assert(ptr != nullptr && "Memory manager can't allocate memory");
+	assert(ptr != nullptr && "Memory manager can't allocate memory. Out of memory!");
 	chunks_.push_back(allocator);
 	return {ptr, allocator};
 }
