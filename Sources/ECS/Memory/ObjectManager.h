@@ -7,7 +7,7 @@
 
 #include "GlobalMemoryManager.h"
 #include "Allocator/BlockAllocator.h"
-#include <unordered_set>
+#include <list>
 
 template <typename T, size_t MAX_CHUNK_SIZE>
 class ObjectManager
@@ -41,6 +41,7 @@ public:
 		iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end)
 			: currentChunk_(begin), end_(end)
 		{
+			static_assert(MAX_CHUNK_SIZE > 0);
 			if (begin != end)
 			{
 				currentObject_ = currentChunk_->objects.begin();
@@ -75,13 +76,13 @@ public:
 			return *currentObject_;
 		}
 
-		bool operator==(iterator &other)
+		bool operator==(const iterator &other) const
 		{
-			return ((this->currentChunk_ == other.currentChunk_) && (this->currentObject_ == other.currentObject_));
+			return (this->currentChunk_ == other.currentChunk_) && (this->currentObject_ == other.currentObject_);
 		}
-		bool operator!=(iterator &other)
+		bool operator!=(const iterator &other) const
 		{
-			return ((this->currentChunk_ != other.currentChunk_) && (this->currentObject_ != other.currentObject_));
+			return (this->currentChunk_ != other.currentChunk_) || (this->currentObject_ != other.currentObject_);
 		}
 
 	private:
@@ -136,6 +137,7 @@ public:
 	{
 		return iterator(chunks_.begin(), chunks_.end());
 	}
+
 	iterator end()
 	{
 		return iterator(chunks_.end(), chunks_.end());
