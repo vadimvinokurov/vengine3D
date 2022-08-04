@@ -20,7 +20,7 @@ public:
 	void free(void *ptr);
 
 private:
-	std::pair<void *, const std::shared_ptr<Allocator> &> allocate_implementation(size_t size);
+	std::pair<void *, std::shared_ptr<Allocator>> allocate_implementation(size_t size);
 	std::shared_ptr<Allocator> getAllocator(void *ptr);
 
 	static constexpr size_t CHUNK_SIZE = 256 * 1024 * 1024ull;
