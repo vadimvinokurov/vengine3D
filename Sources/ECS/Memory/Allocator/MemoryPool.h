@@ -23,7 +23,7 @@ struct MemoryPool
 		}
 	};
 
-	MemoryPool(void *ptr, size_t sz, const std::shared_ptr<IAllocator> &alloc)
+	MemoryPool(void *ptr, size_t sz, const std::shared_ptr<IAllocator> &alloc = std::make_shared<SystemAllocator>())
 		: allocator(alloc), address(ptr), size(sz)
 	{
 		if (!address)

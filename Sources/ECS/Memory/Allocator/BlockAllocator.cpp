@@ -8,7 +8,7 @@
 BlockAllocator::BlockAllocator(const std::shared_ptr<MemoryPool> &memoryPool, size_t blockSize, uint8 alignment)
 	: memoryPool_(memoryPool), BLOCK_SIZE(blockSize), ALIGNMENT(alignment)
 {
-	assert(blockSize > 0 && "Object size = 0");
+	assert(blockSize > sizeof(void *) && "Object size < reference size");
 	clear();
 }
 
@@ -22,10 +22,10 @@ void *BlockAllocator::allocate(size_t, uint8)
 	nextFreeBlock = (void **)*nextFreeBlock;
 	memoryPool_->used += BLOCK_SIZE;
 
-	#ifdef DEBUG_ALLOCATOR
-		memset(p, 0xFF, BLOCK_SIZE);
-		debug_allocate(p);
-	#endif
+#ifdef DEBUG_ALLOCATOR
+	memset(p, 0xFF, BLOCK_SIZE);
+	debug_allocate(p);
+#endif
 	return p;
 }
 
@@ -36,10 +36,10 @@ void BlockAllocator::free(void *ptr)
 		return;
 	}
 
-	#ifdef DEBUG_ALLOCATOR
-		memset(ptr, 0x00, BLOCK_SIZE);
-		debug_free(ptr);
-	#endif
+#ifdef DEBUG_ALLOCATOR
+	memset(ptr, 0x00, BLOCK_SIZE);
+	debug_free(ptr);
+#endif
 
 	assert(memoryPool_->used > 0 && "Memory already free.");
 
