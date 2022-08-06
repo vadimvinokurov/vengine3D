@@ -3,12 +3,21 @@
 //
 
 #include <VEngine.h>
-#include <iostream>
-#include "ECS/Memory/MemoryManager.h"
+#include "ECS/EntityManager.h"
+
 int main()
 {
-	MemoryManager memoryManager;
-	auto a = memoryManager.allocateMemoryPool(100);
+	class A : public Entity<A>
+	{
+		uint8 payload[8];
+	};
+
+	EntityManager entityManager;
+
+	auto entityId = entityManager.createEntity<A>();
+	entityManager.destroyEntity(entityId);
+	entityManager.removeDestroyedEntities();
+	//std::cout << entityId.value << std::endl;
 	VEngine vengine;
 	vengine.run();
 	return 0;

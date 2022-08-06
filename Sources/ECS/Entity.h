@@ -11,7 +11,11 @@ template <typename T>
 class Entity : public IEntity
 {
 public:
-	virtual const EntityTypeId getEntityTypeId() const override
+	virtual EntityTypeId getEntityTypeId() const override
+	{
+		return TypeIdManager::getId<T>();
+	}
+	static EntityTypeId getTypeId()
 	{
 		return TypeIdManager::getId<T>();
 	}

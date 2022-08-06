@@ -11,7 +11,11 @@ template <typename T>
 class Component : public IComponent
 {
 public:
-	const ComponentTypeId getComponentTypeId() const override
+	virtual ComponentTypeId getComponentTypeId() const override
+	{
+		return TypeIdManager::getId<T>();
+	}
+	static ComponentTypeId getTypeId()
 	{
 		return TypeIdManager::getId<T>();
 	}

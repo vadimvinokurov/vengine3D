@@ -5,16 +5,19 @@
 #ifndef VENGINE3D_IENTITY_H
 #define VENGINE3D_IENTITY_H
 
+#include "VObject.h"
 #include "Handle.h"
 #include "IdManager.h"
 
 using EntityId = ECS::Handle64;
 using EntityTypeId = TypeId;
 
-class IEntity
+class IEntity : public VObject
 {
+	friend class EntityManager;
+
 public:
-	IEntity() : active_(true){};
+	IEntity() : id_(ECS::Handle64::INVALID_ID), active_(true){};
 	virtual ~IEntity() = default;
 
 	EntityId getEntityId() const
@@ -74,7 +77,7 @@ public:
 		return id_ != other->id_;
 	}
 
-	virtual const EntityTypeId getEntityTypeId() const = 0;
+	virtual EntityTypeId getEntityTypeId() const = 0;
 
 	virtual void OnDisable()
 	{

@@ -5,6 +5,7 @@
 #ifndef VENGINE3D_OBJECTMANAGER_H
 #define VENGINE3D_OBJECTMANAGER_H
 
+#include "ECS/VObject.h"
 #include "GlobalMemoryManager.h"
 #include "Allocator/BlockAllocator.h"
 #include <list>
@@ -119,14 +120,15 @@ public:
 		return (T *)ptr;
 	}
 
-	void destroyObject(T *ptr)
+	void destroyObject(VObject *ptr)
 	{
 		for (auto &chunk : chunks_)
 		{
 			if (chunk.allocator->own((void *)ptr))
 			{
-				ptr->~T();
-				chunk.objects.erase(ptr);
+				ptr->~VObject();
+				auto it = std::remove(chunk.objects.begin(), chunk.objects.end(), (T *)ptr);
+				chunk.objects.erase(it);
 				chunk.allocator->free((void *)ptr);
 				return;
 			}
