@@ -15,7 +15,7 @@ namespace ECS
 		static constexpr ValueType MIN_VERSION = 0u;
 		static constexpr ValueType MAX_VERSION = (1ull << NUM_INDEX_BITS) - 2u;
 		static constexpr ValueType MAX_INDEX = (1ull << NUM_INDEX_BITS) - 2u;
-		static constexpr ValueType INCORRECT_ID = std::numeric_limits<ValueType>::max();
+		static constexpr ValueType INVALID_ID = std::numeric_limits<ValueType>::max();
 
 		Handle() : value(0)
 		{
