@@ -6,8 +6,8 @@
 #define VENGINE3D_IENTITY_H
 
 #include "VObject.h"
-#include "Handle.h"
-#include "IdManager.h"
+#include "ECS/Utils/Handle.h"
+#include "ECS/Utils/IdManager.h"
 
 using EntityId = ECS::Handle64;
 using EntityTypeId = TypeId;

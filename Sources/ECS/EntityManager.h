@@ -6,7 +6,7 @@
 #define VENGINE3D_ENTITYMANAGER_H
 
 #include "ECS/Memory/ObjectContainer.h"
-#include "ECS/Entity.h"
+#include "ECS/Objects/Entity.h"
 #include <unordered_map>
 static constexpr auto ENITY_CHUNK_SIZE = 512;
 class EntityManager

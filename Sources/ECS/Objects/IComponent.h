@@ -6,7 +6,7 @@
 #define VENGINE3D_ICOMPONENT_H
 
 #include "VObject.h"
-#include "IdManager.h"
+#include "ECS/Utils/IdManager.h"
 #include "IEntity.h"
 
 

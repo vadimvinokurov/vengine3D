@@ -5,9 +5,9 @@
 #ifndef VENGINE3D_OBJECTMANAGER_H
 #define VENGINE3D_OBJECTMANAGER_H
 
-#include "ECS/VObject.h"
+#include "ECS/Objects/VObject.h"
 #include "GlobalMemoryManager.h"
-#include "Allocator/BlockAllocator.h"
+#include "ECS/Memory/Allocator/BlockAllocator.h"
 #include <list>
 
 template <typename T, size_t MAX_CHUNK_SIZE>

@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_MEMORYMANAGER_H
 #define VENGINE3D_MEMORYMANAGER_H
 
-#include "Allocator/StackAllocator.h"
+#include "ECS/Memory/Allocator/StackAllocator.h"
 #include <list>
 #include <string>
 

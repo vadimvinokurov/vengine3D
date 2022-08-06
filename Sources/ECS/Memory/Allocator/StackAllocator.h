@@ -6,7 +6,7 @@
 #define VENGINE3D_STACKALLOCATOR_H
 
 #include "IAllocator.h"
-#include "MemoryPool.h"
+#include "ECS/Memory/MemoryPool.h"
 
 #include <vector>
 
