@@ -17,7 +17,7 @@ public:
 	BlockAllocator(const std::shared_ptr<MemoryPool> &memoryPool)
 		: memoryPool_(memoryPool)
 	{
-		static_assert(BLOCK_SIZE > sizeof(void *) && "Object size < reference size");
+		static_assert(BLOCK_SIZE >= sizeof(void *) && "Object size < reference size");
 		clear();
 	}
 

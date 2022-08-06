@@ -10,7 +10,7 @@
 #include <list>
 
 template <typename T, size_t MAX_CHUNK_SIZE>
-class ObjectManager
+class ObjectContainer
 {
 private:
 	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * (sizeof(T) + alignof(T));
@@ -91,7 +91,7 @@ public:
 		typename ObjectList::iterator currentObject_;
 	};
 
-	ObjectManager() = default;
+	ObjectContainer() = default;
 
 	template <typename... Args>
 	T *createObject(Args &&...args)
@@ -143,7 +143,7 @@ public:
 		return iterator(chunks_.end(), chunks_.end());
 	}
 
-	~ObjectManager()
+	~ObjectContainer()
 	{
 		for (auto &chunk : chunks_)
 		{
