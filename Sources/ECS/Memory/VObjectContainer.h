@@ -97,42 +97,25 @@ public:
 	template <typename... Args>
 	T *createObject(Args &&...args)
 	{
-		for (auto &chunk : chunks_)
+		void *ptr = allocate();
+		try
 		{
-			auto ptr = chunk.allocator->allocate();
-			if (!ptr)
-			{
-				continue;
-			}
-			chunk.objects.push_back((T *)ptr);
 			new (ptr) T(std::forward<Args>(args)...);
 			return (T *)ptr;
 		}
-
-		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
-		chunks_.emplace_back(Allocator::create(std::move(mpool)));
-		auto &chunk = chunks_.back();
-		auto ptr = chunk.allocator->allocate();
-
-		assert(ptr != nullptr && "Object manager can't allocate memory. Out of memory!");
-		chunk.objects.push_back((T *)ptr);
-		new (ptr) T(std::forward<Args>(args)...);
-		return (T *)ptr;
+		catch (std::exception &e)
+		{
+			free(ptr);
+			spdlog::error("VObject constructor exception: {}", e.what());
+			assert(false && "Exception in VObject constructor");
+			return nullptr;
+		}
 	}
 
 	void destroyObject(VObject *ptr)
 	{
-		for (auto &chunk : chunks_)
-		{
-			if (chunk.allocator->own((void *)ptr))
-			{
-				ptr->~VObject();
-				auto it = std::remove(chunk.objects.begin(), chunk.objects.end(), (T *)ptr);
-				chunk.objects.erase(it);
-				chunk.allocator->free((void *)ptr);
-				return;
-			}
-		}
+		ptr->~VObject();
+		free(ptr);
 	}
 
 	iterator begin()
@@ -159,6 +142,47 @@ public:
 	}
 
 private:
+	void *allocate()
+	{
+		for (auto &chunk : chunks_)
+		{
+			auto ptr = chunk.allocator->allocate();
+			if (ptr)
+			{
+				chunk.objects.push_back((T *)ptr);
+				return ptr;
+			}
+		}
+
+		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
+		chunks_.emplace_back(Allocator::create(std::move(mpool)));
+		auto &chunk = chunks_.back();
+		auto ptr = chunk.allocator->allocate();
+		if (ptr)
+		{
+			chunk.objects.push_back((T *)ptr);
+			return ptr;
+		}
+
+		assert(false && "Object manager can't allocate memory. Out of memory!");
+		return nullptr;
+	}
+
+	void free(void *ptr)
+	{
+		for (auto &chunk : chunks_)
+		{
+			if (chunk.allocator->own((void *)ptr))
+			{
+
+				auto it = std::remove(chunk.objects.begin(), chunk.objects.end(), (T *)ptr);
+				chunk.objects.erase(it);
+				chunk.allocator->free((void *)ptr);
+				return;
+			}
+		}
+	}
+
 	std::list<Chunk> chunks_;
 };
 #endif // VENGINE3D_OBJECTMANAGER_H
