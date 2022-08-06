@@ -8,6 +8,7 @@
 #include "EngineTypes.h"
 #include <list>
 #include <cassert>
+#include <memory>
 
 #define DEBUG_ALLOCATOR
 
@@ -16,12 +17,13 @@ class IAllocator
 public:
 	IAllocator() = default;
 	IAllocator(const IAllocator& other) = delete;
-	IAllocator(IAllocator&& other) = delete;
 	IAllocator& operator=(const IAllocator& other) = delete;
+	IAllocator(IAllocator&& other) = delete;
 	IAllocator& operator=(IAllocator&& other) = delete;
 
 
-	virtual void *allocate(size_t size = 1, uint8 alignment = 1) = 0;
+	virtual void *allocate(size_t size, uint8 alignment) = 0;
+	virtual void *allocate() = 0;
 	virtual void free(void *ptr) = 0;
 	virtual bool own(void *ptr) const = 0;
 
@@ -45,5 +47,7 @@ protected:
 	std::list<void *> ptrs;
 #endif
 };
+
+using AllocatorPtr = std::shared_ptr<IAllocator>;
 
 #endif // VENGINE3D_IALLOCATOR_H

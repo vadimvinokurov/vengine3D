@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_ENTITYMANAGER_H
 #define VENGINE3D_ENTITYMANAGER_H
 
-#include "ECS/Memory/ObjectContainer.h"
+#include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Entity.h"
 #include <unordered_map>
 static constexpr auto ENITY_CHUNK_SIZE = 512;
@@ -17,7 +17,7 @@ private:
 		virtual void destroyEntity(IEntity *entity) = 0;
 	};
 	template <class T>
-	struct EntityContainer : public ObjectContainer<T, ENITY_CHUNK_SIZE>, public IEntityContainer
+	struct EntityContainer : public VObjectContainer<T, ENITY_CHUNK_SIZE>, public IEntityContainer
 	{
 		virtual void destroyEntity(IEntity *entity) override
 		{

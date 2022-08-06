@@ -15,16 +15,16 @@ public:
 	using Allocator = StackAllocator;
 
 	MemoryManager() = default;
-	std::shared_ptr<MemoryPool> allocateMemoryPool(size_t size);
+	MemoryPoolPtr allocateMemoryPool(size_t size);
 	void *allocate(size_t size);
 	void free(void *ptr);
 
 private:
-	std::pair<void *, std::shared_ptr<Allocator>> allocate_implementation(size_t size);
-	std::shared_ptr<Allocator> getAllocator(void *ptr);
+	std::pair<void *, AllocatorPtr> allocate_implementation(size_t size);
+	AllocatorPtr getAllocator(void *ptr);
 
 	static constexpr size_t CHUNK_SIZE = 256 * 1024 * 1024ull;
-	std::list<std::shared_ptr<Allocator>> chunks_;
+	std::list<AllocatorPtr> chunks_;
 };
 
 #endif // VENGINE3D_MEMORYMANAGER_H

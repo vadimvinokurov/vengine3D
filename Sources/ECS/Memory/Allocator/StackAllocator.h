@@ -19,16 +19,27 @@ private:
 	};
 
 public:
-	StackAllocator(const std::shared_ptr<MemoryPool> &memoryPool);
+	static AllocatorPtr create(MemoryPoolPtr memoryPool)
+	{
+		return AllocatorPtr(new StackAllocator(std::move(memoryPool)));
+	};
+
+	virtual void *allocate() override
+	{
+		assert(false && "This method is not supported.");
+		return nullptr;
+	}
+
 	void *allocate(size_t size, uint8 alignment) override;
 	void free(void *ptr) override;
 	bool own(void *ptr) const override;
 
 private:
+	StackAllocator(MemoryPoolPtr memoryPool);
 	void *allocate_memory(size_t size, uint8 alignment);
 	void deallocate_memory(void *ptr);
 
-	std::shared_ptr<MemoryPool> memoryPool_;
+	MemoryPoolPtr memoryPool_;
 	std::vector<void *> issuedMemory_;
 	std::vector<void *> freedMemory_;
 };

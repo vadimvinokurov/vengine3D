@@ -9,7 +9,7 @@
 
 struct GlobalMemoryManager
 {
-	static std::shared_ptr<MemoryPool> allocateMemoryPool(size_t size)
+	static MemoryPoolPtr allocateMemoryPool(size_t size)
 	{
 		return memoryManager.allocateMemoryPool(size);
 	}

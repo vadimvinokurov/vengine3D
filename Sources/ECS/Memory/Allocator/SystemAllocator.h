@@ -10,6 +10,17 @@
 
 struct SystemAllocator final : public IAllocator
 {
+	static AllocatorPtr create()
+	{
+		return AllocatorPtr(new SystemAllocator());
+	};
+
+	virtual void *allocate() override
+	{
+		assert(false && "This method is not supported.");
+		return nullptr;
+	}
+
 	virtual void *allocate(size_t size, uint8 alignment = 1) override
 	{
 		auto ptr = std::malloc(size);
@@ -33,6 +44,9 @@ struct SystemAllocator final : public IAllocator
 	{
 		return true;
 	}
+
+private:
+	SystemAllocator() = default;
 };
 
 #endif // VENGINE3D_SYSTEMALLOCATOR_H

@@ -14,14 +14,12 @@ template <size_t BLOCK_SIZE, size_t ALIGNMENT>
 class BlockAllocator : public IAllocator
 {
 public:
-	BlockAllocator(const std::shared_ptr<MemoryPool> &memoryPool)
-		: memoryPool_(memoryPool)
+	static AllocatorPtr create(MemoryPoolPtr memoryPool)
 	{
-		static_assert(BLOCK_SIZE >= sizeof(void *) && "Object size < reference size");
-		clear();
-	}
+		return AllocatorPtr(new BlockAllocator(std::move(memoryPool)));
+	};
 
-	void *allocate(size_t = 1, uint8 = 1) override
+	void *allocate() override
 	{
 		if (nextFreeBlock == nullptr)
 		{
@@ -37,6 +35,13 @@ public:
 #endif
 		return p;
 	}
+
+	void *allocate(size_t, uint8) override
+	{
+		assert(false && "This method is not supported.");
+		return nullptr;
+	}
+
 	void free(void *ptr) override
 	{
 		if (!ptr)
@@ -61,6 +66,12 @@ public:
 	}
 
 private:
+	BlockAllocator(MemoryPoolPtr memoryPool) : memoryPool_(std::move(memoryPool))
+	{
+		static_assert(BLOCK_SIZE >= sizeof(void *) && "Object size < reference size");
+		clear();
+	}
+
 	void clear()
 	{
 		uint8 adjustment = MemoryUtils::AlignAdjustment(memoryPool_->address, ALIGNMENT);
@@ -87,7 +98,7 @@ private:
 		}
 		*p = nullptr;
 	}
-	std::shared_ptr<MemoryPool> memoryPool_;
+	MemoryPoolPtr memoryPool_;
 	void **nextFreeBlock = nullptr;
 };
 

@@ -7,17 +7,20 @@
 
 int main()
 {
-	class A : public Entity<A>
-	{
-		uint8 payload[8];
+	struct A: public Entity<A> {
+		uint8 c[8];
+	};
+	struct B: public Entity<A> {
+		uint8 c[8];
 	};
 
-	EntityManager entityManager;
+	EntityManager man;
+	auto entityId = man.createEntity<A>();
+	man.destroyEntity(entityId);
+	man.removeDestroyedEntities();
 
-	auto entityId = entityManager.createEntity<A>();
-	entityManager.destroyEntity(entityId);
-	entityManager.removeDestroyedEntities();
-	//std::cout << entityId.value << std::endl;
+
+
 	VEngine vengine;
 	vengine.run();
 	return 0;

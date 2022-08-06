@@ -11,7 +11,7 @@
 #include <list>
 
 template <typename T, size_t MAX_CHUNK_SIZE>
-class ObjectContainer
+class VObjectContainer
 {
 private:
 	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * (sizeof(T) + alignof(T));
@@ -21,7 +21,7 @@ private:
 
 	struct Chunk
 	{
-		explicit Chunk(const std::shared_ptr<Allocator> &alloc) : allocator(alloc)
+		explicit Chunk(AllocatorPtr alloc) : allocator(alloc)
 		{
 			objects.reserve(MAX_CHUNK_SIZE);
 		}
@@ -30,7 +30,7 @@ private:
 		Chunk(Chunk &&other) = delete;
 		Chunk *operator=(Chunk &&other) = delete;
 
-		std::shared_ptr<Allocator> allocator;
+		AllocatorPtr allocator;
 		ObjectList objects;
 	};
 	using MemoryChunks = std::list<Chunk>;
@@ -92,7 +92,7 @@ public:
 		typename ObjectList::iterator currentObject_;
 	};
 
-	ObjectContainer() = default;
+	VObjectContainer() = default;
 
 	template <typename... Args>
 	T *createObject(Args &&...args)
@@ -110,7 +110,7 @@ public:
 		}
 
 		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
-		chunks_.emplace_back(std::make_shared<Allocator>(mpool));
+		chunks_.emplace_back(Allocator::create(std::move(mpool)));
 		auto &chunk = chunks_.back();
 		auto ptr = chunk.allocator->allocate();
 
@@ -145,7 +145,7 @@ public:
 		return iterator(chunks_.end(), chunks_.end());
 	}
 
-	~ObjectContainer()
+	~VObjectContainer()
 	{
 		for (auto &chunk : chunks_)
 		{

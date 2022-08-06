@@ -10,13 +10,13 @@ void *MemoryManager::allocate(size_t size)
 	return allocate_implementation(size).first;
 }
 
-std::shared_ptr<MemoryPool> MemoryManager::allocateMemoryPool(size_t size)
+MemoryPoolPtr MemoryManager::allocateMemoryPool(size_t size)
 {
 	auto [ptr, allocator] = allocate_implementation(size);
-	return std::make_shared<MemoryPool>(ptr, size, allocator);
+	return MemoryPool::create(ptr, size, allocator);
 }
 
-std::pair<void *, std::shared_ptr<MemoryManager::Allocator>> MemoryManager::allocate_implementation(size_t size)
+std::pair<void *, AllocatorPtr> MemoryManager::allocate_implementation(size_t size)
 {
 	for (const auto &allocator : chunks_)
 	{
@@ -26,8 +26,8 @@ std::pair<void *, std::shared_ptr<MemoryManager::Allocator>> MemoryManager::allo
 			return {ptr, allocator};
 		}
 	}
-	auto mpool = std::make_shared<MemoryPool>(std::max(size, CHUNK_SIZE));
-	auto allocator = std::make_shared<Allocator>(mpool);
+	auto mpool = MemoryPool::create(std::max(size, CHUNK_SIZE));
+	auto allocator = Allocator::create(std::move(mpool));
 	auto ptr = allocator->allocate(size, alignof(uint8));
 	assert(ptr != nullptr && "Memory manager can't allocate memory. Out of memory!");
 	chunks_.push_back(allocator);
@@ -43,7 +43,7 @@ void MemoryManager::free(void *ptr)
 	}
 	allocator->free(ptr);
 }
-std::shared_ptr<MemoryManager::Allocator> MemoryManager::getAllocator(void *ptr)
+AllocatorPtr MemoryManager::getAllocator(void *ptr)
 {
 	for (const auto &allocator : chunks_)
 	{

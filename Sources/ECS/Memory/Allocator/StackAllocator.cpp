@@ -5,7 +5,7 @@
 #include "EngineLibs.h"
 #include "ECS/Memory/MemoryUtils.h"
 
-StackAllocator::StackAllocator(const std::shared_ptr<MemoryPool> &memoryPool) : memoryPool_(memoryPool)
+StackAllocator::StackAllocator(MemoryPoolPtr memoryPool) : memoryPool_(std::move(memoryPool))
 {
 	issuedMemory_.reserve(10);
 	freedMemory_.reserve(10);

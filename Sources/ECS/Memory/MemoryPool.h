@@ -5,32 +5,38 @@
 #ifndef VENGINE3D_MEMORYPOOL_H
 #define VENGINE3D_MEMORYPOOL_H
 
+#include "ECS/Memory/Allocator/SystemAllocator.h"
+
 #include <memory>
 #include <iostream>
 #include "EngineTypes.h"
-#include "ECS/Memory/Allocator/SystemAllocator.h"
+
 #include "spdlog/spdlog.h"
+
 struct MemoryPool
 {
-	MemoryPool(size_t sz, const std::shared_ptr<IAllocator> &alloc = std::make_shared<SystemAllocator>())
-		: allocator(alloc), size(sz)
+	using pointer = std::unique_ptr<MemoryPool>;
+
+	static pointer create(size_t sz)
 	{
-		address = allocator->allocate(size, 1);
-		if (!address)
-		{
-			spdlog::critical("Can't allocate memory pool");
-			throw std::bad_alloc();
-		}
+		auto alloc = SystemAllocator::create();
+		return create(sz, alloc);
 	};
 
-	MemoryPool(void *ptr, size_t sz, const std::shared_ptr<IAllocator> &alloc = std::make_shared<SystemAllocator>())
-		: allocator(alloc), address(ptr), size(sz)
+	static pointer create(size_t sz, const AllocatorPtr &alloc)
 	{
-		if (!address)
+		void *ptr = alloc->allocate(sz, 1);
+		return create(ptr, sz, alloc);
+	};
+
+	static pointer create(void *ptr, size_t sz, const AllocatorPtr &alloc)
+	{
+		if (!ptr)
 		{
 			spdlog::critical("Can't allocate memory pool");
 			throw std::bad_alloc();
 		}
+		return std::unique_ptr<MemoryPool>(new MemoryPool(ptr, sz, alloc));
 	};
 
 	bool own(void *ptr) const
@@ -48,13 +54,18 @@ struct MemoryPool
 		allocator->free(address);
 	}
 
-	std::shared_ptr<IAllocator> allocator;
+	AllocatorPtr allocator;
 	union {
 		void *address;
 		uptr addressUptr;
 	};
 	size_t size;
 	size_t used = 0;
+private:
+	MemoryPool(void *ptr, size_t sz, const AllocatorPtr &alloc)
+		: allocator(alloc), address(ptr), size(sz){};
 };
+
+using MemoryPoolPtr = MemoryPool::pointer;
 
 #endif // VENGINE3D_MEMORYPOOL_H
