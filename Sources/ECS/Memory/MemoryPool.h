@@ -33,7 +33,7 @@ struct MemoryPool
 	{
 		if (!ptr)
 		{
-			spdlog::critical("Can't allocate memory pool");
+			spdlog::critical("Can't allocate memory pool. Allocator - {}", typeid(*alloc).name());
 			throw std::bad_alloc();
 		}
 		return std::unique_ptr<MemoryPool>(new MemoryPool(ptr, sz, alloc));

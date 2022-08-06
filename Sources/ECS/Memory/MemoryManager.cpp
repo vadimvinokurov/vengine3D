@@ -26,7 +26,7 @@ std::pair<void *, AllocatorPtr> MemoryManager::allocate_implementation(size_t si
 			return {ptr, allocator};
 		}
 	}
-	auto mpool = MemoryPool::create(std::max(size, CHUNK_SIZE));
+	auto mpool = MemoryPool::create(std::max(size * 2, CHUNK_SIZE));
 	auto allocator = Allocator::create(std::move(mpool));
 	auto ptr = allocator->allocate(size, alignof(uint8));
 	assert(ptr != nullptr && "Memory manager can't allocate memory. Out of memory!");

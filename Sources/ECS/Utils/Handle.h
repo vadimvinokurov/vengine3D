@@ -54,7 +54,7 @@ namespace ECS
 
 	public:
 		HandleTable() : table_(GROW){};
-		Handle AcquiredHandle(T *objectPtr)
+		Handle acquiredHandle(T *objectPtr)
 		{
 			size_t i = 0;
 			for (; i < table_.size(); ++i)
@@ -75,7 +75,7 @@ namespace ECS
 			return Handle(i, table_[i].version);
 		};
 
-		void ReleaseHandle(Handle id)
+		void releaseHandle(Handle id)
 		{
 			assert(id.index < table_.size() && id.version == table_[id.index].version && "Invalid ID");
 			table_[id.index].objectPtr = nullptr;

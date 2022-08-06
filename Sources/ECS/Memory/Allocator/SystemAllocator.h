@@ -25,11 +25,7 @@ struct SystemAllocator final : public IAllocator
 	{
 		auto ptr = std::malloc(size);
 #ifdef DEBUG_ALLOCATOR
-		std::memset(ptr, 0xAA, size);
-		if (ptr)
-		{
-			debug_allocate(ptr);
-		}
+		debug_allocate(ptr);
 #endif
 		return ptr;
 	}

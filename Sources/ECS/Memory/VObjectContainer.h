@@ -10,8 +10,15 @@
 #include "ECS/Memory/Allocator/BlockAllocator.h"
 #include <list>
 
+
+class IVObjectContainer{
+public:
+	virtual void destroyObject(VObject *ptr) = 0;
+};
+
+
 template <typename T, size_t MAX_CHUNK_SIZE>
-class VObjectContainer
+class VObjectContainer : public IVObjectContainer
 {
 private:
 	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * (sizeof(T) + alignof(T));
@@ -112,7 +119,7 @@ public:
 		}
 	}
 
-	void destroyObject(VObject *ptr)
+	void destroyObject(VObject *ptr) override
 	{
 		ptr->~VObject();
 		free(ptr);

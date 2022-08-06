@@ -16,11 +16,10 @@ class IAllocator
 {
 public:
 	IAllocator() = default;
-	IAllocator(const IAllocator& other) = delete;
-	IAllocator& operator=(const IAllocator& other) = delete;
-	IAllocator(IAllocator&& other) = delete;
-	IAllocator& operator=(IAllocator&& other) = delete;
-
+	IAllocator(const IAllocator &other) = delete;
+	IAllocator &operator=(const IAllocator &other) = delete;
+	IAllocator(IAllocator &&other) = delete;
+	IAllocator &operator=(IAllocator &&other) = delete;
 
 	virtual void *allocate(size_t size, uint8 alignment) = 0;
 	virtual void *allocate() = 0;
@@ -38,7 +37,10 @@ public:
 protected:
 	void debug_allocate(void *ptr)
 	{
-		ptrs.push_back(ptr);
+		if (ptr)
+		{
+			ptrs.push_back(ptr);
+		}
 	}
 	void debug_free(void *ptr)
 	{

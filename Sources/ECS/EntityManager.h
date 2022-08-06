@@ -12,18 +12,8 @@ static constexpr auto ENITY_CHUNK_SIZE = 512;
 class EntityManager
 {
 private:
-	struct IEntityContainer
-	{
-		virtual void destroyEntity(IEntity *entity) = 0;
-	};
 	template <class T>
-	struct EntityContainer : public VObjectContainer<T, ENITY_CHUNK_SIZE>, public IEntityContainer
-	{
-		virtual void destroyEntity(IEntity *entity) override
-		{
-			this->destroyObject(entity);
-		};
-	};
+	using EntityContainer = VObjectContainer<T, ENITY_CHUNK_SIZE>;
 
 public:
 	template <typename T, typename... Args>
@@ -31,7 +21,7 @@ public:
 	{
 		EntityContainer<T> *container = getContainer<T>();
 		auto entity = container->createObject();
-		auto entityId = entityHandleTable_.AcquiredHandle(entity);
+		auto entityId = entityHandleTable_.acquiredHandle(entity);
 		entity->id_ = entityId;
 		return entityId;
 	}
@@ -49,11 +39,16 @@ public:
 			auto it = entityContainers_.find(entity->getEntityTypeId());
 			if (it != entityContainers_.end())
 			{
-				it->second->destroyEntity(entity);
+				it->second->destroyObject(entity);
 			}
-			entityHandleTable_.ReleaseHandle(entityId);
+			entityHandleTable_.releaseHandle(entityId);
 		}
 		pendingDestroyedEntities_.clear();
+	}
+
+	IEntity *getEntity(EntityId entityId)
+	{
+		return entityHandleTable_[entityId];
 	}
 
 private:
@@ -75,7 +70,7 @@ private:
 	}
 
 	ECS::HandleTable<IEntity, EntityId> entityHandleTable_;
-	std::unordered_map<EntityTypeId, std::shared_ptr<IEntityContainer>> entityContainers_;
+	std::unordered_map<EntityTypeId, std::shared_ptr<IVObjectContainer>> entityContainers_;
 	std::vector<EntityId> pendingDestroyedEntities_;
 };
 
