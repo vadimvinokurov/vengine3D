@@ -10,7 +10,6 @@
 #include "ECS/ECSProperty.h"
 #include <unordered_map>
 
-
 class EntityManager
 {
 private:
@@ -24,16 +23,16 @@ public:
 	{
 	}
 	template <typename T, typename... Args>
-	EntityId createEntity(Args... args)
+	T *createEntity(Args... args)
 	{
 		T *entity = getEntityContainer<T>()->createObject(std::forward<Args>(args)...);
-		if(!entity) {
-			return INVALID_ID;
+		if (!entity)
+		{
+			return nullptr;
 		}
-		EntityId entityId = aqcuireEntityId(entity);
-		entity->entityId_ = entityId;
+		entity->id_ = aqcuireEntityId(entity);
 		entity->componentManage_ = componentManage_;
-		return entityId;
+		return entity;
 	}
 
 	void destroyEntity(EntityId entityId)

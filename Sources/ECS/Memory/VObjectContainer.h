@@ -106,7 +106,8 @@ public:
 	T *createObject(Args &&...args)
 	{
 		void *ptr = allocate();
-		if(!ptr) {
+		if (!ptr)
+		{
 			return nullptr;
 		}
 		try
@@ -125,6 +126,10 @@ public:
 
 	void destroyObject(VObject *ptr) override
 	{
+		if (!ptr)
+		{
+			return;
+		}
 		ptr->~VObject();
 		free(ptr);
 	}

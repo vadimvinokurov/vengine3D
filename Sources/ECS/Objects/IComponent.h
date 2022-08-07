@@ -10,7 +10,7 @@
 
 class IComponent : public VObject
 {
-	friend class ComponentManage;
+	friend class ComponentManager;
 public:
 	IComponent() : owner_(INVALID_ID), active_(true)
 	{

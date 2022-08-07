@@ -7,11 +7,10 @@
 
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Component.h"
+#include "ECSProperty.h"
 #include <unordered_map>
 
-static constexpr auto GROW = 1024;
 
-static constexpr auto COMPONENT_CHUNK_SIZE = 512;
 class ComponentManager
 {
 private:
@@ -43,8 +42,15 @@ public:
 	template <class T>
 	void removeComponent(EntityId entityId)
 	{
+		auto entityIdIndex = getIdIndex(entityId);
+		assert(entityIdIndex < entityComponentMap_.size() && "Entity has not any components");
+
+		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		ComponentTypeId componentTypeId = T::getTypeId();
-		ComponentId componentId = entityComponentMap_[entityId][componentTypeId];
+		assert(componentTypeId < entityComponents.size() && "Entity has not component");
+
+		ComponentId componentId = entityComponents[componentTypeId];
+
 		IComponent *component = componentIdManager_[componentId];
 		assert(component != nullptr && "FATAL: Trying to remove a component which is not used by this entity!");
 		getComponentContainer<T>()->destroyObject(component);
@@ -55,7 +61,14 @@ public:
 	template <class T>
 	T *getComponent(EntityId entityId)
 	{
-		ComponentId componentId = entityComponentMap_[entityId][T::getTypeId()];
+		auto entityIdIndex = getIdIndex(entityId);
+		assert(entityIdIndex < entityComponentMap_.size() && "Entity has not any components");
+
+		auto &entityComponents = entityComponentMap_[entityIdIndex];
+		ComponentTypeId componentTypeId = T::getTypeId();
+		assert(componentTypeId < entityComponents.size() && "Entity has not component");
+
+		ComponentId componentId = entityComponents[componentTypeId];
 		if (componentId == INVALID_ID)
 		{
 			return nullptr;
@@ -65,7 +78,10 @@ public:
 
 	void removeAllComponent(EntityId entityId)
 	{
-		auto &entityComponents = entityComponentMap_[entityId];
+		auto entityIdIndex  = getIdIndex(entityId);
+		assert(entityIdIndex < entityComponentMap_.size() && "Entity has not any components");
+
+		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		for (ComponentTypeId componentTypeId = 0; componentTypeId < entityComponents.size(); ++componentTypeId)
 		{
 			ComponentId componentId = entityComponents[componentTypeId];
@@ -115,7 +131,7 @@ private:
 		auto entityIdIndex = getIdIndex(entityId);
 		if (entityComponentMap_.size() <= entityIdIndex)
 		{
-			entityComponentMap_.resize(entityIdIndex + GROW);
+			entityComponentMap_.resize(entityIdIndex + TABLE_GROW);
 		}
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		auto componentsCount = TypeIdManager<IComponent>::getCount();

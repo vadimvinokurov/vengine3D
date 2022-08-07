@@ -14,30 +14,30 @@ class IEntity : public VObject
 	friend class EntityManager;
 
 public:
-	IEntity() : entityId_(INVALID_ID), active_(true){};
+	IEntity() : id_(INVALID_ID), active_(true){};
 	virtual ~IEntity() = default;
 
 	EntityId getEntityId() const
 	{
-		return entityId_;
+		return id_;
 	}
 
 	template <typename T, typename... Args>
-	void addComponent(Args &&...args)
+	T* addComponent(Args &&...args)
 	{
-		componentManage_->addComponent<T>(entityId_, std::forward<Args>(args)...);
+		return componentManage_->addComponent<T>(id_, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
-	void getComponent()
+	T* getComponent()
 	{
-		componentManage_->getComponent<T>(entityId_);
+		return componentManage_->getComponent<T>(id_);
 	}
 
 	template <typename T>
 	void removeComponent()
 	{
-		componentManage_->removeComponent<T>(entityId_);
+		componentManage_->removeComponent<T>(id_);
 	}
 
 	void setActive(bool active)
@@ -64,19 +64,19 @@ public:
 
 	bool operator==(const IEntity &other) const
 	{
-		return entityId_ == other.entityId_;
+		return id_ == other.id_;
 	}
 	bool operator!=(const IEntity &other) const
 	{
-		return entityId_ != other.entityId_;
+		return id_ != other.id_;
 	}
 	bool operator==(const IEntity *other) const
 	{
-		return entityId_ == other->entityId_;
+		return id_ == other->id_;
 	}
 	bool operator!=(const IEntity *other) const
 	{
-		return entityId_ != other->entityId_;
+		return id_ != other->id_;
 	}
 
 	virtual EntityTypeId getEntityTypeId() const = 0;
@@ -89,7 +89,7 @@ public:
 	}
 
 protected:
-	EntityId entityId_;
+	EntityId id_;
 	bool active_;
 	ComponentManager *componentManage_;
 };

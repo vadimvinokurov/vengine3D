@@ -56,7 +56,7 @@ struct Dwarf : public Entity<Dwarf>
 		testval = rand();
 		for (auto &c : payload)
 		{
-			c = testval  ^ val;
+			c = testval ^ val;
 		}
 	}
 	~Dwarf()
@@ -71,39 +71,108 @@ struct Dwarf : public Entity<Dwarf>
 	int32 val;
 };
 
+struct Movement : public Component<Movement>
+{
+	Movement(const std::string &action) : action_(action)
+	{
+		// std::cout << "Create Movement component" << std::endl;
+	}
+	~Movement()
+	{
+		// std::cout << "Delete Movement component" << std::endl;
+	}
+	void update()
+	{
+		std::cout << action_ << std::endl;
+	};
+	std::string action_;
+};
+
+struct Render : public Component<Render>
+{
+	Render(const std::string &action) : action_(action)
+	{
+		// std::cout << "Create Render component" << std::endl;
+	}
+	~Render()
+	{
+		// std::cout << "Delete Render component" << std::endl;
+	}
+	void update()
+	{
+		std::cout << action_ << std::endl;
+	};
+	std::string action_;
+};
+
+struct Camera : public Component<Camera>
+{
+	Camera(const std::string &action) : action_(action)
+	{
+		// std::cout << "Create Camera component" << std::endl;
+	}
+	~Camera()
+	{
+		// std::cout << "Delete Camera component" << std::endl;
+	}
+	void update()
+	{
+		std::cout << action_ << std::endl;
+	};
+	std::string action_;
+};
+
 ECSTest::ECSTest()
 {
-	std::cout << std::dec << sizeof(Dragon) << " " << sizeof(Human) << " " << sizeof(Dwarf) << " " << std::endl;
-
-
 	componentManager = std::make_unique<ComponentManager>();
 	entityManager = std::make_unique<EntityManager>(componentManager.get());
-	std::cout << "Generate Entities" << std::endl;
+
 	for (int i = 0; i < 1000; ++i)
 	{
 		entities.push_back(entityManager->createEntity<Dragon>());
 		entities.push_back(entityManager->createEntity<Dwarf>(10));
 		entities.push_back(entityManager->createEntity<Human>());
-		entityManager->destroyEntity(entities.back());
+		entityManager->destroyEntity(entities.back()->getEntityId());
 	}
 	entityManager->removeDestroyedEntities();
-	std::cout << "Generated Entities" << std::endl;
+	entities.clear();
 
+	auto dragon = entityManager->createEntity<Dragon>();
+	auto dwarf = entityManager->createEntity<Dwarf>(10);
+	auto human = entityManager->createEntity<Human>();
 
-	//	for (auto entity : entities)
-	//	{
-	//		std::cout << std::hex << entityManager->getEntityById(entity) << std::endl;
-	//	}
+	dragon->addComponent<Movement>("Dragon do fly " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Render>("Render dragon " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Camera>("Dragon Camera " + std::to_string(dragon->getEntityId()));
 
-	//	std::cout << std::hex << DragonId << " " << HumanId << " " << DwarfId << " " << std::endl;
-	//	std::cout << std::dec << sizeof(Dragon) << " " << sizeof(Human) << " " << sizeof(Dwarf) << " " << std::endl;
-	//	std::cout << std::hex << DragonPtr << " " << HumanPtr << " " << Human2Ptr << " " << Human3Ptr << " " << DwarfPtr
-	//			  << " " << std::endl;
-	//	std::cout << std::dec << ((uptr)Human2Ptr - (uptr)HumanPtr) << std::endl;
-	//	std::cout << std::dec << ((uptr)Human3Ptr - (uptr)Human2Ptr) << std::endl;
+	dragon->addComponent<Movement>("Dragon do fly " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Render>("Render dragon " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Camera>("Dragon Camera " + std::to_string(dragon->getEntityId()));
+
+	dragon->addComponent<Movement>("Dragon do fly " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Render>("Render dragon " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Camera>("Dragon Camera " + std::to_string(dragon->getEntityId()));
+
+	componentManager->removeAllComponent(dwarf->getEntityId());
+
+	//dwarf->removeComponent<Render>();
+
+	for (auto it = componentManager->begin<Render>(); it != componentManager->end<Render>(); ++it)
+	{
+		it->update();
+	}
+	std::cout << std::endl;
+	for (auto it = componentManager->begin<Movement>(); it != componentManager->end<Movement>(); ++it)
+	{
+		it->update();
+	}
+	std::cout << std::endl;
+	for (auto it = componentManager->begin<Camera>(); it != componentManager->end<Camera>(); ++it)
+	{
+		it->update();
+	}
 }
 
 void ECSTest::run()
 {
-	std::cout << "ecs test" << std::endl;
 }
