@@ -7,11 +7,8 @@
 
 #include "VObject.h"
 #include "ECS/Utils/IdManagers.h"
+#include "ECS/Types.h"
 #include "IEntity.h"
-
-
-using ComponentId = idtype;
-using ComponentTypeId = idtype;
 
 class IComponent : public VObject
 {

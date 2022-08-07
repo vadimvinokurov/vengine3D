@@ -7,34 +7,38 @@
 
 #include "VObject.h"
 #include "ECS/Utils/IdManagers.h"
-
-using EntityId = idtype;
-using EntityTypeId = idtype;
+#include "ECS/ComponentManage.h"
+#include "ECS/Types.h"
 
 class IEntity : public VObject
 {
 	friend class EntityManager;
 
 public:
-	IEntity() : id_(INVALID_ID), active_(true){};
+	IEntity() : entityId_(INVALID_ID), active_(true){};
 	virtual ~IEntity() = default;
 
 	EntityId getEntityId() const
 	{
-		return id_;
+		return entityId_;
 	}
 
 	template <typename T, typename... Args>
 	void addComponent(Args &&...args)
 	{
+		componentManage_->addComponent<T>(entityId_, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
 	void getComponent()
 	{
+		componentManage_->getComponent<T>(entityId_);
 	}
+
+	template <typename T>
 	void removeComponent()
 	{
+		componentManage_->removeComponent<T>(entityId_);
 	}
 
 	void setActive(bool active)
@@ -61,19 +65,19 @@ public:
 
 	bool operator==(const IEntity &other) const
 	{
-		return id_ == other.id_;
+		return entityId_ == other.entityId_;
 	}
 	bool operator!=(const IEntity &other) const
 	{
-		return id_ != other.id_;
+		return entityId_ != other.entityId_;
 	}
 	bool operator==(const IEntity *other) const
 	{
-		return id_ == other->id_;
+		return entityId_ == other->entityId_;
 	}
 	bool operator!=(const IEntity *other) const
 	{
-		return id_ != other->id_;
+		return entityId_ != other->entityId_;
 	}
 
 	virtual EntityTypeId getEntityTypeId() const = 0;
@@ -86,8 +90,9 @@ public:
 	}
 
 protected:
-	EntityId id_;
+	EntityId entityId_;
 	bool active_;
+	ComponentManage *componentManage_;
 };
 
 #endif // VENGINE3D_IENTITY_H

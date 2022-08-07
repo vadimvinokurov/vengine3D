@@ -7,6 +7,7 @@
 
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Entity.h"
+#include "ECS/ComponentManage.h"
 #include <unordered_map>
 static constexpr auto ENTITY_CHUNK_SIZE = 512;
 class EntityManager
@@ -17,12 +18,16 @@ private:
 	using IEntityContainer = IVObjectContainer;
 
 public:
+	EntityManager(ComponentManage *componentManage) : componentManage_(componentManage)
+	{
+	}
 	template <typename T, typename... Args>
 	EntityId createEntity(Args... args)
 	{
-		T* entity = getEntityContainer<T>()->createObject(std::forward<Args>(args)...);
+		T *entity = getEntityContainer<T>()->createObject(std::forward<Args>(args)...);
 		EntityId entityId = aqcuireEntityId(entity);
-		entity->id_ = entityId;
+		entity->entityId_ = entityId;
+		entity->componentManage_ = componentManage_;
 		return entityId;
 	}
 
@@ -35,7 +40,7 @@ public:
 	{
 		for (const auto &entityId : pendingDestroyedEntities_)
 		{
-			IEntity *entity = getEntity(entityId);
+			IEntity *entity = getEntityById(entityId);
 			auto it = entityContainers_.find(entity->getEntityTypeId());
 			if (it != entityContainers_.end())
 			{
@@ -46,7 +51,7 @@ public:
 		pendingDestroyedEntities_.clear();
 	}
 
-	IEntity *getEntity(EntityId entityId)
+	IEntity *getEntityById(EntityId entityId)
 	{
 		return entityIdManager_[entityId];
 	}
@@ -83,6 +88,7 @@ private:
 	ObjectIdManager<IEntity> entityIdManager_;
 	std::unordered_map<EntityTypeId, std::unique_ptr<IEntityContainer>> entityContainers_;
 	std::vector<EntityId> pendingDestroyedEntities_;
+	ComponentManage *componentManage_;
 };
 
 #endif // VENGINE3D_ENTITYMANAGER_H
