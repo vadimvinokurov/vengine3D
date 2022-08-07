@@ -22,7 +22,7 @@ template <typename T, size_t MAX_CHUNK_SIZE>
 class VObjectContainer : public IVObjectContainer
 {
 private:
-	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * (sizeof(T) + alignof(T));
+	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * sizeof(T) + alignof(T);
 
 	using Allocator = BlockAllocator<sizeof(T), alignof(T)>;
 	using ObjectList = std::vector<T *>;
@@ -106,6 +106,9 @@ public:
 	T *createObject(Args &&...args)
 	{
 		void *ptr = allocate();
+		if(!ptr) {
+			return nullptr;
+		}
 		try
 		{
 			new (ptr) T(std::forward<Args>(args)...);
@@ -160,6 +163,7 @@ private:
 				chunk.objects.push_back((T *)ptr);
 				return ptr;
 			}
+			assert(chunk.objects.size() == MAX_CHUNK_SIZE && "Number of object in chunk != MAX_CHUNK_SIZE");
 		}
 
 		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);

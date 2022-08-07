@@ -7,9 +7,10 @@
 
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Entity.h"
+#include "ECS/ECSProperty.h"
 #include <unordered_map>
 
-static constexpr auto ENTITY_CHUNK_SIZE = 512;
+
 class EntityManager
 {
 private:
@@ -26,6 +27,9 @@ public:
 	EntityId createEntity(Args... args)
 	{
 		T *entity = getEntityContainer<T>()->createObject(std::forward<Args>(args)...);
+		if(!entity) {
+			return INVALID_ID;
+		}
 		EntityId entityId = aqcuireEntityId(entity);
 		entity->entityId_ = entityId;
 		entity->componentManage_ = componentManage_;

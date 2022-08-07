@@ -74,8 +74,10 @@ private:
 
 	void clear()
 	{
+		assert(BLOCK_SIZE >= sizeof(void *) && "Can't initialize allocator structure! BLOCK_SIZE < sizeof(void *)");
+
 		uint8 adjustment = MemoryUtils::AlignAdjustment(memoryPool_->address, ALIGNMENT);
-		assert(adjustment < memoryPool_->size && BLOCK_SIZE && "Can't do alignment adjustment. adjustment < maxSize_");
+		assert(adjustment < memoryPool_->size && "Can't do alignment adjustment. adjustment < maxSize_");
 
 		size_t numObjects = static_cast<size_t>(std::floor((memoryPool_->size - adjustment) / BLOCK_SIZE));
 		assert(numObjects > 0 && "Pool allocator can't allocate any object. Not enough memory to one object");

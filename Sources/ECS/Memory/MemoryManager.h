@@ -23,7 +23,6 @@ private:
 	std::pair<void *, AllocatorPtr> allocate_implementation(size_t size);
 	AllocatorPtr getAllocator(void *ptr);
 
-	static constexpr size_t CHUNK_SIZE = 256 * 1024 * 1024ull;
 	std::list<AllocatorPtr> chunks_;
 };
 
