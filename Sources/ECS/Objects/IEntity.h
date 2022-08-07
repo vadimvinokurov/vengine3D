@@ -6,18 +6,17 @@
 #define VENGINE3D_IENTITY_H
 
 #include "VObject.h"
-#include "ECS/Utils/Handle.h"
-#include "ECS/Utils/IdManager.h"
+#include "ECS/Utils/IdManagers.h"
 
-using EntityId = ECS::Handle64;
-using EntityTypeId = TypeId;
+using EntityId = idtype;
+using EntityTypeId = idtype;
 
 class IEntity : public VObject
 {
 	friend class EntityManager;
 
 public:
-	IEntity() : id_(ECS::Handle64::INVALID_ID), active_(true){};
+	IEntity() : id_(INVALID_ID), active_(true){};
 	virtual ~IEntity() = default;
 
 	EntityId getEntityId() const

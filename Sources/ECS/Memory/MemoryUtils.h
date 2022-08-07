@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_MEMORYUTILS_H
 #define VENGINE3D_MEMORYUTILS_H
 
-#include "EngineTypes.h"
+#include "EnginePlatform.h"
 
 namespace MemoryUtils
 {

@@ -9,7 +9,7 @@
 
 #include <memory>
 #include <iostream>
-#include "EngineTypes.h"
+#include "EnginePlatform.h"
 
 #include "spdlog/spdlog.h"
 

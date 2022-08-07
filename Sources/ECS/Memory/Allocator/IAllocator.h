@@ -5,7 +5,7 @@
 #ifndef VENGINE3D_IALLOCATOR_H
 #define VENGINE3D_IALLOCATOR_H
 
-#include "EngineTypes.h"
+#include "EnginePlatform.h"
 #include <list>
 #include <cassert>
 #include <memory>

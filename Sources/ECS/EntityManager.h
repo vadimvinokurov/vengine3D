@@ -14,14 +14,14 @@ class EntityManager
 private:
 	template <class T>
 	using EntityContainer = VObjectContainer<T, ENTITY_CHUNK_SIZE>;
+	using IEntityContainer = IVObjectContainer;
 
 public:
 	template <typename T, typename... Args>
 	EntityId createEntity(Args... args)
 	{
-		EntityContainer<T> *container = getContainer<T>();
-		auto entity = container->createObject();
-		auto entityId = aqcuireEntityId(entity);
+		T* entity = getEntityContainer<T>()->createObject(std::forward<Args>(args)...);
+		EntityId entityId = aqcuireEntityId(entity);
 		entity->id_ = entityId;
 		return entityId;
 	}
@@ -48,38 +48,40 @@ public:
 
 	IEntity *getEntity(EntityId entityId)
 	{
-		return entityHandleTable_[entityId];
+		return entityIdManager_[entityId];
 	}
 
 private:
 	template <typename T>
-	EntityContainer<T> *getContainer()
+	EntityContainer<T> *getEntityContainer()
 	{
-		auto ETID = T::getTypeId();
-		auto it = entityContainers_.find(ETID);
+		auto entityTypeId = T::getTypeId();
+		auto it = entityContainers_.find(entityTypeId);
 		if (it == entityContainers_.end())
 		{
-			auto ec = std::make_shared<EntityContainer<T>>();
-			entityContainers_[ETID] = ec;
-			return ec.get();
+			auto container = std::make_unique<EntityContainer<T>>();
+			auto ptr = container.get();
+			entityContainers_[entityTypeId] = std::move(container);
+			return ptr;
 		}
 		else
 		{
-			return std::static_pointer_cast<EntityContainer<T>>(it->second).get();
+			return static_cast<EntityContainer<T> *>(it->second.get());
 		}
 	}
 
-	EntityId aqcuireEntityId(IEntity* entity){
-		return entityHandleTable_.acquiredHandle(entity);
+	EntityId aqcuireEntityId(IEntity *entity)
+	{
+		return entityIdManager_.acquiredId(entity);
 	}
 
-
-	void releaseEntityId(EntityId id){
-		entityHandleTable_.releaseHandle(id);
+	void releaseEntityId(EntityId id)
+	{
+		entityIdManager_.releaseId(id);
 	}
 
-	ECS::HandleTable<IEntity, EntityId> entityHandleTable_;
-	std::unordered_map<EntityTypeId, std::shared_ptr<IVObjectContainer>> entityContainers_;
+	ObjectIdManager<IEntity> entityIdManager_;
+	std::unordered_map<EntityTypeId, std::unique_ptr<IEntityContainer>> entityContainers_;
 	std::vector<EntityId> pendingDestroyedEntities_;
 };
 

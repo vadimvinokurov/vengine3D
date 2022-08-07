@@ -6,17 +6,18 @@
 #define VENGINE3D_ICOMPONENT_H
 
 #include "VObject.h"
-#include "ECS/Utils/IdManager.h"
+#include "ECS/Utils/IdManagers.h"
 #include "IEntity.h"
 
 
-using ComponentId = size_t;
-using ComponentTypeId = TypeId;
+using ComponentId = idtype;
+using ComponentTypeId = idtype;
 
 class IComponent : public VObject
 {
+	friend class ComponentManage;
 public:
-	IComponent() : owner_(INVALID_TYPE_ID), active_(true)
+	IComponent() : owner_(INVALID_ID), active_(true)
 	{
 	}
 	virtual ~IComponent() = default;
@@ -41,6 +42,7 @@ public:
 	virtual ComponentTypeId getComponentTypeId() const = 0;
 
 protected:
+	ComponentId hash_;
 	ComponentId id_;
 	EntityId owner_;
 	bool active_;

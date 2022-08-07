@@ -6,7 +6,7 @@
 #define VENGINE3D_ENGINECORE_H
 
 #include <EngineLibs.h>
-#include <EngineTypes.h>
+#include <EnginePlatform.h>
 #include <EngineUtils.h>
 
 #endif // VENGINE3D_ENGINECORE_H
