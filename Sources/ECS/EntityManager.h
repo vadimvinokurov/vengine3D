@@ -21,7 +21,7 @@ public:
 	{
 		EntityContainer<T> *container = getContainer<T>();
 		auto entity = container->createObject();
-		auto entityId = entityHandleTable_.acquiredHandle(entity);
+		auto entityId = aqcuireEntityId(entity);
 		entity->id_ = entityId;
 		return entityId;
 	}
@@ -35,13 +35,13 @@ public:
 	{
 		for (const auto &entityId : pendingDestroyedEntities_)
 		{
-			IEntity *entity = entityHandleTable_[entityId];
+			IEntity *entity = getEntity(entityId);
 			auto it = entityContainers_.find(entity->getEntityTypeId());
 			if (it != entityContainers_.end())
 			{
 				it->second->destroyObject(entity);
 			}
-			entityHandleTable_.releaseHandle(entityId);
+			releaseEntityId(entityId);
 		}
 		pendingDestroyedEntities_.clear();
 	}
@@ -67,6 +67,15 @@ private:
 		{
 			return std::static_pointer_cast<EntityContainer<T>>(it->second).get();
 		}
+	}
+
+	EntityId aqcuireEntityId(IEntity* entity){
+		return entityHandleTable_.acquiredHandle(entity);
+	}
+
+
+	void releaseEntityId(EntityId id){
+		entityHandleTable_.releaseHandle(id);
 	}
 
 	ECS::HandleTable<IEntity, EntityId> entityHandleTable_;
