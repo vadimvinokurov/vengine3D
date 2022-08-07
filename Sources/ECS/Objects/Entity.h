@@ -13,11 +13,11 @@ class Entity : public IEntity
 public:
 	virtual EntityTypeId getEntityTypeId() const override
 	{
-		return TypeIdManager::getId<T>();
+		return TypeIdManager<IEntity>::getId<T>();
 	}
 	static EntityTypeId getTypeId()
 	{
-		return TypeIdManager::getId<T>();
+		return TypeIdManager<IEntity>::getId<T>();
 	}
 };
 

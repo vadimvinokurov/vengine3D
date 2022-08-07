@@ -3,5 +3,3 @@
 //
 
 #include "IdManager.h"
-
-size_t TypeIdManager::count_ = 0;

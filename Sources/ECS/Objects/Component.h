@@ -13,11 +13,11 @@ class Component : public IComponent
 public:
 	virtual ComponentTypeId getComponentTypeId() const override
 	{
-		return TypeIdManager::getId<T>();
+		return TypeIdManager<IComponent>::getId<T>();
 	}
 	static ComponentTypeId getTypeId()
 	{
-		return TypeIdManager::getId<T>();
+		return TypeIdManager<IComponent>::getId<T>();
 	}
 };
 

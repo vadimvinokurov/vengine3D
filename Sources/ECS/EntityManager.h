@@ -8,12 +8,12 @@
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Entity.h"
 #include <unordered_map>
-static constexpr auto ENITY_CHUNK_SIZE = 512;
+static constexpr auto ENTITY_CHUNK_SIZE = 512;
 class EntityManager
 {
 private:
 	template <class T>
-	using EntityContainer = VObjectContainer<T, ENITY_CHUNK_SIZE>;
+	using EntityContainer = VObjectContainer<T, ENTITY_CHUNK_SIZE>;
 
 public:
 	template <typename T, typename... Args>
