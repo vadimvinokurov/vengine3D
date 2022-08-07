@@ -10,12 +10,13 @@
 #include "ECS/Memory/Allocator/BlockAllocator.h"
 #include <list>
 
-
-class IVObjectContainer{
+class IVObjectContainer
+{
 public:
+	IVObjectContainer() = default;
+	virtual ~IVObjectContainer() = default;
 	virtual void destroyObject(VObject *ptr) = 0;
 };
-
 
 template <typename T, size_t MAX_CHUNK_SIZE>
 class VObjectContainer : public IVObjectContainer

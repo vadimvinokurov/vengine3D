@@ -7,8 +7,6 @@
 
 #include "VObject.h"
 #include "ECS/Utils/IdManagers.h"
-#include "ECS/Types.h"
-#include "IEntity.h"
 
 class IComponent : public VObject
 {

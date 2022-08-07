@@ -7,8 +7,7 @@
 
 #include "VObject.h"
 #include "ECS/Utils/IdManagers.h"
-#include "ECS/ComponentManage.h"
-#include "ECS/Types.h"
+#include "ECS/ComponentManager.h"
 
 class IEntity : public VObject
 {
@@ -92,7 +91,7 @@ public:
 protected:
 	EntityId entityId_;
 	bool active_;
-	ComponentManage *componentManage_;
+	ComponentManager *componentManage_;
 };
 
 #endif // VENGINE3D_IENTITY_H

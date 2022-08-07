@@ -41,7 +41,7 @@ using IDHandle = IDHandle_base<24, 40>;
 using IDHandle = IDHandle_base<12, 20>;
 #endif
 
-size_t getIdIndex(idtype id) {
+inline size_t getIdIndex(idtype id) {
 	return IDHandle(id).index;
 }
 

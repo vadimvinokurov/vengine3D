@@ -3,25 +3,17 @@
 //
 
 #include <VEngine.h>
-#include "ECS/EntityManager.h"
+#include "ECS/ECSTest.h"
 
 int main()
 {
-	struct A: public Entity<A> {
-		uint8 c[8];
-	};
-	struct B: public Entity<A> {
-		uint8 c[8];
-	};
 
-	EntityManager man;
-	auto entityId = man.createEntity<A>();
-	man.destroyEntity(entityId);
-	man.removeDestroyedEntities();
+	ECSTest ecsTest;
+	ecsTest.run();
 
-
-
+	return 0;
 	VEngine vengine;
 	vengine.run();
+
 	return 0;
 }

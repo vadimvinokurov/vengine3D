@@ -10,4 +10,10 @@
 
 static constexpr idtype INVALID_ID = std::numeric_limits<idtype>::max();
 
+using EntityId = idtype;
+using EntityTypeId = idtype;
+
+using ComponentId = idtype;
+using ComponentTypeId = idtype;
+
 #endif // VENGINE3D_IDMANAGERS_H

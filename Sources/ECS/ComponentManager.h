@@ -2,8 +2,9 @@
 // Created by boris on 8/7/2022.
 //
 
-#ifndef VENGINE3D_COMPONENTMANAGE_H
-#define VENGINE3D_COMPONENTMANAGE_H
+#ifndef VENGINE3D_COMPONENTMANAGER_H
+#define VENGINE3D_COMPONENTMANAGER_H
+
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Component.h"
 #include <unordered_map>
@@ -11,12 +12,13 @@
 static constexpr auto GROW = 1024;
 
 static constexpr auto COMPONENT_CHUNK_SIZE = 512;
-class ComponentManage
+class ComponentManager
 {
 private:
 	template <class T>
 	using ComponentContainer = VObjectContainer<T, COMPONENT_CHUNK_SIZE>;
 	using IComponentContainer = IVObjectContainer;
+	using ContainersMap = std::unordered_map<ComponentTypeId, std::unique_ptr<IComponentContainer>>;
 
 public:
 	template <class T>
@@ -161,9 +163,9 @@ private:
 		componentIdManager_.releaseId(id);
 	}
 
-	std::unordered_map<ComponentTypeId, std::unique_ptr<IComponentContainer>> componentContainers_;
+	ContainersMap componentContainers_;
 	ObjectIdManager<IComponent> componentIdManager_;
 	std::vector<std::vector<ComponentId>> entityComponentMap_;
 };
 
-#endif // VENGINE3D_COMPONENTMANAGE_H
+#endif // VENGINE3D_COMPONENTMANAGER_H

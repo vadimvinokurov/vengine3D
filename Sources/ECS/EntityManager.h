@@ -7,8 +7,8 @@
 
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Entity.h"
-#include "ECS/ComponentManage.h"
 #include <unordered_map>
+
 static constexpr auto ENTITY_CHUNK_SIZE = 512;
 class EntityManager
 {
@@ -16,9 +16,10 @@ private:
 	template <class T>
 	using EntityContainer = VObjectContainer<T, ENTITY_CHUNK_SIZE>;
 	using IEntityContainer = IVObjectContainer;
+	using ContainersMap = std::unordered_map<EntityTypeId, std::unique_ptr<IEntityContainer>>;
 
 public:
-	EntityManager(ComponentManage *componentManage) : componentManage_(componentManage)
+	EntityManager(ComponentManager *componentManage) : componentManage_(componentManage)
 	{
 	}
 	template <typename T, typename... Args>
@@ -86,9 +87,9 @@ private:
 	}
 
 	ObjectIdManager<IEntity> entityIdManager_;
-	std::unordered_map<EntityTypeId, std::unique_ptr<IEntityContainer>> entityContainers_;
+	ContainersMap entityContainers_;
 	std::vector<EntityId> pendingDestroyedEntities_;
-	ComponentManage *componentManage_;
+	ComponentManager *componentManage_;
 };
 
 #endif // VENGINE3D_ENTITYMANAGER_H
