@@ -14,7 +14,7 @@ class MemoryManager
 public:
 	using Allocator = StackAllocator;
 
-	MemoryManager() = default;
+	MemoryManager();
 	MemoryPoolPtr allocateMemoryPool(size_t size);
 	void *allocate(size_t size);
 	void free(void *ptr);

@@ -6,11 +6,9 @@
 #define VENGINE3D_IALLOCATOR_H
 
 #include "EnginePlatform.h"
-#include <list>
+#include <set>
 #include <cassert>
 #include <memory>
-
-#define DEBUG_ALLOCATOR
 
 class IAllocator
 {
@@ -26,7 +24,7 @@ public:
 	virtual void free(void *ptr) = 0;
 	virtual bool own(void *ptr) const = 0;
 
-#ifndef DEBUG_ALLOCATOR
+#ifndef ECS_DEBUG
 	virtual ~IAllocator() = default;
 #else
 	virtual ~IAllocator()
@@ -34,19 +32,19 @@ public:
 		assert(ptrs.empty() && "memory leak detection");
 	};
 
-protected:
 	void debug_allocate(void *ptr)
 	{
 		if (ptr)
 		{
-			ptrs.push_back(ptr);
+			ptrs.insert(ptr);
 		}
 	}
 	void debug_free(void *ptr)
 	{
-		ptrs.remove(ptr);
+		assert(ptrs.find(ptr) != ptrs.end() && "Try to free incorrect ptr.");
+		ptrs.erase(ptr);
 	}
-	std::list<void *> ptrs;
+	std::set<void *> ptrs;
 #endif
 };
 

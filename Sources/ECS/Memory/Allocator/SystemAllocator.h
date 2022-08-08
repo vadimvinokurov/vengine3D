@@ -24,14 +24,18 @@ struct SystemAllocator final : public IAllocator
 	virtual void *allocate(size_t size, uint8 alignment = 1) override
 	{
 		auto ptr = std::malloc(size);
-#ifdef DEBUG_ALLOCATOR
+#ifdef ECS_DEBUG
 		debug_allocate(ptr);
 #endif
 		return ptr;
 	}
 	virtual void free(void *ptr) override
 	{
-#ifdef DEBUG_ALLOCATOR
+		if (!ptr)
+		{
+			return;
+		}
+#ifdef ECS_DEBUG
 		debug_free(ptr);
 #endif
 		std::free(ptr);

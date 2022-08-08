@@ -6,6 +6,12 @@
 #include "ECS/ECSProperty.h"
 #include <cassert>
 
+MemoryManager::MemoryManager()
+{
+	auto mpool = MemoryPool::create(MEMORY_MANAGER_CHUNK_SIZE);
+	auto allocator = Allocator::create(std::move(mpool));
+}
+
 void *MemoryManager::allocate(size_t size)
 {
 	return allocate_implementation(size).first;
@@ -27,9 +33,9 @@ std::pair<void *, AllocatorPtr> MemoryManager::allocate_implementation(size_t si
 			return {ptr, allocator};
 		}
 	}
-	auto mpool = MemoryPool::create(std::max(size * 2, MEMORY_MANAGER_CHUNK_SIZE));
+	auto mpool = MemoryPool::create(MEMORY_MANAGER_CHUNK_SIZE);
 	auto allocator = Allocator::create(std::move(mpool));
-	auto ptr = allocator->allocate(size, alignof(uint8));
+	auto ptr = allocator->allocate(size, 1);
 	assert(ptr != nullptr && "Memory manager can't allocate memory. Out of memory!");
 	chunks_.push_back(allocator);
 	return {ptr, allocator};

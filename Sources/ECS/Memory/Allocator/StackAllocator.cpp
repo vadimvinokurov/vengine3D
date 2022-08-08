@@ -27,7 +27,7 @@ void StackAllocator::free(void *ptr)
 	{
 		return;
 	}
-	assert(std::find(issuedMemory_.begin(), issuedMemory_.end(), ptr) != issuedMemory_.end());
+	assert(std::find(issuedMemory_.begin(), issuedMemory_.end(), ptr) != issuedMemory_.end() && "Try to free incorrect ptr.");
 	if (ptr == issuedMemory_.back())
 	{
 		deallocate_memory(ptr);
@@ -83,7 +83,7 @@ void *StackAllocator::allocate_memory(size_t size, uint8 alignment)
 	meta->adjustment = adjustment;
 
 	memoryPool_->used += size + adjustment;
-#ifdef DEBUG_ALLOCATOR
+#ifdef ECS_DEBUG
 	memset(asVoid, 0xFF, size);
 	debug_allocate(asVoid);
 #endif
@@ -110,7 +110,7 @@ void StackAllocator::deallocate_memory(void *ptr)
 	auto freedMemorySize = (memoryPool_->addressUptr + memoryPool_->used) - asUptr;
 	memoryPool_->used -= freedMemorySize;
 
-#ifdef DEBUG_ALLOCATOR
+#ifdef ECS_DEBUG
 	memset(asVoid, 0x00, freedMemorySize);
 	debug_free(ptr);
 #endif

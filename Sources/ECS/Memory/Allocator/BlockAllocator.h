@@ -13,6 +13,8 @@
 template <size_t BLOCK_SIZE, size_t ALIGNMENT>
 class BlockAllocator : public IAllocator
 {
+	static_assert(BLOCK_SIZE >= sizeof(void *) && "Can't initialize allocator structure! BLOCK_SIZE < sizeof(void *)");
+
 public:
 	static AllocatorPtr create(MemoryPoolPtr memoryPool)
 	{
@@ -29,7 +31,7 @@ public:
 		nextFreeBlock = (void **)*nextFreeBlock;
 		memoryPool_->used += BLOCK_SIZE;
 
-#ifdef DEBUG_ALLOCATOR
+#ifdef ECS_DEBUG
 		memset(p, 0xFF, BLOCK_SIZE);
 		debug_allocate(p);
 #endif
@@ -49,7 +51,7 @@ public:
 			return;
 		}
 
-#ifdef DEBUG_ALLOCATOR
+#ifdef ECS_DEBUG
 		memset(ptr, 0x00, BLOCK_SIZE);
 		debug_free(ptr);
 #endif
@@ -68,14 +70,6 @@ public:
 private:
 	BlockAllocator(MemoryPoolPtr memoryPool) : memoryPool_(std::move(memoryPool))
 	{
-		static_assert(BLOCK_SIZE >= sizeof(void *) && "Object size < reference size");
-		clear();
-	}
-
-	void clear()
-	{
-		assert(BLOCK_SIZE >= sizeof(void *) && "Can't initialize allocator structure! BLOCK_SIZE < sizeof(void *)");
-
 		uint8 adjustment = MemoryUtils::AlignAdjustment(memoryPool_->address, ALIGNMENT);
 		assert(adjustment < memoryPool_->size && "Can't do alignment adjustment. adjustment < maxSize_");
 
@@ -100,6 +94,7 @@ private:
 		}
 		*p = nullptr;
 	}
+
 	MemoryPoolPtr memoryPool_;
 	void **nextFreeBlock = nullptr;
 };
