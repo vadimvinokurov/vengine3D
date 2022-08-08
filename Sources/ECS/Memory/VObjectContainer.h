@@ -130,13 +130,23 @@ public:
 		try
 		{
 			new (ptr) T(std::forward<Args>(args)...);
+#ifdef ECS_DEBUG
+			ptrs.insert((T *)ptr);
+#endif
 			return (T *)ptr;
 		}
 		catch (std::exception &e)
 		{
 			free(ptr);
 			spdlog::error("VObject constructor exception: {}", e.what());
-			assert(false && "Exception in VObject constructor");
+			assert(false && "VObject constructor exception");
+			return nullptr;
+		}
+		catch (...)
+		{
+			free(ptr);
+			spdlog::error("VObject constructor exception: unknown");
+			assert(false && "VObject constructor exception");
 			return nullptr;
 		}
 	}
@@ -147,6 +157,10 @@ public:
 		{
 			return;
 		}
+#ifdef ECS_DEBUG
+		assert(ptrs.find(ptr) != ptrs.end() && "Try to free incorrect VObject ptr.");
+		ptrs.erase(ptr);
+#endif
 		ptr->~VObject();
 		free(ptr);
 	}
@@ -198,7 +212,7 @@ private:
 			return ptr;
 		}
 
-		assert(false && "Object manager can't allocate memory. Out of memory!");
+		assert(false && "VObject manager can't allocate memory. Out of memory!");
 		return nullptr;
 	}
 
@@ -206,17 +220,21 @@ private:
 	{
 		for (auto &chunk : chunks_)
 		{
-			if (chunk.allocator->own((void *)ptr))
+			if (chunk.allocator->own(ptr))
 			{
 
 				auto it = std::remove(chunk.objects.begin(), chunk.objects.end(), (T *)ptr);
 				chunk.objects.erase(it);
-				chunk.allocator->free((void *)ptr);
+				chunk.allocator->free(ptr);
 				return;
 			}
 		}
 	}
 
 	std::list<Chunk> chunks_;
+
+#ifdef ECS_DEBUG
+	std::set<VObject *> ptrs;
+#endif
 };
 #endif // VENGINE3D_OBJECTMANAGER_H

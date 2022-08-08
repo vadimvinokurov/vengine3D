@@ -44,7 +44,7 @@ public:
 	{
 		for (const auto &entityId : pendingDestroyedEntities_)
 		{
-			IEntity *entity = getEntityById(entityId);
+			IEntity *entity = getEntityPtr(entityId);
 			auto it = entityContainers_.find(entity->getEntityTypeId());
 			if (it != entityContainers_.end())
 			{
@@ -53,11 +53,6 @@ public:
 			releaseEntityId(entityId);
 		}
 		pendingDestroyedEntities_.clear();
-	}
-
-	IEntity *getEntityById(EntityId entityId)
-	{
-		return entityIdManager_[entityId];
 	}
 
 private:
@@ -87,6 +82,11 @@ private:
 	void releaseEntityId(EntityId id)
 	{
 		entityIdManager_.releaseId(id);
+	}
+
+	IEntity *getEntityPtr(EntityId entityId)
+	{
+		return entityIdManager_[entityId];
 	}
 
 	ObjectIdManager<IEntity> entityIdManager_;

@@ -44,6 +44,8 @@ add_subdirectory(External/stb_image)
 #    add_compile_options(-Wall -Wextra -pedantic -Werror)
 #endif ()
 
+add_compile_definitions(ECS_DEBUG)
+
 
 file(GLOB Sources "Sources/*.cpp"
         "Sources/Rendering/*.cpp"

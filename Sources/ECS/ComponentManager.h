@@ -28,6 +28,9 @@ public:
 	{
 		static constexpr std::hash<uint64> entityComponentIdHasher{std::hash<uint64>()};
 		T *component = getComponentContainer<T>()->createObject(std::forward<Args>(args)...);
+		if(!component) {
+			return nullptr;
+		}
 
 		ComponentId componentId = aqcuireComponentId(component);
 		component->id_ = componentId;
@@ -43,15 +46,20 @@ public:
 	void removeComponent(EntityId entityId)
 	{
 		auto entityIdIndex = getIdIndex(entityId);
-		assert(entityIdIndex < entityComponentMap_.size() && "Entity has not any components");
+		if(entityIdIndex >= entityComponentMap_.size()) {
+			assert(false && "Entity has not any components");
+			return;
+		}
 
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		ComponentTypeId componentTypeId = T::getTypeId();
-		assert(componentTypeId < entityComponents.size() && "Entity has not component");
-
+		if(componentTypeId >= entityComponents.size()) {
+			assert(false && "Entity has not component");
+			return;
+		}
 		ComponentId componentId = entityComponents[componentTypeId];
 
-		IComponent *component = componentIdManager_[componentId];
+		IComponent *component = getComponentPtr(componentId);
 		assert(component != nullptr && "FATAL: Trying to remove a component which is not used by this entity!");
 		getComponentContainer<T>()->destroyObject(component);
 		unmapEntityComponent(entityId, componentId, componentTypeId);
@@ -62,12 +70,17 @@ public:
 	T *getComponent(EntityId entityId)
 	{
 		auto entityIdIndex = getIdIndex(entityId);
-		assert(entityIdIndex < entityComponentMap_.size() && "Entity has not any components");
+		if(entityIdIndex >= entityComponentMap_.size()) {
+			assert(false && "Entity has not any components");
+			return;
+		}
 
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		ComponentTypeId componentTypeId = T::getTypeId();
-		assert(componentTypeId < entityComponents.size() && "Entity has not component");
-
+		if(componentTypeId >= entityComponents.size()) {
+			assert(false && "Entity has not component");
+			return;
+		}
 		ComponentId componentId = entityComponents[componentTypeId];
 		if (componentId == INVALID_ID)
 		{
@@ -120,12 +133,12 @@ public:
 		return getComponentContainer<T>()->end();
 	}
 
-	IComponent *getComponentById(ComponentId componentId)
+private:
+	IComponent *getComponentPtr(ComponentId componentId)
 	{
 		return componentIdManager_[componentId];
 	}
 
-private:
 	void mapEntityComponent(EntityId entityId, ComponentId componentId, ComponentTypeId componentTypeId)
 	{
 		auto entityIdIndex = getIdIndex(entityId);
@@ -140,7 +153,7 @@ private:
 		{
 			entityComponents.resize(componentsCount, INVALID_ID);
 		}
-
+		assert(entityComponentMap_[entityIdIndex][componentTypeId] == INVALID_ID && "Entity already have this component");
 		entityComponentMap_[entityIdIndex][componentTypeId] = componentId;
 	}
 
