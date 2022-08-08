@@ -21,6 +21,8 @@ public:
 template <typename T, size_t MAX_CHUNK_SIZE>
 class VObjectContainer : public IVObjectContainer
 {
+	static_assert(MAX_CHUNK_SIZE > 0);
+
 private:
 	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * sizeof(T) + alignof(T);
 
@@ -48,28 +50,39 @@ public:
 	{
 	public:
 		iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end)
-			: currentChunk_(begin), end_(end)
+			: currentChunk_(begin), endChunk_(end)
 		{
-			static_assert(MAX_CHUNK_SIZE > 0);
 			if (begin != end)
 			{
-				currentObject_ = currentChunk_->objects.begin();
+				for (; currentChunk_ != endChunk_; ++currentChunk_)
+				{
+					currentObject_ = currentChunk_->objects.begin();
+					if (currentObject_ != currentChunk_->objects.end())
+					{
+						return;
+					}
+				}
 			}
 			else
 			{
-				currentObject_ = std::prev(end_)->objects.end();
+				currentObject_ = std::prev(endChunk_)->objects.end();
 			}
 		}
 
 		iterator &operator++()
 		{
 			++currentObject_;
+
 			if (currentObject_ == currentChunk_->objects.end())
 			{
 				++currentChunk_;
-				if (currentChunk_ != end_)
+				for (; currentChunk_ != endChunk_; ++currentChunk_)
 				{
 					currentObject_ = currentChunk_->objects.begin();
+					if (currentObject_ != currentChunk_->objects.end())
+					{
+						return *this;
+					}
 				}
 			}
 			return *this;
@@ -96,11 +109,15 @@ public:
 
 	private:
 		typename MemoryChunks::iterator currentChunk_;
-		typename MemoryChunks::iterator end_;
+		typename MemoryChunks::iterator endChunk_;
 		typename ObjectList::iterator currentObject_;
 	};
 
-	VObjectContainer() = default;
+	VObjectContainer()
+	{
+		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
+		chunks_.emplace_back(Allocator::create(std::move(mpool)));
+	}
 
 	template <typename... Args>
 	T *createObject(Args &&...args)
