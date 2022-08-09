@@ -7,6 +7,7 @@
 
 #include "ECS/ComponentManager.h"
 #include "ECS/EntityManager.h"
+#include "ECS/SystemManager.h"
 
 class ECSTest
 {
@@ -17,6 +18,7 @@ public:
 private:
 	std::unique_ptr<ComponentManager> componentManager;
 	std::unique_ptr<EntityManager> entityManager;
+	std::unique_ptr<SystemManager> systemManager;
 	std::vector<IEntity *> entities;
 };
 

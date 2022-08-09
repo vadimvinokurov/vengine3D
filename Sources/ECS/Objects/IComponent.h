@@ -11,10 +11,9 @@
 class IComponent : public VObject
 {
 	friend class ComponentManager;
+
 public:
-	IComponent() : owner_(INVALID_ID), active_(true)
-	{
-	}
+	IComponent() = default;
 	virtual ~IComponent() = default;
 
 	ComponentId getComponentId() const
@@ -27,20 +26,22 @@ public:
 		return owner_;
 	}
 
-	inline void SetActive(bool active) {
+	inline void SetActive(bool active)
+	{
 		active_ = active;
 	}
-	inline bool IsActive() const {
+	inline bool IsActive() const
+	{
 		return active_;
 	}
 
 	virtual ComponentTypeId getComponentTypeId() const = 0;
 
 protected:
-	ComponentId hash_;
-	ComponentId id_;
-	EntityId owner_;
-	bool active_;
+	ComponentId hash_ = {};
+	ComponentId id_ = INVALID_ID;
+	EntityId owner_ = INVALID_ID;
+	bool active_ = true;
 };
 
 #endif // VENGINE3D_ICOMPONENT_H

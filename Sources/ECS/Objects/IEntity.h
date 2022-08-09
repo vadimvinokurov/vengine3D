@@ -14,7 +14,7 @@ class IEntity : public VObject
 	friend class EntityManager;
 
 public:
-	IEntity() : id_(INVALID_ID), active_(true){};
+	IEntity() = default;
 	virtual ~IEntity() = default;
 
 	EntityId getEntityId() const
@@ -23,13 +23,13 @@ public:
 	}
 
 	template <typename T, typename... Args>
-	T* addComponent(Args &&...args)
+	T *addComponent(Args &&...args)
 	{
 		return componentManage_->addComponent<T>(id_, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
-	T* getComponent()
+	T *getComponent()
 	{
 		return componentManage_->getComponent<T>(id_);
 	}
@@ -89,9 +89,9 @@ public:
 	}
 
 protected:
-	EntityId id_;
-	bool active_;
-	ComponentManager *componentManage_;
+	EntityId id_ = INVALID_ID;
+	bool active_ = true;
+	ComponentManager *componentManage_ = nullptr;
 };
 
 #endif // VENGINE3D_IENTITY_H

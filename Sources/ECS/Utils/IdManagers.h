@@ -16,4 +16,6 @@ using EntityTypeId = idtype;
 using ComponentId = idtype;
 using ComponentTypeId = idtype;
 
+using SystemTypeId = idtype;
+
 #endif // VENGINE3D_IDMANAGERS_H

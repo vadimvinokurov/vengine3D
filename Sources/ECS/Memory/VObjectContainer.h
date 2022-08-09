@@ -139,14 +139,14 @@ public:
 		{
 			free(ptr);
 			spdlog::error("VObject constructor exception: {}", e.what());
-			assert(false && "VObject constructor exception");
+			assert(false);
 			return nullptr;
 		}
 		catch (...)
 		{
 			free(ptr);
 			spdlog::error("VObject constructor exception: unknown");
-			assert(false && "VObject constructor exception");
+			assert(false);
 			return nullptr;
 		}
 	}

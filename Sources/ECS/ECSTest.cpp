@@ -4,6 +4,7 @@
 
 #include "ECSTest.h"
 #include <iostream>
+#include "ECS/Memory/Allocator/LinearAllocator.h"
 static constexpr auto PAYLOAD_SIZE = 10;
 
 struct Dragon : public Entity<Dragon>
@@ -122,8 +123,29 @@ struct Camera : public Component<Camera>
 	std::string action_;
 };
 
+struct RenderSystem : public System<RenderSystem>
+{
+	virtual void update(float dt) override
+	{
+		std::cout << "Render some scene" << std::endl;
+	}
+};
+struct PhysxSystem : public System<PhysxSystem>
+{
+	virtual void update(float dt) override
+	{
+		std::cout << "PhysxSystem some scene" << std::endl;
+	}
+};
+
 ECSTest::ECSTest()
 {
+	systemManager = std::make_unique<SystemManager>();
+	auto render = systemManager->addSystem<RenderSystem>();
+	auto physx = systemManager->addSystem<RenderSystem>();
+	render->update(10);
+	physx->update(10);
+	return;
 	componentManager = std::make_unique<ComponentManager>();
 	entityManager = std::make_unique<EntityManager>(componentManager.get());
 
@@ -141,21 +163,21 @@ ECSTest::ECSTest()
 	auto dwarf = entityManager->createEntity<Dwarf>(10);
 	auto human = entityManager->createEntity<Human>();
 
-	dragon->addComponent<Movement>("Dragon do fly " + std::to_string(dragon->getEntityId()));
-	dragon->addComponent<Render>("Render dragon " + std::to_string(dragon->getEntityId()));
-	dragon->addComponent<Camera>("Dragon Camera " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Movement>("Dragon do fly 1 " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Render>("Dragon do fly 2 " + std::to_string(dragon->getEntityId()));
+	dragon->addComponent<Camera>("Dragon do fly 3 " + std::to_string(dragon->getEntityId()));
 
-	dragon->addComponent<Movement>("Dragon do fly " + std::to_string(dragon->getEntityId()));
-	dragon->addComponent<Render>("Render dragon " + std::to_string(dragon->getEntityId()));
-	dragon->addComponent<Camera>("Dragon Camera " + std::to_string(dragon->getEntityId()));
+	dwarf->addComponent<Movement>("dwarf do fly 1 " + std::to_string(dwarf->getEntityId()));
+	dwarf->addComponent<Render>("dwarf do fly 2 " + std::to_string(dwarf->getEntityId()));
+	dwarf->addComponent<Camera>("dwarf do fly 3 " + std::to_string(dwarf->getEntityId()));
 
-	dragon->addComponent<Movement>("Dragon do fly " + std::to_string(dragon->getEntityId()));
-	dragon->addComponent<Render>("Render dragon " + std::to_string(dragon->getEntityId()));
-	dragon->addComponent<Camera>("Dragon Camera " + std::to_string(dragon->getEntityId()));
+	human->addComponent<Movement>("human do fly 1 " + std::to_string(human->getEntityId()));
+	human->addComponent<Render>("human do fly 2 " + std::to_string(human->getEntityId()));
+	human->addComponent<Camera>("human do fly 3 " + std::to_string(human->getEntityId()));
 
-	componentManager->removeAllComponent(dwarf->getEntityId());
+	// componentManager->removeAllComponent(dragon->getEntityId());
 
-	//dwarf->removeComponent<Render>();
+	// dwarf->removeComponent<Render>();
 
 	for (auto it = componentManager->begin<Render>(); it != componentManager->end<Render>(); ++it)
 	{
