@@ -22,6 +22,10 @@ public:
 	EntityManager(ComponentManager *componentManage) : componentManage_(componentManage)
 	{
 	}
+
+	EntityManager(const EntityManager &) = delete;
+	EntityManager &operator=(const EntityManager &) = delete;
+
 	template <typename T, typename... Args>
 	T *createEntity(Args... args)
 	{

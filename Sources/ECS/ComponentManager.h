@@ -10,7 +10,6 @@
 #include "ECSProperty.h"
 #include <unordered_map>
 
-
 class ComponentManager
 {
 private:
@@ -23,12 +22,17 @@ public:
 	template <class T>
 	using ComponentIterator = typename ComponentContainer<T>::iterator;
 
+	ComponentManager() = default;
+	ComponentManager(const ComponentManager &) = delete;
+	ComponentManager &operator=(const ComponentManager &) = delete;
+
 	template <class T, class... Args>
 	T *addComponent(const EntityId entityId, Args &&...args)
 	{
 		static constexpr std::hash<uint64> entityComponentIdHasher{std::hash<uint64>()};
 		T *component = getComponentContainer<T>()->createObject(std::forward<Args>(args)...);
-		if(!component) {
+		if (!component)
+		{
 			return nullptr;
 		}
 
@@ -46,14 +50,16 @@ public:
 	void removeComponent(EntityId entityId)
 	{
 		auto entityIdIndex = getIdIndex(entityId);
-		if(entityIdIndex >= entityComponentMap_.size()) {
+		if (entityIdIndex >= entityComponentMap_.size())
+		{
 			assert(false && "Entity has not any components");
 			return;
 		}
 
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		ComponentTypeId componentTypeId = T::getTypeId();
-		if(componentTypeId >= entityComponents.size()) {
+		if (componentTypeId >= entityComponents.size())
+		{
 			assert(false && "Entity has not component");
 			return;
 		}
@@ -70,14 +76,16 @@ public:
 	T *getComponent(EntityId entityId)
 	{
 		auto entityIdIndex = getIdIndex(entityId);
-		if(entityIdIndex >= entityComponentMap_.size()) {
+		if (entityIdIndex >= entityComponentMap_.size())
+		{
 			assert(false && "Entity has not any components");
 			return;
 		}
 
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
 		ComponentTypeId componentTypeId = T::getTypeId();
-		if(componentTypeId >= entityComponents.size()) {
+		if (componentTypeId >= entityComponents.size())
+		{
 			assert(false && "Entity has not component");
 			return;
 		}
@@ -91,7 +99,7 @@ public:
 
 	void removeAllComponent(EntityId entityId)
 	{
-		auto entityIdIndex  = getIdIndex(entityId);
+		auto entityIdIndex = getIdIndex(entityId);
 		assert(entityIdIndex < entityComponentMap_.size() && "Entity has not any components");
 
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
@@ -153,7 +161,8 @@ private:
 		{
 			entityComponents.resize(componentsCount, INVALID_ID);
 		}
-		assert(entityComponentMap_[entityIdIndex][componentTypeId] == INVALID_ID && "Entity already have this component");
+		assert(entityComponentMap_[entityIdIndex][componentTypeId] == INVALID_ID &&
+			   "Entity already have this component");
 		entityComponentMap_[entityIdIndex][componentTypeId] = componentId;
 	}
 
