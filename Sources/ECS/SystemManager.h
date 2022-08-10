@@ -154,19 +154,19 @@ public:
 
 	void updateSystemWorkOrder()
 	{
-		const auto numSystem = systemWorkOrder_.size();
+		const auto numberOfSystems = systemWorkOrder_.size();
 
-		std::vector<SystemTypeId> unorderedSystemsId(numSystem);
-		for (size_t i = 0; i < unorderedSystemsId.size(); ++i)
+		std::vector<SystemTypeId> unorderedSystems(numberOfSystems);
+		for (size_t i = 0; i < unorderedSystems.size(); ++i)
 		{
-			unorderedSystemsId[i] = i;
+			unorderedSystems[i] = i;
 		}
 		std::vector<std::pair<SystemPriority, std::vector<SystemTypeId>>> dependencyGroups;
 
-		while (!unorderedSystemsId.empty())
+		while (!unorderedSystems.empty())
 		{
-			auto index = unorderedSystemsId.back();
-			unorderedSystemsId.pop_back();
+			auto index = unorderedSystems.back();
+			unorderedSystems.pop_back();
 			if (index == INVALID_ID)
 			{
 				continue;
@@ -183,7 +183,7 @@ public:
 				index = member.back();
 				member.pop_back();
 
-				for (auto &unorderedSystem : unorderedSystemsId)
+				for (auto &unorderedSystem : unorderedSystems)
 				{
 					if (unorderedSystem != INVALID_ID &&
 						(systemDependency_[index][unorderedSystem] || systemDependency_[unorderedSystem][index]))
@@ -192,12 +192,12 @@ public:
 						unorderedSystem = INVALID_ID;
 					}
 				}
-				group.push_back(index);
 				ISystem *system = systems_[index];
 				if (!system)
 				{
 					continue;
 				}
+				group.push_back(index);
 				groupPriority = std::max(system->priority_, groupPriority);
 			}
 			dependencyGroups.emplace_back(groupPriority, std::move(group));
@@ -217,7 +217,7 @@ public:
 			};
 
 		std::multimap<SystemPriority, std::vector<SystemTypeId>> sortedDependencyGroups;
-		std::vector<bool> verticesVisited(numSystem, false);
+		std::vector<bool> verticesVisited(numberOfSystems, false);
 		for (auto &group : dependencyGroups)
 		{
 			std::vector<SystemTypeId> order;
