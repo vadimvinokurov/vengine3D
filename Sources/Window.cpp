@@ -70,7 +70,22 @@ void Window::glfwCallbackInitialization()
 {
 	glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int width, int height) {
 		auto this_ptr = static_cast<Window *>(glfwGetWindowUserPointer(window));
-		this_ptr->OnWindowResizeDelegate.call(width, height);
+		this_ptr->onWindowResizeDelegate.call(width, height);
+	});
+
+	glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+		auto this_ptr = static_cast<Window *>(glfwGetWindowUserPointer(window));
+		this_ptr->onKeyboardKeyDelegate.call(key, action);
+	});
+
+	glfwSetMouseButtonCallback(window, [](GLFWwindow *window, int key, int action, int mods) {
+		auto this_ptr = static_cast<Window *>(glfwGetWindowUserPointer(window));
+		this_ptr->onMouseKeyDelegate.call(key, action);
+	});
+
+	glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xpos, double ypos) {
+		auto this_ptr = static_cast<Window *>(glfwGetWindowUserPointer(window));
+		this_ptr->onMousePositionDelegate.call(static_cast<float>(xpos), static_cast<float>(ypos));
 	});
 }
 void Window::setTitle(const std::string &title)

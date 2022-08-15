@@ -6,6 +6,7 @@
 #include "Window.h"
 #include "ECS/ECS.h"
 #include "Systems/RenderSystem.h"
+#include "Systems/ControllerSystem.h"
 
 VEngine::VEngine()
 {
@@ -24,7 +25,7 @@ void VEngine::run()
 		auto frameStart = std::chrono::steady_clock::now();
 		Window::poolEvents();
 		ecs->update(deltaTime_);
-		onUpdate();
+		onUpdate(deltaTime_);
 		window_->swapBuffer();
 
 		std::chrono::duration<double> target(deltaTime_);
@@ -41,15 +42,17 @@ VEngine::~VEngine()
 
 void VEngine::onCreate()
 {
-	RenderSystem* renderSystem = ecs->systemManager->addSystem<RenderSystem>();
-	window_->OnWindowResizeDelegate.connect(renderSystem, &RenderSystem::resize);
+	ControllerSystem* controllerSystem = ecs->systemManager->addSystem<ControllerSystem>(ISystem::HIGHEST_SYSTEM_PRIORITY);
+	window_->onKeyboardKeyDelegate.connect(controllerSystem, &ControllerSystem::onKeyboardKey);
+	window_->onMouseKeyDelegate.connect(controllerSystem, &ControllerSystem::onMouseKey);
+	window_->onMousePositionDelegate.connect(controllerSystem, &ControllerSystem::onMousePosition);
+
+	RenderSystem* renderSystem = ecs->systemManager->addSystem<RenderSystem>(ISystem::LOWEST_SYSTEM_PRIORITY);
+	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::resize);
 }
 
-void VEngine::onUpdate()
+void VEngine::onUpdate(float dt)
 {
-	//renderEngine_->clear();
-	//renderEngine_->update();
-
 }
 
 void VEngine::onQuite()

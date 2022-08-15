@@ -7,10 +7,12 @@
 
 #include "ISystem.h"
 
-template<typename T>
+template <typename T>
 class System : public ISystem
 {
 public:
+	System(SystemPriority priority = NORMAL_SYSTEM_PRIORITY, float updateInterval = -1.0f)
+		: ISystem(priority, updateInterval){};
 	virtual SystemTypeId getSystemTypeId() const override
 	{
 		return TypeIdManager<ISystem>::getId<T>();

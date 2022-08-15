@@ -22,7 +22,10 @@ public:
 	void setTitle(const std::string &title);
 	static void poolEvents();
 
-	Delegate<int32, int32> OnWindowResizeDelegate;
+	Delegate<int32, int32> onWindowResizeDelegate;
+	Delegate<int32, int32> onKeyboardKeyDelegate;
+	Delegate<int32, int32> onMouseKeyDelegate;
+	Delegate<float, float> onMousePositionDelegate;
 
 	~Window();
 

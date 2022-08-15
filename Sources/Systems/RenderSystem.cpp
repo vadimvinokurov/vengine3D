@@ -6,7 +6,7 @@
 
 #include <glad/glad.h>
 
-RenderSystem::RenderSystem()
+RenderSystem::RenderSystem(SystemPriority priority) : System<RenderSystem>(priority)
 {
 	gladLoadGL();
 
@@ -99,7 +99,4 @@ void RenderSystem::update(float dt)
 
 void RenderSystem::postUpdate(float dt)
 {
-
 }
-
-

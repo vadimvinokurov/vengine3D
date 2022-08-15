@@ -8,10 +8,10 @@
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
 
-class RenderSystem: public System<RenderSystem>
+class RenderSystem : public System<RenderSystem>
 {
 public:
-	RenderSystem();
+	RenderSystem(SystemPriority priority = NORMAL_SYSTEM_PRIORITY);
 	void resize(int32 width, int32 height);
 	virtual void preUpdate(float dt) override;
 	virtual void update(float dt) override;

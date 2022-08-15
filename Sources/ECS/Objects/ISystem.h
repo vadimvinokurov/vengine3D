@@ -29,7 +29,7 @@ public:
 
 	static const SystemPriority HIGHEST_SYSTEM_PRIORITY = std::numeric_limits<SystemPriority>::max();
 
-	ISystem(SystemPriority priority = NORMAL_SYSTEM_PRIORITY, float updateInterval = -1.0f)
+	ISystem(SystemPriority priority, float updateInterval)
 		: priority_(priority), updateInterval_(updateInterval){};
 	virtual ~ISystem() = default;
 

@@ -20,7 +20,7 @@ public:
 	~VEngine();
 
 	virtual void onCreate();
-	virtual void onUpdate();
+	virtual void onUpdate(float dt);
 	virtual void onQuite();
 
 	void run();
