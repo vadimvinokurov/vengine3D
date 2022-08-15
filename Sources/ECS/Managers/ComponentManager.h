@@ -7,7 +7,7 @@
 
 #include "ECS/Memory/VObjectContainer.h"
 #include "ECS/Objects/Component.h"
-#include "ECSProperty.h"
+#include "ECS/ECSProperty.h"
 #include <unordered_map>
 
 class ComponentManager

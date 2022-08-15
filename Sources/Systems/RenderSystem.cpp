@@ -1,12 +1,12 @@
 //
-// Created by boris on 7/7/2022.
+// Created by boris on 8/15/2022.
 //
 
-#include "RenderEngine.h"
+#include "RenderSystem.h"
 
 #include <glad/glad.h>
 
-RenderEngine::RenderEngine()
+RenderSystem::RenderSystem()
 {
 	gladLoadGL();
 
@@ -23,17 +23,17 @@ RenderEngine::RenderEngine()
 	defaultShader = new Shader({frag, vert});
 }
 
-void RenderEngine::clear()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
-
-void RenderEngine::resize(int32 width, int32 height)
+void RenderSystem::resize(int32 width, int32 height)
 {
 	glViewport(0, 0, width, height);
 }
 
-void RenderEngine::update()
+void RenderSystem::preUpdate(float dt)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+void RenderSystem::update(float dt)
 {
 	// clang-format off
 	float vertices[] = {
@@ -96,3 +96,10 @@ void RenderEngine::update()
 
 	defaultShader->unBind();
 }
+
+void RenderSystem::postUpdate(float dt)
+{
+
+}
+
+

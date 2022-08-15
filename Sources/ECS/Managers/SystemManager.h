@@ -7,7 +7,7 @@
 
 #include "ECS/Memory/Allocator/LinearAllocator.h"
 #include "ECS/Memory/GlobalMemoryManager.h"
-#include "ECSProperty.h"
+#include "ECS/ECSProperty.h"
 #include "ECS/Objects/System.h"
 #include <unordered_map>
 

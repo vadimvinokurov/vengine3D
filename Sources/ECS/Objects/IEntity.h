@@ -7,7 +7,7 @@
 
 #include "VObject.h"
 #include "ECS/Utils/IdManagers.h"
-#include "ECS/ComponentManager.h"
+#include "ECS/Managers/ComponentManager.h"
 
 class IEntity : public VObject
 {

@@ -7,9 +7,11 @@
 
 #include "EngineCore.h"
 
+
 class MemoryManager;
 class RenderEngine;
 class Window;
+class ECS;
 
 class VEngine
 {
@@ -30,7 +32,7 @@ protected:
 	constexpr static float deltaTime_ = 1.0f / windowDefaultFps_;
 
 	std::unique_ptr<Window> window_;
-	std::unique_ptr<RenderEngine> renderEngine_;
+	std::unique_ptr<ECS> ecs;
 };
 
 #endif // VENGINE3D_VENGINE_H

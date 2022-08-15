@@ -5,9 +5,9 @@
 #ifndef VENGINE3D_ECSTEST_H
 #define VENGINE3D_ECSTEST_H
 
-#include "ECS/ComponentManager.h"
-#include "ECS/EntityManager.h"
-#include "ECS/SystemManager.h"
+#include "ECS/Managers/ComponentManager.h"
+#include "ECS/Managers/EntityManager.h"
+#include "ECS/Managers/SystemManager.h"
 
 class ECSTest
 {

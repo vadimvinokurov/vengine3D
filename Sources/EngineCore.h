@@ -7,6 +7,5 @@
 
 #include <EngineLibs.h>
 #include <EnginePlatform.h>
-#include <EngineUtils.h>
 
 #endif // VENGINE3D_ENGINECORE_H

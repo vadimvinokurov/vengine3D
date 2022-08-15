@@ -4,17 +4,14 @@
 
 #include "VEngine.h"
 #include "Window.h"
-#include "Rendering/RenderEngine.h"
-#include "ECS/Memory/GlobalMemoryManager.h"
+#include "ECS/ECS.h"
+#include "Systems/RenderSystem.h"
 
 VEngine::VEngine()
 {
-	window_ = CreateUniqueObject<Window>(windowDefaultWidth_, windowDefaultHeight_);
+	window_ = std::make_unique<Window>(windowDefaultWidth_, windowDefaultHeight_);
 	window_->makeContextCurrent();
-	renderEngine_ = CreateUniqueObject<RenderEngine>();
-	renderEngine_->resize(windowDefaultWidth_, windowDefaultHeight_);
-	window_->OnWindowResizeDelegate.connect(renderEngine_.get(), &RenderEngine::resize);
-
+	ecs = std::make_unique<ECS>();
 	return;
 }
 
@@ -26,6 +23,7 @@ void VEngine::run()
 	{
 		auto frameStart = std::chrono::steady_clock::now();
 		Window::poolEvents();
+		ecs->update(deltaTime_);
 		onUpdate();
 		window_->swapBuffer();
 
@@ -43,12 +41,15 @@ VEngine::~VEngine()
 
 void VEngine::onCreate()
 {
+	RenderSystem* renderSystem = ecs->systemManager->addSystem<RenderSystem>();
+	window_->OnWindowResizeDelegate.connect(renderSystem, &RenderSystem::resize);
 }
 
 void VEngine::onUpdate()
 {
-	renderEngine_->clear();
-	renderEngine_->update();
+	//renderEngine_->clear();
+	//renderEngine_->update();
+
 }
 
 void VEngine::onQuite()

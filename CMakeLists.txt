@@ -53,7 +53,8 @@ file(GLOB Sources "Sources/*.cpp"
         "Sources/ECS/Objects/*.cpp"
         "Sources/ECS/Utils/*.cpp"
         "Sources/ECS/Memory/*.cpp"
-        "Sources/ECS/Memory/Allocator/*.cpp")
+        "Sources/ECS/Memory/Allocator/*.cpp"
+        "Sources/Systems/*.cpp")
 
 include_directories("External/stb_image")
 include_directories("Sources")
