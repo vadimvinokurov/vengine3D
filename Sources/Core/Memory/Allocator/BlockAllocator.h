@@ -6,9 +6,9 @@
 #define VENGINE3D_BLOCKALLOCATOR_H
 
 #include "IAllocator.h"
-#include "ECS/Memory/MemoryPool.h"
+#include "Core/Memory/MemoryPool.h"
 #include "EngineLibs.h"
-#include "ECS/Memory/MemoryUtils.h"
+#include "Core/Memory/MemoryUtils.h"
 
 template <size_t BLOCK_SIZE, size_t ALIGNMENT>
 class BlockAllocator : public IAllocator

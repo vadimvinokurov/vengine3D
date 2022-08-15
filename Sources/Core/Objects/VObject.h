@@ -5,6 +5,8 @@
 #ifndef VENGINE3D_VOBJECT_H
 #define VENGINE3D_VOBJECT_H
 
+#include "spdlog/spdlog.h"
+
 struct VObject
 {
 	VObject() = default;

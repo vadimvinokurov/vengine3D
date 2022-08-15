@@ -3,6 +3,22 @@
 //
 
 #include "World.h"
+#include "Core/Objects/Entity.h"
+#include "Components/InputComponents.h"
+
+struct Dragon : public Entity<Dragon>
+{
+	Dragon()
+	{
+	}
+	~Dragon()
+	{
+	}
+};
+
+
+
+
 World::World()
 {
 }
@@ -10,6 +26,14 @@ World::World()
 void World::onCreate()
 {
 	VEngine::onCreate();
+
+	Dragon* dragon = entityManager->createEntity<Dragon>();
+	dragon->addComponent<InputComponents>();
+
+
+
+
+
 }
 void World::onUpdate(float dt)
 {

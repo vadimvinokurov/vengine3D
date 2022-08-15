@@ -5,10 +5,9 @@
 #ifndef VENGINE3D_MEMORYPOOL_H
 #define VENGINE3D_MEMORYPOOL_H
 
-#include "ECS/Memory/Allocator/SystemAllocator.h"
+#include "Core/Memory/Allocator/SystemAllocator.h"
 
 #include <memory>
-#include <iostream>
 #include "EnginePlatform.h"
 
 #include "spdlog/spdlog.h"

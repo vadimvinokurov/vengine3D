@@ -5,9 +5,9 @@
 #ifndef VENGINE3D_OBJECTMANAGER_H
 #define VENGINE3D_OBJECTMANAGER_H
 
-#include "ECS/Objects/VObject.h"
-#include "GlobalMemoryManager.h"
-#include "ECS/Memory/Allocator/BlockAllocator.h"
+#include "Core/Objects/VObject.h"
+#include "Core/Memory/GlobalMemoryManager.h"
+#include "Core/Memory/Allocator/BlockAllocator.h"
 #include <list>
 
 class IVObjectContainer

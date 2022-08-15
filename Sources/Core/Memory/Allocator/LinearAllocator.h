@@ -5,9 +5,9 @@
 #ifndef VENGINE3D_LINEARALLOCATOR_H
 #define VENGINE3D_LINEARALLOCATOR_H
 
-#include "IAllocator.h"
-#include "ECS/Memory/MemoryPool.h"
-#include "ECS/Memory/MemoryUtils.h"
+#include "Core/Memory/Allocator/IAllocator.h"
+#include "Core/Memory/MemoryPool.h"
+#include "Core/Memory/MemoryUtils.h"
 
 class LinearAllocator final : public IAllocator
 {

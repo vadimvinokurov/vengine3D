@@ -6,8 +6,8 @@
 #define VENGINE3D_IENTITY_H
 
 #include "VObject.h"
-#include "ECS/Utils/IdManagers.h"
-#include "ECS/Managers/ComponentManager.h"
+#include "Core/Utils/IdManagers.h"
+#include "Core/Managers/ComponentManager.h"
 
 class IEntity : public VObject
 {

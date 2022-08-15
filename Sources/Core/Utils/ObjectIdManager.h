@@ -1,6 +1,9 @@
 #pragma once
 
 #include "EnginePlatform.h"
+#include <cassert>
+#include <limits>
+#include <vector>
 
 #pragma warning(disable : 4201)
 

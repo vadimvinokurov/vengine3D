@@ -49,12 +49,13 @@ add_compile_definitions(ECS_DEBUG)
 
 file(GLOB Sources "Sources/*.cpp"
         "Sources/Rendering/*.cpp"
-        "Sources/ECS/*.cpp"
-        "Sources/ECS/Objects/*.cpp"
-        "Sources/ECS/Utils/*.cpp"
-        "Sources/ECS/Memory/*.cpp"
-        "Sources/ECS/Memory/Allocator/*.cpp"
-        "Sources/Systems/*.cpp")
+        "Sources/Core/*.cpp"
+        "Sources/Core/Objects/*.cpp"
+        "Sources/Core/Utils/*.cpp"
+        "Sources/Core/Memory/*.cpp"
+        "Sources/Core/Memory/Allocator/*.cpp"
+        "Sources/Systems/*.cpp"
+        "Sources/Components/*.cpp")
 
 include_directories("External/stb_image")
 include_directories("Sources")

@@ -5,10 +5,10 @@
 #ifndef VENGINE3D_SYSTEMMANAGER_H
 #define VENGINE3D_SYSTEMMANAGER_H
 
-#include "ECS/Memory/Allocator/LinearAllocator.h"
-#include "ECS/Memory/GlobalMemoryManager.h"
-#include "ECS/ECSProperty.h"
-#include "ECS/Objects/System.h"
+#include "Core/Memory/Allocator/LinearAllocator.h"
+#include "Core/Memory/GlobalMemoryManager.h"
+#include "Core/CoreProperty.h"
+#include "Core/Objects/System.h"
 #include <unordered_map>
 
 class SystemManager

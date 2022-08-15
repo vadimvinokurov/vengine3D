@@ -4,7 +4,7 @@
 
 #ifndef VENGINE3D_RENDERSYSTEM_H
 #define VENGINE3D_RENDERSYSTEM_H
-#include "ECS/ECS.h"
+#include "Core/Objects/System.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
 

@@ -5,9 +5,9 @@
 #ifndef VENGINE3D_ENTITYMANAGER_H
 #define VENGINE3D_ENTITYMANAGER_H
 
-#include "ECS/Memory/VObjectContainer.h"
-#include "ECS/Objects/Entity.h"
-#include "ECS/ECSProperty.h"
+#include "Core/Memory/VObjectContainer.h"
+#include "Core/Objects/Entity.h"
+#include "Core/CoreProperty.h"
 #include <unordered_map>
 
 class EntityManager

@@ -6,7 +6,7 @@
 #define VENGINE3D_WINDOW_H
 
 #include "EngineCore.h"
-#include <Delegate.h>
+#include "Delegate.h"
 
 struct GLFWwindow;
 

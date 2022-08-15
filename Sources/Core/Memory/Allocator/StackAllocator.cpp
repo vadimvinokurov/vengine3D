@@ -3,7 +3,7 @@
 //
 #include "StackAllocator.h"
 #include "EngineLibs.h"
-#include "ECS/Memory/MemoryUtils.h"
+#include "Core/Memory/MemoryUtils.h"
 
 StackAllocator::StackAllocator(MemoryPoolPtr memoryPool) : memoryPool_(std::move(memoryPool))
 {

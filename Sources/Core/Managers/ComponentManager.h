@@ -5,9 +5,9 @@
 #ifndef VENGINE3D_COMPONENTMANAGER_H
 #define VENGINE3D_COMPONENTMANAGER_H
 
-#include "ECS/Memory/VObjectContainer.h"
-#include "ECS/Objects/Component.h"
-#include "ECS/ECSProperty.h"
+#include "Core/Memory/VObjectContainer.h"
+#include "Core/Objects/Component.h"
+#include "Core/CoreProperty.h"
 #include <unordered_map>
 
 class ComponentManager

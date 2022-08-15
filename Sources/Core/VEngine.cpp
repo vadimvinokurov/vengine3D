@@ -4,7 +4,6 @@
 
 #include "VEngine.h"
 #include "Window.h"
-#include "ECS/ECS.h"
 #include "Systems/RenderSystem.h"
 #include "Systems/ControllerSystem.h"
 
@@ -12,7 +11,9 @@ VEngine::VEngine()
 {
 	window_ = std::make_unique<Window>(windowDefaultWidth_, windowDefaultHeight_);
 	window_->makeContextCurrent();
-	ecs = std::make_unique<ECS>();
+	systemManager = std::make_unique<SystemManager>();
+	componentManager = std::make_unique<ComponentManager>();
+	entityManager = std::make_unique<EntityManager>(componentManager.get());
 	return;
 }
 
@@ -24,7 +25,8 @@ void VEngine::run()
 	{
 		auto frameStart = std::chrono::steady_clock::now();
 		Window::poolEvents();
-		ecs->update(deltaTime_);
+		systemManager->update(deltaTime_);
+		entityManager->removeDestroyedEntities();
 		onUpdate(deltaTime_);
 		window_->swapBuffer();
 
@@ -42,12 +44,12 @@ VEngine::~VEngine()
 
 void VEngine::onCreate()
 {
-	ControllerSystem* controllerSystem = ecs->systemManager->addSystem<ControllerSystem>(ISystem::HIGHEST_SYSTEM_PRIORITY);
+	ControllerSystem *controllerSystem = systemManager->addSystem<ControllerSystem>(ISystem::HIGHEST_SYSTEM_PRIORITY);
 	window_->onKeyboardKeyDelegate.connect(controllerSystem, &ControllerSystem::onKeyboardKey);
 	window_->onMouseKeyDelegate.connect(controllerSystem, &ControllerSystem::onMouseKey);
 	window_->onMousePositionDelegate.connect(controllerSystem, &ControllerSystem::onMousePosition);
 
-	RenderSystem* renderSystem = ecs->systemManager->addSystem<RenderSystem>(ISystem::LOWEST_SYSTEM_PRIORITY);
+	RenderSystem *renderSystem = systemManager->addSystem<RenderSystem>(ISystem::LOWEST_SYSTEM_PRIORITY);
 	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::resize);
 }
 

@@ -6,7 +6,7 @@
 #define VENGINE3D_ISYSTEM_H
 
 #include "VObject.h"
-#include "ECS/Utils/IdManagers.h"
+#include "Core/Utils/IdManagers.h"
 
 using SystemPriority = uint16;
 

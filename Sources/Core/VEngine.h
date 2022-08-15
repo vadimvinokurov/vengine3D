@@ -6,12 +6,11 @@
 #define VENGINE3D_VENGINE_H
 
 #include "EngineCore.h"
+#include "Core/Managers/ComponentManager.h"
+#include "Core/Managers/EntityManager.h"
+#include "Core/Managers/SystemManager.h"
 
-
-class MemoryManager;
-class RenderEngine;
 class Window;
-class ECS;
 
 class VEngine
 {
@@ -25,6 +24,13 @@ public:
 
 	void run();
 
+	template <class T>
+	std::pair<ComponentManager::ComponentIterator<T>, ComponentManager::ComponentIterator<T>> getComponents()
+	{
+		return std::pair<ComponentManager::ComponentIterator<T>, ComponentManager::ComponentIterator<T>>(
+			componentManager->begin<T>(), componentManager->end<T>());
+	}
+
 protected:
 	constexpr static auto windowDefaultWidth_ = 1280;
 	constexpr static auto windowDefaultHeight_ = 720;
@@ -32,7 +38,9 @@ protected:
 	constexpr static float deltaTime_ = 1.0f / windowDefaultFps_;
 
 	std::unique_ptr<Window> window_;
-	std::unique_ptr<ECS> ecs;
+	std::unique_ptr<ComponentManager> componentManager;
+	std::unique_ptr<EntityManager> entityManager;
+	std::unique_ptr<SystemManager> systemManager;
 };
 
 #endif // VENGINE3D_VENGINE_H
