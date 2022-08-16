@@ -7,7 +7,7 @@
 
 
 enum class KeyState : uint8 {
-    RELEASE = 0, PRESSED = 1, REPEAT = 2, FREE
+    RELEASE = 0, PRESSED = 1, FREE = 2, REPEATE = 3
 };
 
 #endif //VENGINE3D_VE_KEYSTATE_H

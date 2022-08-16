@@ -27,11 +27,40 @@ ControllerSystem::ControllerSystem(SystemPriority priority) : System<ControllerS
 }
 void ControllerSystem::update(float dt)
 {
-	auto[begin, end] = getWorld()->getComponents<InputComponents>();
-
-	for(auto it = begin; it != end; ++it){
-		it->press();
+	auto [inputComponentIt, end] = getWorld()->getComponents<InputComponents>();
+	if (inputComponentIt == end) {
+		return;
 	}
+
+	for (uint32 key = 0; key < keyboardState.size(); ++key)
+	{
+		if(keyboardState[key] != KeyState::FREE) {
+			inputComponentIt->input(key, keyboardState[key]);
+			keyboardState[key] = KeyState::FREE;
+		}
+
+	}
+	for (uint32 key = 0; key < mouseState.size(); ++key)
+	{
+		if(mouseState[key] != KeyState::FREE) {
+			inputComponentIt->input(key, mouseState[key]);
+			mouseState[key] = KeyState::FREE;
+		}
+	}
+
+	for (uint32 key = 0; key < keyboardRepeatStatus.size(); ++key)
+	{
+		if(keyboardRepeatStatus[key]) {
+			inputComponentIt->input(key, KeyState::REPEATE);
+		}
+	}
+	for (uint32 key = 0; key < mouseRepeatStatus.size(); ++key)
+	{
+		if(mouseRepeatStatus[key]) {
+			inputComponentIt->input(key, KeyState::REPEATE);
+		}
+	}
+
 }
 
 void ControllerSystem::onKeyboardKey(uint32 key, uint32 action)

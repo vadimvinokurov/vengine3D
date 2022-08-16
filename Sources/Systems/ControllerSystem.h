@@ -9,6 +9,7 @@
 #include "Input/KeyboardKey.h"
 #include "Input/Keystate.h"
 #include "Input/MouseKey.h"
+#include <array>
 class ControllerSystem : public System<ControllerSystem>
 {
 public:
@@ -19,11 +20,11 @@ public:
 	virtual void update(float dt) override;
 
 private:
-	KeyState keyboardState[512];
-	bool keyboardRepeatStatus[512];
+	std::array<KeyState, 512> keyboardState;
+	std::array<bool, 512> keyboardRepeatStatus;
 
-	KeyState mouseState[8];
-	bool mouseRepeatStatus[8];
+	std::array<KeyState, 8>  mouseState;
+	std::array<bool, 8> mouseRepeatStatus;
 };
 
 #endif // VENGINE3D_CONTROLLERSYSTEM_H

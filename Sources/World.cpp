@@ -14,6 +14,18 @@ struct Dragon : public Entity<Dragon>
 	~Dragon()
 	{
 	}
+
+	void jump(){
+		spdlog::info("Jump");
+	}
+
+	void move(float amount){
+		spdlog::info("move {}", amount);
+	}
+
+	void right(float amount){
+		spdlog::info("right {}", amount);
+	}
 };
 
 
@@ -28,10 +40,10 @@ void World::onCreate()
 	VEngine::onCreate();
 
 	Dragon* dragon = entityManager->createEntity<Dragon>();
-	dragon->addComponent<InputComponents>();
-
-
-
+	InputComponents* inputComponents = dragon->addComponent<InputComponents>();
+	inputComponents->bindAction("Jump", KeyState::PRESSED, dragon, &Dragon::jump);
+	inputComponents->bindAxis("MoveForward", dragon, &Dragon::move);
+	inputComponents->bindAxis("MoveRight", dragon, &Dragon::right);
 
 
 }
