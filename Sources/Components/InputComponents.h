@@ -12,8 +12,9 @@
 #include "Input/MouseKey.h"
 #include <unordered_map>
 
-class InputComponents : public Component<InputComponents>
+class InputComponents : public Component
 {
+	GENERATE_COMPONENT_BODY()
 public:
 	InputComponents()
 	{

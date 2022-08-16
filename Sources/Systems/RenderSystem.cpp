@@ -6,7 +6,7 @@
 
 #include <glad/glad.h>
 
-RenderSystem::RenderSystem(SystemPriority priority) : System<RenderSystem>(priority)
+RenderSystem::RenderSystem(SystemPriority priority) : System(priority)
 {
 	gladLoadGL();
 

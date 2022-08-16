@@ -69,7 +69,7 @@ public:
 			assert(false);
 			return;
 		}
-		IComponent *component = getComponentPtr(componentId);
+		Component *component = getComponentPtr(componentId);
 		assert(component != nullptr && "FATAL: Trying to remove a component which is not used by this entity!");
 		getComponentContainer<T>()->destroyObject(component);
 		unmapEntityComponent(entityId, componentId, componentTypeId);
@@ -114,7 +114,7 @@ public:
 			{
 				continue;
 			}
-			IComponent *component = componentIdManager_[componentId];
+			Component *component = componentIdManager_[componentId];
 			if (component == nullptr)
 			{
 				continue;
@@ -146,7 +146,7 @@ public:
 	}
 
 private:
-	IComponent *getComponentPtr(ComponentId componentId)
+	Component *getComponentPtr(ComponentId componentId)
 	{
 		return componentIdManager_[componentId];
 	}
@@ -159,7 +159,7 @@ private:
 			entityComponentMap_.resize(entityIdIndex + TABLE_GROW);
 		}
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
-		auto componentsCount = TypeIdManager<IComponent>::getCount();
+		auto componentsCount = TypeIdManager<Component>::getCount();
 
 		if (entityComponents.size() < componentsCount)
 		{
@@ -195,7 +195,7 @@ private:
 		}
 	}
 
-	ComponentId aqcuireComponentId(IComponent *component)
+	ComponentId aqcuireComponentId(Component *component)
 	{
 		return componentIdManager_.acquiredId(component);
 	}
@@ -206,7 +206,7 @@ private:
 	}
 
 	ContainersMap componentContainers_;
-	ObjectIdManager<IComponent> componentIdManager_;
+	ObjectIdManager<Component> componentIdManager_;
 	std::vector<std::vector<ComponentId>> entityComponentMap_;
 };
 

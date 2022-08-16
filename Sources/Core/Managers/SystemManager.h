@@ -175,7 +175,7 @@ public:
 			std::vector<SystemTypeId> member;
 			member.push_back(index);
 
-			SystemPriority groupPriority = ISystem::LOWEST_SYSTEM_PRIORITY;
+			SystemPriority groupPriority = System::LOWEST_SYSTEM_PRIORITY;
 			std::vector<SystemTypeId> group;
 
 			while (!member.empty())
@@ -192,7 +192,7 @@ public:
 						unorderedSystem = INVALID_ID;
 					}
 				}
-				ISystem *system = systems_[index];
+				System *system = systems_[index];
 				if (!system)
 				{
 					continue;
@@ -228,7 +228,7 @@ public:
 					DFS(id, verticesVisited, order);
 				}
 			}
-			sortedDependencyGroups.emplace(ISystem::HIGHEST_SYSTEM_PRIORITY - group.first, order);
+			sortedDependencyGroups.emplace(System::HIGHEST_SYSTEM_PRIORITY - group.first, order);
 		}
 
 		systemWorkOrder_.clear();
@@ -236,7 +236,7 @@ public:
 		{
 			for (auto &id : group.second)
 			{
-				ISystem *system = systems_[id];
+				System *system = systems_[id];
 				if (system)
 				{
 					systemWorkOrder_.push_back(system);
@@ -248,7 +248,7 @@ public:
 	// private:
 	void update(float dt)
 	{
-		for (ISystem *system : systemWorkOrder_)
+		for (System *system : systemWorkOrder_)
 		{
 			system->timeSinceLastUpdate_ += dt;
 			system->needsUpdate_ =
@@ -259,7 +259,7 @@ public:
 				system->preUpdate(dt);
 			}
 		}
-		for (ISystem *system : systemWorkOrder_)
+		for (System *system : systemWorkOrder_)
 		{
 			if (system->needsUpdate_ && system->enabled_)
 			{
@@ -267,7 +267,7 @@ public:
 				system->timeSinceLastUpdate_ = 0.0f;
 			}
 		}
-		for (ISystem *system : systemWorkOrder_)
+		for (System *system : systemWorkOrder_)
 		{
 			if (system->needsUpdate_ && system->enabled_)
 			{
@@ -276,8 +276,8 @@ public:
 		}
 	}
 	AllocatorPtr allocator;
-	std::unordered_map<SystemTypeId, ISystem *> systems_;
-	std::vector<ISystem *> systemWorkOrder_;
+	std::unordered_map<SystemTypeId, System *> systems_;
+	std::vector<System *> systemWorkOrder_;
 	std::vector<std::vector<bool>> systemDependency_;
 };
 

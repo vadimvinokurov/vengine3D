@@ -6,8 +6,10 @@
 #include "Core/Objects/Entity.h"
 #include "Components/InputComponents.h"
 
-struct Dragon : public Entity<Dragon>
+class Dragon : public Entity
 {
+	GENERATE_ENTITY_BODY()
+public:
 	Dragon()
 	{
 	}
@@ -15,21 +17,21 @@ struct Dragon : public Entity<Dragon>
 	{
 	}
 
-	void jump(){
+	void jump()
+	{
 		spdlog::info("Jump");
 	}
 
-	void move(float amount){
+	void move(float amount)
+	{
 		spdlog::info("move {}", amount);
 	}
 
-	void right(float amount){
+	void right(float amount)
+	{
 		spdlog::info("right {}", amount);
 	}
 };
-
-
-
 
 World::World()
 {
@@ -39,13 +41,11 @@ void World::onCreate()
 {
 	VEngine::onCreate();
 
-	Dragon* dragon = entityManager->createEntity<Dragon>();
-	InputComponents* inputComponents = dragon->addComponent<InputComponents>();
+	Dragon *dragon = entityManager->createEntity<Dragon>();
+	InputComponents *inputComponents = dragon->addComponent<InputComponents>();
 	inputComponents->bindAction("Jump", KeyState::PRESSED, dragon, &Dragon::jump);
 	inputComponents->bindAxis("MoveForward", dragon, &Dragon::move);
 	inputComponents->bindAxis("MoveRight", dragon, &Dragon::right);
-
-
 }
 void World::onUpdate(float dt)
 {

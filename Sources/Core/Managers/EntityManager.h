@@ -48,7 +48,7 @@ public:
 	{
 		for (const auto &entityId : pendingDestroyedEntities_)
 		{
-			IEntity *entity = getEntityPtr(entityId);
+			Entity *entity = getEntityPtr(entityId);
 			auto it = entityContainers_.find(entity->getEntityTypeId());
 			if (it != entityContainers_.end())
 			{
@@ -78,7 +78,7 @@ private:
 		}
 	}
 
-	EntityId aqcuireEntityId(IEntity *entity)
+	EntityId aqcuireEntityId(Entity *entity)
 	{
 		return entityIdManager_.acquiredId(entity);
 	}
@@ -88,12 +88,12 @@ private:
 		entityIdManager_.releaseId(id);
 	}
 
-	IEntity *getEntityPtr(EntityId entityId)
+	Entity *getEntityPtr(EntityId entityId)
 	{
 		return entityIdManager_[entityId];
 	}
 
-	ObjectIdManager<IEntity> entityIdManager_;
+	ObjectIdManager<Entity> entityIdManager_;
 	ContainersMap entityContainers_;
 	std::vector<EntityId> pendingDestroyedEntities_;
 	ComponentManager *componentManage_;

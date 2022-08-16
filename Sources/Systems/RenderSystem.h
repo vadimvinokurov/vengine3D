@@ -8,8 +8,9 @@
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
 
-class RenderSystem : public System<RenderSystem>
+class RenderSystem : public System
 {
+	GENERATE_SYSTEM_BODY()
 public:
 	RenderSystem(SystemPriority priority = NORMAL_SYSTEM_PRIORITY);
 	void resize(int32 width, int32 height);
