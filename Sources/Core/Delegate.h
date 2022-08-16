@@ -5,10 +5,12 @@
 #ifndef VENGINE3D_DELEGATE_TWOPARAM_H
 #define VENGINE3D_DELEGATE_TWOPARAM_H
 
+#include "Core/Objects/VObject.h"
+#include <type_traits>
+
 template <typename... Args>
-class IMethodWrapper
+struct IMethodWrapper : public VObjectDelegateMethod
 {
-public:
 	virtual void call(Args... args) = 0;
 };
 
@@ -22,7 +24,14 @@ public:
 
 	void call(Args... args) override
 	{
+		if (!object_)
+			return;
 		(object_->*method_)(args...);
+	};
+
+	void clear() override
+	{
+		object_ = nullptr;
 	};
 
 private:
@@ -37,13 +46,10 @@ public:
 	template <typename T, typename M>
 	void connect(T *object, M method)
 	{
-		auto uniqptr = std::make_shared<MethodWrapper<T, M, Args...>>(object, method);
-		methods_.push_back(uniqptr);
-	};
-
-	void connect(std::function<void(Args...)> functor)
-	{
-		functors_.push_back(functor);
+		static_assert(std::is_base_of_v<VObject, T> && "Should connect only vobject");
+		auto ptr = std::make_shared<MethodWrapper<T, M, Args...>>(object, method);
+		methods_.push_back(ptr);
+		object->onConnectToDelegate(ptr);
 	};
 
 	void call(Args... args)
@@ -52,15 +58,10 @@ public:
 		{
 			function->call(args...);
 		}
-		for (auto &function : functors_)
-		{
-			function(args...);
-		}
 	}
 
 private:
 	std::vector<std::shared_ptr<IMethodWrapper<Args...>>> methods_;
-	std::vector<std::function<void(Args...)>> functors_;
 };
 
 #endif // VENGINE3D_DELEGATE_TWOPARAM_H
