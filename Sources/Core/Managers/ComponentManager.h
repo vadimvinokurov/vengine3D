@@ -64,7 +64,11 @@ public:
 			return;
 		}
 		ComponentId componentId = entityComponents[componentTypeId];
-
+		if(componentId == INVALID_ID) {
+			spdlog::warn("Component already delete!");
+			assert(false);
+			return;
+		}
 		IComponent *component = getComponentPtr(componentId);
 		assert(component != nullptr && "FATAL: Trying to remove a component which is not used by this entity!");
 		getComponentContainer<T>()->destroyObject(component);
