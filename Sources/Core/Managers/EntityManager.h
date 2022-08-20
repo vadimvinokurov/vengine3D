@@ -7,7 +7,7 @@
 
 #include "Core/Memory/VObjectContainer.h"
 #include "Core/Objects/Entity.h"
-#include "Core/CoreProperty.h"
+#include "EngineProperty.h"
 #include <unordered_map>
 
 class EntityManager

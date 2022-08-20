@@ -8,6 +8,8 @@
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
 
+class StaticMeshComponent;
+
 class RenderSystem : public System
 {
 	GENERATE_SYSTEM_BODY()
@@ -17,8 +19,9 @@ public:
 	virtual void preUpdate(float dt) override;
 	virtual void update(float dt) override;
 	virtual void postUpdate(float dt) override;
-	Shader *defaultShader;
-	Texture *texture;
+private:
+	void updateStaticMeshComponent(StaticMeshComponent* staticMeshComponent, float dt);
+	ShaderSource defaultVertexShader;
 };
 
 #endif // VENGINE3D_RENDERSYSTEM_H

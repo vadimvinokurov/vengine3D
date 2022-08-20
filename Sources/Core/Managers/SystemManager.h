@@ -7,7 +7,7 @@
 
 #include "Core/Memory/Allocator/LinearAllocator.h"
 #include "Core/Memory/GlobalMemoryManager.h"
-#include "Core/CoreProperty.h"
+#include "EngineProperty.h"
 #include "Core/Objects/System.h"
 #include <unordered_map>
 

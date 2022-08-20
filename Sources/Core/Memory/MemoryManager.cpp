@@ -3,7 +3,7 @@
 //
 
 #include "MemoryManager.h"
-#include "Core/CoreProperty.h"
+#include "EngineProperty.h"
 #include <cassert>
 
 MemoryManager::MemoryManager()
