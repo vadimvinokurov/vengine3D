@@ -59,6 +59,11 @@ public:
 		pendingDestroyedEntities_.clear();
 	}
 
+	Entity *getEntityPtr(EntityId entityId)
+	{
+		return entityIdManager_[entityId];
+	}
+
 private:
 	template <typename T>
 	EntityContainer<T> *getEntityContainer()
@@ -86,11 +91,6 @@ private:
 	void releaseEntityId(EntityId id)
 	{
 		entityIdManager_.releaseId(id);
-	}
-
-	Entity *getEntityPtr(EntityId entityId)
-	{
-		return entityIdManager_[entityId];
 	}
 
 	ObjectIdManager<Entity> entityIdManager_;

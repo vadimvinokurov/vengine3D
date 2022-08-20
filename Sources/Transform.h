@@ -117,6 +117,13 @@ struct Transform
 						 Vector3::lerp(a.scale, b.scale, t));
 	}
 
+	void print()
+	{
+		position.print();
+		rotation.print();
+		scale.print();
+	}
+
 	Vector3 position;
 	Quaternion rotation;
 	Vector3 scale;

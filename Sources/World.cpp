@@ -6,6 +6,7 @@
 #include "Core/Objects/Entity.h"
 #include "Components/InputComponents.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/CameraComponent.h"
 
 class Dragon : public Entity
 {
@@ -46,15 +47,19 @@ void World::onCreate()
 
 	Dragon *dragon = entityManager->createEntity<Dragon>();
 	InputComponents *inputComponents = dragon->addComponent<InputComponents>();
-	inputComponents->bindAction("Jump", KeyState::PRESSED, dragon, &Dragon::jump);
-	inputComponents->bindAxis("MoveForward", dragon, &Dragon::move);
-	inputComponents->bindAxis("MoveRight", dragon, &Dragon::right);
+	//inputComponents->bindAction("Jump", KeyState::PRESSED, dragon, &Dragon::jump);
+	//inputComponents->bindAxis("MoveForward", dragon, &Dragon::move);
+	//nputComponents->bindAxis("MoveRight", dragon, &Dragon::right);
 
 	StaticMeshComponent * staticMeshComponent = dragon->addComponent<StaticMeshComponent>();
 	auto staticMesh1 = std::make_shared<StaticMesh>();
 	auto material1 = std::make_shared<Material>();
 	staticMeshComponent->setStaticMesh(staticMesh1);
 	staticMeshComponent->setMaterial(material1);
+
+	CameraComponent * cameraComponent = dragon->addComponent<CameraComponent>();
+	inputComponents->bindAxis("MoveForward", cameraComponent, &CameraComponent::moveAlongDirection);
+	inputComponents->bindAxis("MoveRight", cameraComponent, &CameraComponent::moveAlongSide);
 }
 void World::onUpdate(float dt)
 {

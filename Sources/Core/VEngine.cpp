@@ -51,6 +51,7 @@ void VEngine::onCreate()
 
 	RenderSystem *renderSystem = systemManager->addSystem<RenderSystem>(System::LOWEST_SYSTEM_PRIORITY);
 	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::resize);
+	renderSystem->resize(windowDefaultWidth_, windowDefaultHeight_);
 }
 
 void VEngine::onUpdate(float dt)
@@ -59,4 +60,8 @@ void VEngine::onUpdate(float dt)
 
 void VEngine::onQuite()
 {
+}
+Entity *VEngine::getEntityByEntityId(EntityId entityId)
+{
+	return entityManager->getEntityPtr(entityId);
 }

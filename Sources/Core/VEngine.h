@@ -31,6 +31,8 @@ public:
 			componentManager->begin<T>(), componentManager->end<T>());
 	}
 
+	Entity* getEntityByEntityId(EntityId entityId);
+
 protected:
 	constexpr static auto windowDefaultWidth_ = 1280;
 	constexpr static auto windowDefaultHeight_ = 720;

@@ -7,8 +7,10 @@
 #include "Core/Objects/System.h"
 #include "Render/Shader.h"
 #include "Render/Texture.h"
+#include "Math/Matrix4.h"
 
 class StaticMeshComponent;
+class CameraComponent;
 
 class RenderSystem : public System
 {
@@ -21,7 +23,11 @@ public:
 	virtual void postUpdate(float dt) override;
 private:
 	void updateStaticMeshComponent(StaticMeshComponent* staticMeshComponent, float dt);
+	CameraComponent* getMainCamera();
 	ShaderSource defaultVertexShader;
+
+	Matrix4 perspective;
+	Matrix4 view;
 };
 
 #endif // VENGINE3D_RENDERSYSTEM_H

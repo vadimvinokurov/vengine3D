@@ -9,6 +9,7 @@
 #include "Transform.h"
 class TransformComponent : public Component
 {
+protected:
 	Transform transform;
 };
 

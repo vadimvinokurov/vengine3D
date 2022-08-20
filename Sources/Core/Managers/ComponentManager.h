@@ -98,7 +98,7 @@ public:
 		{
 			return nullptr;
 		}
-		return static_cast<T *>(componentIdManager_[componentId]);
+		return reinterpret_cast<T *>(componentIdManager_[componentId]);
 	}
 
 	void removeAllComponent(EntityId entityId)

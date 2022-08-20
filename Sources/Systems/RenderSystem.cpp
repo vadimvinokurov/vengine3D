@@ -5,7 +5,9 @@
 #include "RenderSystem.h"
 #include "World.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "Components/InputComponents.h"
+#include "Components/CameraComponent.h"
+#include "Render/Uniform.h"
 #include "Render/opengl_glad.h"
 
 RenderSystem::RenderSystem(SystemPriority priority)
@@ -24,6 +26,8 @@ RenderSystem::RenderSystem(SystemPriority priority)
 void RenderSystem::resize(int32 width, int32 height)
 {
 	glViewport(0, 0, width, height);
+	float windowAspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	perspective = CameraComponent::perspective(60.0f, windowAspectRatio, 0.1f, 8000);
 }
 
 void RenderSystem::preUpdate(float dt)
@@ -33,6 +37,13 @@ void RenderSystem::preUpdate(float dt)
 
 void RenderSystem::update(float dt)
 {
+	float aspectRatio = 0;
+	CameraComponent *cameraComponent = getMainCamera();
+	if (cameraComponent != nullptr)
+	{
+		view = cameraComponent->getViewMatrix();
+	}
+
 	auto [staticMeshComp_begin, staticMeshComp_end] = getWorld()->getComponents<StaticMeshComponent>();
 	for (auto it = staticMeshComp_begin; it != staticMeshComp_end; ++it)
 	{
@@ -71,7 +82,7 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 		renderData.indicesBuffer.set(staticMesh.indices);
 
 		renderData.verticesBuffer.attachToAttribute(shader->getAttribute("aPosition"));
-		// renderData.normalsBuffer.attachToAttribute(shader->getAttribute("aNormals"));
+		// renderData.normalsBuffer.attachToAttribute(shader->getAttribute("aNormal"));
 		renderData.textureCoordinatesBuffer.attachToAttribute(shader->getAttribute("aTextCoord"));
 		renderData.indicesBuffer.attachToShader();
 
@@ -85,9 +96,28 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 		texture.first.bind(shader->getUniform(texture.second));
 	}
 
+	Render::Uniform<Matrix4>::set(shader->getUniform("projection"), perspective);
+	Render::Uniform<Matrix4>::set(shader->getUniform("view"), view);
+	Render::Uniform<Matrix4>::set(shader->getUniform("model"), Matrix4());
+
 	renderData.bind();
 	glDrawElements(GL_TRIANGLES, renderData.indicesBuffer.count(), GL_UNSIGNED_INT, 0);
 	renderData.unbind();
 
 	shader->unBind();
+}
+
+CameraComponent *RenderSystem::getMainCamera()
+{
+	auto [inputComponentIt, end] = getWorld()->getComponents<InputComponents>();
+	if (inputComponentIt == end)
+	{
+		return nullptr;
+	}
+	auto entity = getWorld()->getEntityByEntityId(inputComponentIt->getOwner());
+	if (entity == nullptr)
+	{
+		return nullptr;
+	}
+	return entity->getComponent<CameraComponent>();
 }
