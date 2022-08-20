@@ -2,7 +2,7 @@
 // Created by boris on 2/6/2022.
 //
 #include "Shader.h"
-#include <glad/glad.h>
+#include "Render/opengl_glad.h"
 
 static auto ShaderTypeToOGL(ShaderType shaderType)
 {
@@ -17,24 +17,10 @@ static auto ShaderTypeToOGL(ShaderType shaderType)
 	}
 }
 
-Shader::Shader()
-{
-	handle_ = glCreateProgram();
-}
-
 Shader::Shader(const std::vector<ShaderSource> &shaderSources)
 {
 	handle_ = glCreateProgram();
-	load(shaderSources);
-}
 
-Shader::~Shader()
-{
-	glDeleteProgram(handle_);
-}
-
-void Shader::load(const std::vector<ShaderSource> &shaderSources)
-{
 	std::vector<uint32> shaderHanlers;
 
 	for (const auto &[sourceFile, type] : shaderSources)
@@ -50,6 +36,11 @@ void Shader::load(const std::vector<ShaderSource> &shaderSources)
 	spdlog::info("Shader compiled successfully!");
 }
 
+Shader::~Shader()
+{
+	glDeleteProgram(handle_);
+}
+
 void Shader::bind()
 {
 	glUseProgram(handle_);
@@ -60,23 +51,23 @@ void Shader::unBind()
 	glUseProgram(0);
 }
 
-unsigned int Shader::getAttribute(const std::string &name)
+uint32 Shader::getAttribute(const std::string &name)
 {
 	auto it = attributes_.find(name);
 	if (it == attributes_.end())
 	{
-		spdlog::error("Bad attribute index: " + name);
+		spdlog::error("Bad shader attribute index: " + name);
 		std::exit(1);
 	}
 	return it->second;
 }
 
-unsigned int Shader::getUniform(const std::string &name)
+uint32 Shader::getUniform(const std::string &name)
 {
 	auto it = uniforms_.find(name);
 	if (it == uniforms_.end())
 	{
-		spdlog::error("Bad uniforms index: " + name);
+		spdlog::error("Bad shader uniforms index: " + name);
 		std::exit(1);
 	}
 	return it->second;

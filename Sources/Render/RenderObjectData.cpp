@@ -4,12 +4,11 @@
 
 #include "RenderObjectData.h"
 
-#include <glad/glad.h>
+#include "Render/opengl_glad.h"
 
-RenderableObjectData::RenderableObjectData(){
+RenderableObjectData::RenderableObjectData()
+{
 	glGenVertexArrays(1, &VAO);
-
-
 }
 
 RenderableObjectData::~RenderableObjectData()

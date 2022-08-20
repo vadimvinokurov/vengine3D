@@ -1,5 +1,6 @@
 #version 330 core
 in vec3 aPosition;
+in vec3 aNormals;
 in vec2 aTextCoord;
 out vec2 fTextCoord;
 void main() {

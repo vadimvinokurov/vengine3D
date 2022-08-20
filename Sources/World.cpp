@@ -20,6 +20,8 @@ public:
 
 	void jump()
 	{
+		auto staticMesh1 = std::make_shared<StaticMesh>();
+		getComponent<StaticMeshComponent>()->setStaticMesh(staticMesh1);
 		spdlog::info("Jump");
 	}
 

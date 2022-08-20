@@ -2,9 +2,9 @@
 // Created by boris on 2/7/2022.
 //
 #include "Texture.h"
-
-#include "glad/glad.h"
 #include "stb_image.h"
+
+#include "Render/opengl_glad.h"
 
 Texture::Texture() : width_(0), height_(0), channels_(0)
 {
@@ -18,29 +18,30 @@ Texture::Texture(const char *path) : Texture()
 
 Texture::~Texture()
 {
-	if(handle_ != 0) {
+	if (handle_ != 0)
+	{
 		glDeleteTextures(1, &handle_);
 	}
 }
 
 Texture::Texture(Texture &&other)
 {
-	other.width_ = this->width_;
-	other.height_ = this->height_;
-	other.channels_ = this->channels_;
-	other.handle_ = this->handle_;
+	this->width_ = other.width_;
+	this->height_ = other.height_;
+	this->channels_ = other.channels_;
+	this->handle_ = other.handle_;
 
-	this->handle_ = 0;
+	other.handle_ = 0;
 }
 
 Texture &Texture::operator=(Texture &&other)
 {
-	other.width_ = this->width_;
-	other.height_ = this->height_;
-	other.channels_ = this->channels_;
-	other.handle_ = this->handle_;
+	this->width_ = other.width_;
+	this->height_ = other.height_;
+	this->channels_ = other.channels_;
+	this->handle_ = other.handle_;
 
-	this->handle_ = 0;
+	other.handle_ = 0;
 	return *this;
 }
 
@@ -89,4 +90,3 @@ uint32 Texture::getHandle()
 {
 	return handle_;
 }
-

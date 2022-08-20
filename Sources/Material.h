@@ -12,10 +12,10 @@ struct Material
 {
 	Material()
 	{
-		textures.emplace_back("../Content/Texture/test.png");
+		textures.emplace_back(Texture("../Content/Texture/test.png"), "baseColorTexture");
 		vertexShader.emplace_back("../Content/Shaders/default.frag", ShaderType::Fragment);
 	}
-	std::vector<Texture> textures;
+	std::vector<std::pair<Texture, std::string>> textures;
 	std::vector<ShaderSource> vertexShader;
 };
 

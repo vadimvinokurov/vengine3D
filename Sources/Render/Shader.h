@@ -25,12 +25,14 @@ struct ShaderSource
 class Shader
 {
 public:
+	Shader(const std::vector<ShaderSource> &shaders);
+	~Shader();
 	Shader(const Shader &) = delete;
 	Shader &operator=(const Shader &) = delete;
-	Shader();
-	~Shader();
-	Shader(const std::vector<ShaderSource> &shaders);
-	void load(const std::vector<ShaderSource> &shaders);
+	Shader(Shader &&other) = delete;
+	Shader &operator=(Shader &&other) = delete;
+
+
 
 	void bind();
 	void unBind();
@@ -47,9 +49,10 @@ private:
 	void populateAttributes();
 	void populateUniforms();
 
-	unsigned int handle_;
-	std::map<std::string, unsigned int> attributes_;
-	std::map<std::string, unsigned int> uniforms_;
+	std::map<std::string, uint32> attributes_;
+	std::map<std::string, uint32> uniforms_;
+
+	uint32 handle_;
 };
 
 using ShaderPtr = std::shared_ptr<Shader>;

@@ -20,8 +20,8 @@ public:
 	~Texture();
 
 	void load(const char *path);
-	void bind(uint32 uniformIndex, uint32 textureIndex);
-	void unBind(uint32 textureIndex);
+	void bind(uint32 uniformIndex, uint32 textureIndex = 0);
+	void unBind(uint32 textureIndex = 0);
 	uint32 getHandle();
 
 protected:

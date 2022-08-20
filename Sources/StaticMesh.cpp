@@ -8,6 +8,7 @@ StaticMesh::StaticMesh()
 	vertices = {Vector3(1.0f, 1.0f, 0.0f),	Vector3(-1.0f, 1.0f, 0.0f),
 				Vector3(1.0f, -1.0f, 0.0f), Vector3(1.0f, -1.0f, 0.0f),
 				Vector3(-1.0f, 1.0f, 0.0f), Vector3(-1.0f, -1.0f, 0.0f)};
+	normals = std::vector<Vector3>(6, Vector3(0.0f, 0.0f, 1.0f));
 
 	textureCoordinates = {Vector2(1.0f, 0.0f), Vector2(0.0f, 0.0f), Vector2(1.0f, 1.0f),
 						  Vector2(1.0f, 1.0f), Vector2(0.0f, 0.0f), Vector2(0.0f, 1.0f)};

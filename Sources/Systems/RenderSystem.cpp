@@ -6,9 +6,7 @@
 #include "World.h"
 #include "Components/StaticMeshComponent.h"
 
-#include <glad/glad.h>
-
-// static_assert(sizeof(GLuint) == sizeof(uint32));
+#include "Render/opengl_glad.h"
 
 RenderSystem::RenderSystem(SystemPriority priority)
 	: System(priority), defaultVertexShader("../Content/Shaders/default.vert", ShaderType::Vertex)
@@ -47,35 +45,34 @@ void RenderSystem::postUpdate(float dt)
 }
 void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComponent, float dt)
 {
-	Shader &shader = staticMeshComponent->renderData.shader;
-	RenderableObjectData &renderData = staticMeshComponent->renderData;
-	StaticMesh &staticMesh = *staticMeshComponent->staticMesh;
-	Material &material = *staticMeshComponent->material;
+	auto &shader = staticMeshComponent->renderData.shader;
+	auto &renderData = staticMeshComponent->renderData;
+	auto &staticMesh = *staticMeshComponent->staticMesh;
+	auto &material = *staticMeshComponent->material;
 
 	if (staticMeshComponent->needUpdateRenderData)
 	{
 
-		std::vector<ShaderSource> shaderSource;
-		shaderSource.push_back(defaultVertexShader);
+		std::vector<ShaderSource> shaderSource = {defaultVertexShader};
 		shaderSource.insert(shaderSource.end(), material.vertexShader.begin(), material.vertexShader.end());
-		shader.load(shaderSource);
+		shader = std::make_unique<Shader>(shaderSource);
 		staticMeshComponent->needUpdateMaterialData = 0;
 		spdlog::info("Update shaders data");
 	}
-	shader.bind();
+
+	shader->bind();
 	if (staticMeshComponent->needUpdateRenderData)
 	{
+		renderData.bind();
 
 		renderData.verticesBuffer.set(staticMesh.vertices);
 		renderData.normalsBuffer.set(staticMesh.normals);
 		renderData.textureCoordinatesBuffer.set(staticMesh.textureCoordinates);
 		renderData.indicesBuffer.set(staticMesh.indices);
 
-		renderData.bind();
-
-		renderData.verticesBuffer.attachToAttribute(shader.getAttribute("aPosition"));
-		// renderData.normalsBuffer.attachToAttribute(shader.getAttribute("aPosition"));
-		renderData.textureCoordinatesBuffer.attachToAttribute(shader.getAttribute("aTextCoord"));
+		renderData.verticesBuffer.attachToAttribute(shader->getAttribute("aPosition"));
+		// renderData.normalsBuffer.attachToAttribute(shader->getAttribute("aNormals"));
+		renderData.textureCoordinatesBuffer.attachToAttribute(shader->getAttribute("aTextCoord"));
 		renderData.indicesBuffer.attachToShader();
 
 		renderData.unbind();
@@ -83,11 +80,14 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 		spdlog::info("Update render data");
 	}
 
+	for (auto &texture : material.textures)
+	{
+		texture.first.bind(shader->getUniform(texture.second));
+	}
 
-	material.textures[0].bind(shader.getUniform("tex0"), 0);
 	renderData.bind();
 	glDrawElements(GL_TRIANGLES, renderData.indicesBuffer.count(), GL_UNSIGNED_INT, 0);
 	renderData.unbind();
 
-	shader.unBind();
+	shader->unBind();
 }

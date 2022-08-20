@@ -83,7 +83,7 @@ public:
 		if (entityIdIndex >= entityComponentMap_.size())
 		{
 			assert(false && "Entity has not any components");
-			return;
+			return nullptr;
 		}
 
 		auto &entityComponents = entityComponentMap_[entityIdIndex];
@@ -91,7 +91,7 @@ public:
 		if (componentTypeId >= entityComponents.size())
 		{
 			assert(false && "Entity has not component");
-			return;
+			return nullptr;
 		}
 		ComponentId componentId = entityComponents[componentTypeId];
 		if (componentId == INVALID_ID)

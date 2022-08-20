@@ -15,6 +15,11 @@ struct RenderableObjectData
 	RenderableObjectData();
 	~RenderableObjectData();
 
+	RenderableObjectData(const RenderableObjectData& other) = delete;
+	RenderableObjectData& operator=(const RenderableObjectData& other) = delete;
+	RenderableObjectData(RenderableObjectData&& other) = delete;
+	RenderableObjectData& operator=(RenderableObjectData&& other) = delete;
+
 	void bind();
 	void unbind();
 
@@ -22,9 +27,7 @@ struct RenderableObjectData
 	Render::ObjectBuffer<Vector3> normalsBuffer;
 	Render::ObjectBuffer<Vector2> textureCoordinatesBuffer;
 	Render::IndexBuffer indicesBuffer;
-
-	Shader shader;
-
+	std::unique_ptr<Shader> shader;
 	uint32 VAO;
 };
 #endif // VENGINE3D_RENDEROBJECTDATA_H

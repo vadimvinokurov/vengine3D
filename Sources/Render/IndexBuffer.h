@@ -8,31 +8,32 @@
 #include <vector>
 #include "EnginePlatform.h"
 
-namespace Render {
-    class IndexBuffer {
-    public:
+namespace Render
+{
+	class IndexBuffer
+	{
+	public:
 		IndexBuffer(const IndexBuffer &other) = delete;
 		IndexBuffer &operator=(const IndexBuffer &other) = delete;
 
 		IndexBuffer(IndexBuffer &&other);
 		IndexBuffer &operator=(IndexBuffer &&other);
 
-        IndexBuffer();
-        ~IndexBuffer();
+		IndexBuffer();
+		~IndexBuffer();
 
-        void set(const uint32 *array, uint32 arrayLength);
-        void set(const std::vector<uint32> &input);
+		void set(const uint32 *array, uint32 arrayLength);
+		void set(const std::vector<uint32> &input);
 
 		void attachToShader();
 
 		uint32 count();
 		uint32 getHandle();
 
-    protected:
-        uint32 handle_;
+	protected:
+		uint32 handle_;
 		uint32 count_;
-    };
-}
+	};
+} // namespace Render
 
-
-#endif //VENGINE3D_VE_INDEX_BUFFER_H
+#endif // VENGINE3D_VE_INDEX_BUFFER_H

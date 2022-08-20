@@ -8,10 +8,12 @@
 #include <vector>
 #include "EnginePlatform.h"
 
-namespace Render {
-    template<typename T>
-    class ObjectBuffer {
-    public:
+namespace Render
+{
+	template <typename T>
+	class ObjectBuffer
+	{
+	public:
 		ObjectBuffer(const ObjectBuffer &other) = delete;
 		ObjectBuffer &operator=(const ObjectBuffer &other) = delete;
 
@@ -19,25 +21,24 @@ namespace Render {
 		ObjectBuffer &operator=(ObjectBuffer &&other);
 
 		ObjectBuffer();
-        ~ObjectBuffer();
+		~ObjectBuffer();
 
-        void set(const T *inputArray, uint32 arrayLength);
-        void set(const std::vector<T> &input);
+		void set(const T *inputArray, uint32 arrayLength);
+		void set(const std::vector<T> &input);
 
-        void attachToAttribute(uint32 slot);
-        void detachFromAttribute(uint32 slot);
+		void attachToAttribute(uint32 slot);
+		void detachFromAttribute(uint32 slot);
 
 		uint32 count();
 		uint32 getHandle();
-    private:
-        void setAttributePointer(unsigned int slot);
 
-    protected:
-        uint32 handle_;
+	private:
+		void setAttributePointer(unsigned int slot);
+
+	protected:
+		uint32 handle_;
 		uint32 count_;
-    };
-}
+	};
+} // namespace Render
 
-
-
-#endif //VENGINE3D_VE_ATTRIBUTE_H
+#endif // VENGINE3D_VE_ATTRIBUTE_H
