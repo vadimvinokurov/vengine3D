@@ -23,8 +23,10 @@ public:
 		keysAxis_[VE_KEY_D] = {"MoveRight", 1.0f};
 		keysAxis_[VE_KEY_A] = {"MoveRight", -1.0f};
 
-		keysAction_[VE_KEY_SPACE] = "Jump";
-		keysAction_[VE_KEY_T] = "Jump";
+		keysAxis_[VE_MOUSE_X] = {"Turn", 1.0f};
+		keysAxis_[VE_MOUSE_Y] = {"LookUp", 1.0f};
+
+		keysAction_[VE_MOUSE_BUTTON_RIGHT] = "CameraLock";
 	}
 
 	template <class T, class M>
@@ -63,6 +65,18 @@ public:
 		if(axisIt != keysAxis_.end() && keyState == KeyState::REPEATE){
 			axisDelegates_[axisIt->second.first].call(axisIt->second.second);
 			return;
+		}
+	}
+
+	void inputMouse(float xmouse, float ymouse)
+	{
+		auto axisXIt = keysAxis_.find(VE_MOUSE_X);
+		if(axisXIt != keysAxis_.end()){
+			axisDelegates_[axisXIt->second.first].call(xmouse * axisXIt->second.second);
+		}
+		auto axisYIt = keysAxis_.find(VE_MOUSE_Y);
+		if(axisYIt != keysAxis_.end()){
+			axisDelegates_[axisYIt->second.first].call(ymouse * axisYIt->second.second);
 		}
 	}
 

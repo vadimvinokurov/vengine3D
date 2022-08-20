@@ -48,10 +48,13 @@ void VEngine::onCreate()
 	window_->onKeyboardKeyDelegate.connect(controllerSystem, &ControllerSystem::onKeyboardKey);
 	window_->onMouseKeyDelegate.connect(controllerSystem, &ControllerSystem::onMouseKey);
 	window_->onMousePositionDelegate.connect(controllerSystem, &ControllerSystem::onMousePosition);
+	window_->onMouseDeltaPositionDelegate.connect(controllerSystem, &ControllerSystem::onMouseDeltaPosition);
 
 	RenderSystem *renderSystem = systemManager->addSystem<RenderSystem>(System::LOWEST_SYSTEM_PRIORITY);
-	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::resize);
-	renderSystem->resize(windowDefaultWidth_, windowDefaultHeight_);
+	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::onWindowResize);
+	window_->onWindowResizeDelegate.connect(controllerSystem, &ControllerSystem::onWindowResize);
+	renderSystem->onWindowResize(windowDefaultWidth_, windowDefaultHeight_);
+	controllerSystem->onWindowResize(windowDefaultWidth_, windowDefaultHeight_);
 }
 
 void VEngine::onUpdate(float dt)

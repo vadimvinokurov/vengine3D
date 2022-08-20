@@ -18,14 +18,19 @@ public:
 	void onKeyboardKey(uint32 key, uint32 action);
 	void onMouseKey(uint32 key, uint32 action);
 	void onMousePosition(float xpos, float ypos);
+	void onMouseDeltaPosition(float dxpos, float dypos);
 	virtual void update(float dt) override;
-
+	void onWindowResize(int32 width, int32 height);
 private:
 	std::array<KeyState, 512> keyboardState;
 	std::array<bool, 512> keyboardRepeatStatus;
 
 	std::array<KeyState, 8>  mouseState;
 	std::array<bool, 8> mouseRepeatStatus;
+
+	constexpr static float mouseScale = 100.0f;
+	float deltaxpos = 0.0f;
+	float deltaypos = 0.0f;
 };
 
 #endif // VENGINE3D_CONTROLLERSYSTEM_H

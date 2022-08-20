@@ -23,7 +23,7 @@ RenderSystem::RenderSystem(SystemPriority priority)
 	glClearDepth(1.0f);
 }
 
-void RenderSystem::resize(int32 width, int32 height)
+void RenderSystem::onWindowResize(int32 width, int32 height)
 {
 	glViewport(0, 0, width, height);
 	float windowAspectRatio = static_cast<float>(width) / static_cast<float>(height);

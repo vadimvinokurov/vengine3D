@@ -22,16 +22,22 @@ public:
 	void setTitle(const std::string &title);
 	static void poolEvents();
 
+
 	Delegate<int32, int32> onWindowResizeDelegate;
 	Delegate<int32, int32> onKeyboardKeyDelegate;
 	Delegate<int32, int32> onMouseKeyDelegate;
 	Delegate<float, float> onMousePositionDelegate;
+	Delegate<float, float> onMouseDeltaPositionDelegate;
 
 	~Window();
 
 private:
 	void glfwCallbackInitialization();
 	GLFWwindow *window = nullptr;
+
+	bool mouseLockFlag = false;
+	double lockXpos;
+	double lockYpos;
 };
 
 #endif // VENGINE3D_WINDOW_H

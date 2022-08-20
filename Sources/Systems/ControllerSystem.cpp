@@ -28,21 +28,23 @@ ControllerSystem::ControllerSystem(SystemPriority priority) : System(priority)
 void ControllerSystem::update(float dt)
 {
 	auto [inputComponentIt, end] = getWorld()->getComponents<InputComponents>();
-	if (inputComponentIt == end) {
+	if (inputComponentIt == end)
+	{
 		return;
 	}
 
 	for (uint32 key = 0; key < keyboardState.size(); ++key)
 	{
-		if(keyboardState[key] != KeyState::FREE) {
+		if (keyboardState[key] != KeyState::FREE)
+		{
 			inputComponentIt->input(key, keyboardState[key]);
 			keyboardState[key] = KeyState::FREE;
 		}
-
 	}
 	for (uint32 key = 0; key < mouseState.size(); ++key)
 	{
-		if(mouseState[key] != KeyState::FREE) {
+		if (mouseState[key] != KeyState::FREE)
+		{
 			inputComponentIt->input(key, mouseState[key]);
 			mouseState[key] = KeyState::FREE;
 		}
@@ -50,17 +52,21 @@ void ControllerSystem::update(float dt)
 
 	for (uint32 key = 0; key < keyboardRepeatStatus.size(); ++key)
 	{
-		if(keyboardRepeatStatus[key]) {
+		if (keyboardRepeatStatus[key])
+		{
 			inputComponentIt->input(key, KeyState::REPEATE);
 		}
 	}
 	for (uint32 key = 0; key < mouseRepeatStatus.size(); ++key)
 	{
-		if(mouseRepeatStatus[key]) {
+		if (mouseRepeatStatus[key])
+		{
 			inputComponentIt->input(key, KeyState::REPEATE);
 		}
 	}
 
+	inputComponentIt->inputMouse(deltaxpos, deltaypos);
+	deltaxpos = deltaypos = 0.0f;
 }
 
 void ControllerSystem::onKeyboardKey(uint32 key, uint32 action)
@@ -93,4 +99,12 @@ void ControllerSystem::onMouseKey(uint32 key, uint32 action)
 }
 void ControllerSystem::onMousePosition(float xpos, float ypos)
 {
+}
+void ControllerSystem::onWindowResize(int32 width, int32 height)
+{
+}
+void ControllerSystem::onMouseDeltaPosition(float dxpos, float dypos)
+{
+	deltaxpos = dxpos / mouseScale;
+	deltaypos = dypos / mouseScale;
 }

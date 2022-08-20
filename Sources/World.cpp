@@ -19,11 +19,14 @@ public:
 	{
 	}
 
-	void jump()
+	void cameraLock()
 	{
-		auto staticMesh1 = std::make_shared<StaticMesh>();
-		getComponent<StaticMeshComponent>()->setStaticMesh(staticMesh1);
-		spdlog::info("Jump");
+		cameraLockFlag = true;
+	}
+
+	void cameraUnlock()
+	{
+		cameraLockFlag = false;
 	}
 
 	void move(float amount)
@@ -35,6 +38,26 @@ public:
 	{
 		spdlog::info("right {}", amount);
 	}
+
+	void lookUp(float amount)
+	{
+		if (amount == 0.0f || cameraLockFlag == false)
+		{
+			return;
+		}
+		getComponent<CameraComponent>()->addPitchInput(amount);
+	}
+
+	void turn(float amount)
+	{
+		if (amount == 0.0f || cameraLockFlag == false)
+		{
+			return;
+		}
+		getComponent<CameraComponent>()->addYawInput(amount);
+	}
+
+	bool cameraLockFlag = false;
 };
 
 World::World()
@@ -47,17 +70,18 @@ void World::onCreate()
 
 	Dragon *dragon = entityManager->createEntity<Dragon>();
 	InputComponents *inputComponents = dragon->addComponent<InputComponents>();
-	//inputComponents->bindAction("Jump", KeyState::PRESSED, dragon, &Dragon::jump);
-	//inputComponents->bindAxis("MoveForward", dragon, &Dragon::move);
-	//nputComponents->bindAxis("MoveRight", dragon, &Dragon::right);
+	inputComponents->bindAction("CameraLock", KeyState::PRESSED, dragon, &Dragon::cameraLock);
+	inputComponents->bindAction("CameraLock", KeyState::RELEASE, dragon, &Dragon::cameraUnlock);
+	inputComponents->bindAxis("Turn", dragon, &Dragon::turn);
+	inputComponents->bindAxis("LookUp", dragon, &Dragon::lookUp);
 
-	StaticMeshComponent * staticMeshComponent = dragon->addComponent<StaticMeshComponent>();
+	StaticMeshComponent *staticMeshComponent = dragon->addComponent<StaticMeshComponent>();
 	auto staticMesh1 = std::make_shared<StaticMesh>();
 	auto material1 = std::make_shared<Material>();
 	staticMeshComponent->setStaticMesh(staticMesh1);
 	staticMeshComponent->setMaterial(material1);
 
-	CameraComponent * cameraComponent = dragon->addComponent<CameraComponent>();
+	CameraComponent *cameraComponent = dragon->addComponent<CameraComponent>();
 	inputComponents->bindAxis("MoveForward", cameraComponent, &CameraComponent::moveAlongDirection);
 	inputComponents->bindAxis("MoveRight", cameraComponent, &CameraComponent::moveAlongSide);
 }

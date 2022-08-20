@@ -51,3 +51,30 @@ Matrix4 CameraComponent::frustum(float left, float right, float bottom, float to
 			0.0f, 0.0f, -1.0f, 	0.0f);
 	// clang-format on
 }
+void CameraComponent::addPitchInput(float val)
+{
+	auto rx = Quaternion::fromAxisAngle(right_, val * pitchScale);
+	auto tinv = transform.getInversed();
+
+	transform.rotation = rx * transform.rotation;
+	transform.rotation.normalize();
+	auto t = transform * tinv;
+
+	direction_ = t.applyToVector(direction_);
+	up_ = t.applyToVector(up_);
+	right_ = t.applyToVector(right_);
+}
+
+void CameraComponent::addYawInput(float val)
+{
+	auto rz = Quaternion::fromAxisAngle(Vector3(0, 0, 1), val * yawScale);
+	auto tinv = transform.getInversed();
+
+	transform.rotation = rz * transform.rotation;
+	transform.rotation.normalize();
+	auto t = transform * tinv;
+
+	direction_ = t.applyToVector(direction_);
+	up_ = t.applyToVector(up_);
+	right_ = t.applyToVector(right_);
+}
