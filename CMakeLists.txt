@@ -36,6 +36,7 @@ find_package(glfw3)
 find_package(imgui)
 find_package(spdlog)
 
+add_subdirectory(External/assimp)
 add_subdirectory(External/stb_image)
 
 #if (MSVC)
@@ -48,7 +49,7 @@ add_compile_definitions(ECS_DEBUG)
 
 
 file(GLOB Sources "Sources/*.cpp"
-        "Sources/Rendering/*.cpp"
+        "Sources/Render/*.cpp"
         "Sources/Core/*.cpp"
         "Sources/Core/Objects/*.cpp"
         "Sources/Core/Utils/*.cpp"
@@ -58,6 +59,7 @@ file(GLOB Sources "Sources/*.cpp"
         "Sources/Components/*.cpp")
 
 include_directories("External/stb_image")
+include_directories("External/assimp")
 include_directories("Sources")
 add_executable(${PROJECT_NAME} ${Sources})
-target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad spdlog::spdlog stb_image)
+target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad spdlog::spdlog stb_image assimp)

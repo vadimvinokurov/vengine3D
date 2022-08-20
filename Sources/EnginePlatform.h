@@ -21,7 +21,7 @@
 #define ENV32BIT
 #endif
 #else
-#define ENV32BIT
+#define ENV64BIT
 #endif
 
 #ifdef ENV64BIT
@@ -33,7 +33,6 @@ static_assert(sizeof(size_t) == 4, "Platform sizeof(size_t) not as expected");
 static_assert(sizeof(uintptr_t) == 4, "Platform sizeof(uintptr_t) not as expected");
 static_assert(sizeof(void*) == 4, "Platform sizeof(void*) not as expected");
 #endif
-static_assert(sizeof(char) == 1, "Platform sizeof(char) not as expected");
 
 #ifdef ENV64BIT
 using int64 = int64_t;
@@ -52,5 +51,9 @@ using uint32 = uint32_t;
 using byte = uint8_t;
 using uptr = uintptr_t;
 using idtype = size_t;
+
+static_assert(sizeof(char) == 1, "Platform sizeof(char) not as expected");
+static_assert(sizeof(uint32) == sizeof(unsigned int), "unsigned int is not 32bit");
+static_assert(sizeof(int32) == sizeof(int), "int is not 32bit");
 
 #endif // VENGINE3D_ENGINEPLATFORM_H

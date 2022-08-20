@@ -18,7 +18,30 @@ Texture::Texture(const char *path) : Texture()
 
 Texture::~Texture()
 {
-	glDeleteTextures(1, &handle_);
+	if(handle_ != 0) {
+		glDeleteTextures(1, &handle_);
+	}
+}
+
+Texture::Texture(Texture &&other)
+{
+	other.width_ = this->width_;
+	other.height_ = this->height_;
+	other.channels_ = this->channels_;
+	other.handle_ = this->handle_;
+
+	this->handle_ = 0;
+}
+
+Texture &Texture::operator=(Texture &&other)
+{
+	other.width_ = this->width_;
+	other.height_ = this->height_;
+	other.channels_ = this->channels_;
+	other.handle_ = this->handle_;
+
+	this->handle_ = 0;
+	return *this;
 }
 
 void Texture::load(const char *path)
@@ -66,3 +89,4 @@ uint32 Texture::getHandle()
 {
 	return handle_;
 }
+

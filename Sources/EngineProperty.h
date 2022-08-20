@@ -10,4 +10,8 @@ static constexpr auto ENTITY_CHUNK_SIZE = 3;	  // entity number
 static constexpr auto COMPONENT_CHUNK_SIZE = 3; // components number
 static constexpr auto TABLE_GROW = 1024;
 
+static constexpr float FLOAT_EPSILON = 0.000001f;
+
+
+
 #endif // VENGINE3D_ECS_PROPERTY_H

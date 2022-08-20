@@ -7,7 +7,7 @@
 
 #include "Core/Memory/VObjectContainer.h"
 #include "Core/Objects/Component.h"
-#include "Core/CoreProperty.h"
+#include "EngineProperty.h"
 #include <unordered_map>
 
 class ComponentManager

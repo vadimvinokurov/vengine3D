@@ -14,6 +14,8 @@ public:
 	Texture(const char *path);
 	Texture(const Texture &other) = delete;
 	Texture &operator=(const Texture &other) = delete;
+	Texture(Texture &&other);
+	Texture &operator=(Texture &&other);
 
 	~Texture();
 

@@ -9,8 +9,8 @@
 
 enum class ShaderType : uint8_t
 {
-	Vertex,
-	Fragment
+	Vertex = 0,
+	Fragment = 1
 };
 
 struct ShaderSource
