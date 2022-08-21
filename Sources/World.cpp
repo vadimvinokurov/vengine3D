@@ -7,6 +7,7 @@
 #include "Components/InputComponents.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CameraComponent.h"
+#include "AssetImporter.h"
 
 class Dragon : public Entity
 {
@@ -17,16 +18,6 @@ public:
 	}
 	~Dragon()
 	{
-	}
-
-	void cameraLock()
-	{
-		cameraLockFlag = true;
-	}
-
-	void cameraUnlock()
-	{
-		cameraLockFlag = false;
 	}
 
 	void move(float amount)
@@ -41,7 +32,7 @@ public:
 
 	void lookUp(float amount)
 	{
-		if (amount == 0.0f || cameraLockFlag == false)
+		if (amount == 0.0f)
 		{
 			return;
 		}
@@ -50,14 +41,12 @@ public:
 
 	void turn(float amount)
 	{
-		if (amount == 0.0f || cameraLockFlag == false)
+		if (amount == 0.0f)
 		{
 			return;
 		}
 		getComponent<CameraComponent>()->addYawInput(amount);
 	}
-
-	bool cameraLockFlag = false;
 };
 
 World::World()
@@ -70,15 +59,18 @@ void World::onCreate()
 
 	Dragon *dragon = entityManager->createEntity<Dragon>();
 	InputComponents *inputComponents = dragon->addComponent<InputComponents>();
-	inputComponents->bindAction("CameraLock", KeyState::PRESSED, dragon, &Dragon::cameraLock);
-	inputComponents->bindAction("CameraLock", KeyState::RELEASE, dragon, &Dragon::cameraUnlock);
 	inputComponents->bindAxis("Turn", dragon, &Dragon::turn);
 	inputComponents->bindAxis("LookUp", dragon, &Dragon::lookUp);
 
 	StaticMeshComponent *staticMeshComponent = dragon->addComponent<StaticMeshComponent>();
-	auto staticMesh1 = std::make_shared<StaticMesh>();
+
+	AssetImporter fbx = AssetImporter("e:\\Work\\vengine3D\\Content\\Mesh\\uechar.FBX");
+
+
+	StaticMesh staticMesh = fbx.loadMeshes().front();
+	auto staticMeshPtr = std::make_shared<StaticMesh>(staticMesh);
 	auto material1 = std::make_shared<Material>();
-	staticMeshComponent->setStaticMesh(staticMesh1);
+	staticMeshComponent->setStaticMesh(staticMeshPtr);
 	staticMeshComponent->setMaterial(material1);
 
 	CameraComponent *cameraComponent = dragon->addComponent<CameraComponent>();

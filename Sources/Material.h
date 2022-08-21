@@ -12,7 +12,7 @@ struct Material
 {
 	Material()
 	{
-		textures.emplace_back(Texture("../Content/Texture/test.png"), "baseColorTexture");
+		textures.emplace_back(Texture("E:\\Work\\vengine3D\\Content\\Mesh\\HeroTPP_BaseColor.png"), "baseColorTexture");
 		vertexShader.emplace_back("../Content/Shaders/default.frag", ShaderType::Fragment);
 	}
 	std::vector<std::pair<Texture, std::string>> textures;
