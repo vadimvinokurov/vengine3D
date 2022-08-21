@@ -7,9 +7,8 @@
 
 #include "Core/Objects/Component.h"
 #include "Core/Delegate.h"
-#include "Input/Keystate.h"
-#include "Input/KeyboardKey.h"
-#include "Input/MouseKey.h"
+#include "Input/InputKeyState.h"
+#include "Input/InputKey.h"
 #include <unordered_map>
 
 class InputComponents : public Component
@@ -25,8 +24,6 @@ public:
 
 		keysAxis_[VE_MOUSE_X] = {"Turn", 1.0f};
 		keysAxis_[VE_MOUSE_Y] = {"LookUp", 1.0f};
-
-		keysAction_[VE_MOUSE_BUTTON_RIGHT] = "CameraLock";
 	}
 
 	template <class T, class M>
@@ -36,48 +33,46 @@ public:
 	}
 
 	template <class T, class M>
-	void bindAction(const std::string &name, KeyState keyState, T *objects, M method)
+	void bindAction(const std::string &name, InputKeyState keyState, T *objects, M method)
 	{
-		if (keyState == KeyState::PRESSED)
+		if (keyState == InputKeyState::PRESSED)
 		{
 			pressDelegates_[name].connect(objects, method);
 		}
-		else if (keyState == KeyState::RELEASE)
+		else if (keyState == InputKeyState::RELEASE)
 		{
 			releaseDelegates_[name].connect(objects, method);
 		}
 	}
 
-	void input(uint32 keyCode, KeyState keyState)
+	void inputPressAction(uint32 keyCode)
 	{
-		auto actionIt = keysAction_.find(keyCode);
-		if(actionIt != keysAction_.end()){
-			if(keyState == KeyState::PRESSED) {
-				pressDelegates_[actionIt->second].call();
-				return;
-			} else if (keyState == KeyState::RELEASE) {
-				releaseDelegates_[actionIt->second].call();
-				return;
-			}
-		}
-
-		auto axisIt = keysAxis_.find(keyCode);
-		if(axisIt != keysAxis_.end() && keyState == KeyState::REPEATE){
-			axisDelegates_[axisIt->second.first].call(axisIt->second.second);
+		auto actionKeyIt = keysAction_.find(keyCode);
+		if (actionKeyIt == keysAction_.end())
+		{
 			return;
 		}
+		pressDelegates_[actionKeyIt->second].call();
 	}
 
-	void inputMouse(float xmouse, float ymouse)
+	void inputReleaseAction(uint32 keyCode)
 	{
-		auto axisXIt = keysAxis_.find(VE_MOUSE_X);
-		if(axisXIt != keysAxis_.end()){
-			axisDelegates_[axisXIt->second.first].call(xmouse * axisXIt->second.second);
+		auto actionKeyIt = keysAction_.find(keyCode);
+		if (actionKeyIt == keysAction_.end())
+		{
+			return;
 		}
-		auto axisYIt = keysAxis_.find(VE_MOUSE_Y);
-		if(axisYIt != keysAxis_.end()){
-			axisDelegates_[axisYIt->second.first].call(ymouse * axisYIt->second.second);
+		releaseDelegates_[actionKeyIt->second].call();
+	}
+
+	void inputAxis(uint32 keyCode, float value)
+	{
+		auto axisKeyIt = keysAxis_.find(keyCode);
+		if (axisKeyIt == keysAxis_.end())
+		{
+			return;
 		}
+		axisDelegates_[axisKeyIt->second.first].call(value * axisKeyIt->second.second);
 	}
 
 private:

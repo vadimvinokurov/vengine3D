@@ -20,12 +20,12 @@ Matrix4 CameraComponent::getViewMatrix() const
 
 void CameraComponent::moveAlongDirection(float amount)
 {
-	transform.position += direction_ * amount * -0.1f;
+	transform.position += direction_ * amount * -1.1f;
 }
 
 void CameraComponent::moveAlongSide(float amount)
 {
-	transform.position += right_ * amount * 0.1f;
+	transform.position += right_ * amount * 1.1f;
 }
 
 Matrix4 CameraComponent::perspective(float fov, float aspect, float n, float f)

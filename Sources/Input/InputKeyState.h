@@ -6,7 +6,7 @@
 #define VENGINE3D_VE_KEYSTATE_H
 
 
-enum class KeyState : uint8 {
+enum class InputKeyState : uint8 {
     RELEASE = 0, PRESSED = 1, FREE = 2, REPEATE = 3
 };
 

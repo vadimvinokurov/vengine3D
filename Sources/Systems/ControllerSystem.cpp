@@ -8,23 +8,8 @@
 
 ControllerSystem::ControllerSystem(SystemPriority priority) : System(priority)
 {
-	for (KeyState &key : keyboardState)
-	{
-		key = KeyState::FREE;
-	}
-	for (bool &r : keyboardRepeatStatus)
-	{
-		r = false;
-	}
-	for (KeyState &key : mouseState)
-	{
-		key = KeyState::FREE;
-	}
-	for (bool &r : mouseRepeatStatus)
-	{
-		r = false;
-	}
 }
+
 void ControllerSystem::update(float dt)
 {
 	auto [inputComponentIt, end] = getWorld()->getComponents<InputComponents>();
@@ -33,78 +18,57 @@ void ControllerSystem::update(float dt)
 		return;
 	}
 
-	for (uint32 key = 0; key < keyboardState.size(); ++key)
+	for (auto &key : pressedKey)
 	{
-		if (keyboardState[key] != KeyState::FREE)
-		{
-			inputComponentIt->input(key, keyboardState[key]);
-			keyboardState[key] = KeyState::FREE;
-		}
-	}
-	for (uint32 key = 0; key < mouseState.size(); ++key)
-	{
-		if (mouseState[key] != KeyState::FREE)
-		{
-			inputComponentIt->input(key, mouseState[key]);
-			mouseState[key] = KeyState::FREE;
-		}
+		inputComponentIt->inputPressAction(key);
 	}
 
-	for (uint32 key = 0; key < keyboardRepeatStatus.size(); ++key)
+	for (auto &key : releasedKey)
 	{
-		if (keyboardRepeatStatus[key])
-		{
-			inputComponentIt->input(key, KeyState::REPEATE);
-		}
-	}
-	for (uint32 key = 0; key < mouseRepeatStatus.size(); ++key)
-	{
-		if (mouseRepeatStatus[key])
-		{
-			inputComponentIt->input(key, KeyState::REPEATE);
-		}
+		inputComponentIt->inputReleaseAction(key);
 	}
 
-	inputComponentIt->inputMouse(deltaxpos, deltaypos);
-	deltaxpos = deltaypos = 0.0f;
+	pressedKey.clear();
+	releasedKey.clear();
+
+	for (auto &key : repeatingKey)
+	{
+		inputComponentIt->inputAxis(key, 1);
+	}
+
+	inputComponentIt->inputAxis(VE_MOUSE_X, cursorDeltaXPos * cursorDeltaScale);
+	inputComponentIt->inputAxis(VE_MOUSE_Y, cursorDeltaYPos * cursorDeltaScale);
+	cursorDeltaXPos = cursorDeltaYPos = 0.0f;
 }
 
-void ControllerSystem::onKeyboardKey(uint32 key, uint32 action)
+void ControllerSystem::onInputKey(uint32 key, uint32 action)
 {
-	KeyState state = static_cast<KeyState>(action);
-	if (state == KeyState::PRESSED)
+	InputKeyState state = static_cast<InputKeyState>(action);
+	if (state == InputKeyState::PRESSED)
 	{
-		keyboardState[key % 512] = KeyState::PRESSED;
-		keyboardRepeatStatus[key % 512] = true;
+		pressedKey.push_back(key);
+		repeatingKey.push_back(key);
 	}
-	else if (state == KeyState::RELEASE)
+	else if (state == InputKeyState::RELEASE)
 	{
-		keyboardState[key % 512] = KeyState::RELEASE;
-		keyboardRepeatStatus[key % 512] = false;
-	}
-}
-void ControllerSystem::onMouseKey(uint32 key, uint32 action)
-{
-	KeyState state = static_cast<KeyState>(action);
-	if (state == KeyState::PRESSED)
-	{
-		mouseState[key % 8] = KeyState::PRESSED;
-		mouseRepeatStatus[key % 8] = true;
-	}
-	else if (state == KeyState::RELEASE)
-	{
-		mouseState[key % 8] = KeyState::RELEASE;
-		mouseRepeatStatus[key % 8] = false;
+		releasedKey.push_back(key);
+		auto it = std::find(repeatingKey.begin(), repeatingKey.end(), key);
+		if (it != repeatingKey.end() && !repeatingKey.empty())
+		{
+			std::swap(*it, repeatingKey.back());
+			repeatingKey.pop_back();
+		}
 	}
 }
-void ControllerSystem::onMousePosition(float xpos, float ypos)
+
+void ControllerSystem::onCursorPosition(float xpos, float ypos)
 {
 }
 void ControllerSystem::onWindowResize(int32 width, int32 height)
 {
 }
-void ControllerSystem::onMouseDeltaPosition(float dxpos, float dypos)
+void ControllerSystem::onCursorDelta(float dxpos, float dypos)
 {
-	deltaxpos = dxpos / mouseScale;
-	deltaypos = dypos / mouseScale;
+	cursorDeltaXPos = dxpos;
+	cursorDeltaYPos = dypos;
 }

@@ -45,10 +45,10 @@ VEngine::~VEngine()
 void VEngine::onCreate()
 {
 	ControllerSystem *controllerSystem = systemManager->addSystem<ControllerSystem>(System::HIGHEST_SYSTEM_PRIORITY);
-	window_->onKeyboardKeyDelegate.connect(controllerSystem, &ControllerSystem::onKeyboardKey);
-	window_->onMouseKeyDelegate.connect(controllerSystem, &ControllerSystem::onMouseKey);
-	window_->onMousePositionDelegate.connect(controllerSystem, &ControllerSystem::onMousePosition);
-	window_->onMouseDeltaPositionDelegate.connect(controllerSystem, &ControllerSystem::onMouseDeltaPosition);
+	window_->onKeyboardKeyDelegate.connect(controllerSystem, &ControllerSystem::onInputKey);
+	window_->onMouseKeyDelegate.connect(controllerSystem, &ControllerSystem::onInputKey);
+	window_->onCursorPositionDelegate.connect(controllerSystem, &ControllerSystem::onCursorPosition);
+	window_->onCursorDeltaDelegate.connect(controllerSystem, &ControllerSystem::onCursorDelta);
 
 	RenderSystem *renderSystem = systemManager->addSystem<RenderSystem>(System::LOWEST_SYSTEM_PRIORITY);
 	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::onWindowResize);

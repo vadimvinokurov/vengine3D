@@ -97,14 +97,13 @@ void Window::glfwCallbackInitialization()
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xpos, double ypos) {
 		auto this_ptr = static_cast<Window *>(glfwGetWindowUserPointer(window));
-		this_ptr->onMousePositionDelegate.call(static_cast<float>(xpos), static_cast<float>(ypos));
+		this_ptr->onCursorPositionDelegate.call(static_cast<float>(xpos), static_cast<float>(ypos));
 		if(this_ptr->mouseLockFlag) {
 			double cxpos, cypos;
 			glfwGetCursorPos(window, &cxpos, &cypos);
-			this_ptr->onMouseDeltaPositionDelegate.call(cxpos - this_ptr->lockXpos, cypos - this_ptr->lockYpos);
+			this_ptr->onCursorDeltaDelegate.call(cxpos - this_ptr->lockXpos, cypos - this_ptr->lockYpos);
 			glfwSetCursorPos(window, this_ptr->lockXpos, this_ptr->lockYpos);
 		}
-
 	});
 }
 void Window::setTitle(const std::string &title)

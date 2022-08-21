@@ -26,8 +26,8 @@ public:
 	Delegate<int32, int32> onWindowResizeDelegate;
 	Delegate<int32, int32> onKeyboardKeyDelegate;
 	Delegate<int32, int32> onMouseKeyDelegate;
-	Delegate<float, float> onMousePositionDelegate;
-	Delegate<float, float> onMouseDeltaPositionDelegate;
+	Delegate<float, float> onCursorPositionDelegate;
+	Delegate<float, float> onCursorDeltaDelegate;
 
 	~Window();
 
