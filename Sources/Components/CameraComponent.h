@@ -11,10 +11,7 @@
 class CameraComponent : public TransformComponent
 {
 public:
-	CameraComponent()
-	{
-		transform.print();
-	}
+	CameraComponent() = default;
 
 	Matrix4 getViewMatrix() const;
 

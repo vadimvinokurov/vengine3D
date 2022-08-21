@@ -10,6 +10,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "StaticMesh.h"
+#include "Render/Texture.h"
 
 class AssetImporter {
 public:

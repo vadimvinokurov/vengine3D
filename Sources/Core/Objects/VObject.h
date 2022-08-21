@@ -25,7 +25,6 @@ struct VObject
 	};
 	void onConnectToDelegate(std::shared_ptr<VObjectDelegateMethod> delegateMethod)
 	{
-		spdlog::warn("Connect to delegate");
 		methodList.push_back(delegateMethod);
 	}
 

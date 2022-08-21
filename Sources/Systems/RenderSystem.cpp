@@ -96,9 +96,11 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 		texture.first.bind(shader->getUniform(texture.second));
 	}
 
+	Matrix4 model = staticMeshComponent->transform.toMatrix();
+
 	Render::Uniform<Matrix4>::set(shader->getUniform("projection"), perspective);
 	Render::Uniform<Matrix4>::set(shader->getUniform("view"), view);
-	Render::Uniform<Matrix4>::set(shader->getUniform("model"), Matrix4());
+	Render::Uniform<Matrix4>::set(shader->getUniform("model"), model);
 
 	renderData.bind();
 	glDrawElements(GL_TRIANGLES, renderData.indicesBuffer.count(), GL_UNSIGNED_INT, 0);

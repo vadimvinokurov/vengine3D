@@ -10,9 +10,9 @@
 
 struct Material
 {
-	Material()
+	Material(std::string s)
 	{
-		textures.emplace_back(Texture("E:\\Work\\vengine3D\\Content\\Mesh\\HeroTPP_BaseColor.png"), "baseColorTexture");
+		textures.emplace_back(Texture(s.c_str()), "baseColorTexture");
 		vertexShader.emplace_back("../Content/Shaders/default.frag", ShaderType::Fragment);
 	}
 	std::vector<std::pair<Texture, std::string>> textures;
