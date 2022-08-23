@@ -29,16 +29,16 @@ IndexBuffer &IndexBuffer::operator=(IndexBuffer &&other)
 
 IndexBuffer::IndexBuffer()
 {
-	count_ = 0;
-	if (handle_ == 0)
-	{
-		return;
-	}
 	glGenBuffers(1, &handle_);
 }
 
 IndexBuffer::~IndexBuffer()
 {
+	count_ = 0;
+	if (handle_ == 0)
+	{
+		return;
+	}
 	glDeleteBuffers(1, &handle_);
 }
 

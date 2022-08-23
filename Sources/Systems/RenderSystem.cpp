@@ -5,6 +5,7 @@
 #include "RenderSystem.h"
 #include "World.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponents.h"
 #include "Components/CameraComponent.h"
 #include "Render/Uniform.h"
@@ -49,6 +50,12 @@ void RenderSystem::update(float dt)
 	{
 		updateStaticMeshComponent(&(*it), dt);
 	}
+
+	auto [skeletalMeshComp_begin, skeletalMeshComp_end] = getWorld()->getComponents<SkeletalMeshComponent>();
+	for (auto it = skeletalMeshComp_begin; it != skeletalMeshComp_end; ++it)
+	{
+		updateSceletalMeshComponent(&(*it), dt);
+	}
 }
 
 void RenderSystem::postUpdate(float dt)
@@ -56,20 +63,10 @@ void RenderSystem::postUpdate(float dt)
 }
 void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComponent, float dt)
 {
-	auto &shader = staticMeshComponent->renderData.shader;
+	auto &shader = staticMeshComponent->material->shader;
 	auto &renderData = staticMeshComponent->renderData;
 	auto &staticMesh = *staticMeshComponent->staticMesh;
 	auto &material = *staticMeshComponent->material;
-
-	if (staticMeshComponent->needUpdateRenderData)
-	{
-
-		std::vector<ShaderSource> shaderSource = {defaultVertexShader};
-		shaderSource.insert(shaderSource.end(), material.vertexShader.begin(), material.vertexShader.end());
-		shader = std::make_unique<Shader>(shaderSource);
-		staticMeshComponent->needUpdateMaterialData = 0;
-		spdlog::info("Update shaders data");
-	}
 
 	shader->bind();
 	if (staticMeshComponent->needUpdateRenderData)
@@ -107,6 +104,39 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 	renderData.unbind();
 
 	shader->unBind();
+}
+
+void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMeshComponent, float dt)
+{
+	auto &meshElements = skeletalMeshComponent->skeletalMesh.skeletalMeshElements;
+	auto &materials = skeletalMeshComponent->skeletalMesh.materials;
+
+	for (int i = 0; i < meshElements.size(); ++i)
+	{
+		auto &shader = materials[i]->shader;
+		shader->bind();
+		meshElements[i]->renderData.bind();
+		meshElements[i]->updateRenderData();
+		meshElements[i]->renderData.vertices.attachToAttribute(shader->getAttribute("aPosition"));
+		meshElements[i]->renderData.textureCoordinate.attachToAttribute(shader->getAttribute("aTextCoord"));
+		meshElements[i]->renderData.indices.attachToShader();
+		meshElements[i]->renderData.unbind();
+
+		for (auto &texture : materials[i]->textures)
+		{
+			texture.first.bind(shader->getUniform(texture.second));
+		}
+		Matrix4 model = skeletalMeshComponent->transform.toMatrix();
+		Render::Uniform<Matrix4>::set(shader->getUniform("projection"), perspective);
+		Render::Uniform<Matrix4>::set(shader->getUniform("view"), view);
+		Render::Uniform<Matrix4>::set(shader->getUniform("model"), model);
+
+		meshElements[i]->renderData.bind();
+		glDrawElements(GL_TRIANGLES, meshElements[i]->renderData.indices.count(), GL_UNSIGNED_INT, 0);
+		meshElements[i]->renderData.unbind();
+
+		shader->unBind();
+	}
 }
 
 CameraComponent *RenderSystem::getMainCamera()

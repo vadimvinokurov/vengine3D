@@ -10,14 +10,18 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "StaticMesh.h"
-#include "Render/Texture.h"
+#include <memory>
+
+class SkeletalMesh;
 
 class AssetImporter {
 public:
 	AssetImporter(const char* path);
-	~AssetImporter();
 	bool good();
 	std::vector<StaticMesh> loadMeshes();
+
+
+	SkeletalMesh loadSkeletalMesh();
 private:
 	const aiScene* pScene = nullptr;
 	Assimp::Importer Importer;

@@ -10,6 +10,7 @@
 #include "Math/Matrix4.h"
 
 class StaticMeshComponent;
+class SkeletalMeshComponent;
 class CameraComponent;
 
 class RenderSystem : public System
@@ -23,6 +24,7 @@ public:
 	virtual void postUpdate(float dt) override;
 private:
 	void updateStaticMeshComponent(StaticMeshComponent* staticMeshComponent, float dt);
+	void updateSceletalMeshComponent(SkeletalMeshComponent* sceletalMeshComponent, float dt);
 	CameraComponent* getMainCamera();
 	ShaderSource defaultVertexShader;
 

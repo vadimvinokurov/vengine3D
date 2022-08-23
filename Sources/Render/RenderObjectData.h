@@ -27,7 +27,6 @@ struct RenderableObjectData
 	Render::ObjectBuffer<Vector3> normalsBuffer;
 	Render::ObjectBuffer<Vector2> textureCoordinatesBuffer;
 	Render::IndexBuffer indicesBuffer;
-	std::unique_ptr<Shader> shader;
 	uint32 VAO;
 };
 #endif // VENGINE3D_RENDEROBJECTDATA_H
