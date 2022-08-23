@@ -9,6 +9,8 @@
 #include "Render/ObjectBuffer.h"
 #include "Render/IndexBuffer.h"
 
+class SkeletalMeshElement;
+
 struct SkeletalMeshRenderData
 {
 	SkeletalMeshRenderData();
@@ -21,6 +23,8 @@ struct SkeletalMeshRenderData
 
 	void bind();
 	void unbind();
+
+	void loadMesh(const SkeletalMeshElement& skeletalMesh);
 
 	Render::ObjectBuffer<Vector3> vertices;
 	Render::ObjectBuffer<Vector3> normals;

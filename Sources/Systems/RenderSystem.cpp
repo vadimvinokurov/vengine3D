@@ -115,12 +115,6 @@ void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMe
 	{
 		auto &shader = materials[i]->shader;
 		shader->bind();
-		meshElements[i]->renderData.bind();
-		meshElements[i]->updateRenderData();
-		meshElements[i]->renderData.vertices.attachToAttribute(shader->getAttribute("aPosition"));
-		meshElements[i]->renderData.textureCoordinate.attachToAttribute(shader->getAttribute("aTextCoord"));
-		meshElements[i]->renderData.indices.attachToShader();
-		meshElements[i]->renderData.unbind();
 
 		for (auto &texture : materials[i]->textures)
 		{

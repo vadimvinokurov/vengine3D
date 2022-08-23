@@ -18,14 +18,9 @@ struct SkeletalMeshElement
 	std::vector<IVector4> influenceBoneIndices;
 	std::vector<Vector4> influenceBoneWeight;
 	SkeletalMeshRenderData renderData;
-
-	void updateRenderData() {
-		renderData.vertices.set(vertices);
-		renderData.normals.set(normals);
-		renderData.textureCoordinate.set(textureCoordinates);
-		renderData.indices.set(indices);
-		renderData.influenceBoneIndices.set(influenceBoneIndices);
-		renderData.influenceBoneWeight.set(influenceBoneWeight);
+	void updateRenderData()
+	{
+		renderData.loadMesh(*this);
 	}
 };
 

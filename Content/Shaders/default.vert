@@ -4,9 +4,9 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-in vec3 aPosition;
-in vec3 aNormals;
-in vec2 aTextCoord;
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec3 aNormals;
+layout(location = 2) in vec2 aTextCoord;
 
 out vec2 fTextCoord;
 void main() {

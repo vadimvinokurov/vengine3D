@@ -80,6 +80,7 @@ SkeletalMesh AssetImporter::loadSkeletalMesh()
 			skeletalMeshElement->indices.push_back(Face.mIndices[1]);
 			skeletalMeshElement->indices.push_back(Face.mIndices[2]);
 		}
+		skeletalMeshElement->updateRenderData();
 		skeletalMeshes.addSkeletalMeshElement(skeletalMeshElement);
 	}
 	return skeletalMeshes;
