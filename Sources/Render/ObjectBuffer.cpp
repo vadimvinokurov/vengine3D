@@ -72,7 +72,7 @@ void ObjectBuffer<T>::set(const std::vector<T> &input)
 }
 
 template <typename T>
-void ObjectBuffer<T>::attachToAttribute(uint32 slot)
+void ObjectBuffer<T>::attachToAttribute(uint32 slot) const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, handle_);
 	setAttributePointer(slot);
@@ -80,62 +80,62 @@ void ObjectBuffer<T>::attachToAttribute(uint32 slot)
 }
 
 template <typename T>
-void ObjectBuffer<T>::detachFromAttribute(uint32 slot)
+void ObjectBuffer<T>::detachFromAttribute(uint32 slot) const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, handle_);
 	glDisableVertexAttribArray(slot);
 }
 
 template <typename T>
-unsigned int ObjectBuffer<T>::count()
+unsigned int ObjectBuffer<T>::count() const
 {
 	return count_;
 }
 
 template <typename T>
-unsigned int ObjectBuffer<T>::getHandle()
+unsigned int ObjectBuffer<T>::getHandle() const
 {
 	return handle_;
 }
 
 template <>
-void ObjectBuffer<int>::setAttributePointer(uint32 slot)
+void ObjectBuffer<int>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribIPointer(slot, 1, GL_INT, 0, NULL);
 }
 
 template <>
-void ObjectBuffer<IVector4>::setAttributePointer(uint32 slot)
+void ObjectBuffer<IVector4>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribIPointer(slot, 4, GL_INT, 0, NULL);
 }
 
 template <>
-void ObjectBuffer<float>::setAttributePointer(uint32 slot)
+void ObjectBuffer<float>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribPointer(slot, 1, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template <>
-void ObjectBuffer<Vector2>::setAttributePointer(uint32 slot)
+void ObjectBuffer<Vector2>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribPointer(slot, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template <>
-void ObjectBuffer<Vector3>::setAttributePointer(uint32 slot)
+void ObjectBuffer<Vector3>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template <>
-void ObjectBuffer<Vector4>::setAttributePointer(uint32 slot)
+void ObjectBuffer<Vector4>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 template <>
-void ObjectBuffer<Quaternion>::setAttributePointer(uint32 slot)
+void ObjectBuffer<Quaternion>::setAttributePointer(uint32 slot) const
 {
 	glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 }

@@ -55,17 +55,17 @@ void IndexBuffer::set(const std::vector<unsigned int> &input)
 	set(input.data(), input.size());
 }
 
-void IndexBuffer::attachToShader()
+void IndexBuffer::attachToShader() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle_);
 }
 
-uint32 IndexBuffer::count()
+uint32 IndexBuffer::count() const
 {
 	return count_;
 }
 
-uint32 IndexBuffer::getHandle()
+uint32 IndexBuffer::getHandle() const
 {
 	return handle_;
 }

@@ -25,10 +25,10 @@ namespace Render
 		void set(const uint32 *array, uint32 arrayLength);
 		void set(const std::vector<uint32> &input);
 
-		void attachToShader();
+		void attachToShader() const;
 
-		uint32 count();
-		uint32 getHandle();
+		uint32 count() const;
+		uint32 getHandle() const;
 
 	protected:
 		uint32 handle_;

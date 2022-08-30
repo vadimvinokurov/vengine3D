@@ -26,14 +26,14 @@ namespace Render
 		void set(const T *inputArray, uint32 arrayLength);
 		void set(const std::vector<T> &input);
 
-		void attachToAttribute(uint32 slot);
-		void detachFromAttribute(uint32 slot);
+		void attachToAttribute(uint32 slot) const;
+		void detachFromAttribute(uint32 slot) const;
 
-		uint32 count();
-		uint32 getHandle();
+		uint32 count() const;
+		uint32 getHandle() const;
 
 	private:
-		void setAttributePointer(unsigned int slot);
+		void setAttributePointer(uint32 slot) const;
 
 	protected:
 		uint32 handle_;

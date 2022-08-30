@@ -108,10 +108,10 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 
 void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMeshComponent, float dt)
 {
-	auto &meshElements = skeletalMeshComponent->skeletalMesh.skeletalMeshElements;
+	auto &skeletalMeshModel_ = skeletalMeshComponent->skeletalMesh.skeletalMeshModel_;
 	auto &materials = skeletalMeshComponent->skeletalMesh.materials;
 
-	for (int i = 0; i < meshElements.size(); ++i)
+	for (int i = 0; i < skeletalMeshModel_->getSectionCount(); ++i)
 	{
 		auto &shader = materials[i]->shader;
 		shader->bind();
@@ -125,9 +125,11 @@ void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMe
 		Render::Uniform<Matrix4>::set(shader->getUniform("view"), view);
 		Render::Uniform<Matrix4>::set(shader->getUniform("model"), model);
 
-		meshElements[i]->renderData.bind();
-		glDrawElements(GL_TRIANGLES, meshElements[i]->renderData.indices.count(), GL_UNSIGNED_INT, 0);
-		meshElements[i]->renderData.unbind();
+		auto[VAO, indicesCount] = skeletalMeshModel_->getRenderData(i);
+
+		VAO.bind();
+		glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+		VAO.unbind();
 
 		shader->unBind();
 	}

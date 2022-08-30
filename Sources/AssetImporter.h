@@ -12,7 +12,7 @@
 #include "StaticMesh.h"
 #include <memory>
 
-class SkeletalMesh;
+class SkeletalMeshModel;
 
 class AssetImporter {
 public:
@@ -21,7 +21,7 @@ public:
 	std::vector<StaticMesh> loadMeshes();
 
 
-	SkeletalMesh loadSkeletalMesh();
+	SkeletalMeshModel loadSkeletalMesh();
 private:
 	const aiScene* pScene = nullptr;
 	Assimp::Importer Importer;

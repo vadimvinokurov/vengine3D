@@ -77,28 +77,28 @@ void World::onCreate()
 
 	SkeletalMeshComponent *skeletalMeshComponent = dragon->addComponent<SkeletalMeshComponent>();
 
-	SkeletalMesh skeletalMesh = fbx.loadSkeletalMesh();
-	spdlog::warn("size - {}", skeletalMesh.materials.size());
-	skeletalMesh.materials[0] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Undersuit_Mat_BaseColor.png");
-	skeletalMesh.materials[1] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Chest_Mat_BaseColor.png");
-	skeletalMesh.materials[2] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Arms_Mat_BaseColor.png");
-	skeletalMesh.materials[3] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Legs_Mat_BaseColor.png");
-	skeletalMesh.materials[4] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
-	skeletalMesh.materials[5] =
-		std::make_shared<Material>("E:\\Work\\vengine3D\\Content\\Mesh\\skysphere\\sky_texture.jpg");
-	skeletalMesh.materials[6] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
-	skeletalMesh.materials[7] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Helmet_Mat_BaseColor.png");
-	skeletalMesh.materials[8] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
+	auto skeletalMeshModel = std::make_shared<SkeletalMeshModel>(fbx.loadSkeletalMesh());
+	skeletalMeshComponent->skeletalMesh.setSkeletalMeshModel(skeletalMeshModel);
 
-	skeletalMeshComponent->skeletalMesh = skeletalMesh;
+	spdlog::warn("size - {}", skeletalMeshComponent->skeletalMesh.materials.size());
+	skeletalMeshComponent->skeletalMesh.materials[0] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Undersuit_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[1] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Chest_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[2] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Arms_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[3] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Legs_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[4] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[5] =
+		std::make_shared<Material>("E:\\Work\\vengine3D\\Content\\Mesh\\skysphere\\sky_texture.jpg");
+	skeletalMeshComponent->skeletalMesh.materials[6] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[7] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Helmet_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[8] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
 }
 void World::onUpdate(float dt)
 {

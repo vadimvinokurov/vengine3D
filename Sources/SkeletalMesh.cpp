@@ -4,8 +4,8 @@
 
 #include "SkeletalMesh.h"
 
-void SkeletalMesh::addSkeletalMeshElement(const std::shared_ptr<SkeletalMeshElement> &skeletalMeshElement)
+void SkeletalMesh::setSkeletalMeshModel(std::shared_ptr<SkeletalMeshModel> skeletalMeshModel)
 {
-	skeletalMeshElements.push_back(skeletalMeshElement);
-	materials.resize(skeletalMeshElements.size());
+	skeletalMeshModel_ = skeletalMeshModel;
+	materials.resize(skeletalMeshModel_->getSectionCount());
 }

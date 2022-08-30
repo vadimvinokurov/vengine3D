@@ -5,15 +5,15 @@
 #ifndef VENGINE3D_SKELETALMESH_H
 #define VENGINE3D_SKELETALMESH_H
 #include "spdlog/spdlog.h"
-#include "SkeletalMeshElement.h"
+#include "SkeletalMeshModel.h"
 #include "Material.h"
 
 class SkeletalMesh
 {
 public:
-	void addSkeletalMeshElement(const std::shared_ptr<SkeletalMeshElement>& skeletalMeshElement);
+	void setSkeletalMeshModel(std::shared_ptr<SkeletalMeshModel> skeletalMeshModel);
 
-	std::vector<std::shared_ptr<SkeletalMeshElement>> skeletalMeshElements;
+	std::shared_ptr<SkeletalMeshModel> skeletalMeshModel_;
 	std::vector<std::shared_ptr<Material>> materials;
 };
 
