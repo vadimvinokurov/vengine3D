@@ -19,8 +19,8 @@ struct SkeletalMeshSectionRenderData
 		normals.set(skeletalMesh.normals);
 		textureCoordinate.set(skeletalMesh.textureCoordinates);
 		indices.set(skeletalMesh.indices);
-		influenceBoneIndices.set(skeletalMesh.influenceBoneIndices);
-		influenceBoneWeight.set(skeletalMesh.influenceBoneWeight);
+		influenceBones.set(skeletalMesh.influenceBones);
+		influenceWeights.set(skeletalMesh.influenceWeights);
 	}
 
 	void use()
@@ -34,8 +34,8 @@ struct SkeletalMeshSectionRenderData
 	Render::ObjectBuffer<Vector3> normals;
 	Render::ObjectBuffer<Vector2> textureCoordinate;
 	Render::IndexBuffer indices;
-	Render::ObjectBuffer<IVector4> influenceBoneIndices;
-	Render::ObjectBuffer<Vector4> influenceBoneWeight;
+	Render::ObjectBuffer<IVector4> influenceBones;
+	Render::ObjectBuffer<Vector4> influenceWeights;
 };
 
 #endif // VENGINE3D_SKELETALMESHSECTIONRENDERDATA_H

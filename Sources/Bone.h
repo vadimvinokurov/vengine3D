@@ -11,7 +11,6 @@
 static constexpr int32 INVALID_BODE_ID = -1;
 
 struct Bone{
-	int32 id;
 	int32 parentId;
 	Transform transform;
 };

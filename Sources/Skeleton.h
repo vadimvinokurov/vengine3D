@@ -10,6 +10,15 @@
 
 class Skeleton
 {
+public:
+	explicit Skeleton(const std::vector<Bone> &bones);
+	Transform& operator[](int32 boneId);
+	const Transform& operator[](int32 boneId) const;
+	Transform getGlobalTransform(int32 boneId) const;
+	std::vector<Matrix4> getMatrixPalette() const;
+
+private:
+	std::vector<Bone> bones_;
 };
 
 #endif // VENGINE3D_SKELETON_H

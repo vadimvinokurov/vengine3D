@@ -329,6 +329,10 @@ struct TVector4
 	{
 	}
 
+	TVector4(T fillValue) : x(fillValue), y(fillValue), z(fillValue), w(fillValue)
+	{
+	}
+
 	TVector4(const T *fv) : x(fv[0]), y(fv[1]), z(fv[2]), w(fv[3])
 	{
 	}

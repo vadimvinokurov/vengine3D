@@ -62,12 +62,6 @@ void World::onCreate()
 	auto staticMeshs = fbx.loadMeshes();
 	AssetImporter sky = AssetImporter("E:\\Work\\vengine3D\\Content\\Mesh\\skysphere\\skysphere.fbx");
 	auto skySphere = sky.loadMeshes();
-	// fbx.loadSkelete();
-
-	//	StaticMeshComponent *staticMeshComponent1 = dragon->addComponent<StaticMeshComponent>();
-	//	staticMeshComponent1->setStaticMesh(std::make_shared<StaticMesh>(staticMeshs[0]));
-	//	staticMeshComponent1->setMaterial(
-	//		std::make_shared<Material>("E:\\Work\\vengine3D\\Content\\Mesh\\droid\\textures\\01___Def.jpeg"));
 
 	StaticMeshComponent *staticMeshComponent2 = skyBox->addComponent<StaticMeshComponent>();
 	staticMeshComponent2->setStaticMesh(std::make_shared<StaticMesh>(skySphere[0]));
@@ -77,7 +71,7 @@ void World::onCreate()
 
 	SkeletalMeshComponent *skeletalMeshComponent = dragon->addComponent<SkeletalMeshComponent>();
 
-	auto skeletalMeshModel = std::make_shared<SkeletalMeshModel>(fbx.loadSkeletalMesh());
+	auto skeletalMeshModel = std::make_shared<SkeletalMeshModel>(fbx.getSkeletalMesh());
 	skeletalMeshComponent->skeletalMesh.setSkeletalMeshModel(skeletalMeshModel);
 
 	spdlog::warn("size - {}", skeletalMeshComponent->skeletalMesh.materials.size());
@@ -91,14 +85,17 @@ void World::onCreate()
 		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Legs_Mat_BaseColor.png");
 	skeletalMeshComponent->skeletalMesh.materials[4] = std::make_shared<Material>(
 		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
-	skeletalMeshComponent->skeletalMesh.materials[5] =
-		std::make_shared<Material>("E:\\Work\\vengine3D\\Content\\Mesh\\skysphere\\sky_texture.jpg");
+	skeletalMeshComponent->skeletalMesh.materials[5] = std::make_shared<Material>(
+		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
 	skeletalMeshComponent->skeletalMesh.materials[6] = std::make_shared<Material>(
 		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
 	skeletalMeshComponent->skeletalMesh.materials[7] = std::make_shared<Material>(
 		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Helmet_Mat_BaseColor.png");
 	skeletalMeshComponent->skeletalMesh.materials[8] = std::make_shared<Material>(
 		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
+
+	auto skeleton = fbx.getSkeleton();
+	auto m = skeleton.getMatrixPalette();
 }
 void World::onUpdate(float dt)
 {
