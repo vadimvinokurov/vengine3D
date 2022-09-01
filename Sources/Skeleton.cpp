@@ -39,3 +39,14 @@ const Transform &Skeleton::operator[](int32 boneId) const
 {
 	return bones_[boneId].transform;
 }
+
+std::vector<Matrix4> Skeleton::getInvMatrixPalette() const
+{
+	std::vector<Matrix4> result(bones_.size());
+
+	for (int32 boneId = 0; boneId < bones_.size(); ++boneId)
+	{
+		result[boneId] = getGlobalTransform(boneId).getInversed().toMatrix();
+	}
+	return result;
+}

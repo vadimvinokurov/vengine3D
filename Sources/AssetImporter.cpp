@@ -140,19 +140,6 @@ std::pair<IVector4, Vector4> AssetImporter::weightsToEngineType(const Weights &w
 	return {bonesVector, weightsVector};
 }
 
-Transform AssetImporter::getTransform(const aiMatrix4x4 &m)
-{
-	aiVector3D aiscale;
-	aiVector3D aiposition;
-	aiQuaternion airotation;
-	m.Decompose(aiscale, airotation, aiposition);
-	Transform transform;
-	transform.scale = Vector3(aiscale.x, aiscale.y, aiscale.z);
-	transform.position = Vector3(aiposition.x, aiposition.y, aiposition.z);
-	transform.rotation = Quaternion(airotation.x, airotation.y, airotation.z, airotation.w);
-	return transform;
-}
-
 Skeleton AssetImporter::getSkeleton()
 {
 	std::vector<Bone> bones(boneIndexMap.size());
@@ -170,6 +157,19 @@ void AssetImporter::loadBones(std::vector<Bone> &bones, aiNode *node, int32 pare
 	{
 		loadBones(bones, node->mChildren[i], boneId);
 	}
+}
+
+Transform AssetImporter::getTransform(const aiMatrix4x4 &m)
+{
+	aiVector3D aiscale;
+	aiVector3D aiposition;
+	aiQuaternion airotation;
+	m.Decompose(aiscale, airotation, aiposition);
+	Transform transform;
+	transform.scale = Vector3(aiscale.x, aiscale.y, aiscale.z);
+	transform.position = Vector3(aiposition.x, aiposition.y, aiposition.z);
+	transform.rotation = Quaternion(airotation.x, airotation.y, airotation.z, airotation.w);
+	return transform;
 }
 
 std::vector<StaticMesh> AssetImporter::loadMeshes()

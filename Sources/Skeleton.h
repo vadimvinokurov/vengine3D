@@ -16,7 +16,7 @@ public:
 	const Transform& operator[](int32 boneId) const;
 	Transform getGlobalTransform(int32 boneId) const;
 	std::vector<Matrix4> getMatrixPalette() const;
-
+	std::vector<Matrix4> getInvMatrixPalette() const;
 private:
 	std::vector<Bone> bones_;
 };

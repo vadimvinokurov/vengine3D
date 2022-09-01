@@ -94,8 +94,9 @@ void World::onCreate()
 	skeletalMeshComponent->skeletalMesh.materials[8] = std::make_shared<Material>(
 		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
 
-	auto skeleton = fbx.getSkeleton();
-	auto m = skeleton.getMatrixPalette();
+	Skeleton bindPose = fbx.getSkeleton();
+	Skeleton anim = bindPose;
+	auto m = bindPose.getInvMatrixPalette();
 }
 void World::onUpdate(float dt)
 {
