@@ -3,7 +3,6 @@
 //
 
 #include "AssetImporter.h"
-#include "span.h"
 #include "SkeletalMeshModel.h"
 #include <sstream>
 
@@ -203,3 +202,52 @@ std::vector<StaticMesh> AssetImporter::loadMeshes()
 	}
 	return meshes;
 }
+void AssetImporter::getAnimations()
+{
+	spdlog::warn("Anim number: {}", pScene->mNumAnimations);
+
+	tcb::span<aiAnimation *> animations(pScene->mAnimations, pScene->mNumAnimations);
+	for (const auto &anim : animations)
+	{
+		loadAnimation(anim);
+		return;
+	}
+}
+
+void AssetImporter::loadAnimation(const aiAnimation *animation)
+{
+	spdlog::warn("Anim: {}; Duration: {}, tickPerSec: {}", animation->mName.C_Str(), animation->mDuration,
+				 animation->mTicksPerSecond);
+	tcb::span<aiNodeAnim *> channels(animation->mChannels, animation->mNumChannels);
+	for (const auto &channel : channels)
+	{
+		loadChannel(channel, animation->mTicksPerSecond);
+		return;
+	}
+}
+
+AnimTransformTrack AssetImporter::loadChannel(const aiNodeAnim *channel, float tickPerSecond)
+{
+	auto positionTrack = loadTrack(channel->mPositionKeys, channel->mNumPositionKeys, tickPerSecond);
+	auto scalingTrack = loadTrack(channel->mScalingKeys, channel->mNumScalingKeys, tickPerSecond);
+	auto rotationTrack = loadTrack(channel->mRotationKeys, channel->mNumRotationKeys, tickPerSecond);
+
+	return AnimTransformTrack();
+}
+
+AnimFrame<Vector3> AssetImporter::toAnimFrame(const aiVectorKey &key, float tickPerSecond)
+{
+	AnimFrame<Vector3> frame;
+	frame.time = key.mTime / tickPerSecond;
+	frame.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
+	return frame;
+}
+
+AnimFrame<Quaternion> AssetImporter::toAnimFrame(const aiQuatKey &key, float tickPerSecond)
+{
+	AnimFrame<Quaternion> frame;
+	frame.time = key.mTime / tickPerSecond;
+	frame.value = Quaternion(key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w);
+	return frame;
+}
+
