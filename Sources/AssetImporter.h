@@ -13,11 +13,8 @@
 #include "span.h"
 #include "AssetTypeTraits.h"
 
-#include "Transform.h"
-#include "Bone.h"
-#include "Skeleton.h"
 #include "StaticMesh.h"
-#include "AnimTransformTrack.h"
+#include "Animation.h"
 
 using Weights = std::map<int32, float>;
 using VertexWeights = std::map<uint32, Weights>;
@@ -32,7 +29,7 @@ public:
 	std::vector<StaticMesh> loadMeshes();
 	SkeletalMeshModel getSkeletalMesh();
 	Skeleton getSkeleton();
-	void getAnimations();
+	std::unordered_map<std::string, Animation> getAnimations();
 
 private:
 	void boneIndexing();
@@ -41,7 +38,7 @@ private:
 	std::pair<IVector4, Vector4> weightsToEngineType(const Weights &weights);
 
 	void loadBones(std::vector<Bone> &bones, aiNode *node, int32 parentId);
-	void loadAnimation(const aiAnimation *animation);
+	Animation loadAnimation(const aiAnimation *animationSrc);
 	AnimTransformTrack loadChannel(const aiNodeAnim *channel, float tickPerSecond);
 
 	template <class T>
@@ -60,6 +57,7 @@ template <class T>
 auto AssetImporter::loadTrack(const T *aiKeys, uint32 size, float tickPerSecond)
 {
 	using EngineValueType = AssetSameType_t<decltype(aiKeys->mValue)>;
+	AnimTrack<EngineValueType> track;
 
 	tcb::span<const T> keysSrc(aiKeys, size);
 	std::vector<AnimFrame<EngineValueType>> keys;
@@ -72,12 +70,12 @@ auto AssetImporter::loadTrack(const T *aiKeys, uint32 size, float tickPerSecond)
 		if (keys.back().time <= lastTime)
 		{
 			assert(false && "Incorrect animation track. Frame time less then previous frame.");
-			keys.resize(1);
-			return AnimTrack(keys);
+			return track;
 		}
 		lastTime = keys.back().time;
 	}
-	return AnimTrack(std::move(keys));
+	track.setFrames(keys);
+	return track;
 }
 
 #endif // VENGINE3D_ASSETIMPORTER_H

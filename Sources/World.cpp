@@ -75,29 +75,32 @@ void World::onCreate()
 	skeletalMeshComponent->skeletalMesh.setSkeletalMeshModel(skeletalMeshModel);
 
 	spdlog::warn("size - {}", skeletalMeshComponent->skeletalMesh.materials.size());
-	skeletalMeshComponent->skeletalMesh.materials[0] = std::make_shared<Material>(
-		"E:\\Work\\vengine3D\\Content\\Mesh\\woman\\Woman.png");
-//	skeletalMeshComponent->skeletalMesh.materials[1] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Chest_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[2] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Arms_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[3] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Legs_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[4] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[5] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[6] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[7] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Helmet_Mat_BaseColor.png");
-//	skeletalMeshComponent->skeletalMesh.materials[8] = std::make_shared<Material>(
-//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
+	skeletalMeshComponent->skeletalMesh.materials[0] =
+		std::make_shared<Material>("E:\\Work\\vengine3D\\Content\\Mesh\\woman\\Woman.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[1] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Chest_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[2] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Arms_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[3] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Legs_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[4] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[5] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\ODST_Shoulder_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[6] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[7] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Helmet_Mat_BaseColor.png");
+	//	skeletalMeshComponent->skeletalMesh.materials[8] = std::make_shared<Material>(
+	//		"E:\\Work\\vengine3D\\Content\\Mesh\\halo\\textures\\Spartan_Ears_Mat_BaseColor.png");
 
 	Skeleton bindPose = fbx.getSkeleton();
-	Skeleton anim = bindPose;
-	auto m = bindPose.getInvMatrixPalette();
-	fbx.getAnimations();
+	auto animations = fbx.getAnimations();
+
+	for (const auto &anim : animations)
+	{
+		spdlog::warn("Anim: {}", anim.first);
+	}
 }
 void World::onUpdate(float dt)
 {

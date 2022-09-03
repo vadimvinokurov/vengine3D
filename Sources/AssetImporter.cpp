@@ -151,6 +151,7 @@ void AssetImporter::loadBones(std::vector<Bone> &bones, aiNode *node, int32 pare
 	int32 boneId = boneIndexMap[std::string(node->mName.C_Str())];
 	bones[boneId].transform = getTransform(node->mTransformation);
 	bones[boneId].parentId = parentId;
+	bones[boneId].name = node->mName.C_Str();
 
 	for (uint32 i = 0; i < node->mNumChildren; ++i)
 	{
@@ -202,37 +203,41 @@ std::vector<StaticMesh> AssetImporter::loadMeshes()
 	}
 	return meshes;
 }
-void AssetImporter::getAnimations()
+std::unordered_map<std::string, Animation> AssetImporter::getAnimations()
 {
-	spdlog::warn("Anim number: {}", pScene->mNumAnimations);
+	std::unordered_map<std::string, Animation> animations;
 
-	tcb::span<aiAnimation *> animations(pScene->mAnimations, pScene->mNumAnimations);
-	for (const auto &anim : animations)
+	tcb::span<aiAnimation *> animationsSrc(pScene->mAnimations, pScene->mNumAnimations);
+	for (const auto &anim : animationsSrc)
 	{
-		loadAnimation(anim);
-		return;
+		animations.emplace(anim->mName.C_Str(), loadAnimation(anim));
 	}
+	return animations;
 }
 
-void AssetImporter::loadAnimation(const aiAnimation *animation)
+Animation AssetImporter::loadAnimation(const aiAnimation *animationSrc)
 {
-	spdlog::warn("Anim: {}; Duration: {}, tickPerSec: {}", animation->mName.C_Str(), animation->mDuration,
-				 animation->mTicksPerSecond);
-	tcb::span<aiNodeAnim *> channels(animation->mChannels, animation->mNumChannels);
+	float durationInSec = animationSrc->mDuration / animationSrc->mTicksPerSecond;
+	Animation animation;
+	animation.setName(animationSrc->mName.C_Str());
+	animation.setDuration(durationInSec);
+
+	tcb::span<aiNodeAnim *> channels(animationSrc->mChannels, animationSrc->mNumChannels);
 	for (const auto &channel : channels)
 	{
-		loadChannel(channel, animation->mTicksPerSecond);
-		return;
+		animation.addTransformTrack(loadChannel(channel, animationSrc->mTicksPerSecond));
 	}
+	return animation;
 }
 
 AnimTransformTrack AssetImporter::loadChannel(const aiNodeAnim *channel, float tickPerSecond)
 {
-	auto positionTrack = loadTrack(channel->mPositionKeys, channel->mNumPositionKeys, tickPerSecond);
-	auto scalingTrack = loadTrack(channel->mScalingKeys, channel->mNumScalingKeys, tickPerSecond);
-	auto rotationTrack = loadTrack(channel->mRotationKeys, channel->mNumRotationKeys, tickPerSecond);
-
-	return AnimTransformTrack();
+	AnimTransformTrack transformTrack;
+	transformTrack.setPositionTrack(loadTrack(channel->mPositionKeys, channel->mNumPositionKeys, tickPerSecond));
+	transformTrack.setRotationTrack(loadTrack(channel->mRotationKeys, channel->mNumRotationKeys, tickPerSecond));
+	transformTrack.setScalingTrack(loadTrack(channel->mScalingKeys, channel->mNumScalingKeys, tickPerSecond));
+	transformTrack.setBoneId(boneIndexMap[channel->mNodeName.C_Str()]);
+	return transformTrack;
 }
 
 AnimFrame<Vector3> AssetImporter::toAnimFrame(const aiVectorKey &key, float tickPerSecond)
@@ -250,4 +255,3 @@ AnimFrame<Quaternion> AssetImporter::toAnimFrame(const aiQuatKey &key, float tic
 	frame.value = Quaternion(key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w);
 	return frame;
 }
-

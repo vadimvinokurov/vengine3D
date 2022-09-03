@@ -8,17 +8,17 @@
 #include <sstream>
 #include "AnimFrame.h"
 #include "Math/MathUtils.h"
+#include <algorithm>
 
 template <typename T>
 class AnimTrack
 {
 public:
-	AnimTrack(std::vector<AnimFrame<T>> frames);
+	void setFrames(const std::vector<AnimFrame<T>>& frames);
 	T sample(float time, bool looping) const;
 	uint32 frameIndex(float time, bool looping) const;
 	float adjustTimeToFitTrack(float time, bool looping) const;
-	float getStartTime() const;
-	float getEndTime() const;
+	bool empty() const;
 
 private:
 	T normalize_if_quaternion(const T &value) const;
@@ -27,20 +27,11 @@ private:
 };
 
 template <typename T>
-AnimTrack<T>::AnimTrack(std::vector<AnimFrame<T>> frames) : frames_(std::move(frames))
-{
-}
-
-template <typename T>
 T AnimTrack<T>::sample(float time, bool looping) const
 {
-	if (frames_.empty())
+	if (empty())
 	{
 		return T();
-	}
-	if (frames_.size() == 1)
-	{
-		return frames_.front().value;
 	}
 	float itime = time;
 	time = adjustTimeToFitTrack(time, looping);
@@ -74,16 +65,13 @@ float AnimTrack<T>::adjustTimeToFitTrack(float time, bool looping) const
 template <typename T>
 uint32 AnimTrack<T>::frameIndex(float time, bool looping) const
 {
-	if (!looping)
+	if (time <= frames_.front().time)
 	{
-		if (time <= frames_.front().time)
-		{
-			return 0;
-		}
-		if (time >= frames_.back().time)
-		{
-			return frames_.size() - 1;
-		}
+		return 0;
+	}
+	if (time >= frames_.back().time)
+	{
+		return frames_.size() - 1;
 	}
 
 	for (uint32 i = frames_.size() - 1; i >= 0; --i)
@@ -108,23 +96,16 @@ T AnimTrack<T>::normalize_if_quaternion(const T &value) const
 		return value;
 	}
 }
+
 template <typename T>
-float AnimTrack<T>::getStartTime() const
+bool AnimTrack<T>::empty() const
 {
-	if (frames_.empty())
-	{
-		return 0.0f;
-	}
-	return frames_.front().time;
+	return frames_.size() < 2;
 }
 template <typename T>
-float AnimTrack<T>::getEndTime() const
+void AnimTrack<T>::setFrames(const std::vector<AnimFrame<T>> &frames)
 {
-	if (frames_.empty())
-	{
-		return 0.0f;
-	}
-	return frames_.back().time;
+	frames_ = frames;
 }
 
 #endif // VENGINE3D_ANIMTRACK_H
