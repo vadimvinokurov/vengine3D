@@ -15,15 +15,9 @@ void Animation::setLooping(bool looping)
 	looping_ = looping;
 }
 
-void Animation::setDuration(float durationInSeconds)
-{
-	durationInSeconds_ = durationInSeconds;
-}
-
 float Animation::sample(Skeleton &skeleton, float time) const
 {
 	time = adjustTimeToFitAnimation(time);
-
 	for (const auto &transformTrack : transformTracks_)
 	{
 		transformTrack.sample(skeleton[transformTrack.getBoneId()], time, looping_);
@@ -35,7 +29,8 @@ float Animation::adjustTimeToFitAnimation(float time) const
 {
 	return looping_ ? VEMath::loopclamp(time, 0.0f, durationInSeconds_) : std::clamp(time, 0.0f, durationInSeconds_);
 }
-void Animation::setName(const std::string &name)
+
+Animation::Animation(const std::string &name, float durationInSeconds)
+	: name_(name), durationInSeconds_(durationInSeconds)
 {
-	name_ = name;
 }

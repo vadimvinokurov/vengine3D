@@ -57,7 +57,6 @@ template <class T>
 auto AssetImporter::loadTrack(const T *aiKeys, uint32 size, float tickPerSecond)
 {
 	using EngineValueType = AssetSameType_t<decltype(aiKeys->mValue)>;
-	AnimTrack<EngineValueType> track;
 
 	tcb::span<const T> keysSrc(aiKeys, size);
 	std::vector<AnimFrame<EngineValueType>> keys;
@@ -70,12 +69,12 @@ auto AssetImporter::loadTrack(const T *aiKeys, uint32 size, float tickPerSecond)
 		if (keys.back().time <= lastTime)
 		{
 			assert(false && "Incorrect animation track. Frame time less then previous frame.");
-			return track;
+			keys.clear();
+			return AnimTrack(keys);
 		}
 		lastTime = keys.back().time;
 	}
-	track.setFrames(keys);
-	return track;
+	return AnimTrack(keys);
 }
 
 #endif // VENGINE3D_ASSETIMPORTER_H

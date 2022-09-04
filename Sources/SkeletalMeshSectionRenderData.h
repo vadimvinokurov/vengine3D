@@ -27,6 +27,8 @@ struct SkeletalMeshSectionRenderData
 	{
 		vertices.attachToAttribute(0);
 		textureCoordinate.attachToAttribute(2);
+		influenceBones.attachToAttribute(3);
+		influenceWeights.attachToAttribute(4);
 		indices.attachToShader();
 	}
 

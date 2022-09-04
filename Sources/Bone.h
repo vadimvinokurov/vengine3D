@@ -14,6 +14,7 @@ struct Bone{
 	std::string name;
 	int32 parentId;
 	Transform transform;
+	Transform offset;
 };
 
 #endif // VENGINE3D_BONE_H

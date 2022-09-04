@@ -21,6 +21,13 @@ struct Material
 		shaderSource.emplace_back("../Content/Shaders/default.vert", ShaderType::Vertex);
 		shader = std::make_shared<Shader>(shaderSource);
 	}
+	Material(std::string s, const std::vector<ShaderSource>& shaderSource)
+	{
+		textures.emplace_back(Texture(s.c_str()), "baseColorTexture");
+		shader = std::make_shared<Shader>(shaderSource);
+	}
+
+
 	Material(const Material &other) = delete;
 	Material(Material &&other) = delete;
 	Material &operator=(const Material &other) = delete;

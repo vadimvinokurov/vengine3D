@@ -54,6 +54,7 @@ void RenderSystem::update(float dt)
 	auto [skeletalMeshComp_begin, skeletalMeshComp_end] = getWorld()->getComponents<SkeletalMeshComponent>();
 	for (auto it = skeletalMeshComp_begin; it != skeletalMeshComp_end; ++it)
 	{
+		updateAnimation(&(*it), dt);
 		updateSceletalMeshComponent(&(*it), dt);
 	}
 }
@@ -106,6 +107,13 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 	shader->unBind();
 }
 
+void RenderSystem::updateAnimation(SkeletalMeshComponent *scm, float dt)
+{
+	//dt = 0.9f;
+	scm->animTime = scm->animation->sample(*scm->skeleton, scm->animTime + dt);
+	//exit(0);
+}
+
 void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMeshComponent, float dt)
 {
 	auto &skeletalMeshModel_ = skeletalMeshComponent->skeletalMesh.skeletalMeshModel_;
@@ -121,11 +129,14 @@ void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMe
 			texture.first.bind(shader->getUniform(texture.second));
 		}
 		Matrix4 model = skeletalMeshComponent->transform.toMatrix();
+		auto bones = skeletalMeshComponent->skeleton->getMatrixPalette();
+
 		Render::Uniform<Matrix4>::set(shader->getUniform("projection"), perspective);
 		Render::Uniform<Matrix4>::set(shader->getUniform("view"), view);
 		Render::Uniform<Matrix4>::set(shader->getUniform("model"), model);
+		Render::Uniform<Matrix4>::set(shader->getUniform("bones"), bones);
 
-		auto[VAO, indicesCount] = skeletalMeshModel_->getRenderData(i);
+		auto [VAO, indicesCount] = skeletalMeshModel_->getRenderData(i);
 
 		VAO.bind();
 		glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);

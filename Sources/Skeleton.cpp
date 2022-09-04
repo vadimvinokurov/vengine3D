@@ -9,14 +9,13 @@ Skeleton::Skeleton(const std::vector<Bone> &bones) : bones_(bones)
 
 Transform Skeleton::getGlobalTransform(int32 boneId) const
 {
-	Transform result = bones_[boneId].transform;
+	Transform result = bones_[boneId].transform * bones_[boneId].offset;
 	while (bones_[boneId].parentId != INVALID_BODE_ID)
 	{
 		boneId = bones_[boneId].parentId;
 		result = bones_[boneId].transform * result;
 	}
-
-	return result;
+	return globalInverseTransform_ * result;
 }
 
 std::vector<Matrix4> Skeleton::getMatrixPalette() const
@@ -38,15 +37,4 @@ Transform &Skeleton::operator[](int32 boneId)
 const Transform &Skeleton::operator[](int32 boneId) const
 {
 	return bones_[boneId].transform;
-}
-
-std::vector<Matrix4> Skeleton::getInvMatrixPalette() const
-{
-	std::vector<Matrix4> result(bones_.size());
-
-	for (int32 boneId = 0; boneId < bones_.size(); ++boneId)
-	{
-		result[boneId] = getGlobalTransform(boneId).getInversed().toMatrix();
-	}
-	return result;
 }

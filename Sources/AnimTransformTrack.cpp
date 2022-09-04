@@ -18,10 +18,6 @@ void AnimTransformTrack::setScalingTrack(const AnimTrack<Vector3> &scale)
 	scale_ = scale;
 }
 
-void AnimTransformTrack::setBoneId(int32 boneId)
-{
-	boneId_ = boneId;
-}
 int32 AnimTransformTrack::getBoneId() const
 {
 	return boneId_;
@@ -40,4 +36,7 @@ void AnimTransformTrack::sample(Transform &transform, float time, bool looping) 
 	{
 		transform.scale = scale_.sample(time, looping);
 	}
+}
+AnimTransformTrack::AnimTransformTrack(int32 boneId) : boneId_(boneId)
+{
 }

@@ -14,7 +14,8 @@ template <typename T>
 class AnimTrack
 {
 public:
-	void setFrames(const std::vector<AnimFrame<T>>& frames);
+	AnimTrack() = default;
+	explicit AnimTrack(const std::vector<AnimFrame<T>> &frames) : frames_(frames){};
 	T sample(float time, bool looping) const;
 	uint32 frameIndex(float time, bool looping) const;
 	float adjustTimeToFitTrack(float time, bool looping) const;
@@ -26,6 +27,7 @@ private:
 	std::vector<AnimFrame<T>> frames_;
 };
 
+
 template <typename T>
 T AnimTrack<T>::sample(float time, bool looping) const
 {
@@ -36,7 +38,6 @@ T AnimTrack<T>::sample(float time, bool looping) const
 	float itime = time;
 	time = adjustTimeToFitTrack(time, looping);
 	uint32 thisFrame = frameIndex(time, looping);
-
 	if (thisFrame == frames_.size() - 1)
 	{
 		return frames_[thisFrame].value;
@@ -101,11 +102,6 @@ template <typename T>
 bool AnimTrack<T>::empty() const
 {
 	return frames_.size() < 2;
-}
-template <typename T>
-void AnimTrack<T>::setFrames(const std::vector<AnimFrame<T>> &frames)
-{
-	frames_ = frames;
 }
 
 #endif // VENGINE3D_ANIMTRACK_H

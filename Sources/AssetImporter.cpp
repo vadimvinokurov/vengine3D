@@ -143,7 +143,20 @@ Skeleton AssetImporter::getSkeleton()
 {
 	std::vector<Bone> bones(boneIndexMap.size());
 	loadBones(bones, pScene->mRootNode, INVALID_BODE_ID);
-	return Skeleton(bones);
+
+	tcb::span<aiMesh *> meshes(pScene->mMeshes, pScene->mNumMeshes);
+	for (const auto &mesh : meshes)
+	{
+		tcb::span<aiBone *> meshBones(mesh->mBones, mesh->mNumBones);
+		for (const auto &bone : meshBones)
+		{
+			int32 boneId = boneIndexMap[bone->mName.C_Str()];
+			bones[boneId].offset = getTransform(bone->mOffsetMatrix);
+		}
+	}
+	Skeleton skeleton(bones);
+	skeleton.setGlobalInverseTransform(getTransform(pScene->mRootNode->mTransformation).getInversed());
+	return skeleton;
 }
 
 void AssetImporter::loadBones(std::vector<Bone> &bones, aiNode *node, int32 parentId)
@@ -218,9 +231,7 @@ std::unordered_map<std::string, Animation> AssetImporter::getAnimations()
 Animation AssetImporter::loadAnimation(const aiAnimation *animationSrc)
 {
 	float durationInSec = animationSrc->mDuration / animationSrc->mTicksPerSecond;
-	Animation animation;
-	animation.setName(animationSrc->mName.C_Str());
-	animation.setDuration(durationInSec);
+	Animation animation(animationSrc->mName.C_Str(), durationInSec);
 
 	tcb::span<aiNodeAnim *> channels(animationSrc->mChannels, animationSrc->mNumChannels);
 	for (const auto &channel : channels)
@@ -232,11 +243,14 @@ Animation AssetImporter::loadAnimation(const aiAnimation *animationSrc)
 
 AnimTransformTrack AssetImporter::loadChannel(const aiNodeAnim *channel, float tickPerSecond)
 {
-	AnimTransformTrack transformTrack;
-	transformTrack.setPositionTrack(loadTrack(channel->mPositionKeys, channel->mNumPositionKeys, tickPerSecond));
-	transformTrack.setRotationTrack(loadTrack(channel->mRotationKeys, channel->mNumRotationKeys, tickPerSecond));
-	transformTrack.setScalingTrack(loadTrack(channel->mScalingKeys, channel->mNumScalingKeys, tickPerSecond));
-	transformTrack.setBoneId(boneIndexMap[channel->mNodeName.C_Str()]);
+	auto positionTrack = loadTrack(channel->mPositionKeys, channel->mNumPositionKeys, tickPerSecond);
+	auto rotationTrack = loadTrack(channel->mRotationKeys, channel->mNumRotationKeys, tickPerSecond);
+	auto scalingTrack = loadTrack(channel->mScalingKeys, channel->mNumScalingKeys, tickPerSecond);
+
+	AnimTransformTrack transformTrack(boneIndexMap[channel->mNodeName.C_Str()]);
+	transformTrack.setPositionTrack(positionTrack);
+	transformTrack.setRotationTrack(rotationTrack);
+	transformTrack.setScalingTrack(scalingTrack);
 	return transformTrack;
 }
 

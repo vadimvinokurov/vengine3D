@@ -11,10 +11,10 @@
 class AnimTransformTrack
 {
 public:
+	AnimTransformTrack(int32 boneId);
 	void setPositionTrack(const AnimTrack<Vector3>& position);
 	void setRotationTrack(const AnimTrack<Quaternion>& rotation);
 	void setScalingTrack(const AnimTrack<Vector3>& scale);
-	void setBoneId(int32 boneId);
 	int32 getBoneId() const;
 	void sample(Transform &transform, float time, bool looping) const;
 

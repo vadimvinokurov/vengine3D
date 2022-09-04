@@ -11,11 +11,10 @@
 class Animation
 {
 public:
-	void setName(const std::string& name);
+	Animation(const std::string& name, float durationInSeconds);
 	void addTransformTrack(const AnimTransformTrack &transformTrack);
 	void setLooping(bool looping);
 	float sample(Skeleton &skeleton, float time) const;
-	void setDuration(float durationInSeconds);
 
 private:
 	float adjustTimeToFitAnimation(float time) const;

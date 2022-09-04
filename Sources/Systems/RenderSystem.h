@@ -25,6 +25,7 @@ public:
 private:
 	void updateStaticMeshComponent(StaticMeshComponent* staticMeshComponent, float dt);
 	void updateSceletalMeshComponent(SkeletalMeshComponent* sceletalMeshComponent, float dt);
+	void updateAnimation(SkeletalMeshComponent* scm, float dt);
 	CameraComponent* getMainCamera();
 	ShaderSource defaultVertexShader;
 
