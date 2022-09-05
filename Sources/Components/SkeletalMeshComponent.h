@@ -13,7 +13,7 @@
 class SkeletalMeshComponent : public PrimitiveComponent
 {
 	friend class RenderSystem;
-	GENERATE_COMPONENT_BODY()
+	GENERATE_COMPONENT_BODY(PrimitiveComponent)
 public:
 	SkeletalMesh skeletalMesh;
 	std::shared_ptr<Skeleton> skeleton;

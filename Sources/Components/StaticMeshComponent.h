@@ -13,7 +13,7 @@
 class StaticMeshComponent : public PrimitiveComponent
 {
 	friend class RenderSystem;
-	GENERATE_COMPONENT_BODY()
+	GENERATE_COMPONENT_BODY(PrimitiveComponent)
 public:
 	StaticMeshComponent();
 	void setStaticMesh(std::shared_ptr<StaticMesh> newStaticMesh);

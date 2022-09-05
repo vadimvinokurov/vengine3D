@@ -9,6 +9,7 @@
 #include "Render/RenderObjectData.h"
 class PrimitiveComponent : public TransformComponent
 {
+	GENERATE_COMPONENT_BODY(TransformComponent)
 public:
 	PrimitiveComponent(){
 		needUpdateRenderData = 1;

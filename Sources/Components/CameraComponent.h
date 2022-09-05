@@ -10,6 +10,7 @@
 
 class CameraComponent : public TransformComponent
 {
+	GENERATE_COMPONENT_BODY(TransformComponent)
 public:
 	CameraComponent() = default;
 

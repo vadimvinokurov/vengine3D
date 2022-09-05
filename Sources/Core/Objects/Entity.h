@@ -10,11 +10,16 @@
 #include "Core/Managers/ComponentManager.h"
 #include "Core/Utils/TypeTraits.h"
 
-#define GENERATE_ENTITY_BODY()                                                                                         \
+#define GENERATE_ENTITY_BODY(BasedClass)                                                                               \
 public:                                                                                                                \
+	using Super = BasedClass;                                                                                          \
 	virtual EntityTypeId getEntityTypeId() const                                                                       \
 	{                                                                                                                  \
 		return TypeIdManager<Entity>::getId<std::remove_cv_t<std::remove_pointer_t<decltype(this)>>>();                \
+	}                                                                                                                  \
+	virtual EntityTypeId getParentEntityTypeId() const                                                                 \
+	{                                                                                                                  \
+		return TypeIdManager<Entity>::getId<Super>();                                                                  \
 	}                                                                                                                  \
 	static EntityTypeId getTypeId()                                                                                    \
 	{                                                                                                                  \
@@ -22,11 +27,10 @@ public:                                                                         
 	}                                                                                                                  \
                                                                                                                        \
 private:
-
 class Entity : public VObject
 {
-	GENERATE_ENTITY_BODY()
 	friend class EntityManager;
+	GENERATE_ENTITY_BODY(VObject)
 
 public:
 	Entity() = default;

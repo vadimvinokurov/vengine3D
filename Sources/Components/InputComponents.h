@@ -13,7 +13,7 @@
 
 class InputComponents : public Component
 {
-	GENERATE_COMPONENT_BODY()
+	GENERATE_COMPONENT_BODY(Component)
 public:
 	InputComponents()
 	{

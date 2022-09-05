@@ -9,11 +9,16 @@
 #include "Core/Utils/IdManagers.h"
 #include "Core/Utils/TypeTraits.h"
 
-#define GENERATE_COMPONENT_BODY()                                                                                      \
+#define GENERATE_COMPONENT_BODY(BasedClass)                                                                            \
 public:                                                                                                                \
+	using Super = BasedClass;                                                                                          \
 	virtual ComponentTypeId getComponentTypeId() const                                                                 \
 	{                                                                                                                  \
 		return TypeIdManager<Component>::getId<std::remove_cv_t<std::remove_pointer_t<decltype(this)>>>();             \
+	}                                                                                                                  \
+	virtual ComponentTypeId getParentComponentTypeId() const                                                           \
+	{                                                                                                                  \
+		return TypeIdManager<Component>::getId<Super>();                                                               \
 	}                                                                                                                  \
 	static ComponentTypeId getTypeId()                                                                                 \
 	{                                                                                                                  \
@@ -24,8 +29,8 @@ private:
 
 class Component : public VObject
 {
-	GENERATE_COMPONENT_BODY()
 	friend class ComponentManager;
+	GENERATE_COMPONENT_BODY(VObject)
 
 public:
 	Component() = default;

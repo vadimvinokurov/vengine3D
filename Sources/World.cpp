@@ -13,7 +13,7 @@
 
 class Dragon : public Entity
 {
-	GENERATE_ENTITY_BODY()
+	GENERATE_ENTITY_BODY(Entity)
 public:
 	void lookUp(float amount)
 	{
@@ -36,7 +36,7 @@ public:
 
 class SkyBox : public Entity
 {
-	GENERATE_ENTITY_BODY();
+	GENERATE_ENTITY_BODY(Entity);
 };
 
 World::World()
