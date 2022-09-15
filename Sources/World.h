@@ -6,24 +6,35 @@
 #define VENGINE3D_WORLD_H
 
 #include "Core/VEngine.h"
+#include "Core/Objects/Entity.h"
+#include "Core/Managers/SystemManager.h"
+#include "Core/Managers/ComponentManager.h"
+#include "Core/Managers/EntityManager.h"
 
-class World : public VEngine
+class World
 {
 public:
-	virtual void onCreate() override;
-	virtual void onUpdate(float dt) override;
-	virtual void onQuite() override;
+	World();
+	void onCreate();
+	void update(float dt);
+	void onQuite();
+
+	Entity *getEntityByEntityId(EntityId entityId)
+	{
+		return entityManager->getEntityPtr(entityId);
+	}
+
+	template <class T>
+	std::pair<ComponentManager::ComponentIterator<T>, ComponentManager::ComponentIterator<T>> getComponents()
+	{
+		return std::pair<ComponentManager::ComponentIterator<T>, ComponentManager::ComponentIterator<T>>(
+			componentManager->begin<T>(), componentManager->end<T>());
+	}
 
 private:
-	World();
-
-	friend World *getWorld();
+	std::unique_ptr<ComponentManager> componentManager;
+	std::unique_ptr<EntityManager> entityManager;
+	std::unique_ptr<SystemManager> systemManager;
 };
-
-inline World *getWorld()
-{
-	static std::unique_ptr<World> world(new World());
-	return world.get();
-}
 
 #endif // VENGINE3D_WORLD_H

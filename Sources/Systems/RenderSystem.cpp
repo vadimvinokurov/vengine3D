@@ -45,13 +45,13 @@ void RenderSystem::update(float dt)
 		view = cameraComponent->getViewMatrix();
 	}
 
-	auto [staticMeshComp_begin, staticMeshComp_end] = getWorld()->getComponents<StaticMeshComponent>();
+	auto [staticMeshComp_begin, staticMeshComp_end] = VEngine::getWorld()->getComponents<StaticMeshComponent>();
 	for (auto it = staticMeshComp_begin; it != staticMeshComp_end; ++it)
 	{
 		updateStaticMeshComponent(&(*it), dt);
 	}
 
-	auto [skeletalMeshComp_begin, skeletalMeshComp_end] = getWorld()->getComponents<SkeletalMeshComponent>();
+	auto [skeletalMeshComp_begin, skeletalMeshComp_end] = VEngine::getWorld()->getComponents<SkeletalMeshComponent>();
 	for (auto it = skeletalMeshComp_begin; it != skeletalMeshComp_end; ++it)
 	{
 		updateAnimation(&(*it), dt);
@@ -148,12 +148,12 @@ void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMe
 
 CameraComponent *RenderSystem::getMainCamera()
 {
-	auto [inputComponentIt, end] = getWorld()->getComponents<InputComponents>();
+	auto [inputComponentIt, end] = VEngine::getWorld()->getComponents<InputComponents>();
 	if (inputComponentIt == end)
 	{
 		return nullptr;
 	}
-	auto entity = getWorld()->getEntityByEntityId(inputComponentIt->getOwner());
+	auto entity = VEngine::getWorld()->getEntityByEntityId(inputComponentIt->getOwner());
 	if (entity == nullptr)
 	{
 		return nullptr;

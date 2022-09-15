@@ -3,68 +3,35 @@
 //
 
 #include "VEngine.h"
-#include "Window.h"
-#include "Systems/RenderSystem.h"
-#include "Systems/ControllerSystem.h"
 
-VEngine::VEngine()
+#include <memory>
+
+std::unique_ptr<VEngineBase> VEngine::engineInstance_;
+
+void VEngine::initialize()
 {
-	window_ = std::make_unique<Window>(windowDefaultWidth_, windowDefaultHeight_);
-	window_->makeContextCurrent();
-	systemManager = std::make_unique<SystemManager>();
-	componentManager = std::make_unique<ComponentManager>();
-	entityManager = std::make_unique<EntityManager>(componentManager.get());
-	return;
+	assert(engineInstance_.get() == nullptr && "engineInstance_ already initialized");
+	SPDLOG_INFO("Engine has been initialized!");
+	engineInstance_ = std::make_unique<VEngineBase>();
+}
+
+void VEngine::destroy()
+{
+	engineInstance_.reset();
+	SPDLOG_INFO("Engine has been destroyed!");
 }
 
 void VEngine::run()
 {
-	onCreate();
-
-	while (!window_->shouldClose())
-	{
-		auto frameStart = std::chrono::steady_clock::now();
-		Window::poolEvents();
-		systemManager->update(deltaTime_);
-		entityManager->removeDestroyedEntities();
-		onUpdate(deltaTime_);
-		window_->swapBuffer();
-
-		std::chrono::duration<double> target(deltaTime_);
-		while (std::chrono::steady_clock::now() - frameStart < target)
-		{
-			std::this_thread::yield();
-		}
-	}
-	onQuite();
-}
-VEngine::~VEngine()
-{
+	engineInstance_->run();
 }
 
-void VEngine::onCreate()
+Window *VEngine::getWindow()
 {
-	ControllerSystem *controllerSystem = systemManager->addSystem<ControllerSystem>(System::HIGHEST_SYSTEM_PRIORITY);
-	window_->onKeyboardKeyDelegate.connect(controllerSystem, &ControllerSystem::onInputKey);
-	window_->onMouseKeyDelegate.connect(controllerSystem, &ControllerSystem::onInputKey);
-	window_->onCursorPositionDelegate.connect(controllerSystem, &ControllerSystem::onCursorPosition);
-	window_->onCursorDeltaDelegate.connect(controllerSystem, &ControllerSystem::onCursorDelta);
-
-	RenderSystem *renderSystem = systemManager->addSystem<RenderSystem>(System::LOWEST_SYSTEM_PRIORITY);
-	window_->onWindowResizeDelegate.connect(renderSystem, &RenderSystem::onWindowResize);
-	window_->onWindowResizeDelegate.connect(controllerSystem, &ControllerSystem::onWindowResize);
-	renderSystem->onWindowResize(windowDefaultWidth_, windowDefaultHeight_);
-	controllerSystem->onWindowResize(windowDefaultWidth_, windowDefaultHeight_);
+	return engineInstance_->getWindow();
 }
 
-void VEngine::onUpdate(float dt)
+World *VEngine::getWorld()
 {
-}
-
-void VEngine::onQuite()
-{
-}
-Entity *VEngine::getEntityByEntityId(EntityId entityId)
-{
-	return entityManager->getEntityPtr(entityId);
+	return engineInstance_->getWorld();
 }

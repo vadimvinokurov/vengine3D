@@ -12,7 +12,7 @@ ControllerSystem::ControllerSystem(SystemPriority priority) : System(priority)
 
 void ControllerSystem::update(float dt)
 {
-	auto [inputComponentIt, end] = getWorld()->getComponents<InputComponents>();
+	auto [inputComponentIt, end] = VEngine::getWorld()->getComponents<InputComponents>();
 	if (inputComponentIt == end)
 	{
 		return;
