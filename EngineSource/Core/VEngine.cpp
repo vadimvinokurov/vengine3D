@@ -3,16 +3,16 @@
 //
 
 #include "VEngine.h"
-
-#include <memory>
+#include "Render/opengl_glad.h"
 
 std::unique_ptr<VEngineBase> VEngine::engineInstance_;
 
 void VEngine::initialize()
 {
 	assert(engineInstance_.get() == nullptr && "engineInstance_ already initialized");
-	SPDLOG_INFO("Engine has been initialized!");
 	engineInstance_ = std::make_unique<VEngineBase>();
+	initOpenGl();
+	SPDLOG_INFO("Engine has been initialized!");
 }
 
 void VEngine::destroy()
@@ -34,4 +34,9 @@ Window *VEngine::getWindow()
 World *VEngine::getWorld()
 {
 	return engineInstance_->getWorld();
+}
+
+void VEngine::setWorld(const std::string &name)
+{
+	engineInstance_->setWorld(name);
 }

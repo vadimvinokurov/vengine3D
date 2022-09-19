@@ -36,6 +36,7 @@ public:
 		}
 		entity->id_ = aqcuireEntityId(entity);
 		entity->componentManage_ = componentManage_;
+		entity->onCreate();
 		return entity;
 	}
 
@@ -52,6 +53,7 @@ public:
 			auto it = entityContainers_.find(entity->getEntityTypeId());
 			if (it != entityContainers_.end())
 			{
+				entity->onQuite();
 				it->second->destroyObject(entity);
 			}
 			releaseEntityId(entityId);

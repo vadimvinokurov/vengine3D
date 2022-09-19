@@ -17,7 +17,7 @@ class RenderSystem : public System
 {
 	GENERATE_SYSTEM_BODY()
 public:
-	RenderSystem(SystemPriority priority = NORMAL_SYSTEM_PRIORITY);
+	explicit RenderSystem(SystemPriority priority = NORMAL_SYSTEM_PRIORITY);
 	void onWindowResize(int32 width, int32 height);
 	virtual void preUpdate(float dt) override;
 	virtual void update(float dt) override;

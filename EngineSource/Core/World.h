@@ -5,19 +5,20 @@
 #ifndef VENGINE3D_WORLD_H
 #define VENGINE3D_WORLD_H
 
-#include "Core/VEngine.h"
 #include "Core/Objects/Entity.h"
 #include "Core/Managers/SystemManager.h"
 #include "Core/Managers/ComponentManager.h"
 #include "Core/Managers/EntityManager.h"
 
+class SkySphere;
 class World
 {
 public:
 	World();
-	void onCreate();
-	void update(float dt);
-	void onQuite();
+	virtual ~World() = default;
+	virtual void onCreate();
+	virtual void update(float dt);
+	virtual void onQuite();
 
 	Entity *getEntityByEntityId(EntityId entityId)
 	{
@@ -31,10 +32,12 @@ public:
 			componentManager->begin<T>(), componentManager->end<T>());
 	}
 
-private:
+protected:
 	std::unique_ptr<ComponentManager> componentManager;
 	std::unique_ptr<EntityManager> entityManager;
 	std::unique_ptr<SystemManager> systemManager;
+
+	SkySphere *skySphere;
 };
 
 #endif // VENGINE3D_WORLD_H

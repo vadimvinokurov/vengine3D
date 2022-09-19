@@ -66,11 +66,11 @@ public:
 
 		if (active == false)
 		{
-			this->OnDisable();
+			this->onDisable();
 		}
 		else
 		{
-			this->OnEnable();
+			this->onEnable();
 		}
 
 		active_ = active;
@@ -98,10 +98,23 @@ public:
 		return id_ != other->id_;
 	}
 
-	virtual void OnDisable()
+	virtual void onDisable()
 	{
 	}
-	virtual void OnEnable()
+
+	virtual void onEnable()
+	{
+	}
+
+	virtual void onCreate()
+	{
+	}
+
+	virtual void onQuite()
+	{
+	}
+
+	virtual void tick(float dt)
 	{
 	}
 

@@ -3,7 +3,8 @@
 //
 
 #include "ControllerSystem.h"
-#include "World.h"
+#include "Core/World.h"
+#include "Core/VEngine.h"
 #include "Components/InputComponents.h"
 
 ControllerSystem::ControllerSystem(SystemPriority priority) : System(priority)

@@ -3,7 +3,8 @@
 //
 
 #include "RenderSystem.h"
-#include "World.h"
+#include "Core/World.h"
+#include "Core/VEngine.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponents.h"
@@ -14,14 +15,6 @@
 RenderSystem::RenderSystem(SystemPriority priority)
 	: System(priority), defaultVertexShader("../Content/Shaders/default.vert", ShaderType::Vertex)
 {
-	gladLoadGL();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-	glClearDepth(1.0f);
 }
 
 void RenderSystem::onWindowResize(int32 width, int32 height)
@@ -109,9 +102,9 @@ void RenderSystem::updateStaticMeshComponent(StaticMeshComponent *staticMeshComp
 
 void RenderSystem::updateAnimation(SkeletalMeshComponent *scm, float dt)
 {
-	//dt = 0.9f;
+	// dt = 0.9f;
 	scm->animTime = scm->animation->sample(*scm->skeleton, scm->animTime + dt);
-	//exit(0);
+	// exit(0);
 }
 
 void RenderSystem::updateSceletalMeshComponent(SkeletalMeshComponent *skeletalMeshComponent, float dt)

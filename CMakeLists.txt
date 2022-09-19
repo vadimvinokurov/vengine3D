@@ -49,21 +49,24 @@ add_subdirectory(External/stb_image)
 
 include_directories("External/stb_image")
 include_directories("External/assimp")
-include_directories("Sources")
+include_directories("EngineSource")
+include_directories("GameSources")
 
 add_compile_definitions(ECS_DEBUG)
 
 
-file(GLOB Sources "Sources/*.cpp"
-        "Sources/Render/*.cpp"
-        "Sources/Core/*.cpp"
-        "Sources/Core/Objects/*.cpp"
-        "Sources/Core/Utils/*.cpp"
-        "Sources/Core/Memory/*.cpp"
-        "Sources/Core/Memory/Allocator/*.cpp"
-        "Sources/Systems/*.cpp"
-        "Sources/Components/*.cpp")
+file(GLOB EngineSource "EngineSource/*.cpp"
+        "EngineSource/Render/*.cpp"
+        "EngineSource/Core/*.cpp"
+        "EngineSource/Core/Objects/*.cpp"
+        "EngineSource/Core/Utils/*.cpp"
+        "EngineSource/Core/Memory/*.cpp"
+        "EngineSource/Core/Memory/Allocator/*.cpp"
+        "EngineSource/Systems/*.cpp"
+        "EngineSource/Components/*.cpp")
+
+file(GLOB GameSource "GameSource/*.cpp")
 
 
-add_executable(${PROJECT_NAME} ${Sources})
+add_executable(${PROJECT_NAME} ${EngineSource} ${GameSource} GameSource/HaloWorld.cpp GameSource/HaloWorld.h EngineSource/Entities/SkySphere.h GameSource/BaseCharacter.h GameSource/AstroWorld.cpp GameSource/AstroWorld.h GameSource/AstroCharacter.h GameSource/HaloCharacter.h)
 target_link_libraries(${PROJECT_NAME} imgui::imgui glfw glad::glad spdlog::spdlog stb_image assimp)
