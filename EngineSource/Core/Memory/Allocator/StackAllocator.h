@@ -23,19 +23,12 @@ public:
 	{
 		return AllocatorPtr(new StackAllocator(std::move(memoryPool)));
 	};
-
-	virtual void *allocate() override
-	{
-		assert(false && "This method is not supported.");
-		return nullptr;
-	}
-
 	void *allocate(size_t size, uint8 alignment) override;
 	void free(void *ptr) override;
 	bool own(void *ptr) const override;
 
 private:
-	StackAllocator(MemoryPoolPtr memoryPool);
+	explicit StackAllocator(MemoryPoolPtr memoryPool);
 	void *allocate_memory(size_t size, uint8 alignment);
 	void deallocate_memory(void *ptr);
 

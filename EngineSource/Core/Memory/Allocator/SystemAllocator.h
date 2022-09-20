@@ -15,21 +15,16 @@ struct SystemAllocator final : public IAllocator
 		return AllocatorPtr(new SystemAllocator());
 	};
 
-	virtual void *allocate() override
+	void *allocate(size_t size, uint8 alignment) override
 	{
-		assert(false && "This method is not supported.");
-		return nullptr;
-	}
-
-	virtual void *allocate(size_t size, uint8 alignment = 1) override
-	{
+		assert(alignment == 1);
 		auto ptr = std::malloc(size);
 #ifdef ECS_DEBUG
 		debug_allocate(ptr);
 #endif
 		return ptr;
 	}
-	virtual void free(void *ptr) override
+	void free(void *ptr) override
 	{
 		if (!ptr)
 		{
@@ -40,7 +35,7 @@ struct SystemAllocator final : public IAllocator
 #endif
 		std::free(ptr);
 	}
-	virtual bool own(void *ptr) const override
+	bool own(void *ptr) const override
 	{
 		return true;
 	}

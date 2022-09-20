@@ -193,7 +193,7 @@ private:
 	{
 		for (auto &chunk : chunks_)
 		{
-			auto ptr = chunk.allocator->allocate();
+			auto ptr = chunk.allocator->allocate(sizeof(T), alignof(T));
 			if (ptr)
 			{
 				chunk.objects.push_back((T *)ptr);
@@ -205,7 +205,7 @@ private:
 		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
 		chunks_.emplace_back(Allocator::create(std::move(mpool)));
 		auto &chunk = chunks_.back();
-		auto ptr = chunk.allocator->allocate();
+		auto ptr = chunk.allocator->allocate(sizeof(T), alignof(T));
 		if (ptr)
 		{
 			chunk.objects.push_back((T *)ptr);

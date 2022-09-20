@@ -21,8 +21,10 @@ public:
 		return AllocatorPtr(new BlockAllocator(std::move(memoryPool)));
 	};
 
-	void *allocate() override
+	void *allocate(size_t size, uint8 alignment) override
 	{
+		assert(size == BLOCK_SIZE && alignment == ALIGNMENT);
+
 		if (nextFreeBlock == nullptr)
 		{
 			return nullptr;
@@ -36,12 +38,6 @@ public:
 		debug_allocate(p);
 #endif
 		return p;
-	}
-
-	void *allocate(size_t, uint8) override
-	{
-		assert(false && "This method is not supported.");
-		return nullptr;
 	}
 
 	void free(void *ptr) override

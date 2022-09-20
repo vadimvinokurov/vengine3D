@@ -20,7 +20,6 @@ public:
 	IAllocator &operator=(IAllocator &&other) = delete;
 
 	virtual void *allocate(size_t size, uint8 alignment) = 0;
-	virtual void *allocate() = 0;
 	virtual void free(void *ptr) = 0;
 	virtual bool own(void *ptr) const = 0;
 

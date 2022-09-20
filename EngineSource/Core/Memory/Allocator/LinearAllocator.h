@@ -17,12 +17,6 @@ public:
 		return AllocatorPtr(new LinearAllocator(std::move(memoryPool)));
 	};
 
-	virtual void *allocate() override
-	{
-		assert(false && "This method is not supported.");
-		return nullptr;
-	}
-
 	void *allocate(size_t size, uint8 alignment) override
 	{
 		assert(size > 0 && alignment > 0 && "Allocate called with size = 0 or alignment = 0.");
