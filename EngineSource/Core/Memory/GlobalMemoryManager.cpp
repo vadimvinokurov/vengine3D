@@ -3,5 +3,7 @@
 //
 
 #include "GlobalMemoryManager.h"
+#include "EngineProperty.h"
 
-MemoryManager GlobalMemoryManager::memoryManager;
+AllocatorPtr GlobalMemoryManager::memoryManager =
+	ChunkAllocator<StackAllocator>::create(SystemAllocator::create(), GLOBAL_MEMORY_MANAGER_CHUNK_SIZE, 1);

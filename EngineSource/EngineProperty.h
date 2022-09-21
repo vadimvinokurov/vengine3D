@@ -4,6 +4,7 @@
 
 #ifndef VENGINE3D_ECS_PROPERTY_H
 #define VENGINE3D_ECS_PROPERTY_H
+static constexpr auto GLOBAL_MEMORY_MANAGER_CHUNK_SIZE = 256 * 1024 * 1024ull; // in bytes
 static constexpr auto MEMORY_MANAGER_CHUNK_SIZE = 256 * 1024 * 1024ull; // in bytes
 static constexpr auto SYSTEM_MEMORY_BUFFER_SIZE = 10 * 1024 * 1024ull;
 static constexpr auto ENTITY_CHUNK_SIZE = 3;	  // entity number

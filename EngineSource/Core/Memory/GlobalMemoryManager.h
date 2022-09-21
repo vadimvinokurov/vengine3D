@@ -5,27 +5,23 @@
 #ifndef VENGINE3D_GLOBALMEMORYMANAGER_H
 #define VENGINE3D_GLOBALMEMORYMANAGER_H
 
-#include "MemoryManager.h"
+#include "Core/Memory/Allocator/ChunkAllocator.h"
 
 struct GlobalMemoryManager
 {
 	static MemoryPoolPtr allocateMemoryPool(size_t size)
 	{
-		return memoryManager.allocateMemoryPool(size);
+		auto ptr = memoryManager->allocate(size, 1);
+		return MemoryPool::create(ptr, size, memoryManager);
 	}
 
-	static void *allocate(size_t size)
+	static const AllocatorPtr &get()
 	{
-		return memoryManager.allocate(size);
-	}
-
-	static void free(void *ptr)
-	{
-		memoryManager.free(ptr);
+		return memoryManager;
 	}
 
 private:
-	static MemoryManager memoryManager;
+	static AllocatorPtr memoryManager;
 };
 
 #endif // VENGINE3D_GLOBALMEMORYMANAGER_H

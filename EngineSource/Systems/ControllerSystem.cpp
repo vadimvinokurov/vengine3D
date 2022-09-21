@@ -21,12 +21,12 @@ void ControllerSystem::update(float dt)
 
 	for (auto &key : pressedKey)
 	{
-		inputComponentIt->inputPressAction(key);
+		(*inputComponentIt)->inputPressAction(key);
 	}
 
 	for (auto &key : releasedKey)
 	{
-		inputComponentIt->inputReleaseAction(key);
+		(*inputComponentIt)->inputReleaseAction(key);
 	}
 
 	pressedKey.clear();
@@ -34,11 +34,11 @@ void ControllerSystem::update(float dt)
 
 	for (auto &key : repeatingKey)
 	{
-		inputComponentIt->inputAxis(key, 1);
+		(*inputComponentIt)->inputAxis(key, 1);
 	}
 
-	inputComponentIt->inputAxis(VE_MOUSE_X, cursorDeltaXPos * cursorDeltaScale);
-	inputComponentIt->inputAxis(VE_MOUSE_Y, cursorDeltaYPos * cursorDeltaScale);
+	(*inputComponentIt)->inputAxis(VE_MOUSE_X, cursorDeltaXPos * cursorDeltaScale);
+	(*inputComponentIt)->inputAxis(VE_MOUSE_Y, cursorDeltaYPos * cursorDeltaScale);
 	cursorDeltaXPos = cursorDeltaYPos = 0.0f;
 }
 

@@ -16,18 +16,6 @@ struct MemoryPool
 {
 	using pointer = std::unique_ptr<MemoryPool>;
 
-	static pointer create(size_t sz)
-	{
-		auto alloc = SystemAllocator::create();
-		return create(sz, alloc);
-	};
-
-	static pointer create(size_t sz, const AllocatorPtr &alloc)
-	{
-		void *ptr = alloc->allocate(sz, 1);
-		return create(ptr, sz, alloc);
-	};
-
 	static pointer create(void *ptr, size_t sz, const AllocatorPtr &alloc)
 	{
 		if (!ptr)

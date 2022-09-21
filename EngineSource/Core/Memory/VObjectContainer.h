@@ -27,97 +27,12 @@ private:
 	static constexpr auto CHUNK_MEMORY_SIZE = MAX_CHUNK_SIZE * sizeof(T) + alignof(T);
 
 	using Allocator = BlockAllocator<sizeof(T), alignof(T)>;
+	using MemoryChunks = ChunkAllocator<Allocator>;
 	using ObjectList = std::vector<T *>;
 
-	struct Chunk
-	{
-		explicit Chunk(AllocatorPtr alloc) : allocator(alloc)
-		{
-			objects.reserve(MAX_CHUNK_SIZE);
-		}
-		Chunk(const Chunk &other) = delete;
-		Chunk *operator=(const Chunk &other) = delete;
-		Chunk(Chunk &&other) = delete;
-		Chunk *operator=(Chunk &&other) = delete;
-
-		AllocatorPtr allocator;
-		ObjectList objects;
-	};
-	using MemoryChunks = std::list<Chunk>;
-
 public:
-	class iterator : public std::iterator<std::forward_iterator_tag, T>
-	{
-	public:
-		iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end)
-			: currentChunk_(begin), endChunk_(end)
-		{
-			if (begin != end)
-			{
-				for (; currentChunk_ != endChunk_; ++currentChunk_)
-				{
-					currentObject_ = currentChunk_->objects.begin();
-					if (currentObject_ != currentChunk_->objects.end())
-					{
-						return;
-					}
-				}
-			}
-			else
-			{
-				currentObject_ = std::prev(endChunk_)->objects.end();
-			}
-		}
-
-		iterator &operator++()
-		{
-			++currentObject_;
-
-			if (currentObject_ == currentChunk_->objects.end())
-			{
-				++currentChunk_;
-				for (; currentChunk_ != endChunk_; ++currentChunk_)
-				{
-					currentObject_ = currentChunk_->objects.begin();
-					if (currentObject_ != currentChunk_->objects.end())
-					{
-						return *this;
-					}
-				}
-			}
-			return *this;
-		}
-
-		T &operator*() const
-		{
-			return *(*currentObject_);
-		}
-
-		T *operator->() const
-		{
-			return *currentObject_;
-		}
-
-		bool operator==(const iterator &other) const
-		{
-			return (this->currentChunk_ == other.currentChunk_) && (this->currentObject_ == other.currentObject_);
-		}
-		bool operator!=(const iterator &other) const
-		{
-			return (this->currentChunk_ != other.currentChunk_) || (this->currentObject_ != other.currentObject_);
-		}
-
-	private:
-		typename MemoryChunks::iterator currentChunk_;
-		typename MemoryChunks::iterator endChunk_;
-		typename ObjectList::iterator currentObject_;
-	};
-
-	VObjectContainer()
-	{
-		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
-		chunks_.emplace_back(Allocator::create(std::move(mpool)));
-	}
+	using iterator = typename ObjectList::iterator;
+	VObjectContainer() : chunks_(GlobalMemoryManager::get(), CHUNK_MEMORY_SIZE, 1){};
 
 	template <typename... Args>
 	T *createObject(Args &&...args)
@@ -167,71 +82,44 @@ public:
 
 	iterator begin()
 	{
-		return iterator(chunks_.begin(), chunks_.end());
+		return objects.begin();
 	}
 
 	iterator end()
 	{
-		return iterator(chunks_.end(), chunks_.end());
+		return objects.end();
 	}
 
-	~VObjectContainer()
+	~VObjectContainer() override
 	{
-		for (auto &chunk : chunks_)
+		for (auto ptr : objects)
 		{
-			for (auto ptr : chunk.objects)
-			{
-				ptr->~T();
-				chunk.allocator->free((void *)ptr);
-			}
-			chunk.objects.clear();
+			ptr->~T();
+			chunks_.free((void *)ptr);
 		}
 	}
 
 private:
 	void *allocate()
 	{
-		for (auto &chunk : chunks_)
+		auto ptr = chunks_.allocate(sizeof(T), alignof(T));
+		if (!ptr)
 		{
-			auto ptr = chunk.allocator->allocate(sizeof(T), alignof(T));
-			if (ptr)
-			{
-				chunk.objects.push_back((T *)ptr);
-				return ptr;
-			}
-			assert(chunk.objects.size() == MAX_CHUNK_SIZE && "Number of object in chunk != MAX_CHUNK_SIZE");
+			return nullptr;
 		}
 
-		auto mpool = GlobalMemoryManager::allocateMemoryPool(CHUNK_MEMORY_SIZE);
-		chunks_.emplace_back(Allocator::create(std::move(mpool)));
-		auto &chunk = chunks_.back();
-		auto ptr = chunk.allocator->allocate(sizeof(T), alignof(T));
-		if (ptr)
-		{
-			chunk.objects.push_back((T *)ptr);
-			return ptr;
-		}
-
-		assert(false && "VObject manager can't allocate memory. Out of memory!");
-		return nullptr;
+		objects.push_back((T *)ptr);
 	}
 
 	void free(void *ptr)
 	{
-		for (auto &chunk : chunks_)
-		{
-			if (chunk.allocator->own(ptr))
-			{
-
-				auto it = std::remove(chunk.objects.begin(), chunk.objects.end(), (T *)ptr);
-				chunk.objects.erase(it);
-				chunk.allocator->free(ptr);
-				return;
-			}
-		}
+		auto it = std::remove(objects.begin(), objects.end(), (T *)ptr);
+		objects.erase(it);
+		chunks_.free(ptr);
 	}
 
-	std::list<Chunk> chunks_;
+	MemoryChunks chunks_;
+	ObjectList objects;
 
 #ifdef ECS_DEBUG
 	std::set<VObject *> ptrs;
